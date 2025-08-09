@@ -1,6 +1,5 @@
 import { Pool } from "pg";
-
-import { Employee } from "../models/employee.js";
+import { Employee } from "../../models/employee.js";
 import { POSTGRESQL_POOL_CONFIG } from "./postgresql.initialization.js";
 
 const CREATE_EMPLOYEE_SQL = `

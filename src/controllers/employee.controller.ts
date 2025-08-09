@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { EmployeeService } from "../services/employee.service.js";
 import { Employee } from "../models/employee.js";
+import { EmployeeService } from "../services/employee.service.js";
 
 /**
  * This service class provides methods to manage employees.

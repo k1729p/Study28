@@ -1,4 +1,4 @@
-import { PostgreSQLEmployeeRepository } from "../repositories/postgresql.employee.repository.js";
+import { PostgreSQLEmployeeRepository } from "../repositories/postgresql/postgresql.employee.repository.js";
 /**
  * This service class provides methods to manage employees.
  * It includes methods to get, set, create, update, and delete employees.

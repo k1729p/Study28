@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-
 import { Department } from "../models/department.js";
 import { Employee } from "../models/employee.js";
 import { InitializationService } from "../services/initialization.service.js";
+
 /**
  * This service class provides methods to initialize database and load data.
  */

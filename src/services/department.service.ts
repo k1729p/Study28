@@ -1,5 +1,6 @@
 import { Department } from "../models/department.js";
-import { PostgreSQLDepartmentRepository } from "../repositories/postgresql.department.repository.js";
+import { PostgreSQLDepartmentRepository } from "../repositories/postgresql/postgresql.department.repository.js";
+
 /**
  * This service class provides methods to manage departments.
  * It includes methods to get, set, create, update, and delete departments.

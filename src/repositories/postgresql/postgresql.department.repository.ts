@@ -1,6 +1,5 @@
 import { Pool } from "pg";
-
-import { Department } from "../models/department.js";
+import { Department } from "../../models/department.js";
 import { POSTGRESQL_POOL_CONFIG } from "./postgresql.initialization.js";
 
 const CREATE_DEPARTMENT_SQL = `

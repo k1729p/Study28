@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { DepartmentService } from "../services/department.service.js";
 import { Department } from "../models/department.js";
+import { DepartmentService } from "../services/department.service.js";
 
 /**
  * This service class provides methods to manage departments.

@@ -1,6 +1,6 @@
 import { Department } from "../models/department.js";
 import { Employee } from "../models/employee.js";
-import { PostgreSQLInitialization } from "../repositories/postgresql.initialization.js";
+import { PostgreSQLInitialization } from "../repositories/postgresql/postgresql.initialization.js";
 /**
  * This service class provides methods to initialize the database and load initial data.
  */

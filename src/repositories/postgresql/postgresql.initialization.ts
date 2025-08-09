@@ -1,7 +1,6 @@
 import { Pool, PoolConfig, PoolClient } from "pg";
-
-import { Department } from "../models/department.js";
-import { Employee } from "../models/employee.js";
+import { Department } from "../../models/department.js";
+import { Employee } from "../../models/employee.js";
 
 const DROP_TABLE_DEPARTMENTS_SQL = 'DROP TABLE IF EXISTS departments;';
 const DROP_TABLE_EMPLOYEES_SQL = 'DROP TABLE IF EXISTS employees;';

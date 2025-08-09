@@ -8,7 +8,7 @@
 %HR_YELLOW%
 @powershell -Command Write-Host "Load initial data into the database" -foreground "Green"
 %CURL% -d @%QUERY_DIR%/initial_data.json -X POST "%SITE%/load"
-@echo.&pause
+@echo.
 
 :find-departments
 %HR_YELLOW%
@@ -20,7 +20,7 @@
 %HR_YELLOW%
 @powershell -Command Write-Host "Find department by id" -foreground "Green"
 %CURL% "%SITE%/departments/1"
-@echo.&pause
+@echo.
 
 :find-employees
 %HR_YELLOW%

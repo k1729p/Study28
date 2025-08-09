@@ -37,11 +37,11 @@ Installing 'node-postgres' - PostgreSQL client for Node.js:
 ================================================================================
 JSON:API specification. Updating Resources: https://jsonapi.org/format/#crud-updating
 
-PATCH Request – Updating Part of a Resource
+'PATCH' Request – Updating Part of a Resource
 	Used when you want to update only a subset of fields in a resource.
 	Used when you want to improve the performance by minimizing the data payload.
 
-  PUT   Request – Replacing an Entire Resource
+'PUT'   Request – Replacing an Entire Resource
 	Used when the resource’s identity is clear, and its data needs to be fully refreshed.
 ================================================================================
  DATABASES DATABASES DATABASES DATABASES DATABASES DATABASES DATABASES DATABASES
