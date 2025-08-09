@@ -34,7 +34,7 @@ Installing 'node-postgres' - PostgreSQL client for Node.js:
    ??? npm i --save-dev @types/express
    ??? npm i --save-dev @types/pg
 
-================================================================================
+#################################################################################
 JSON:API specification. Updating Resources: https://jsonapi.org/format/#crud-updating
 
 'PATCH' Request – Updating Part of a Resource
@@ -43,9 +43,9 @@ JSON:API specification. Updating Resources: https://jsonapi.org/format/#crud-upd
 
 'PUT'   Request – Replacing an Entire Resource
 	Used when the resource’s identity is clear, and its data needs to be fully refreshed.
-================================================================================
+#################################################################################
  DATABASES DATABASES DATABASES DATABASES DATABASES DATABASES DATABASES DATABASES
-================================================================================
+#################################################################################
 ===  Cassandra DATABASE  ===
 https://en.wikipedia.org/wiki/Apache_Cassandra
 Docker compose: https://github.com/kayvansol/Cassandra
@@ -62,7 +62,7 @@ Commands to execute in 'cqlsh' console:
       (id, name, last_update_timestamp) values (2, 'xyz', totimestamp(now()));
   select id, name, last_update_timestamp from company.departments;
   exit;
-================================================================================
+#################################################################################
 ===  MongoDB DATABASE  ===
 
 In Docker container "mongodb", in "Exec" tab:
@@ -76,19 +76,19 @@ Commands to execute in 'mongosh' console:
   db.departments.deleteMany({})
   db.employees.deleteMany({})
   exit
-================================================================================
+#################################################################################
 ===  MySQL DATABASE (ORACLE) ===
 https://www.baeldung.com/ops/docker-mysql-container
 
 In Docker container "postgresql", in "Exec" tab:
   mysql --host=mysql --user=root --password='mikimiki' --execute='select 12345 from dual;'
-================================================================================
+#################################################################################
 ===  MS SQLServer DATABASE  ===
 https://learn.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker?view=sql-server-ver17&tabs=cli&pivots=cs1-cmd
 
 In Docker container "postgresql", in "Exec" tab:
   /opt/mssql-tools18/bin/sqlcmd -S mssql -No -U sa -P ABab1234 -Q "select 12345"
-================================================================================
+#################################################################################
 ===  PostgreSQL DATABASE  ===
 https://node-postgres.com/ <----- node.js modules for interfacing with PostgreSQL database
 
@@ -99,7 +99,7 @@ https://www.tembo.io/docs/getting-started/postgres_guides/connecting-to-postgres
 
 In Docker container "postgresql", in "Exec" tab:
   export PGPASSWORD='mikimiki'; psql --host=postgresql --username=postgres --command='select 12345'
-================================================================================
+#################################################################################
 ===  Redis DATABASE  ===
 https://redis.io/docs/latest/develop/tools/cli/
 
@@ -107,18 +107,16 @@ In Docker container "redis", in "Exec" tab:
   redis-cli
 Commands to execute in 'redis-cli' console:
   INCR mycounter
-================================================================================
-
-================================================================================
-
-================================================================================
+#################################################################################
+#################################################################################
+#################################################################################
 CockroachDB versus Apache Cassandra:
   https://hackernoon.com/cockroachdb-vs-apache-cassandra-choosing-the-right-distributed-database-for-your-use-case
 
-================================================================================
+#################################################################################
 Neo4j is the world's leading graph database, with native graph storage and processing. 
 https://hub.docker.com/_/neo4j
-================================================================================
+#################################################################################
   </pre>
   <hr>
 </body>
