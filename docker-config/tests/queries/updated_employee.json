@@ -1,0 +1,14 @@
+{
+    "id": 67890,
+    "firstName": "EF-Name-UPDATE",
+    "lastName": "EL-Name-UPDATE",
+    "title": "Manager",
+    "phone": "+1 123-456-7890",
+    "mail": "user@example.com",
+    "streetName": "Main Street",
+    "houseNumber": "1",
+    "postalCode": "20500",
+    "locality": "Washington",
+    "province": "DC",
+    "country": "United States"
+}

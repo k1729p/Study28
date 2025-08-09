@@ -1,0 +1,12 @@
+services:
+  sql-server:
+    container_name: sql-server
+    image: mcr.microsoft.com/mssql/server
+    ports:
+      - "1433:1433"
+    networks:
+    - app-net
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=ABab1234
+    restart: always

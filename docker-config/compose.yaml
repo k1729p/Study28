@@ -1,0 +1,37 @@
+include:
+  - includes/cassandra.yaml
+  - includes/mongodb.yaml
+  - includes/mysql.yaml
+  - includes/postgresql.yaml
+  - includes/redis.yaml
+  - includes/sql-server.yaml
+  #services:
+  # study28:
+  #   container_name: study28
+  #   image: eeengcs/study28:1.0.0-SNAPSHOT
+  #   depends_on:
+  #     - cassandra
+  #     - mongodb
+  #     - mysql
+  #     - postgresql
+  #     - redis
+  #     - sql-server
+  #   ports:
+  #     - "8080:8080"
+  #   networks:
+  #     - app-net
+  #     #- frontend <--- ALTERNATIVE WITH TWO NETWORKS
+  #     #- backend  <--- ALTERNATIVE WITH TWO NETWORKS
+  #   restart: always
+  ##### database management tool written in PHP
+  # adminer:
+  #   container_name: adminer
+  #   image: adminer
+  #   ports:
+  #     - 8080:8080 ??????????
+  #   networks:
+  #     - app-net
+  #   restart: always
+networks:
+  app-net:
+    driver: bridge
