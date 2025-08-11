@@ -1,4 +1,5 @@
 import express, { Router } from 'express';
+import { pool } from "./repositories/postgresql/postgresql.pool.js";
 import { DepartmentController } from './controllers/department.controller.js';
 import { EmployeeController } from './controllers/employee.controller.js';
 import { InitializationController } from './controllers/initialization.controller.js';
@@ -12,10 +13,26 @@ function main() {
     app.use(express.json());
     app.use('/api/', createRouting());
     app.use(errorHandler);
-    app.listen(PORT, () => {
+    const server = app.listen(PORT, () => {
         console.log("main(): server is running on port[%s]", PORT);
         console.log("▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄");
     });
+    const shutdown = async () => {
+        server.close(async () => {
+            try {
+                await pool.end();
+                console.log("main(): PostgreSQL pool closed");
+                console.log("main(): shutdown completed");
+                process.exit(0);
+            }
+            catch (err) {
+                console.error("main(): error during shutdown:", err);
+                process.exit(1);
+            }
+        });
+    };
+    process.on('SIGINT', shutdown);
+    process.on('SIGTERM', shutdown);
 }
 /**
  * This function creates a new Router instance and sets up a basic route.

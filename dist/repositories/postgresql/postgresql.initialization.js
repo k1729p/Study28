@@ -1,6 +1,6 @@
-import { Pool } from "pg";
-const DROP_TABLE_DEPARTMENTS_SQL = 'DROP TABLE IF EXISTS departments;';
+import { pool } from "./postgresql.pool.js";
 const DROP_TABLE_EMPLOYEES_SQL = 'DROP TABLE IF EXISTS employees;';
+const DROP_TABLE_DEPARTMENTS_SQL = 'DROP TABLE IF EXISTS departments;';
 const CREATE_TABLE_DEPARTMENTS_SQL = `
     CREATE TABLE departments (
         id integer PRIMARY KEY,
@@ -15,6 +15,7 @@ const CREATE_TABLE_DEPARTMENTS_SQL = `
 const CREATE_TABLE_EMPLOYEES_SQL = `
     CREATE TABLE employees (
         id integer PRIMARY KEY,
+        department_id integer REFERENCES departments(id),
         first_name varchar(40) NOT NULL,
         last_name varchar(40) NOT NULL,
         title varchar(40) NOT NULL,
@@ -35,35 +36,27 @@ const BULK_INSERT_DEPARTMENTS_SQL_PREFIX = `
 `;
 const BULK_INSERT_EMPLOYEES_SQL_PREFIX = `
     INSERT INTO employees
-        (id, first_name, last_name, title, phone, mail,
+        (id, department_id, first_name, last_name, title, phone, mail,
         street_name, house_number, postal_code, locality, province, country)
     VALUES
 `;
-export const POSTGRESQL_POOL_CONFIG = {
-    user: "postgres",
-    password: "mikimiki",
-    database: "postgres",
-    host: "localhost",
-    port: 5432,
-};
 /**
  * This service class provides methods to initialize database and load data.
  */
 export class PostgreSQLInitialization {
-    pool = new Pool(POSTGRESQL_POOL_CONFIG);
     /**
      * Loads the initial data into the database.
      * @param departmentArray the array of departments
-     * @param employeeArray the array of employees
-     * @returns void
      */
-    async loadInitialData(departmentArray, employeeArray) {
-        const client = await this.pool.connect();
+    async loadInitialData(departmentArray) {
+        const client = await pool.connect();
         try {
             await this.dropTables(client);
             await this.createTables(client);
             await this.insertDepartments(client, departmentArray);
-            await this.insertEmployees(client, employeeArray.flat());
+            const allEmployees = departmentArray.flatMap(dep => dep.employees.map(emp => ({ ...emp, departmentId: dep.id })));
+            await this.insertEmployees(client, allEmployees);
+            console.log(`PostgreSQLInitialization.loadInitialData(): Successfully loaded ${departmentArray.length} departments and ${allEmployees.length} employees.`);
         }
         catch (err) {
             console.error("PostgreSQLInitialization.loadInitialData():", err);
@@ -72,15 +65,14 @@ export class PostgreSQLInitialization {
         finally {
             client.release();
         }
-        console.log("PostgreSQLInitialization.loadInitialData():");
     }
     /**
-     * Drops the database tables.
+     * Drops the database tables in correct order.
      */
     async dropTables(client) {
         try {
-            await client.query(DROP_TABLE_DEPARTMENTS_SQL);
             await client.query(DROP_TABLE_EMPLOYEES_SQL);
+            await client.query(DROP_TABLE_DEPARTMENTS_SQL);
         }
         catch (err) {
             console.error("PostgreSQLInitialization.dropTables():", err);
@@ -103,11 +95,10 @@ export class PostgreSQLInitialization {
     /**
      * Inserts the department data into the database.
      * @param departmentArray the array of departments
-     * @returns void
      */
     async insertDepartments(client, departmentArray) {
         if (departmentArray.length === 0) {
-            console.error("PostgreSQLInitialization.insertDepartments(): no departments to insert");
+            console.warn("PostgreSQLInitialization.insertDepartments(): no departments to insert");
             return;
         }
         const values = [];
@@ -116,13 +107,13 @@ export class PostgreSQLInitialization {
             const startDate = dep.startDate ? new Date(dep.startDate) : null;
             const endDate = dep.endDate ? new Date(dep.endDate) : null;
             const idx = i * 7;
-            valuePlaceholders.push(`($${idx + 1}, $${idx + 2}, $${idx + 3}, $${idx + 4},
-                  $${idx + 5}, $${idx + 6}, $${idx + 7})`);
+            valuePlaceholders.push(`($${idx + 1}, $${idx + 2}, $${idx + 3}, $${idx + 4}, $${idx + 5}, $${idx + 6}, $${idx + 7})`);
             values.push(dep.id, dep.name, startDate ? startDate.toISOString().split('T')[0] : null, endDate ? endDate.toISOString().split('T')[0] : null, dep.notes ?? null, dep.keywords ?? null, dep.image ?? null);
         });
-        const sql = BULK_INSERT_DEPARTMENTS_SQL_PREFIX + valuePlaceholders.join(", ") + " RETURNING *";
+        const sql = BULK_INSERT_DEPARTMENTS_SQL_PREFIX + valuePlaceholders.join(", ");
         try {
-            await client.query(sql, values);
+            const res = await client.query(sql, values);
+            console.debug(`Inserted ${res.rowCount ?? departmentArray.length} departments.`);
         }
         catch (err) {
             console.error("PostgreSQLInitialization.insertDepartments():", err);
@@ -131,26 +122,26 @@ export class PostgreSQLInitialization {
     }
     /**
      * Inserts the employee data into the database.
-     * @param employeeFlatArray the array of employees
-     * @returns void
+     * @param employeeArray the array of employees
      */
-    async insertEmployees(client, employeeFlatArray) {
-        if (employeeFlatArray.length === 0) {
-            console.error("PostgreSQLInitialization.insertEmployees(): no employees to insert");
+    async insertEmployees(client, employeeArray) {
+        if (employeeArray.length === 0) {
+            console.warn("PostgreSQLInitialization.insertEmployees(): no employees to insert");
             return;
         }
         const values = [];
         const valuePlaceholders = [];
-        employeeFlatArray.forEach((emp, i) => {
-            const idx = i * 12;
-            valuePlaceholders.push(`($${idx + 1}, $${idx + 2}, $${idx + 3}, $${idx + 4},
-                 $${idx + 5}, $${idx + 6},  $${idx + 7}, $${idx + 8},
-                 $${idx + 9}, $${idx + 10}, $${idx + 11}, $${idx + 12})`);
-            values.push(emp.id, emp.firstName, emp.lastName, emp.title, emp.phone, emp.mail, emp.streetName ?? null, emp.houseNumber ?? null, emp.postalCode ?? null, emp.locality ?? null, emp.province ?? null, emp.country ?? null);
+        employeeArray.forEach((emp, i) => {
+            const idx = i * 13;
+            valuePlaceholders.push(`($${idx + 1}, $${idx + 2}, $${idx + 3}, $${idx + 4}, $${idx + 5}, $${idx + 6},
+                 $${idx + 7}, $${idx + 8}, $${idx + 9}, $${idx + 10}, $${idx + 11}, $${idx + 12},
+                 $${idx + 13})`);
+            values.push(emp.id, emp.departmentId, emp.firstName, emp.lastName, emp.title, emp.phone, emp.mail, emp.streetName ?? null, emp.houseNumber ?? null, emp.postalCode ?? null, emp.locality ?? null, emp.province ?? null, emp.country ?? null);
         });
-        const sql = BULK_INSERT_EMPLOYEES_SQL_PREFIX + valuePlaceholders.join(", ") + " RETURNING *";
+        const sql = BULK_INSERT_EMPLOYEES_SQL_PREFIX + valuePlaceholders.join(", ");
         try {
-            await client.query(sql, values);
+            const res = await client.query(sql, values);
+            console.debug(`Inserted ${res.rowCount ?? employeeArray.length} employees.`);
         }
         catch (err) {
             console.error("PostgreSQLInitialization.insertEmployees():", err);

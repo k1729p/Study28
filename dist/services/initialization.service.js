@@ -7,10 +7,9 @@ export class InitializationService {
     /**
      * Loads the initial data into the database.
      * @param departmentArray the array of departments
-     * @param employeeArray the array of employees
      * @returns void
      */
-    async loadInitialData(departmentArray, employeeArray) {
-        await this.postgreSQLInitialization.loadInitialData(departmentArray, employeeArray);
+    async loadInitialData(departmentArray) {
+        await this.postgreSQLInitialization.loadInitialData(departmentArray);
     }
 }

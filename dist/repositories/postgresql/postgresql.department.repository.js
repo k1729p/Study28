@@ -1,5 +1,4 @@
-import { Pool } from "pg";
-import { POSTGRESQL_POOL_CONFIG } from "./postgresql.initialization.js";
+import { pool } from "./postgresql.pool.js";
 const CREATE_DEPARTMENT_SQL = `
     INSERT INTO departments (id, name, start_date, end_date, notes, keywords, image)
     VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -25,14 +24,13 @@ const DELETE_DEPARTMENT_SQL = `
  * It includes methods to get, set, create, update, and delete departments.
  */
 export class PostgreSQLDepartmentRepository {
-    pool = new Pool(POSTGRESQL_POOL_CONFIG);
     /**
      * Creates a new department.
      * @param department the department to be created
      * @return void
      */
     async createDepartment(department) {
-        const client = await this.pool.connect();
+        const client = await pool.connect();
         try {
             const result = await client.query(CREATE_DEPARTMENT_SQL, [
                 department.id,
@@ -62,7 +60,7 @@ export class PostgreSQLDepartmentRepository {
      * @returns an array of Department objects
      */
     async getDepartments() {
-        const client = await this.pool.connect();
+        const client = await pool.connect();
         try {
             const result = await client.query(SELECT_DEPARTMENTS_SQL);
             console.log("PostgreSQLDepartmentRepository.getDepartments():");
@@ -82,7 +80,7 @@ export class PostgreSQLDepartmentRepository {
      * @returns the Department object if found, otherwise undefined
      */
     async getDepartment(id) {
-        const client = await this.pool.connect();
+        const client = await pool.connect();
         try {
             const result = await client.query(SELECT_DEPARTMENT_SQL, [id]);
             if (!result.rowCount) {
@@ -106,7 +104,7 @@ export class PostgreSQLDepartmentRepository {
      * @returns void
      */
     async updateDepartment(department) {
-        const client = await this.pool.connect();
+        const client = await pool.connect();
         try {
             const result = await client.query(UPDATE_DEPARTMENT_SQL, [
                 department.name,
@@ -138,7 +136,7 @@ export class PostgreSQLDepartmentRepository {
      * @returns void
      */
     async deleteDepartment(id) {
-        const client = await this.pool.connect();
+        const client = await pool.connect();
         try {
             await client.query(DELETE_DEPARTMENT_SQL, [id]);
         }

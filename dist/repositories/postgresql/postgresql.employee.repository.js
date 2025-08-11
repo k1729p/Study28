@@ -1,5 +1,4 @@
-import { Pool } from "pg";
-import { POSTGRESQL_POOL_CONFIG } from "./postgresql.initialization.js";
+import { pool } from "./postgresql.pool.js";
 const CREATE_EMPLOYEE_SQL = `
     INSERT INTO employees (
 		id, first_name, last_name, title, phone, mail,
@@ -31,7 +30,6 @@ const DELETE_EMPLOYEE_SQL = `
  * It includes methods to get, set, create, update, and delete employees.
  */
 export class PostgreSQLEmployeeRepository {
-    pool = new Pool(POSTGRESQL_POOL_CONFIG);
     /**
      * Creates a new employee.
      * @param departmentId the department ID to which the employee belongs
@@ -39,7 +37,7 @@ export class PostgreSQLEmployeeRepository {
      * @return void
      */
     async createEmployee(departmentId, employee) {
-        const client = await this.pool.connect();
+        const client = await pool.connect();
         try {
             const result = await client.query(CREATE_EMPLOYEE_SQL, [
                 employee.id,
@@ -74,7 +72,7 @@ export class PostgreSQLEmployeeRepository {
      * @returns an array of Employee objects
      */
     async getEmployees() {
-        const client = await this.pool.connect();
+        const client = await pool.connect();
         try {
             const result = await client.query(SELECT_EMPLOYEES_SQL);
             console.log("PostgreSQLEmployeeRepository.getEmployees():");
@@ -94,7 +92,7 @@ export class PostgreSQLEmployeeRepository {
      * @returns an array of Employee objects
      */
     async getEmployeesByDepartmentId(departmentId) {
-        const client = await this.pool.connect();
+        const client = await pool.connect();
         try {
             // TODO const result = await client.query(SELECT_EMPLOYEES_SQL + ' WHERE department_id = $1', [departmentId]);
             const result = await client.query(SELECT_EMPLOYEES_SQL);
@@ -116,7 +114,7 @@ export class PostgreSQLEmployeeRepository {
      * @returns the Employee object if found, otherwise undefined
      */
     async getEmployee(departmentId, id) {
-        const client = await this.pool.connect();
+        const client = await pool.connect();
         try {
             const result = await client.query(SELECT_EMPLOYEE_SQL, [id]);
             if (!result.rowCount) {
@@ -141,7 +139,7 @@ export class PostgreSQLEmployeeRepository {
      * @returns void
      */
     async updateEmployee(departmentId, employee) {
-        const client = await this.pool.connect();
+        const client = await pool.connect();
         try {
             const result = await client.query(UPDATE_EMPLOYEE_SQL, [
                 employee.firstName,
@@ -179,7 +177,7 @@ export class PostgreSQLEmployeeRepository {
      * @returns void
      */
     async deleteEmployee(departmentId, id) {
-        const client = await this.pool.connect();
+        const client = await pool.connect();
         try {
             await client.query(DELETE_EMPLOYEE_SQL, [id]);
         }

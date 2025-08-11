@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import { Department } from "../models/department.js";
-import { Employee } from "../models/employee.js";
 import { InitializationService } from "../services/initialization.service.js";
 
 /**
@@ -16,10 +15,9 @@ export class InitializationController {
    */
   loadInitialData = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { departments, employees } = req.body;
+      const { departments } = req.body;
       const departmentArray: Department[] = departments;
-      const employeeArray: Employee[][] = employees;
-      await this.initializationService.loadInitialData(departmentArray, employeeArray);
+      await this.initializationService.loadInitialData(departmentArray);
       res.status(204).json();
       console.log("InitializationController.loadInitialData():");
     } catch (error) {

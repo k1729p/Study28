@@ -12,10 +12,9 @@ export class InitializationController {
      */
     loadInitialData = async (req, res, next) => {
         try {
-            const { departments, employees } = req.body;
+            const { departments } = req.body;
             const departmentArray = departments;
-            const employeeArray = employees;
-            await this.initializationService.loadInitialData(departmentArray, employeeArray);
+            await this.initializationService.loadInitialData(departmentArray);
             res.status(204).json();
             console.log("InitializationController.loadInitialData():");
         }

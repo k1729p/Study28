@@ -7,6 +7,7 @@ import { Title } from './title.js';
  *
  * @interface Employee
  * @property {number} id - The unique identifier for the employee.
+ * @property {number} departmentId - The unique identifier for the department the employee belongs to.
  * @property {string} firstName - The first name of the employee.
  * @property {string} lastName - The last name of the employee.
  * @property {Title} title - The title of the employee, represented by the Title interface.
@@ -21,6 +22,7 @@ import { Title } from './title.js';
  */
 export interface Employee {
   id: number;
+  departmentId: number;
   firstName: string;
   lastName: string;
   title: Title;
