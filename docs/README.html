@@ -18,14 +18,12 @@
   <pre>
 Work-In-Progress temporary notes, fixes, and todos:
 
+#################################################################################
+
 Express: https://expressjs.com/
 
-		server
-        └── controllers/departmentController
-            └── services/departmentService
-                └── pool.(connect/query/end) <----- import { Pool } from 'pg';
-                    └── DATABASES (PostgreSQL, MongoDB, ....)
-
+Start application in Visual Studio Code TERMINAL tab:
+  npm run build ;npm run start
 #################################################################################
 JSON:API specification. Updating Resources: https://jsonapi.org/format/#crud-updating
 
@@ -114,6 +112,19 @@ Installing 'node-postgres' - PostgreSQL client for Node.js:
    ??? npm install --save-dev pg
    ??? npm i --save-dev @types/express
    ??? npm i --save-dev @types/pg
+
+#################################################################################
+Docker compose - in compose.yaml file   
+#### database management tool written in PHP
+adminer:
+  container_name: adminer
+  image: adminer
+  ports:
+    - 8080:8080 ??????????
+  networks:
+    - app-net
+  restart: always
+#################################################################################
   </pre>
   <hr>
 </body>

@@ -1,11 +1,12 @@
 import { Pool, PoolConfig } from "pg";
+import { config } from "./../../configuration/configuration.js";
 
 const POSTGRESQL_POOL_CONFIG: PoolConfig = {
-    user: "postgres",
-    password: "mikimiki",
-    database: "postgres",
-    host: "localhost",
-    port: 5432,
+    host: config.host,
+    port: config.pgPort,
+    database: config.database,
+    user: config.user,
+    password: config.password,
 };
 /**
  * PostgreSQL connection pool

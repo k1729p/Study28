@@ -1,10 +1,9 @@
 import express, { Request, Response, NextFunction, Router } from 'express';
+import { config } from "./configuration/configuration.js";
 import { pool } from "./repositories/postgresql/postgresql.pool.js";
 import { DepartmentController } from './controllers/department.controller.js';
 import { EmployeeController } from './controllers/employee.controller.js';
 import { InitializationController } from './controllers/initialization.controller.js';
-
-const PORT = process.argv[2] ? parseInt(process.argv[2], 10) : 8028;
 
 main();
 
@@ -16,8 +15,8 @@ function main() {
     app.use(express.json());
     app.use('/api/', createRouting());
     app.use(errorHandler);
-    const server = app.listen(PORT, () => {
-        console.log("main(): server is running on port[%s]", PORT);
+    const server = app.listen(config.port, () => {
+        console.log("main(): server is running on port[%s]", config.port);
         console.log("▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄");
     });
     const shutdown = async () => {
