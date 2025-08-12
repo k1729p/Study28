@@ -10,15 +10,14 @@ export class EmployeeService {
 
     /**
      * Creates a new employee in the specified department.
-     * @param departmentId the department id
      * @param employee the employee to create
      * @return void
      */
-    async createEmployee(departmentId: number, employee: Employee) {
-        await this.postgreSQLEmployeeRepository.createEmployee(departmentId, employee);
+    async createEmployee(employee: Employee) {
+        await this.postgreSQLEmployeeRepository.createEmployee(employee);
     }
     /**
-     * Gets the employees.
+     * Gets all employees.
      * @returns an array of Employee objects
      */
     async getEmployees(): Promise<Employee[]> {
@@ -34,30 +33,27 @@ export class EmployeeService {
         return await this.postgreSQLEmployeeRepository.getEmployeesByDepartmentId(departmentId);
     }
     /**
-     * Gets a specific employee by id from a department.
-     * @param departmentId the department id
+     * Gets a specific employee by its id.
      * @param id the employee id
      * @return the employee with the specified id, or undefined if not found
      */
-    async getEmployee(departmentId: number, id: number): Promise<Employee | undefined> {
-        return await this.postgreSQLEmployeeRepository.getEmployee(departmentId, id);
+    async getEmployee(id: number): Promise<Employee | undefined> {
+        return await this.postgreSQLEmployeeRepository.getEmployee(id);
     }
     /**
      * Updates an existing employee.
-     * @param departmentId the department id
      * @param employee the employee to update
      * @return void
      */
-    async updateEmployee(departmentId: number, employee: Employee) {
-        await this.postgreSQLEmployeeRepository.updateEmployee(departmentId, employee);
+    async updateEmployee(employee: Employee) {
+        await this.postgreSQLEmployeeRepository.updateEmployee(employee);
     }
     /**
-     * Deletes an employee  from the specified department by its id.
-     * @param departmentId the department id
+     * Deletes an employee by its id.
      * @param id the employee id
      * @return void
      */
-    async deleteEmployee(departmentId: number, id: number) {
-        await this.postgreSQLEmployeeRepository.deleteEmployee(departmentId, id);
+    async deleteEmployee(id: number) {
+        await this.postgreSQLEmployeeRepository.deleteEmployee(id);
     }
 }

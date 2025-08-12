@@ -1,3 +1,4 @@
+import { StatusCodes } from 'http-status-codes';
 import { EmployeeService } from "../services/employee.service.js";
 /**
  * This service class provides methods to manage employees.
@@ -11,17 +12,21 @@ export class EmployeeController {
      * @param next - The next middleware function.
      */
     createEmployee = async (req, res, next) => {
-        const departmentId = 1; //TODO
         const employee = req.body;
+        if (!employee || !employee.id) {
+            res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid employee id' });
+            console.error("EmployeeController.createEmployee(): invalid employee id");
+            return;
+        }
         try {
-            await this.employeeService.createEmployee(departmentId, employee);
+            await this.employeeService.createEmployee(employee);
         }
         catch (error) {
             next(error);
             console.error("EmployeeController.createEmployee():", error);
             return;
         }
-        res.status(201).json();
+        res.status(StatusCodes.CREATED).json();
         console.log("EmployeeController.createEmployee(): id[%s]", employee.id);
     };
     /**
@@ -33,7 +38,7 @@ export class EmployeeController {
     getEmployees = async (req, res, next) => {
         try {
             const employeeArray = await this.employeeService.getEmployees();
-            res.status(200).json(employeeArray);
+            res.status(StatusCodes.OK).json(employeeArray);
         }
         catch (error) {
             next(error);
@@ -49,17 +54,22 @@ export class EmployeeController {
      * @param next - The next middleware function.
      */
     getEmployeesByDepartmentId = async (req, res, next) => {
-        const departmentId = 1; //TODO
+        const departmentId = parseInt(req.params.id);
+        if (isNaN(departmentId)) {
+            res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid department id' });
+            console.error("EmployeeController.getEmployeesByDepartmentId(): invalid department id");
+            return;
+        }
         try {
             const employeeArray = await this.employeeService.getEmployeesByDepartmentId(departmentId);
-            res.status(200).json(employeeArray);
+            res.status(StatusCodes.OK).json(employeeArray);
         }
         catch (error) {
             next(error);
-            console.error("EmployeeController.getEmployees():", error);
+            console.error("EmployeeController.getEmployeesByDepartmentId():", error);
             return;
         }
-        console.log("EmployeeController.getEmployees():");
+        console.log("EmployeeController.getEmployeesByDepartmentId(): department id[%s]", departmentId);
     };
     /**
      * Get a employee by ID.
@@ -69,16 +79,20 @@ export class EmployeeController {
      * @returns void
      */
     getEmployeeById = async (req, res, next) => {
-        const departmentId = 1; //TODO
-        const id = parseInt(req.params.id, 10);
+        const id = parseInt(req.params.id);
+        if (isNaN(id)) {
+            res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid employee id' });
+            console.error("EmployeeController.getEmployeeById(): invalid employee id");
+            return;
+        }
         try {
-            const employee = await this.employeeService.getEmployee(departmentId, id);
+            const employee = await this.employeeService.getEmployee(id);
             if (!employee) {
-                res.status(404).json({ message: 'Employee not found' });
+                res.status(StatusCodes.NOT_FOUND).json({ message: 'Employee not found' });
                 console.log("EmployeeController.getEmployeeById(): employee not found, id[%s]", id);
                 return;
             }
-            res.status(200).json(employee);
+            res.status(StatusCodes.OK).json(employee);
         }
         catch (error) {
             next(error);
@@ -95,17 +109,21 @@ export class EmployeeController {
      * @returns void
      */
     updateEmployee = async (req, res, next) => {
-        const departmentId = 1; //TODO
         const employee = req.body;
+        if (!employee || !employee.id) {
+            res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid employee id' });
+            console.error("EmployeeController.updateEmployee(): invalid employee id");
+            return;
+        }
         try {
-            await this.employeeService.updateEmployee(departmentId, employee);
+            await this.employeeService.updateEmployee(employee);
         }
         catch (error) {
             next(error);
             console.error("EmployeeController.updateEmployee():", error);
             return;
         }
-        res.status(204).json();
+        res.status(StatusCodes.NO_CONTENT).json();
         console.log("EmployeeController.updateEmployee(): id[%s]", employee.id);
     };
     /**
@@ -116,16 +134,20 @@ export class EmployeeController {
      * @returns void
      */
     deleteEmployee = async (req, res, next) => {
-        const departmentId = 1; //TODO
+        const id = parseInt(req.params.id);
+        if (isNaN(id)) {
+            res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid employee id' });
+            console.error("EmployeeController.deleteEmployee(): invalid employee id");
+            return;
+        }
         try {
-            const id = parseInt(req.params.id, 10);
-            await this.employeeService.deleteEmployee(departmentId, id);
-            res.status(204).json();
-            console.log("EmployeeController.deleteEmployee(): id[%s]", id);
+            await this.employeeService.deleteEmployee(id);
         }
         catch (error) {
             next(error);
             console.error("EmployeeController.deleteEmployee():", error);
         }
+        res.status(StatusCodes.NO_CONTENT).json();
+        console.log("EmployeeController.deleteEmployee(): id[%s]", id);
     };
 }

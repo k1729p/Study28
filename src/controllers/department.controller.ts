@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { StatusCodes } from 'http-status-codes';
 import { Department } from "../models/department.js";
 import { DepartmentService } from "../services/department.service.js";
 
@@ -16,6 +17,11 @@ export class DepartmentController {
    */
   createDepartment = async (req: Request, res: Response, next: NextFunction) => {
     const department: Department = req.body;
+    if (!department || !department.id) {
+      res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid department id' });
+      console.error("DepartmentController.createDepartment(): invalid department id");
+      return;
+    }
     try {
       await this.departmentService.createDepartment(department);
     } catch (error) {
@@ -23,7 +29,7 @@ export class DepartmentController {
       console.error("DepartmentController.createDepartment():", error);
       return;
     }
-    res.status(201).json();
+    res.status(StatusCodes.CREATED).json();
     console.log("DepartmentController.createDepartment(): id[%s]", department.id);
   };
   /**
@@ -35,7 +41,7 @@ export class DepartmentController {
   getDepartments = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const departmentArray = await this.departmentService.getDepartments();
-      res.status(200).json(departmentArray);
+      res.status(StatusCodes.OK).json(departmentArray);
     } catch (error) {
       next(error);
       console.error("DepartmentController.getDepartments():", error);
@@ -52,15 +58,20 @@ export class DepartmentController {
    * @returns void
    */
   getDepartmentById = async (req: Request, res: Response, next: NextFunction) => {
-    const id = parseInt(req.params.id, 10);
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) {
+      res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid department id' });
+      console.error("DepartmentController.getDepartmentById(): invalid department id");
+      return;
+    }
     try {
       const department = await this.departmentService.getDepartment(id);
       if (!department) {
-        res.status(404).json({ message: 'Department not found' });
+        res.status(StatusCodes.NOT_FOUND).json({ message: 'Department not found' });
         console.log("DepartmentController.getDepartmentById(): department not found, id[%s]", id);
         return;
       }
-      res.status(200).json(department);
+      res.status(StatusCodes.OK).json(department);
     } catch (error) {
       next(error);
       console.error("DepartmentController.getDepartmentById():", error);
@@ -77,6 +88,11 @@ export class DepartmentController {
    */
   updateDepartment = async (req: Request, res: Response, next: NextFunction) => {
     const department: Department = req.body;
+    if (!department || !department.id) {
+      res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid department id' });
+      console.error("DepartmentController.updateDepartment(): invalid department id");
+      return;
+    }
     try {
       await this.departmentService.updateDepartment(department);
     } catch (error) {
@@ -84,7 +100,7 @@ export class DepartmentController {
       console.error("DepartmentController.updateDepartment():", error);
       return;
     }
-    res.status(204).json();
+    res.status(StatusCodes.NO_CONTENT).json();
     console.log("DepartmentController.updateDepartment(): id[%s]", department.id);
   };
 
@@ -96,14 +112,19 @@ export class DepartmentController {
    * @returns void
    */
   deleteDepartment = async (req: Request, res: Response, next: NextFunction) => {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) {
+      res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid department id' });
+      console.error("DepartmentController.deleteDepartment(): invalid department id");
+      return;
+    }
     try {
-      const id = parseInt(req.params.id, 10);
       await this.departmentService.deleteDepartment(id);
-      res.status(204).json();
-      console.log("DepartmentController.deleteDepartment(): id[%s]", id);
     } catch (error) {
       next(error);
       console.error("DepartmentController.deleteDepartment():", error);
     }
+    res.status(StatusCodes.NO_CONTENT).json();
+    console.log("DepartmentController.deleteDepartment(): id[%s]", id);
   };
 }

@@ -1,24 +1,25 @@
 import { pool } from "./postgresql.pool.js";
 const CREATE_EMPLOYEE_SQL = `
     INSERT INTO employees (
-		id, first_name, last_name, title, phone, mail,
+		id, department_id, first_name, last_name, title, phone, mail,
 		street_name, house_number, postal_code, locality, province, country
-    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
     RETURNING *
 `;
 const SELECT_EMPLOYEES_SQL = `
     SELECT
-		id, first_name, last_name, title, phone, mail,
+		id, department_id, first_name, last_name, title, phone, mail,
 		street_name, house_number, postal_code, locality, province, country
     FROM employees
 `;
-const SELECT_EMPLOYEE_SQL = SELECT_EMPLOYEES_SQL + 'WHERE id = $1';
+const SELECT_EMPLOYEES_BY_DEPARTMENT_ID_SQL = SELECT_EMPLOYEES_SQL + ' WHERE department_id = $1';
+const SELECT_EMPLOYEE_SQL = SELECT_EMPLOYEES_SQL + ' WHERE id = $1';
 const UPDATE_EMPLOYEE_SQL = `
     UPDATE employees
     SET
-		first_name = $1, last_name = $2, title = $3, phone = $4, mail = $5, street_name = $6,
-		house_number = $7, postal_code = $8, locality = $9, province = $10, country = $11
-    WHERE id = $12
+		department_id = $1, first_name = $2, last_name = $3, title = $4, phone = $5, mail = $6, street_name = $7,
+		house_number = $8, postal_code = $9, locality = $10, province = $11, country = $12
+    WHERE id = $13
     RETURNING *
 `;
 const DELETE_EMPLOYEE_SQL = `
@@ -32,15 +33,15 @@ const DELETE_EMPLOYEE_SQL = `
 export class PostgreSQLEmployeeRepository {
     /**
      * Creates a new employee.
-     * @param departmentId the department ID to which the employee belongs
      * @param employee the employee to be created
      * @return void
      */
-    async createEmployee(departmentId, employee) {
+    async createEmployee(employee) {
         const client = await pool.connect();
         try {
             const result = await client.query(CREATE_EMPLOYEE_SQL, [
                 employee.id,
+                employee.departmentId,
                 employee.firstName,
                 employee.lastName,
                 employee.title,
@@ -54,7 +55,7 @@ export class PostgreSQLEmployeeRepository {
                 employee.country
             ]);
             if (!result.rowCount) {
-                console.log("PostgreSQLEmployeeRepository.createEmployee(): no employee created, department id[%d]", departmentId);
+                console.log("PostgreSQLEmployeeRepository.createEmployee(): no employee created, employee id[%d]", employee.id);
                 return;
             }
         }
@@ -65,7 +66,7 @@ export class PostgreSQLEmployeeRepository {
         finally {
             client.release();
         }
-        console.log("PostgreSQLEmployeeRepository.createEmployee(): department id[%d], employee id[%d]", departmentId, employee.id);
+        console.log("PostgreSQLEmployeeRepository.createEmployee(): employee id[%d]", employee.id);
     }
     /**
      * Gets the employees.
@@ -94,9 +95,8 @@ export class PostgreSQLEmployeeRepository {
     async getEmployeesByDepartmentId(departmentId) {
         const client = await pool.connect();
         try {
-            // TODO const result = await client.query(SELECT_EMPLOYEES_SQL + ' WHERE department_id = $1', [departmentId]);
-            const result = await client.query(SELECT_EMPLOYEES_SQL);
-            console.log("PostgreSQLEmployeeRepository.getEmployeesByDepartmentId():");
+            const result = await client.query(SELECT_EMPLOYEES_BY_DEPARTMENT_ID_SQL, [departmentId]);
+            console.log("PostgreSQLEmployeeRepository.getEmployeesByDepartmentId(): departmentId[%d]", departmentId);
             return result.rows;
         }
         catch (err) {
@@ -109,19 +109,18 @@ export class PostgreSQLEmployeeRepository {
     }
     /**
      * Gets the employee by id.
-     * @param departmentId the department ID to which the employee belongs
      * @param id the id of the employee to retrieve
      * @returns the Employee object if found, otherwise undefined
      */
-    async getEmployee(departmentId, id) {
+    async getEmployee(id) {
         const client = await pool.connect();
         try {
             const result = await client.query(SELECT_EMPLOYEE_SQL, [id]);
             if (!result.rowCount) {
-                console.log("PostgreSQLEmployeeRepository.getEmployee(): no employee found, department id[%d], employee id[%d]", departmentId, id);
+                console.log("PostgreSQLEmployeeRepository.getEmployee(): no employee found, employee id[%d]", id);
                 return undefined;
             }
-            console.log("PostgreSQLEmployeeRepository.getEmployee(): department id[%d], employee id[%d]", departmentId, id);
+            console.log("PostgreSQLEmployeeRepository.getEmployee(): employee id[%d]", id);
             return result.rows[0];
         }
         catch (err) {
@@ -134,14 +133,14 @@ export class PostgreSQLEmployeeRepository {
     }
     /**
      * Updates an existing employee.
-     * @param departmentId the department ID to which the employee belongs
      * @param employee the employee to be updated
      * @returns void
      */
-    async updateEmployee(departmentId, employee) {
+    async updateEmployee(employee) {
         const client = await pool.connect();
         try {
             const result = await client.query(UPDATE_EMPLOYEE_SQL, [
+                employee.departmentId,
                 employee.firstName,
                 employee.lastName,
                 employee.title,
@@ -156,7 +155,7 @@ export class PostgreSQLEmployeeRepository {
                 employee.id
             ]);
             if (!result.rowCount) {
-                console.log("PostgreSQLEmployeeRepository.updateEmployee(): no employee updated, department id[%d], employee id[%d]", departmentId, employee.id);
+                console.log("PostgreSQLEmployeeRepository.updateEmployee(): no employee updated, employee id[%d]", employee.id);
                 return;
             }
         }
@@ -167,16 +166,15 @@ export class PostgreSQLEmployeeRepository {
         finally {
             client.release();
         }
-        console.log("PostgreSQLEmployeeRepository.updateEmployee(): department id[%d], employee id[%d]", departmentId, employee.id);
+        console.log("PostgreSQLEmployeeRepository.updateEmployee(): employee id[%d]", employee.id);
     }
     /**
      * Deletes a employee by its id.
      *
-     * @param departmentId the department ID to which the employee belongs
      * @param id the id of the employee to be deleted
      * @returns void
      */
-    async deleteEmployee(departmentId, id) {
+    async deleteEmployee(id) {
         const client = await pool.connect();
         try {
             await client.query(DELETE_EMPLOYEE_SQL, [id]);
@@ -188,6 +186,6 @@ export class PostgreSQLEmployeeRepository {
         finally {
             client.release();
         }
-        console.log("PostgreSQLEmployeeRepository.deleteEmployee(): department id[%d], employee id[%d]", departmentId, id);
+        console.log("PostgreSQLEmployeeRepository.deleteEmployee(): employee id[%d]", id);
     }
 }

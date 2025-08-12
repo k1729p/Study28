@@ -18,8 +18,6 @@
   <pre>
 Work-In-Progress temporary notes, fixes, and todos:
 
-
-
 Express: https://expressjs.com/
 
 		server
@@ -27,12 +25,6 @@ Express: https://expressjs.com/
             └── services/departmentService
                 └── pool.(connect/query/end) <----- import { Pool } from 'pg';
                     └── DATABASES (PostgreSQL, MongoDB, ....)
-
-
-Installing 'node-postgres' - PostgreSQL client for Node.js:
-   ??? npm install --save-dev pg
-   ??? npm i --save-dev @types/express
-   ??? npm i --save-dev @types/pg
 
 #################################################################################
 JSON:API specification. Updating Resources: https://jsonapi.org/format/#crud-updating
@@ -117,6 +109,11 @@ CockroachDB versus Apache Cassandra:
 Neo4j is the world's leading graph database, with native graph storage and processing. 
 https://hub.docker.com/_/neo4j
 #################################################################################
+
+Installing 'node-postgres' - PostgreSQL client for Node.js:
+   ??? npm install --save-dev pg
+   ??? npm i --save-dev @types/express
+   ??? npm i --save-dev @types/pg
   </pre>
   <hr>
 </body>

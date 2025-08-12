@@ -7,5 +7,7 @@ const POSTGRESQL_POOL_CONFIG: PoolConfig = {
     host: "localhost",
     port: 5432,
 };
-
+/**
+ * PostgreSQL connection pool
+ */
 export const pool = new Pool(POSTGRESQL_POOL_CONFIG);

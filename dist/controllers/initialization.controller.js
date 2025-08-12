@@ -1,3 +1,4 @@
+import { StatusCodes } from 'http-status-codes';
 import { InitializationService } from "../services/initialization.service.js";
 /**
  * This service class provides methods to initialize database and load data.
@@ -15,7 +16,7 @@ export class InitializationController {
             const { departments } = req.body;
             const departmentArray = departments;
             await this.initializationService.loadInitialData(departmentArray);
-            res.status(204).json();
+            res.status(StatusCodes.NO_CONTENT).json();
             console.log("InitializationController.loadInitialData():");
         }
         catch (error) {

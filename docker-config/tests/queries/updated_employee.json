@@ -1,5 +1,6 @@
 {
     "id": 67890,
+    "departmentId": 12345,
     "firstName": "EF-Name-UPDATE",
     "lastName": "EL-Name-UPDATE",
     "title": "Manager",

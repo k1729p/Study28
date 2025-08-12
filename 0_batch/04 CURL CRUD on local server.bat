@@ -9,49 +9,52 @@
 
 :create
 %HR_YELLOW%
-@powershell -Command Write-Host "CREATE" -foreground "Green"
+@powershell -Command Write-Host "CREATE department" -foreground "Green"
 %CURL% -d @%QUERY_DIR%/created_department.json -X POST "%SITE%/departments"
 @echo.
+@powershell -Command Write-Host "CREATE employee" -foreground "Green"
 %CURL% -d @%QUERY_DIR%/created_employee.json -X POST "%SITE%/employees"
 @echo.
 
 :read-created
 %HR_YELLOW%
-@powershell -Command Write-Host "READ by id - after CREATE" -foreground "Green"
+@powershell -Command Write-Host "READ department by id - after CREATE" -foreground "Green"
 %CURL% "%SITE%/departments/%DEP_ID%"
 @echo.
+@powershell -Command Write-Host "READ employee by id - after CREATE" -foreground "Green"
 %CURL% "%SITE%/employees/%EMP_ID%"
 @echo.&pause
 
 :update
 %HR_YELLOW%
-@powershell -Command Write-Host "UPDATE by id" -foreground "Green"
+@powershell -Command Write-Host "UPDATE department by id" -foreground "Green"
 %CURL% -d @%QUERY_DIR%/updated_department.json -X PATCH "%SITE%/departments/%DEP_ID%"
 @echo.
-%CURL% d @%QUERY_DIR%/updated_employee.json -X PATCH "%SITE%/employees/%EMP_ID%"
+@powershell -Command Write-Host "UPDATE employee by id" -foreground "Green"
+%CURL% -d @%QUERY_DIR%/updated_employee.json -X PATCH "%SITE%/employees/%EMP_ID%"
 @echo.
 
 :read-updated
 %HR_YELLOW%
-@powershell -Command Write-Host "READ by id - after UPDATE" -foreground "Green"
+@powershell -Command Write-Host "READ department by id - after UPDATE" -foreground "Green"
 %CURL% "%SITE%/departments/%DEP_ID%"
-@echo.
-%CURL% "%SITE%/employees/%EMP_ID%"
 @echo.&pause
 
 :delete
 %HR_YELLOW%
-@powershell -Command Write-Host "DELETE by id" -foreground "Green"
-%CURL% -X DELETE "%SITE%/departments/%DEP_ID%"
-@echo.
+@powershell -Command Write-Host "DELETE employee by id" -foreground "Green"
 %CURL% -X DELETE "%SITE%/employees/%EMP_ID%"
+@echo.
+@powershell -Command Write-Host "DELETE department by id" -foreground "Green"
+%CURL% -X DELETE "%SITE%/departments/%DEP_ID%"
 @echo.
 
 :read-deleted
 %HR_YELLOW%
-@powershell -Command Write-Host "READ by id - after DELETE" -foreground "Green"
+@powershell -Command Write-Host "READ department by id - not found after DELETE" -foreground "Green"
 %CURL% "%SITE%/departments/%DEP_ID%"
 @echo.
+@powershell -Command Write-Host "READ employee by id - not found after DELETE" -foreground "Green"
 %CURL% "%SITE%/employees/%EMP_ID%"
 @echo.
 

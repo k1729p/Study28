@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { StatusCodes } from 'http-status-codes';
 import { Department } from "../models/department.js";
 import { InitializationService } from "../services/initialization.service.js";
 
@@ -18,7 +19,7 @@ export class InitializationController {
       const { departments } = req.body;
       const departmentArray: Department[] = departments;
       await this.initializationService.loadInitialData(departmentArray);
-      res.status(204).json();
+      res.status(StatusCodes.NO_CONTENT).json();
       console.log("InitializationController.loadInitialData():");
     } catch (error) {
       next(error);
