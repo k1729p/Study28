@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { Department } from "../models/department.js";
 import { DepartmentService } from "../services/department.service.js";
+import { RepositoryType } from '../repositories/repository-type.js';
 
 /**
  * This service class provides methods to manage departments.
@@ -16,6 +17,7 @@ export class DepartmentController {
    * @param next - The next middleware function.
    */
   createDepartment = async (req: Request, res: Response, next: NextFunction) => {
+    const repositoryType = req.query.repositoryType as RepositoryType || RepositoryType.PostgreSQL;
     const department: Department = req.body;
     if (!department || !department.id) {
       res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid department id' });
@@ -23,14 +25,14 @@ export class DepartmentController {
       return;
     }
     try {
-      await this.departmentService.createDepartment(department);
+      await this.departmentService.createDepartment(repositoryType, department);
     } catch (error) {
       next(error);
       console.error("DepartmentController.createDepartment():", error);
       return;
     }
     res.status(StatusCodes.CREATED).json();
-    console.log("DepartmentController.createDepartment(): id[%s]", department.id);
+    console.log("DepartmentController.createDepartment(): repositoryType[%s], id[%s]", repositoryType, department.id);
   };
   /**
    * Get all departments.
@@ -39,15 +41,16 @@ export class DepartmentController {
    * @param next - The next middleware function.
    */
   getDepartments = async (req: Request, res: Response, next: NextFunction) => {
+    const repositoryType = req.query.repositoryType as RepositoryType || RepositoryType.PostgreSQL;
     try {
-      const departmentArray = await this.departmentService.getDepartments();
+      const departmentArray = await this.departmentService.getDepartments(repositoryType);
       res.status(StatusCodes.OK).json(departmentArray);
     } catch (error) {
       next(error);
       console.error("DepartmentController.getDepartments():", error);
       return;
     }
-    console.log("DepartmentController.getDepartments():");
+    console.log("DepartmentController.getDepartments(): repositoryType[%s]", repositoryType);
   };
 
   /**
@@ -58,6 +61,7 @@ export class DepartmentController {
    * @returns void
    */
   getDepartmentById = async (req: Request, res: Response, next: NextFunction) => {
+    const repositoryType = req.query.repositoryType as RepositoryType || RepositoryType.PostgreSQL;
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
       res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid department id' });
@@ -65,7 +69,7 @@ export class DepartmentController {
       return;
     }
     try {
-      const department = await this.departmentService.getDepartment(id);
+      const department = await this.departmentService.getDepartment(repositoryType, id);
       if (!department) {
         res.status(StatusCodes.NOT_FOUND).json({ message: 'Department not found' });
         console.log("DepartmentController.getDepartmentById(): department not found, id[%s]", id);
@@ -77,7 +81,7 @@ export class DepartmentController {
       console.error("DepartmentController.getDepartmentById():", error);
       return;
     }
-    console.log("DepartmentController.getDepartmentById(): id[%s]", id);
+    console.log("DepartmentController.getDepartmentById(): repositoryType[%s], id[%s]", repositoryType, id);
   };
   /**
    * Update a department.
@@ -87,6 +91,7 @@ export class DepartmentController {
    * @returns void
    */
   updateDepartment = async (req: Request, res: Response, next: NextFunction) => {
+    const repositoryType = req.query.repositoryType as RepositoryType || RepositoryType.PostgreSQL;
     const department: Department = req.body;
     if (!department || !department.id) {
       res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid department id' });
@@ -94,14 +99,14 @@ export class DepartmentController {
       return;
     }
     try {
-      await this.departmentService.updateDepartment(department);
+      await this.departmentService.updateDepartment(repositoryType, department);
     } catch (error) {
       next(error);
       console.error("DepartmentController.updateDepartment():", error);
       return;
     }
     res.status(StatusCodes.NO_CONTENT).json();
-    console.log("DepartmentController.updateDepartment(): id[%s]", department.id);
+    console.log("DepartmentController.updateDepartment(): repositoryType[%s], id[%s]", repositoryType, department.id);
   };
 
   /**
@@ -112,6 +117,7 @@ export class DepartmentController {
    * @returns void
    */
   deleteDepartment = async (req: Request, res: Response, next: NextFunction) => {
+    const repositoryType = req.query.repositoryType as RepositoryType || RepositoryType.PostgreSQL;
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
       res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid department id' });
@@ -119,12 +125,12 @@ export class DepartmentController {
       return;
     }
     try {
-      await this.departmentService.deleteDepartment(id);
+      await this.departmentService.deleteDepartment(repositoryType, id);
     } catch (error) {
       next(error);
       console.error("DepartmentController.deleteDepartment():", error);
     }
     res.status(StatusCodes.NO_CONTENT).json();
-    console.log("DepartmentController.deleteDepartment(): id[%s]", id);
+    console.log("DepartmentController.deleteDepartment(): repositoryType[%s], id[%s]", repositoryType, id);
   };
 }

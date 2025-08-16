@@ -1,4 +1,5 @@
 import { Department } from "../models/department.js";
+import { RepositoryType } from "../repositories/repository-type.js";
 import { PostgreSQLDepartmentRepository } from "../repositories/postgresql/postgresql.department.repository.js";
 
 /**
@@ -10,44 +11,87 @@ export class DepartmentService {
 
     /**
      * Creates a new department.
+     * @param repositoryType the type of repository to use
      * @param department the department to be created
      * @return void
      */
-    async createDepartment(department: Department) {
-        await this.postgreSQLDepartmentRepository.createDepartment(department);
-    }
+    async createDepartment(repositoryType: RepositoryType, department: Department) {
+        switch (repositoryType) {
+            case RepositoryType.MongoDB:
+                // await this.mongoDBRepository.createDepartment(department);
+                break;
+            case RepositoryType.PostgreSQL:
+            default:
+                await this.postgreSQLDepartmentRepository.createDepartment(department);
+                break;
+        }
+    }    
     /**
      * Gets the departments.
+     * @param repositoryType the type of repository to use
      * @returns an array of Department objects
      */
-    async getDepartments(): Promise<Department[]> {
-        return await this.postgreSQLDepartmentRepository.getDepartments();
+    async getDepartments(repositoryType: RepositoryType): Promise<Department[]> {
+        switch (repositoryType) {
+            case RepositoryType.MongoDB:
+                // return await this.mongoDBRepository.getDepartments();
+                return [];
+            case RepositoryType.PostgreSQL:
+            default:
+                return await this.postgreSQLDepartmentRepository.getDepartments();
+        }
     }
 
     /**
      * Gets the department by id.
+     * @param repositoryType the type of repository to use
      * @param id the id of the department to retrieve
      * @returns the Department object if found, otherwise undefined
      */
-    async getDepartment(id: number): Promise<Department | undefined> {
-        return await this.postgreSQLDepartmentRepository.getDepartment(id);
+    async getDepartment(repositoryType: RepositoryType, id: number): Promise<Department | undefined> {
+        switch (repositoryType) {
+            case RepositoryType.MongoDB:
+                // return await this.mongoDBRepository.getDepartment(id);
+                return undefined;
+            case RepositoryType.PostgreSQL:
+            default:
+                return await this.postgreSQLDepartmentRepository.getDepartment(id);
+        }
     }
     /**
      * Updates an existing department.
+     * @param repositoryType the type of repository to use
      * @param department the department to be updated
      * @returns void
      */
-    async updateDepartment(department: Department) {
-        await this.postgreSQLDepartmentRepository.updateDepartment(department);
+    async updateDepartment(repositoryType: RepositoryType, department: Department) {
+        switch (repositoryType) {
+            case RepositoryType.MongoDB:
+                // await this.mongoDBRepository.updateDepartment(department);
+                break;
+            case RepositoryType.PostgreSQL:
+            default:
+                await this.postgreSQLDepartmentRepository.updateDepartment(department);
+                break;
+        }
     }
 
     /**
      * Deletes a department by its id.
      *
+     * @param repositoryType the type of repository to use
      * @param id the id of the department to be deleted
      * @returns void
      */
-    async deleteDepartment(id: number) {
-        await this.postgreSQLDepartmentRepository.deleteDepartment(id);
+    async deleteDepartment(repositoryType: RepositoryType, id: number) {
+        switch (repositoryType) {
+            case RepositoryType.MongoDB:
+                // await this.mongoDBRepository.deleteDepartment(id);
+                break;
+            case RepositoryType.PostgreSQL:
+            default:
+                await this.postgreSQLDepartmentRepository.deleteDepartment(id);
+                break;
+        }
     }
 }

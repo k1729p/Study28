@@ -1,5 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 import { EmployeeService } from "../services/employee.service.js";
+import { RepositoryType } from '../repositories/repository-type.js';
 /**
  * This service class provides methods to manage employees.
  */
@@ -12,6 +13,7 @@ export class EmployeeController {
      * @param next - The next middleware function.
      */
     createEmployee = async (req, res, next) => {
+        const repositoryType = req.query.repositoryType || RepositoryType.PostgreSQL;
         const employee = req.body;
         if (!employee || !employee.id) {
             res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid employee id' });
@@ -19,7 +21,7 @@ export class EmployeeController {
             return;
         }
         try {
-            await this.employeeService.createEmployee(employee);
+            await this.employeeService.createEmployee(repositoryType, employee);
         }
         catch (error) {
             next(error);
@@ -27,7 +29,7 @@ export class EmployeeController {
             return;
         }
         res.status(StatusCodes.CREATED).json();
-        console.log("EmployeeController.createEmployee(): id[%s]", employee.id);
+        console.log("EmployeeController.createEmployee(): repositoryType[%s], id[%s]", repositoryType, employee.id);
     };
     /**
      * Get all employees.
@@ -36,8 +38,9 @@ export class EmployeeController {
      * @param next - The next middleware function.
      */
     getEmployees = async (req, res, next) => {
+        const repositoryType = req.query.repositoryType || RepositoryType.PostgreSQL;
         try {
-            const employeeArray = await this.employeeService.getEmployees();
+            const employeeArray = await this.employeeService.getEmployees(repositoryType);
             res.status(StatusCodes.OK).json(employeeArray);
         }
         catch (error) {
@@ -45,31 +48,7 @@ export class EmployeeController {
             console.error("EmployeeController.getEmployees():", error);
             return;
         }
-        console.log("EmployeeController.getEmployees():");
-    };
-    /**
-     * Get employees by department ID.
-     * @param req - The request object.
-     * @param res - The response object.
-     * @param next - The next middleware function.
-     */
-    getEmployeesByDepartmentId = async (req, res, next) => {
-        const departmentId = parseInt(req.params.id);
-        if (isNaN(departmentId)) {
-            res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid department id' });
-            console.error("EmployeeController.getEmployeesByDepartmentId(): invalid department id");
-            return;
-        }
-        try {
-            const employeeArray = await this.employeeService.getEmployeesByDepartmentId(departmentId);
-            res.status(StatusCodes.OK).json(employeeArray);
-        }
-        catch (error) {
-            next(error);
-            console.error("EmployeeController.getEmployeesByDepartmentId():", error);
-            return;
-        }
-        console.log("EmployeeController.getEmployeesByDepartmentId(): department id[%s]", departmentId);
+        console.log("EmployeeController.getEmployees(): repositoryType[%s]", repositoryType);
     };
     /**
      * Get a employee by ID.
@@ -79,6 +58,7 @@ export class EmployeeController {
      * @returns void
      */
     getEmployeeById = async (req, res, next) => {
+        const repositoryType = req.query.repositoryType || RepositoryType.PostgreSQL;
         const id = parseInt(req.params.id);
         if (isNaN(id)) {
             res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid employee id' });
@@ -86,7 +66,7 @@ export class EmployeeController {
             return;
         }
         try {
-            const employee = await this.employeeService.getEmployee(id);
+            const employee = await this.employeeService.getEmployee(repositoryType, id);
             if (!employee) {
                 res.status(StatusCodes.NOT_FOUND).json({ message: 'Employee not found' });
                 console.log("EmployeeController.getEmployeeById(): employee not found, id[%s]", id);
@@ -99,7 +79,7 @@ export class EmployeeController {
             console.error("EmployeeController.getEmployeeById():", error);
             return;
         }
-        console.log("EmployeeController.getEmployeeById(): id[%s]", id);
+        console.log("EmployeeController.getEmployeeById(): repositoryType[%s], id[%s]", repositoryType, id);
     };
     /**
      * Update a employee.
@@ -109,6 +89,7 @@ export class EmployeeController {
      * @returns void
      */
     updateEmployee = async (req, res, next) => {
+        const repositoryType = req.query.repositoryType || RepositoryType.PostgreSQL;
         const employee = req.body;
         if (!employee || !employee.id) {
             res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid employee id' });
@@ -116,7 +97,7 @@ export class EmployeeController {
             return;
         }
         try {
-            await this.employeeService.updateEmployee(employee);
+            await this.employeeService.updateEmployee(repositoryType, employee);
         }
         catch (error) {
             next(error);
@@ -124,7 +105,7 @@ export class EmployeeController {
             return;
         }
         res.status(StatusCodes.NO_CONTENT).json();
-        console.log("EmployeeController.updateEmployee(): id[%s]", employee.id);
+        console.log("EmployeeController.updateEmployee(): repositoryType[%s], id[%s]", repositoryType, employee.id);
     };
     /**
      * Delete a employee.
@@ -134,6 +115,7 @@ export class EmployeeController {
      * @returns void
      */
     deleteEmployee = async (req, res, next) => {
+        const repositoryType = req.query.repositoryType || RepositoryType.PostgreSQL;
         const id = parseInt(req.params.id);
         if (isNaN(id)) {
             res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid employee id' });
@@ -141,13 +123,13 @@ export class EmployeeController {
             return;
         }
         try {
-            await this.employeeService.deleteEmployee(id);
+            await this.employeeService.deleteEmployee(repositoryType, id);
         }
         catch (error) {
             next(error);
             console.error("EmployeeController.deleteEmployee():", error);
         }
         res.status(StatusCodes.NO_CONTENT).json();
-        console.log("EmployeeController.deleteEmployee(): id[%s]", id);
+        console.log("EmployeeController.deleteEmployee(): repositoryType[%s], id[%s]", repositoryType, id);
     };
 }

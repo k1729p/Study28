@@ -14,7 +14,6 @@ const SELECT_EMPLOYEES_SQL = `
 		street_name, house_number, postal_code, locality, province, country
     FROM employees
 `;
-const SELECT_EMPLOYEES_BY_DEPARTMENT_ID_SQL = SELECT_EMPLOYEES_SQL + ' WHERE department_id = $1';
 const SELECT_EMPLOYEE_SQL = SELECT_EMPLOYEES_SQL + ' WHERE id = $1';
 const UPDATE_EMPLOYEE_SQL = `
     UPDATE employees
@@ -82,25 +81,6 @@ export class PostgreSQLEmployeeRepository {
             return result.rows as Employee[];
         } catch (err) {
             console.error("PostgreSQLEmployeeRepository.getEmployees():", err);
-            throw err;
-        } finally {
-            client.release();
-        }
-    }
-
-    /**
-     * Gets the employees.
-     * @param departmentId the department ID to which the employees belongs
-     * @returns an array of Employee objects
-     */
-    async getEmployeesByDepartmentId(departmentId: number): Promise<Employee[]> {
-        const client = await pool.connect();
-        try {
-            const result = await client.query(SELECT_EMPLOYEES_BY_DEPARTMENT_ID_SQL, [departmentId]);
-            console.log("PostgreSQLEmployeeRepository.getEmployeesByDepartmentId(): departmentId[%d]", departmentId);
-            return result.rows as Employee[];
-        } catch (err) {
-            console.error("PostgreSQLEmployeeRepository.getEmployeesByDepartmentId():", err);
             throw err;
         } finally {
             client.release();

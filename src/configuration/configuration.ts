@@ -17,9 +17,9 @@ interface Config {
  */
 export const config: Config = {
     port: Number(process.env.PORT),
-    host: process.env.PGHOST || '',
+    host: String(process.env.PGHOST),
     pgPort: Number(process.env.PGPORT),
-    database: process.env.PGDATABASE || '',
-    user: process.env.PGUSER || '',
-    password: process.env.PGPASSWORD || '',
+    database: String(process.env.PGDATABASE),
+    user: String(process.env.PGUSER),
+    password: String(process.env.PGPASSWORD),
 };
