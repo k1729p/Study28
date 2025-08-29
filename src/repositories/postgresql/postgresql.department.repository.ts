@@ -2,6 +2,7 @@ import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { pool } from "./postgresql.pool.js";
 
+
 const CREATE_DEPARTMENT_SQL = `
     INSERT INTO departments (id, name, start_date, end_date, notes, keywords, image)
     VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -39,10 +40,21 @@ const UPDATE_DEPARTMENT_SQL = `
     WHERE id = $7
     RETURNING *
 `;
+const UPDATE_EMPLOYEE_DEPARTMENT_SQL = `
+    UPDATE employees
+    SET department_id = $1
+    WHERE id = $2
+    RETURNING *
+`;
+const DELETE_EMPLOYEES_IN_DEPARTMENT_SQL = `
+    DELETE FROM employees
+    WHERE department_id = $1
+`;
 const DELETE_DEPARTMENT_SQL = `
     DELETE FROM departments
     WHERE id = $1
 `;
+
 /**
  * This service class provides methods to manage departments.
  * It includes methods to get, set, create, update, and delete departments.
@@ -197,7 +209,7 @@ export class PostgreSQLDepartmentRepository {
     async updateDepartment(department: Department) {
         const client = await pool.connect();
         try {
-            const result = await client.query(UPDATE_DEPARTMENT_SQL, [
+            let result = await client.query(UPDATE_DEPARTMENT_SQL, [
                 department.name,
                 department.startDate,
                 department.endDate,
@@ -217,10 +229,35 @@ export class PostgreSQLDepartmentRepository {
         } finally {
             client.release();
         }
-        console.log("PostgreSQLDepartmentRepository.updateDepartment(): department id[%s]",
+        department.employees.forEach(employee => this.updateEmployeeDepartment(employee));
+        console.log("PostgreSQLDepartmentRepository.updateDepartment(): department id[%d]",
             department.id);
     }
 
+    /**
+     * Updates the department in the employee.
+     * @param employee the employee
+     * @returns void
+     */
+    async updateEmployeeDepartment(employee: Employee) {
+        const client = await pool.connect();
+        try {
+            const result = await client.query(UPDATE_EMPLOYEE_DEPARTMENT_SQL, [
+                employee.departmentId,
+                employee.id
+            ]);
+            if (!result.rowCount) {
+                console.log("PostgreSQLDepartmentRepository.updateEmployeeDepartment(): no employee updated, employee id[%d]",
+                    employee.id);
+                return;
+            }
+        } catch (err) {
+            console.error("PostgreSQLDepartmentRepository.updateEmployeeDepartment():", err);
+            throw err;
+        } finally {
+            client.release();
+        }
+    }
     /**
      * Deletes a department by its id.
      *
@@ -230,6 +267,7 @@ export class PostgreSQLDepartmentRepository {
     async deleteDepartment(id: number) {
         const client = await pool.connect();
         try {
+            await client.query(DELETE_EMPLOYEES_IN_DEPARTMENT_SQL, [id]);
             await client.query(DELETE_DEPARTMENT_SQL, [id]);
         } catch (err) {
             console.error("PostgreSQLDepartmentRepository.deleteDepartment():", err);
@@ -239,5 +277,30 @@ export class PostgreSQLDepartmentRepository {
         }
         console.log("PostgreSQLDepartmentRepository.deleteDepartment(): department id[%d]", id);
     }
-
+    /**
+     * Transfers the employees from source department to target department.
+     * 
+     * @param sourceDepartmentId the id of the source department
+     * @param targetDepartmentId the id of the target department
+     * @param employeeIds the transferred employees array
+     * @returns void
+     */
+    async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]) {
+        const client = await pool.connect();
+        try {
+            await client.query(
+                'CALL transfer_employees($1, $2, $3);',
+                [sourceDepartmentId, targetDepartmentId, employeeIds]
+            );
+            console.log(
+                "PostgreSQLDepartmentRepository.transferEmployees(): transferred [%d] employees from [%d] to [%d]",
+                employeeIds.length, sourceDepartmentId, targetDepartmentId
+            );
+        } catch (err) {
+            console.error("PostgreSQLDepartmentRepository.transferEmployees():", err);
+            throw err;
+        } finally {
+            client.release();
+        }
+    }
 }

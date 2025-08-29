@@ -94,4 +94,26 @@ export class DepartmentService {
                 break;
         }
     }
+    /**
+     * Transfers the employees from source department to target department.
+     *
+     * @param sourceDepartmentId the id of the source department
+     * @param targetDepartmentId the id of the target department
+     * @param employeeIds the transferred employees array
+     * @returns void
+     */
+    async transferEmployees(repositoryType: RepositoryType,
+        sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]) {
+        switch (repositoryType) {
+            case RepositoryType.MongoDB:
+                // Implement MongoDB logic if necessary
+                break;
+            case RepositoryType.PostgreSQL:
+            default:
+                await this.postgreSQLDepartmentRepository.transferEmployees(
+                    sourceDepartmentId, targetDepartmentId, employeeIds
+                );
+                break;
+        }
+    }    
 }

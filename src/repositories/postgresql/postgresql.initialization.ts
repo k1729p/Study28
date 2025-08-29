@@ -5,6 +5,7 @@ import { pool } from "./postgresql.pool.js";
 
 const DROP_TABLE_EMPLOYEES_SQL = 'DROP TABLE IF EXISTS employees;';
 const DROP_TABLE_DEPARTMENTS_SQL = 'DROP TABLE IF EXISTS departments;';
+const DROP_PROCEDURE_TRANSFER_EMPLOYEES_SQL = 'DROP PROCEDURE IF EXISTS transfer_employees;';
 
 const CREATE_TABLE_DEPARTMENTS_SQL = `
     CREATE TABLE departments (
@@ -17,7 +18,6 @@ const CREATE_TABLE_DEPARTMENTS_SQL = `
         image varchar(255)
     )
 `;
-
 const CREATE_TABLE_EMPLOYEES_SQL = `
     CREATE TABLE employees (
         id integer PRIMARY KEY,
@@ -35,13 +35,26 @@ const CREATE_TABLE_EMPLOYEES_SQL = `
         country varchar(40)
     )
 `;
-
+const CREATE_PROCEDURE_TRANSFER_EMPLOYEES_SQL = `
+    CREATE OR REPLACE PROCEDURE transfer_employees (
+        source_department_id integer,
+        target_department_id integer,
+        employee_ids integer[]
+    )
+    LANGUAGE plpgsql
+    AS $$
+    BEGIN
+        UPDATE employees
+        SET department_id = target_department_id
+        WHERE department_id = source_department_id AND id = ANY(employee_ids);
+    END;
+    $$;
+`
 const BULK_INSERT_DEPARTMENTS_SQL_PREFIX = `
     INSERT INTO departments
         (id, name, start_date, end_date, notes, keywords, image)
     VALUES
 `;
-
 const BULK_INSERT_EMPLOYEES_SQL_PREFIX = `
     INSERT INTO employees
         (id, department_id, first_name, last_name, title, phone, mail,
@@ -55,53 +68,52 @@ const BULK_INSERT_EMPLOYEES_SQL_PREFIX = `
 export class PostgreSQLInitialization {
     /**
      * Loads the initial data into the database.
-     * @param departmentArray the array of departments
+     * @param departments the array of departments
      */
-    async loadInitialData(departmentArray: Department[]) {
+    async loadInitialData(departments: Department[]) {
         const client = await pool.connect();
         try {
-            await this.dropTables(client);
-            await this.createTables(client);
-            await this.insertDepartments(client, departmentArray);
-            const allEmployees = departmentArray.flatMap(dep =>
+            await this.dropTablesAndProcedures(client);
+            await this.createTablesAndProcedures(client);
+            await this.insertDepartments(client, departments);
+            const allEmployees = departments.flatMap(dep =>
                 dep.employees.map(emp => ({ ...emp, departmentId: dep.id }))
             );
             await this.insertEmployees(client, allEmployees);
-            console.log(`PostgreSQLInitialization.loadInitialData(): Successfully loaded ${departmentArray.length} departments and ${allEmployees.length} employees.`);
         } catch (err) {
             console.error("PostgreSQLInitialization.loadInitialData():", err);
             throw err;
         } finally {
             client.release();
         }
+        console.log('PostgreSQLInitialization.loadInitialData()');
     }
-
     /**
-     * Drops the database tables in correct order.
+     * Drops the database tables and procedures in correct order.
      */
-    private async dropTables(client: PoolClient) {
+    private async dropTablesAndProcedures(client: PoolClient) {
         try {
+            await client.query(DROP_PROCEDURE_TRANSFER_EMPLOYEES_SQL);
             await client.query(DROP_TABLE_EMPLOYEES_SQL);
             await client.query(DROP_TABLE_DEPARTMENTS_SQL);
         } catch (err) {
-            console.error("PostgreSQLInitialization.dropTables():", err);
+            console.error("PostgreSQLInitialization.dropTablesAndProcedures():", err);
             throw err;
         }
     }
-
     /**
-     * Creates the database tables.
+     * Creates the database tables and procedures.
      */
-    private async createTables(client: PoolClient) {
+    private async createTablesAndProcedures(client: PoolClient) {
         try {
             await client.query(CREATE_TABLE_DEPARTMENTS_SQL);
             await client.query(CREATE_TABLE_EMPLOYEES_SQL);
+            await client.query(CREATE_PROCEDURE_TRANSFER_EMPLOYEES_SQL);
         } catch (err) {
-            console.error("PostgreSQLInitialization.createTables():", err);
+            console.error("PostgreSQLInitialization.createTablesAndProcedures():", err);
             throw err;
         }
     }
-
     /**
      * Inserts the department data into the database.
      * @param departmentArray the array of departments
@@ -139,7 +151,6 @@ export class PostgreSQLInitialization {
             throw err;
         }
     }
-
     /**
      * Inserts the employee data into the database.
      * @param employeeArray the array of employees

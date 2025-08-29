@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import { Department } from "../models/department.js";
 import { InitializationService } from "../services/initialization.service.js";
 import { RepositoryType } from '../repositories/repository-type.js';
-
+import { RED_BRIGHT, RESET } from "../colors.js";
 /**
  * This service class provides methods to initialize database and load data.
  */
@@ -26,6 +26,7 @@ export class InitializationController {
       return;
     }
     res.status(StatusCodes.NO_CONTENT).json();
-    console.log("InitializationController.loadInitialData(): repositoryType[%s]", repositoryType);
+    console.log("%sInitializationController.loadInitialData():%s repositoryType[%s]",
+      RED_BRIGHT, RESET, repositoryType);
   };
 }
