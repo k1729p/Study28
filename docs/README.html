@@ -17,7 +17,10 @@
   <hr>
   <pre>
 Work-In-Progress temporary notes, fixes, and todos:
-
+<table>
+  <tr><td>PostgreSQL tables</td><td>departments</td><td>employees</td></tr>
+  <tr><td>MongoDB collections</td><td>departments</td><td>employees</td></tr>
+</table>
 #################################################################################
 
 Express: https://expressjs.com/
@@ -56,27 +59,31 @@ Commands to execute in 'cqlsh' console:
 ===  MongoDB DATABASE  ===
 
 In Docker container "mongodb", in "Exec" tab:
-  mongosh mongodb://docker:mongopw@mongodb
-Commands to execute in 'mongosh' console:
-  use kp_database
-  db.departments.insertOne( {id:1, name:'abc'} )
-  db.departments.find( {id:1} )
-  db.employees.insertMany( [ {id:1, name:'klm'},{id:2, name:'xyz'}] )
-  db.employees.find()
-  db.departments.deleteMany({})
-  db.employees.deleteMany({})
-  exit
+  mongosh mongodb://admin:secret@mongodb
+  mongosh mongodb://admin:secret@localhost <---- With 'localhost' goes only in 'mongodb' container!
+  The commands to execute in 'mongosh' console:
+    use kp_database
+    db.departments.insertMany( [ {id:1, name:'abc'},{id:2, name:'def'}] )
+    db.departments.find()
+    db.departments.deleteMany({})
+    exit
+
+https://www.mongodb.com/docs/drivers/node/current/
+https://www.mongodb.com/docs/drivers/node/current/get-started/#std-label-node-get-started-download-and-install
+https://www.mongodb.com/docs/languages/javascript/
+BSON (Binary JSON) parser: https://www.npmjs.com/package/bson
+
 #################################################################################
 ===  MySQL DATABASE (ORACLE) ===
 https://www.baeldung.com/ops/docker-mysql-container
 
-In Docker container "postgresql", in "Exec" tab:
+In Docker container ".....", in "Exec" tab:
   mysql --host=mysql --user=root --password='mikimiki' --execute='select 12345 from dual;'
 #################################################################################
 ===  MS SQLServer DATABASE  ===
 https://learn.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker?view=sql-server-ver17&tabs=cli&pivots=cs1-cmd
 
-In Docker container "postgresql", in "Exec" tab:
+In Docker container ".....", in "Exec" tab:
   /opt/mssql-tools18/bin/sqlcmd -S mssql -No -U sa -P ABab1234 -Q "select 12345"
 #################################################################################
 ===  PostgreSQL DATABASE  ===

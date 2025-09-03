@@ -1,5 +1,8 @@
 import { Department } from "../models/department.js";
+import { Employee } from "../models/employee.js";
 import { RepositoryType } from "../repositories/repository-type.js";
+import { MongoDbDepartmentRepository } from "../repositories/mongodb/mongodb.department.repository.js";
+import { MongoDbEmployeeRepository } from "../repositories/mongodb/mongodb.employee.repository.js";
 import { PostgreSQLDepartmentRepository } from "../repositories/postgresql/postgresql.department.repository.js";
 
 /**
@@ -7,8 +10,9 @@ import { PostgreSQLDepartmentRepository } from "../repositories/postgresql/postg
  * It includes methods to get, set, create, update, and delete departments.
  */
 export class DepartmentService {
+    mongoDbDepartmentRepository: MongoDbDepartmentRepository = new MongoDbDepartmentRepository();
+    mongoDbEmployeeRepository: MongoDbEmployeeRepository = new MongoDbEmployeeRepository();
     postgreSQLDepartmentRepository: PostgreSQLDepartmentRepository = new PostgreSQLDepartmentRepository();
-
     /**
      * Creates a new department.
      * @param repositoryType the type of repository to use
@@ -18,14 +22,14 @@ export class DepartmentService {
     async createDepartment(repositoryType: RepositoryType, department: Department) {
         switch (repositoryType) {
             case RepositoryType.MongoDB:
-                // await this.mongoDBRepository.createDepartment(department);
+                await this.mongoDbDepartmentRepository.createDepartment(department);
                 break;
             case RepositoryType.PostgreSQL:
             default:
                 await this.postgreSQLDepartmentRepository.createDepartment(department);
                 break;
         }
-    }    
+    }
     /**
      * Gets the departments.
      * @param repositoryType the type of repository to use
@@ -34,14 +38,17 @@ export class DepartmentService {
     async getDepartments(repositoryType: RepositoryType): Promise<Department[]> {
         switch (repositoryType) {
             case RepositoryType.MongoDB:
-                // return await this.mongoDBRepository.getDepartments();
-                return [];
+                const departments: Department[] = await this.mongoDbDepartmentRepository.getDepartments();
+                for (const department of departments) {
+                    const employees: Employee[] = await this.mongoDbEmployeeRepository.getEmployees(department.id);
+                    department.employees = employees;
+                }
+                return departments;
             case RepositoryType.PostgreSQL:
             default:
                 return await this.postgreSQLDepartmentRepository.getDepartments();
         }
     }
-
     /**
      * Gets the department by id.
      * @param repositoryType the type of repository to use
@@ -51,7 +58,7 @@ export class DepartmentService {
     async getDepartment(repositoryType: RepositoryType, id: number): Promise<Department | undefined> {
         switch (repositoryType) {
             case RepositoryType.MongoDB:
-                // return await this.mongoDBRepository.getDepartment(id);
+                console.error("DepartmentService.getDepartment(): case not implemented");
                 return undefined;
             case RepositoryType.PostgreSQL:
             default:
@@ -67,7 +74,7 @@ export class DepartmentService {
     async updateDepartment(repositoryType: RepositoryType, department: Department) {
         switch (repositoryType) {
             case RepositoryType.MongoDB:
-                // await this.mongoDBRepository.updateDepartment(department);
+                await this.mongoDbDepartmentRepository.updateDepartment(department);
                 break;
             case RepositoryType.PostgreSQL:
             default:
@@ -75,7 +82,6 @@ export class DepartmentService {
                 break;
         }
     }
-
     /**
      * Deletes a department by its id.
      *
@@ -86,7 +92,11 @@ export class DepartmentService {
     async deleteDepartment(repositoryType: RepositoryType, id: number) {
         switch (repositoryType) {
             case RepositoryType.MongoDB:
-                // await this.mongoDBRepository.deleteDepartment(id);
+                const employees: Employee[] = await this.mongoDbEmployeeRepository.getEmployees(id);
+                for (const employee of employees) {
+                    await this.mongoDbEmployeeRepository.deleteEmployee(employee.id);
+                }
+                await this.mongoDbDepartmentRepository.deleteDepartment(id);
                 break;
             case RepositoryType.PostgreSQL:
             default:
@@ -94,26 +104,4 @@ export class DepartmentService {
                 break;
         }
     }
-    /**
-     * Transfers the employees from source department to target department.
-     *
-     * @param sourceDepartmentId the id of the source department
-     * @param targetDepartmentId the id of the target department
-     * @param employeeIds the transferred employees array
-     * @returns void
-     */
-    async transferEmployees(repositoryType: RepositoryType,
-        sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]) {
-        switch (repositoryType) {
-            case RepositoryType.MongoDB:
-                // Implement MongoDB logic if necessary
-                break;
-            case RepositoryType.PostgreSQL:
-            default:
-                await this.postgreSQLDepartmentRepository.transferEmployees(
-                    sourceDepartmentId, targetDepartmentId, employeeIds
-                );
-                break;
-        }
-    }    
 }

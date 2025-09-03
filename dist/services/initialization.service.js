@@ -1,10 +1,12 @@
 import { RepositoryType } from "../repositories/repository-type.js";
+import { MongoDbInitialization } from "../repositories/mongodb/mongodb.initialization.js";
 import { PostgreSQLInitialization } from "../repositories/postgresql/postgresql.initialization.js";
 /**
  * This service class provides methods to initialize the database and load initial data.
  */
 export class InitializationService {
     postgreSQLInitialization = new PostgreSQLInitialization();
+    mongoDbInitialization = new MongoDbInitialization();
     /**
      * Loads the initial data into the database.
      * @param repositoryType the type of repository to use
@@ -14,6 +16,7 @@ export class InitializationService {
     async loadInitialData(repositoryType, departmentArray) {
         switch (repositoryType) {
             case RepositoryType.MongoDB:
+                await this.mongoDbInitialization.loadInitialData(departmentArray);
                 break;
             case RepositoryType.PostgreSQL:
             default:

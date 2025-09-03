@@ -1,6 +1,6 @@
 include:
   # - includes/cassandra.yaml
-  # - includes/mongodb.yaml
+  - includes/mongodb.yaml
   # - includes/mysql.yaml
   - includes/postgresql.yaml
   # - includes/redis.yaml
@@ -11,7 +11,7 @@ services:
     image: eeengcs/study28:1.0.0-SNAPSHOT
     depends_on:
 #      - cassandra
-#      - mongodb
+      - mongodb
 #      - mysql
       - postgresql
 #      - redis

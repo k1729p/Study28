@@ -10,11 +10,8 @@ services:
     networks:
       - app-net
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=docker
-      - MONGO_INITDB_ROOT_PASSWORD=mongopw
-      - MONGODB_USERNAME=kp
-      - MONGODB_PASSWORD=mikimiki
-      - MONGODB_DATABASE=kp_database
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=secret
     restart: always
 volumes:
   mongo-data:

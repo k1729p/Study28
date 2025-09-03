@@ -29,7 +29,7 @@ const DELETE_EMPLOYEE_SQL = `
 `;
 /**
  * This service class provides methods to manage employees.
- * It includes methods to get, set, create, update, and delete employees.
+ * It includes CRUD methods to create, read, update, and delete employees.
  */
 export class PostgreSQLEmployeeRepository {
     /**
@@ -86,7 +86,6 @@ export class PostgreSQLEmployeeRepository {
             client.release();
         }
     }
-
     /**
      * Gets the employee by id.
      * @param id the id of the employee to retrieve
@@ -110,7 +109,6 @@ export class PostgreSQLEmployeeRepository {
             client.release();
         }
     }
-
     /**
      * Updates an existing employee.
      * @param employee the employee to be updated
@@ -147,7 +145,6 @@ export class PostgreSQLEmployeeRepository {
         }
         console.log("PostgreSQLEmployeeRepository.updateEmployee(): employee id[%d]", employee.id);
     }
-
     /**
      * Deletes a employee by its id.
      *

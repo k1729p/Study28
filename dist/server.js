@@ -5,6 +5,10 @@ import { pool } from "./repositories/postgresql/postgresql.pool.js";
 import { DepartmentController } from './controllers/department.controller.js';
 import { EmployeeController } from './controllers/employee.controller.js';
 import { InitializationController } from './controllers/initialization.controller.js';
+import { RED_BRIGHT, RESET } from "./colors.js";
+// ###########################################################################################
+import { MongoDbInitialization } from "./repositories/mongodb/mongodb.initialization.js";
+// ###########################################################################################
 main();
 /**
  * This is the main entry point of the application.
@@ -16,20 +20,16 @@ function main() {
     app.use('/api/', createRouting());
     app.use(errorHandler);
     const server = app.listen(config.port, () => {
-        console.log("main(): server is running on port[%s]", config.port);
-        console.log("\x1b[31m Output with red text \x1b[0m");
-        console.log("\x1b[32m Output with green text \x1b[0m");
-        console.log("\x1b[34m Output with blue text \x1b[0m");
-        console.log("\x1b[36m Output with cyan text \x1b[0m");
-        console.log("\x1b[35m Output with magenta text \x1b[0m");
-        console.log("\x1b[33m Output with yellow text \x1b[0m");
-        console.log("\x1b[41m Output with red background \x1b[0m");
-        console.log("\x1b[42m Output with green background \x1b[0m");
-        console.log("\x1b[44m Output with blue background \x1b[0m");
-        console.log("\x1b[46m Output with cyan background \x1b[0m");
-        console.log("\x1b[45m Output with magenta background \x1b[0m");
-        console.log("\x1b[43m Output with yellow background \x1b[0m");
-        console.log("▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄");
+        console.log(`
+╭────────────────────────────╮
+│ ▀▄▀▄▀▄▀▄▀▄ Study 28 ▀▄▀▄▀▄▀▄▀▄ │
+╰────────────────────────────╯`);
+        console.log('main(): server is running on port[%s%d%s]', RED_BRIGHT, config.port, RESET);
+        // ###########################################################################################
+        const mongoDbInitialization = new MongoDbInitialization();
+        //    mongoDbInitialization.loadInitialData([]);
+        mongoDbInitialization.loadInitialDataALT();
+        // ###########################################################################################
     });
     const shutdown = async () => {
         server.close(async () => {
@@ -68,6 +68,7 @@ function createRouting() {
     router.get('/employees/:id', employeeController.getEmployeeById);
     router.patch('/employees/:id', employeeController.updateEmployee);
     router.delete('/employees/:id', employeeController.deleteEmployee);
+    router.post('/transfers/', departmentController.transferEmployees);
     return router;
 }
 /**

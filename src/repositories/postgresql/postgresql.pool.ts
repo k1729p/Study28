@@ -4,9 +4,9 @@ import { config } from "./../../configuration/configuration.js";
 const POSTGRESQL_POOL_CONFIG: PoolConfig = {
     host: config.host,
     port: config.pgPort,
-    database: config.database,
-    user: config.user,
-    password: config.password,
+    database: config.pgDatabase,
+    user: config.pgUser,
+    password: config.pgPassword,
 };
 /**
  * PostgreSQL connection pool

@@ -6,6 +6,8 @@ import { pool } from "./postgresql.pool.js";
 const DROP_TABLE_EMPLOYEES_SQL = 'DROP TABLE IF EXISTS employees;';
 const DROP_TABLE_DEPARTMENTS_SQL = 'DROP TABLE IF EXISTS departments;';
 const DROP_PROCEDURE_TRANSFER_EMPLOYEES_SQL = 'DROP PROCEDURE IF EXISTS transfer_employees;';
+const DROP_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL = 
+    `DROP PROCEDURE IF EXISTS delete_department_and_employees;`;
 
 const CREATE_TABLE_DEPARTMENTS_SQL = `
     CREATE TABLE departments (
@@ -47,6 +49,20 @@ const CREATE_PROCEDURE_TRANSFER_EMPLOYEES_SQL = `
         UPDATE employees
         SET department_id = target_department_id
         WHERE department_id = source_department_id AND id = ANY(employee_ids);
+    END;
+    $$;
+`
+const CREATE_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL = `
+    CREATE OR REPLACE PROCEDURE delete_department_and_employees (
+        dep_id integer
+    )
+    LANGUAGE plpgsql
+    AS $$
+    BEGIN
+        DELETE FROM employees
+        WHERE department_id = dep_id;
+        DELETE FROM departments
+        WHERE id = dep_id;
     END;
     $$;
 `
@@ -94,6 +110,7 @@ export class PostgreSQLInitialization {
     private async dropTablesAndProcedures(client: PoolClient) {
         try {
             await client.query(DROP_PROCEDURE_TRANSFER_EMPLOYEES_SQL);
+            await client.query(DROP_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL);
             await client.query(DROP_TABLE_EMPLOYEES_SQL);
             await client.query(DROP_TABLE_DEPARTMENTS_SQL);
         } catch (err) {
@@ -109,6 +126,7 @@ export class PostgreSQLInitialization {
             await client.query(CREATE_TABLE_DEPARTMENTS_SQL);
             await client.query(CREATE_TABLE_EMPLOYEES_SQL);
             await client.query(CREATE_PROCEDURE_TRANSFER_EMPLOYEES_SQL);
+            await client.query(CREATE_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL);
         } catch (err) {
             console.error("PostgreSQLInitialization.createTablesAndProcedures():", err);
             throw err;

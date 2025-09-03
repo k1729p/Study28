@@ -1,6 +1,7 @@
 import { StatusCodes } from 'http-status-codes';
 import { EmployeeService } from "../services/employee.service.js";
 import { RepositoryType } from '../repositories/repository-type.js';
+import { RED_BRIGHT, CYAN_BRIGHT, MAGENTA_BRIGHT, RESET } from "../colors.js";
 /**
  * This service class provides methods to manage employees.
  */
@@ -29,7 +30,7 @@ export class EmployeeController {
             return;
         }
         res.status(StatusCodes.CREATED).json();
-        console.log("EmployeeController.createEmployee(): repositoryType[%s], id[%s]", repositoryType, employee.id);
+        console.log("%sEmployeeController.createEmployee():%s repositoryType[%s], id[%s]", RED_BRIGHT, RESET, repositoryType, employee.id);
     };
     /**
      * Get all employees.
@@ -105,7 +106,7 @@ export class EmployeeController {
             return;
         }
         res.status(StatusCodes.NO_CONTENT).json();
-        console.log("EmployeeController.updateEmployee(): repositoryType[%s], id[%s]", repositoryType, employee.id);
+        console.log("%sEmployeeController.updateDepartment():%s repositoryType[%s], id[%s]", MAGENTA_BRIGHT, RESET, repositoryType, employee.id);
     };
     /**
      * Delete a employee.
@@ -130,6 +131,6 @@ export class EmployeeController {
             console.error("EmployeeController.deleteEmployee():", error);
         }
         res.status(StatusCodes.NO_CONTENT).json();
-        console.log("EmployeeController.deleteEmployee(): repositoryType[%s], id[%s]", repositoryType, id);
+        console.log("%sEmployeeController.deleteDepartment():%s repositoryType[%s], id[%s]", CYAN_BRIGHT, RESET, repositoryType, id);
     };
 }

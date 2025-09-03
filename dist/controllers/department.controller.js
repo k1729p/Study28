@@ -1,6 +1,7 @@
 import { StatusCodes } from 'http-status-codes';
 import { DepartmentService } from "../services/department.service.js";
 import { RepositoryType } from '../repositories/repository-type.js';
+import { RED_BRIGHT, GREEN_BRIGHT, BLUE_BRIGHT, CYAN_BRIGHT, MAGENTA_BRIGHT, RESET } from "../colors.js";
 /**
  * This service class provides methods to manage departments.
  */
@@ -29,7 +30,7 @@ export class DepartmentController {
             return;
         }
         res.status(StatusCodes.CREATED).json();
-        console.log("DepartmentController.createDepartment(): repositoryType[%s], id[%s]", repositoryType, department.id);
+        console.log("%sDepartmentController.createDepartment():%s repositoryType[%s], id[%s]", RED_BRIGHT, RESET, repositoryType, department.id);
     };
     /**
      * Get all departments.
@@ -48,7 +49,7 @@ export class DepartmentController {
             console.error("DepartmentController.getDepartments():", error);
             return;
         }
-        console.log("DepartmentController.getDepartments(): repositoryType[%s]", repositoryType);
+        console.log("%sDepartmentController.getDepartments():%s repositoryType[%s]", GREEN_BRIGHT, RESET, repositoryType);
     };
     /**
      * Get a department by ID.
@@ -105,7 +106,7 @@ export class DepartmentController {
             return;
         }
         res.status(StatusCodes.NO_CONTENT).json();
-        console.log("DepartmentController.updateDepartment(): repositoryType[%s], id[%s]", repositoryType, department.id);
+        console.log("%sDepartmentController.updateDepartment():%s repositoryType[%s], id[%s]", MAGENTA_BRIGHT, RESET, repositoryType, department.id);
     };
     /**
      * Delete a department.
@@ -130,6 +131,33 @@ export class DepartmentController {
             console.error("DepartmentController.deleteDepartment():", error);
         }
         res.status(StatusCodes.NO_CONTENT).json();
-        console.log("DepartmentController.deleteDepartment(): repositoryType[%s], id[%s]", repositoryType, id);
+        console.log("%sDepartmentController.deleteDepartment():%s repositoryType[%s], id[%s]", CYAN_BRIGHT, RESET, repositoryType, id);
+    };
+    /**
+     * Transfers the employees from source department to target department.
+     * @param req - The request object.
+     * @param res - The response object.
+     * @param next - The next middleware function.
+     * @returns void
+     */
+    transferEmployees = async (req, res, next) => {
+        const repositoryType = req.query.repositoryType || RepositoryType.PostgreSQL;
+        const { sourceDepartmentId, targetDepartmentId, employeeIds } = req.body;
+        if (!sourceDepartmentId || !targetDepartmentId ||
+            !Array.isArray(employeeIds) || employeeIds.length === 0) {
+            res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid transfer data' });
+            console.error("DepartmentController.transferEmployees(): invalid transfer data");
+            return;
+        }
+        try {
+            await this.departmentService.transferEmployees(repositoryType, sourceDepartmentId, targetDepartmentId, employeeIds);
+        }
+        catch (error) {
+            next(error);
+            console.error("DepartmentController.transferEmployees():", error);
+            return;
+        }
+        res.status(StatusCodes.NO_CONTENT).json();
+        console.log("%sDepartmentController.transferEmployees():%s repositoryType[%s], source id[%s], target id[%s], employees %j", BLUE_BRIGHT, RESET, repositoryType, sourceDepartmentId, targetDepartmentId, employeeIds);
     };
 }

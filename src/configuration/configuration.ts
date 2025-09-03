@@ -8,9 +8,11 @@ interface Config {
     port: number;
     host: string;
     pgPort: number;
-    database: string;
-    user: string;
-    password: string;
+    pgDatabase: string;
+    pgUser: string;
+    pgPassword: string;
+    mongoDbUri: string;
+    mongoDbDatabase: string;
 }
 /**
  * Configuration object for the application.
@@ -19,7 +21,9 @@ export const config: Config = {
     port: Number(process.env.PORT),
     host: String(process.env.PGHOST),
     pgPort: Number(process.env.PGPORT),
-    database: String(process.env.PGDATABASE),
-    user: String(process.env.PGUSER),
-    password: String(process.env.PGPASSWORD),
+    pgDatabase: String(process.env.PGDATABASE),
+    pgUser: String(process.env.PGUSER),
+    pgPassword: String(process.env.PGPASSWORD),
+    mongoDbUri: String(process.env.MONGODBURI),
+    mongoDbDatabase: String(process.env.MONGODBDATABASE),
 };

@@ -5,6 +5,7 @@ import { pool } from "./repositories/postgresql/postgresql.pool.js";
 import { DepartmentController } from './controllers/department.controller.js';
 import { EmployeeController } from './controllers/employee.controller.js';
 import { InitializationController } from './controllers/initialization.controller.js';
+import { TransferController } from './controllers/transfer.controller.js';
 import { RED_BRIGHT, RESET } from "./colors.js";
 
 main();
@@ -23,7 +24,7 @@ function main() {
 ╭────────────────────────────╮
 │ ▀▄▀▄▀▄▀▄▀▄ Study 28 ▀▄▀▄▀▄▀▄▀▄ │
 ╰────────────────────────────╯`);
-        console.log(`main(): server is running on port[${RED_BRIGHT}${config.port}${RESET}]`,);
+        console.log('main(): server is running on port[%s%d%s]', RED_BRIGHT, config.port, RESET);
     });
     const shutdown = async () => {
         server.close(async () => {
@@ -64,7 +65,8 @@ function createRouting(): Router {
     router.patch('/employees/:id', employeeController.updateEmployee);
     router.delete('/employees/:id', employeeController.deleteEmployee);
 
-    router.post('/transfers/', departmentController.transferEmployees);
+    const transferController = new TransferController();
+    router.post('/transfers/', transferController.transferEmployees);
     return router;
 }
 /**

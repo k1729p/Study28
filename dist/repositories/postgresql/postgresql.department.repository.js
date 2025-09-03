@@ -36,9 +36,11 @@ const UPDATE_DEPARTMENT_SQL = `
     WHERE id = $7
     RETURNING *
 `;
-const DELETE_DEPARTMENT_SQL = `
-    DELETE FROM departments
-    WHERE id = $1
+const UPDATE_EMPLOYEE_DEPARTMENT_SQL = `
+    UPDATE employees
+    SET department_id = $1
+    WHERE id = $2
+    RETURNING *
 `;
 /**
  * This service class provides methods to manage departments.
@@ -195,7 +197,7 @@ export class PostgreSQLDepartmentRepository {
     async updateDepartment(department) {
         const client = await pool.connect();
         try {
-            const result = await client.query(UPDATE_DEPARTMENT_SQL, [
+            let result = await client.query(UPDATE_DEPARTMENT_SQL, [
                 department.name,
                 department.startDate,
                 department.endDate,
@@ -216,7 +218,33 @@ export class PostgreSQLDepartmentRepository {
         finally {
             client.release();
         }
-        console.log("PostgreSQLDepartmentRepository.updateDepartment(): department id[%s]", department.id);
+        department.employees.forEach(employee => this.updateEmployeeDepartment(employee));
+        console.log("PostgreSQLDepartmentRepository.updateDepartment(): department id[%d]", department.id);
+    }
+    /**
+     * Updates the department in the employee.
+     * @param employee the employee
+     * @returns void
+     */
+    async updateEmployeeDepartment(employee) {
+        const client = await pool.connect();
+        try {
+            const result = await client.query(UPDATE_EMPLOYEE_DEPARTMENT_SQL, [
+                employee.departmentId,
+                employee.id
+            ]);
+            if (!result.rowCount) {
+                console.log("PostgreSQLDepartmentRepository.updateEmployeeDepartment(): no employee updated, employee id[%d]", employee.id);
+                return;
+            }
+        }
+        catch (err) {
+            console.error("PostgreSQLDepartmentRepository.updateEmployeeDepartment():", err);
+            throw err;
+        }
+        finally {
+            client.release();
+        }
     }
     /**
      * Deletes a department by its id.
@@ -227,7 +255,7 @@ export class PostgreSQLDepartmentRepository {
     async deleteDepartment(id) {
         const client = await pool.connect();
         try {
-            await client.query(DELETE_DEPARTMENT_SQL, [id]);
+            await client.query('CALL delete_department_and_employees($1);', [id]);
         }
         catch (err) {
             console.error("PostgreSQLDepartmentRepository.deleteDepartment():", err);
@@ -237,5 +265,27 @@ export class PostgreSQLDepartmentRepository {
             client.release();
         }
         console.log("PostgreSQLDepartmentRepository.deleteDepartment(): department id[%d]", id);
+    }
+    /**
+     * Transfers the employees from source department to target department.
+     *
+     * @param sourceDepartmentId the id of the source department
+     * @param targetDepartmentId the id of the target department
+     * @param employeeIds the transferred employees array
+     * @returns void
+     */
+    async transferEmployees(sourceDepartmentId, targetDepartmentId, employeeIds) {
+        const client = await pool.connect();
+        try {
+            await client.query('CALL transfer_employees($1, $2, $3);', [sourceDepartmentId, targetDepartmentId, employeeIds]);
+            console.log("PostgreSQLDepartmentRepository.transferEmployees(): transferred [%d] employees from [%d] to [%d]", employeeIds.length, sourceDepartmentId, targetDepartmentId);
+        }
+        catch (err) {
+            console.error("PostgreSQLDepartmentRepository.transferEmployees():", err);
+            throw err;
+        }
+        finally {
+            client.release();
+        }
     }
 }

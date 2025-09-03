@@ -46,18 +46,10 @@ const UPDATE_EMPLOYEE_DEPARTMENT_SQL = `
     WHERE id = $2
     RETURNING *
 `;
-const DELETE_EMPLOYEES_IN_DEPARTMENT_SQL = `
-    DELETE FROM employees
-    WHERE department_id = $1
-`;
-const DELETE_DEPARTMENT_SQL = `
-    DELETE FROM departments
-    WHERE id = $1
-`;
 
 /**
  * This service class provides methods to manage departments.
- * It includes methods to get, set, create, update, and delete departments.
+ * It includes CRUD methods to create, read, update, and delete departments.
  */
 export class PostgreSQLDepartmentRepository {
     /**
@@ -88,8 +80,7 @@ export class PostgreSQLDepartmentRepository {
         } finally {
             client.release();
         }
-        console.log("PostgreSQLDepartmentRepository.createDepartment(): department id[%s]",
-            department.id);
+        console.log("PostgreSQLDepartmentRepository.createDepartment(): department id[%s]", department.id);
     }
     /**
      * Gets the departments.
@@ -99,9 +90,7 @@ export class PostgreSQLDepartmentRepository {
         const client = await pool.connect();
         try {
             const result = await client.query(SELECT_DEPARTMENTS_SQL);
-            console.log("PostgreSQLDepartmentRepository.getDepartments():");
             const departmentMap = new Map<number, Department>();
-
             for (const row of result.rows) {
                 const departmentId = row.department_id;
                 let department = departmentMap.get(departmentId);
@@ -138,6 +127,7 @@ export class PostgreSQLDepartmentRepository {
                     department.employees.push(employee);
                 }
             }
+            console.log("PostgreSQLDepartmentRepository.getDepartments():");
             return Array.from(departmentMap.values());
         } catch (err) {
             console.error("PostgreSQLDepartmentRepository.getDepartments():", err);
@@ -230,16 +220,14 @@ export class PostgreSQLDepartmentRepository {
             client.release();
         }
         department.employees.forEach(employee => this.updateEmployeeDepartment(employee));
-        console.log("PostgreSQLDepartmentRepository.updateDepartment(): department id[%d]",
-            department.id);
+        console.log("PostgreSQLDepartmentRepository.updateDepartment(): department id[%d]", department.id);
     }
-
     /**
      * Updates the department in the employee.
      * @param employee the employee
      * @returns void
      */
-    async updateEmployeeDepartment(employee: Employee) {
+    private async updateEmployeeDepartment(employee: Employee) {
         const client = await pool.connect();
         try {
             const result = await client.query(UPDATE_EMPLOYEE_DEPARTMENT_SQL, [
@@ -267,8 +255,7 @@ export class PostgreSQLDepartmentRepository {
     async deleteDepartment(id: number) {
         const client = await pool.connect();
         try {
-            await client.query(DELETE_EMPLOYEES_IN_DEPARTMENT_SQL, [id]);
-            await client.query(DELETE_DEPARTMENT_SQL, [id]);
+            await client.query('CALL delete_department_and_employees($1);', [id]);
         } catch (err) {
             console.error("PostgreSQLDepartmentRepository.deleteDepartment():", err);
             throw err;
@@ -292,15 +279,14 @@ export class PostgreSQLDepartmentRepository {
                 'CALL transfer_employees($1, $2, $3);',
                 [sourceDepartmentId, targetDepartmentId, employeeIds]
             );
-            console.log(
-                "PostgreSQLDepartmentRepository.transferEmployees(): transferred [%d] employees from [%d] to [%d]",
-                employeeIds.length, sourceDepartmentId, targetDepartmentId
-            );
         } catch (err) {
             console.error("PostgreSQLDepartmentRepository.transferEmployees():", err);
             throw err;
         } finally {
             client.release();
         }
+        console.log("PostgreSQLDepartmentRepository.transferEmployees(): " +
+            "transferred employees number[%d], source department id[%d], target department id[%d]",
+            employeeIds.length, sourceDepartmentId, targetDepartmentId);
     }
 }

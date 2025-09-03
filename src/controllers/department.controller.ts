@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
+
 import { Department } from "../models/department.js";
 import { DepartmentService } from "../services/department.service.js";
 import { RepositoryType } from '../repositories/repository-type.js';
 import { RED_BRIGHT, GREEN_BRIGHT, CYAN_BRIGHT, MAGENTA_BRIGHT, RESET } from "../colors.js";
 /**
- * This service class provides methods to manage departments.
+ * This controller class provides methods to manage departments.
  */
 export class DepartmentController {
   departmentService = new DepartmentService();
@@ -43,8 +44,8 @@ export class DepartmentController {
   getDepartments = async (req: Request, res: Response, next: NextFunction) => {
     const repositoryType = req.query.repositoryType as RepositoryType || RepositoryType.PostgreSQL;
     try {
-      const departmentArray = await this.departmentService.getDepartments(repositoryType);
-      res.status(StatusCodes.OK).json(departmentArray);
+      const departments = await this.departmentService.getDepartments(repositoryType);
+      res.status(StatusCodes.OK).json(departments);
     } catch (error) {
       next(error);
       console.error("DepartmentController.getDepartments():", error);
@@ -134,33 +135,4 @@ export class DepartmentController {
     console.log("%sDepartmentController.deleteDepartment():%s repositoryType[%s], id[%s]",
       CYAN_BRIGHT, RESET, repositoryType, id);
   };
-  /**
-     * Transfers the employees from source department to target department.
-   * @param req - The request object.
-   * @param res - The response object.
-   * @param next - The next middleware function.
-   * @returns void
-   */
-  transferEmployees = async (req: Request, res: Response, next: NextFunction) => {
-      const repositoryType = req.query.repositoryType as RepositoryType || RepositoryType.PostgreSQL;
-      const { sourceDepartmentId, targetDepartmentId, employeeIds } = req.body;
-      if (!sourceDepartmentId || !targetDepartmentId ||
-           !Array.isArray(employeeIds) || employeeIds.length === 0) {
-          res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid transfer data' });
-          console.error("DepartmentController.transferEmployees(): invalid transfer data");
-          return;
-      }
-      try {
-        await this.departmentService.transferEmployees(
-            repositoryType, sourceDepartmentId, targetDepartmentId, employeeIds);
-      } catch (error) {
-        next(error);
-        console.error("DepartmentController.transferEmployees():", error);
-        return;
-      }
-      res.status(StatusCodes.NO_CONTENT).json();
-      console.log(
-        "%sDepartmentController.transferEmployees():%s repositoryType[%s], source id[%s], target id[%s], employees %j",
-        MAGENTA_BRIGHT, RESET, repositoryType, sourceDepartmentId, targetDepartmentId, employeeIds);
-  };  
 }

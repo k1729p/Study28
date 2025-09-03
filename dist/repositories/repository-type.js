@@ -3,7 +3,7 @@
  */
 export var RepositoryType;
 (function (RepositoryType) {
-    RepositoryType["PostgreSQL"] = "postgresql";
-    RepositoryType["MongoDB"] = "mongodb";
-    RepositoryType["MySQL"] = "mysql";
+    RepositoryType["PostgreSQL"] = "PostgreSQL";
+    RepositoryType["MongoDB"] = "MongoDB";
+    RepositoryType["MySQL"] = "MySQL";
 })(RepositoryType || (RepositoryType = {}));

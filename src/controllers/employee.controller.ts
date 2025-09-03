@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
+
 import { Employee } from "../models/employee.js";
 import { EmployeeService } from "../services/employee.service.js";
 import { RepositoryType } from '../repositories/repository-type.js';
 import { RED_BRIGHT, CYAN_BRIGHT, MAGENTA_BRIGHT, RESET } from "../colors.js";
 /**
- * This service class provides methods to manage employees.
+ * This controller class provides methods to manage employees.
  */
 export class EmployeeController {
   employeeService = new EmployeeService();
@@ -43,8 +44,8 @@ export class EmployeeController {
   getEmployees = async (req: Request, res: Response, next: NextFunction) => {
     const repositoryType = req.query.repositoryType as RepositoryType || RepositoryType.PostgreSQL;
     try {
-      const employeeArray = await this.employeeService.getEmployees(repositoryType);
-      res.status(StatusCodes.OK).json(employeeArray);
+      const employees = await this.employeeService.getEmployees(repositoryType);
+      res.status(StatusCodes.OK).json(employees);
     } catch (error) {
       next(error);
       console.error("EmployeeController.getEmployees():", error);
@@ -105,7 +106,7 @@ export class EmployeeController {
       return;
     }
     res.status(StatusCodes.NO_CONTENT).json();
-    console.log("%sEmployeeController.updateDepartment():%s repositoryType[%s], id[%s]",
+    console.log("%sEmployeeController.updateEmployee():%s repositoryType[%s], id[%s]",
       MAGENTA_BRIGHT, RESET, repositoryType, employee.id);
   };
   /**
@@ -130,8 +131,7 @@ export class EmployeeController {
       console.error("EmployeeController.deleteEmployee():", error);
     }
     res.status(StatusCodes.NO_CONTENT).json();
-    console.log("%sEmployeeController.deleteDepartment():%s repositoryType[%s], id[%s]",
+    console.log("%sEmployeeController.deleteEmployee():%s repositoryType[%s], id[%s]",
       CYAN_BRIGHT, RESET, repositoryType, id);
-
   };
 }

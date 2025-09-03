@@ -16,9 +16,9 @@ services:
     #    target: /dev/shm
     #    tmpfs:
     #      size: 134217728 # 128*2^20 bytes = 128Mb
-    environment:
+#    environment:
 #      - POSTGRES_USER=kp
-      - POSTGRES_PASSWORD=mikimiki
+#      - POSTGRES_PASSWORD=mikimiki
     restart: always
 volumes:
   postgres-data:
