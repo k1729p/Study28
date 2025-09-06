@@ -9,6 +9,6 @@ const POSTGRESQL_POOL_CONFIG: PoolConfig = {
     password: config.pgPassword,
 };
 /**
- * PostgreSQL connection pool
+ * PostgreSQL connection pool.
  */
 export const pool = new Pool(POSTGRESQL_POOL_CONFIG);

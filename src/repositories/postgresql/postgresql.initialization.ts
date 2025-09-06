@@ -3,11 +3,11 @@ import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { pool } from "./postgresql.pool.js";
 
-const DROP_TABLE_EMPLOYEES_SQL = 'DROP TABLE IF EXISTS employees;';
-const DROP_TABLE_DEPARTMENTS_SQL = 'DROP TABLE IF EXISTS departments;';
-const DROP_PROCEDURE_TRANSFER_EMPLOYEES_SQL = 'DROP PROCEDURE IF EXISTS transfer_employees;';
+const DROP_TABLE_EMPLOYEES_SQL = 'DROP TABLE IF EXISTS employees';
+const DROP_TABLE_DEPARTMENTS_SQL = 'DROP TABLE IF EXISTS departments';
+const DROP_PROCEDURE_TRANSFER_EMPLOYEES_SQL = 'DROP PROCEDURE IF EXISTS transfer_employees';
 const DROP_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL = 
-    `DROP PROCEDURE IF EXISTS delete_department_and_employees;`;
+    `DROP PROCEDURE IF EXISTS delete_department_and_employees`;
 
 const CREATE_TABLE_DEPARTMENTS_SQL = `
     CREATE TABLE departments (
@@ -89,8 +89,17 @@ export class PostgreSQLInitialization {
     async loadInitialData(departments: Department[]) {
         const client = await pool.connect();
         try {
-            await this.dropTablesAndProcedures(client);
-            await this.createTablesAndProcedures(client);
+            await client.query(DROP_PROCEDURE_TRANSFER_EMPLOYEES_SQL);
+            await client.query(DROP_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL);
+            const result = await client.query(DROP_TABLE_EMPLOYEES_SQL);
+            await client.query(DROP_TABLE_DEPARTMENTS_SQL);
+            console.log("PostgreSQLInitialization.loadInitialData(): tables 'departments' and 'employees' dropped");
+            await client.query(CREATE_TABLE_DEPARTMENTS_SQL);
+            await client.query(CREATE_TABLE_EMPLOYEES_SQL);
+            console.log("PostgreSQLInitialization.loadInitialData(): tables 'departments' and 'employees' created");
+            await client.query(CREATE_PROCEDURE_TRANSFER_EMPLOYEES_SQL);
+            await client.query(CREATE_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL);
+
             await this.insertDepartments(client, departments);
             const allEmployees = departments.flatMap(dep =>
                 dep.employees.map(emp => ({ ...emp, departmentId: dep.id }))
@@ -102,35 +111,7 @@ export class PostgreSQLInitialization {
         } finally {
             client.release();
         }
-        console.log('PostgreSQLInitialization.loadInitialData()');
-    }
-    /**
-     * Drops the database tables and procedures in correct order.
-     */
-    private async dropTablesAndProcedures(client: PoolClient) {
-        try {
-            await client.query(DROP_PROCEDURE_TRANSFER_EMPLOYEES_SQL);
-            await client.query(DROP_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL);
-            await client.query(DROP_TABLE_EMPLOYEES_SQL);
-            await client.query(DROP_TABLE_DEPARTMENTS_SQL);
-        } catch (err) {
-            console.error("PostgreSQLInitialization.dropTablesAndProcedures():", err);
-            throw err;
-        }
-    }
-    /**
-     * Creates the database tables and procedures.
-     */
-    private async createTablesAndProcedures(client: PoolClient) {
-        try {
-            await client.query(CREATE_TABLE_DEPARTMENTS_SQL);
-            await client.query(CREATE_TABLE_EMPLOYEES_SQL);
-            await client.query(CREATE_PROCEDURE_TRANSFER_EMPLOYEES_SQL);
-            await client.query(CREATE_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL);
-        } catch (err) {
-            console.error("PostgreSQLInitialization.createTablesAndProcedures():", err);
-            throw err;
-        }
+        console.log("PostgreSQLInitialization.loadInitialData()");
     }
     /**
      * Inserts the department data into the database.
