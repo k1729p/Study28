@@ -1,0 +1,18 @@
+services:
+  mongodb:
+    container_name: mongodb
+    image: mongodb/mongodb-community-server
+    volumes:
+      - mongo-data:/data/db
+      - mongo-data-config:/data/configdb
+    ports:
+      - "27017:27017"
+    networks:
+      - app-net
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=secret
+    restart: always
+volumes:
+  mongo-data:
+  mongo-data-config:
