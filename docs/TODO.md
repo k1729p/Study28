@@ -1,43 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Study28 README</title>
-</head>
-
-<body>
-  <img alt="" src="images/WORK-IN-PROGRESS.png" />
-
-  <a href="https://github.com/k1729p/Study28/tree/main/docs" title="View Study28 docs on GitHub">
-    <img alt="Color scheme for Study28 project" src="images/ColorScheme.png" height="25" width="800" />
-  </a>
-  <h2 id="contents">Study28 README Contents</h2>
-  <hr>
-  <pre>
-Work-In-Progress temporary notes, fixes, and todos:
-<table>
-  <tr><td>PostgreSQL tables</td><td>departments</td><td>employees</td></tr>
-  <tr><td>MongoDB collections</td><td>departments</td><td>employees</td></tr>
-</table>
+# TODO
 #################################################################################
-
-Express: https://expressjs.com/
-
 Start application in Visual Studio Code TERMINAL tab:
   npm run build ;npm run start
 #################################################################################
-JSON:API specification. Updating Resources: https://jsonapi.org/format/#crud-updating
+===  PostgreSQL DATABASE  ===
+https://node-postgres.com/ <----- node.js modules for interfacing with PostgreSQL database
 
-'PATCH' Request – Updating Part of a Resource
-	Used when you want to update only a subset of fields in a resource.
-	Used when you want to improve the performance by minimizing the data payload.
+https://www.docker.com/blog/how-to-use-the-postgres-docker-official-image/
+https://www.npmjs.com/package/pg
+https://dopebase.com/blog/angular-postgresql-building-full-stack-app
+https://www.tembo.io/docs/getting-started/postgres_guides/connecting-to-postgres-with-nodejs
 
-'PUT'   Request – Replacing an Entire Resource
-	Used when the resource’s identity is clear, and its data needs to be fully refreshed.
+In Docker container "postgresql", in "Exec" tab:
+  export PGPASSWORD='mikimiki'; psql --host=postgresql --username=postgres --command='select 12345'
+
+Installing 'node-postgres' - PostgreSQL client for Node.js:
+   ??? npm install --save-dev pg
+   ??? npm i --save-dev @types/express
+   ??? npm i --save-dev @types/pg
 #################################################################################
- DATABASES DATABASES DATABASES DATABASES DATABASES DATABASES DATABASES DATABASES
+===  MongoDB DATABASE  ===
+
+In Docker container "mongodb", in "Exec" tab:
+  mongosh mongodb://admin:secret@mongodb
+  mongosh mongodb://admin:secret@localhost <---- With 'localhost' goes only in 'mongodb' container!
+  The commands to execute in 'mongosh' console:
+    use kp_database
+    db.departments.insertMany( [ {id:1, name:'abc'},{id:2, name:'def'}] )
+    db.departments.find()
+    db.departments.deleteMany({})
+    exit
+
+https://www.mongodb.com/docs/drivers/node/current/
+https://www.mongodb.com/docs/drivers/node/current/get-started/#std-label-node-get-started-download-and-install
+https://www.mongodb.com/docs/languages/javascript/
+BSON (Binary JSON) parser: https://www.npmjs.com/package/bson
+#################################################################################
+===  MySQL DATABASE (ORACLE) ===
+https://www.baeldung.com/ops/docker-mysql-container
+
+In Docker container ".....", in "Exec" tab:
+  mysql --host=mysql --user=root --password='mikimiki' --execute='select 12345 from dual;'
+#################################################################################
+===  MS SQLServer DATABASE  ===
+https://learn.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker?view=sql-server-ver17&tabs=cli&pivots=cs1-cmd
+
+In Docker container ".....", in "Exec" tab:
+  /opt/mssql-tools18/bin/sqlcmd -S mssql -No -U sa -P ABab1234 -Q "select 12345"
 #################################################################################
 ===  Cassandra DATABASE  ===
 https://en.wikipedia.org/wiki/Apache_Cassandra
@@ -56,47 +65,6 @@ Commands to execute in 'cqlsh' console:
   select id, name, last_update_timestamp from company.departments;
   exit;
 #################################################################################
-===  MongoDB DATABASE  ===
-
-In Docker container "mongodb", in "Exec" tab:
-  mongosh mongodb://admin:secret@mongodb
-  mongosh mongodb://admin:secret@localhost <---- With 'localhost' goes only in 'mongodb' container!
-  The commands to execute in 'mongosh' console:
-    use kp_database
-    db.departments.insertMany( [ {id:1, name:'abc'},{id:2, name:'def'}] )
-    db.departments.find()
-    db.departments.deleteMany({})
-    exit
-
-https://www.mongodb.com/docs/drivers/node/current/
-https://www.mongodb.com/docs/drivers/node/current/get-started/#std-label-node-get-started-download-and-install
-https://www.mongodb.com/docs/languages/javascript/
-BSON (Binary JSON) parser: https://www.npmjs.com/package/bson
-
-#################################################################################
-===  MySQL DATABASE (ORACLE) ===
-https://www.baeldung.com/ops/docker-mysql-container
-
-In Docker container ".....", in "Exec" tab:
-  mysql --host=mysql --user=root --password='mikimiki' --execute='select 12345 from dual;'
-#################################################################################
-===  MS SQLServer DATABASE  ===
-https://learn.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker?view=sql-server-ver17&tabs=cli&pivots=cs1-cmd
-
-In Docker container ".....", in "Exec" tab:
-  /opt/mssql-tools18/bin/sqlcmd -S mssql -No -U sa -P ABab1234 -Q "select 12345"
-#################################################################################
-===  PostgreSQL DATABASE  ===
-https://node-postgres.com/ <----- node.js modules for interfacing with PostgreSQL database
-
-https://www.docker.com/blog/how-to-use-the-postgres-docker-official-image/
-https://www.npmjs.com/package/pg
-https://dopebase.com/blog/angular-postgresql-building-full-stack-app
-https://www.tembo.io/docs/getting-started/postgres_guides/connecting-to-postgres-with-nodejs
-
-In Docker container "postgresql", in "Exec" tab:
-  export PGPASSWORD='mikimiki'; psql --host=postgresql --username=postgres --command='select 12345'
-#################################################################################
 ===  Redis DATABASE  ===
 https://redis.io/docs/latest/develop/tools/cli/
 
@@ -104,6 +72,10 @@ In Docker container "redis", in "Exec" tab:
   redis-cli
 Commands to execute in 'redis-cli' console:
   INCR mycounter
+#################################################################################
+===  Neo4j DATABASE  ===
+Neo4j is the world's leading graph database, with native graph storage and processing. 
+https://hub.docker.com/_/neo4j
 #################################################################################
 #################################################################################
 #################################################################################
@@ -115,17 +87,15 @@ Two main types of databases:
 #################################################################################
 CockroachDB versus Apache Cassandra:
   https://hackernoon.com/cockroachdb-vs-apache-cassandra-choosing-the-right-distributed-database-for-your-use-case
-
 #################################################################################
-Neo4j is the world's leading graph database, with native graph storage and processing. 
-https://hub.docker.com/_/neo4j
-#################################################################################
+JSON:API specification. Updating Resources: https://jsonapi.org/format/#crud-updating
 
-Installing 'node-postgres' - PostgreSQL client for Node.js:
-   ??? npm install --save-dev pg
-   ??? npm i --save-dev @types/express
-   ??? npm i --save-dev @types/pg
+'PATCH' Request – Updating Part of a Resource
+	Used when you want to update only a subset of fields in a resource.
+	Used when you want to improve the performance by minimizing the data payload.
 
+'PUT'   Request – Replacing an Entire Resource
+	Used when the resource’s identity is clear, and its data needs to be fully refreshed.
 #################################################################################
 Docker compose - in compose.yaml file   
 #### database management tool written in PHP
@@ -138,8 +108,3 @@ adminer:
     - app-net
   restart: always
 #################################################################################
-  </pre>
-  <hr>
-</body>
-
-</html>
