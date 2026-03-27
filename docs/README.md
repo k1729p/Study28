@@ -18,6 +18,12 @@ Project sections:
 
 ![greenCircle](images/greenCircle.png) 1.1. Links to diagrams.
 
+- [Flowchart diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/flowchartBusinessLogic.md)
+  (with web page screenshots) for  business logic.
+- [Sequence diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagram.md) for "Create Department ??? " process.
+- [Class diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagram.md) for  models: Department, Employee, and Title.
+
+
 ![greenCircle](images/greenCircle.png) 1.2. The **Node.js** **Express** server.
 
 ![greenCircle](images/greenCircle.png) 1.3. The data stores.
