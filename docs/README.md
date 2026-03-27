@@ -9,7 +9,7 @@
 Project sections:
 
 1. [Business Logic](#-business-logic)
-2. [Docker Build](#-docker-build-and-test)
+2. [Docker Build and Test](#-docker-build-and-test)
 3. [Local Build and Test](#-local-build-and-test)
 
 ---
@@ -25,6 +25,7 @@ Databases:
 - **PostgreSQL** database
 - **MongoDB** database
 
+| a | b | c |
 | :--- | :--- | :--- |
 | PostgreSQL tables | departments | employees |
 | MongoDB collections | departments | employees |
@@ -34,13 +35,60 @@ Databases:
 
 ![aquaHR](images/aquaHR-500.png)
 
-<details>
-<summary>'App' section:</summary>
+[server.ts](https://github.com/k1729p/Study28/blob/main/src/server.ts)
 
-- AppComponent
-  [app.component.ts](https://github.com/k1729p/Study28/blob/main/src/app/app.component.ts)
-- Routes
-  [app.routes.ts](https://github.com/k1729p/Study28/blob/main/src/app/app.routes.ts)
+<details>
+<summary>'Controllers' section:</summary>
+
+- directory [controllers](https://github.com/k1729p/Study28/blob/main/src/controllers)
+  - DepartmentController
+    [department.controller.ts](https://github.com/k1729p/Study28/blob/main/src/controllers/department.controller.ts)
+  - EmployeeController
+    [employee.controller.ts](https://github.com/k1729p/Study28/blob/main/src/controllers/employee.controller.ts)
+  - InitializationController
+    [initialization.controller.ts](https://github.com/k1729p/Study28/blob/main/src/controllers/initialization.controller.ts)
+  - TransferController
+    [transfer.controller.ts](https://github.com/k1729p/Study28/blob/main/src/controllers/transfer.controller.ts)
+
+</details>
+<details>
+<summary>'Models' section:</summary>
+
+- directory [models](https://github.com/k1729p/Study28/blob/main/src/models)
+  - Department
+    [department.ts](https://github.com/k1729p/Study28/blob/main/src/models/department.ts)
+  - Employee
+    [employee.ts](https://github.com/k1729p/Study28/blob/main/src/models/employee.ts)
+  - Title
+    [title.ts](https://github.com/k1729p/Study28/blob/main/src/models/title.ts)
+
+</details>
+<details>
+<summary>'Services' section:</summary>
+
+- directory [services](https://github.com/k1729p/Study28/blob/main/src/services)
+  - DepartmentService
+    [department.service.ts](https://github.com/k1729p/Study28/blob/main/src/services/department.service.ts)
+  - EmployeeService
+    [employee.service.ts](https://github.com/k1729p/Study28/blob/main/src/services/employee.service.ts)
+  - InitializationService
+    [initialization.service.ts](https://github.com/k1729p/Study28/blob/main/src/services/initialization.service.ts)
+  - TransferService
+    [transfer.service.ts](https://github.com/k1729p/Study28/blob/main/src/services/transfer.service.ts)
+
+</details>
+<summary>'Repositories' section:</summary>
+
+- directory [repositories/mongodb](https://github.com/k1729p/Study28/blob/main/src/repositories/mongodb)
+  - MongoDbDepartmentRepository
+    [mongodb.department.repository.ts](https://github.com/k1729p/Study28/blob/main/src/repositories/mongodb/mongodb.department.repository.ts)
+  - MongoDbEmployeeRepository
+    [mongodb.employee.repository.ts](https://github.com/k1729p/Study28/blob/main/src/repositories/mongodb/mongodb.employee.repository.ts)
+- directory [repositories/postgresql](https://github.com/k1729p/Study28/blob/main/src/repositories/postgresql)
+  - PostgreSQLDepartmentRepository
+    [postgresql.department.repository.ts](https://github.com/k1729p/Study28/blob/main/src/repositories/postgresql/postgresql.department.repository.ts)
+  - PostgreSQLEmployeeRepository
+    [postgresql.employee.repository.ts](https://github.com/k1729p/Study28/blob/main/src/repositories/postgresql/postgresql.employee.repository.ts)
 
 </details>
 
@@ -54,10 +102,10 @@ Databases:
 
 Action: \
  ![orangeHR](images/orangeHR-500.png) \
- ![orangeSqr](images/orangeSquare.png) 1. Use the batch file ["01 Express on Docker build and run.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/01 Express%20on%20Docker%20build%20and%20run.bat) 
+ ![orangeSqr](images/orangeSquare.png) 1. Use the batch file ["01 Express on Docker build and run.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/01%20Express%20on%20Docker%20build%20and%20run.bat) 
 to build the images and start the containers. \
- ![orangeSqr](images/orangeSquare.png) 2. Use "02 CURL on Docker init DB.bat". \
- ![orangeSqr](images/orangeSquare.png) 3. Use "03 CURL on Docker CRUD.bat". \
+ ![orangeSqr](images/orangeSquare.png) 2. Use ["02 CURL on Docker init DB.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/02%20CURL%20on%20Docker%20init%20DB.bat). \
+ ![orangeSqr](images/orangeSquare.png) 3. Use ["03 CURL on Docker CRUD.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/03%20CURL%20on%20Docker%20CRUD.bat). \
  ![orangeHR](images/orangeHR-500.png)
 
 ![greenCircle](images/greenCircle.png) 2.1. **Docker** images are built using the following files:
@@ -73,10 +121,10 @@ to build the images and start the containers. \
 
 Action: \
  ![orangeHR](images/orangeHR-500.png) \
- ![orangeSqr](images/orangeSquare.png) 1. Use the batch file ["02 Angular on local build and run.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/02%20Angular%20on%20local%20build%20and%20run.bat)
+ ![orangeSqr](images/orangeSquare.png) 1. Use the batch file ["04 Express on local build and run.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/04%20Express%20on%20local%20build%20and%20run.bat) 
 to build and start the local application. \
- ![orangeSqr](images/orangeSquare.png) 2. Use "05 CURL on local init DB.bat". \
- ![orangeSqr](images/orangeSquare.png) 3. Use "06 CURL on local CRUD.bat". \
+ ![orangeSqr](images/orangeSquare.png) 2. Use ["05 CURL on local init DB.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/05%20CURL%20on%20local%20init%20DB.bat). \
+ ![orangeSqr](images/orangeSquare.png) 3. Use ["06 CURL on local CRUD.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/06%20CURL%20on%20local%20CRUD.bat). \
  ![orangeHR](images/orangeHR-500.png)
 
 ![greenCircle](images/greenCircle.png) 3.1. See the screenshots showing the results of the CURL tests.
