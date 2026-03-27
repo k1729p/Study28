@@ -3,6 +3,13 @@
 Start application in Visual Studio Code TERMINAL tab:
   npm run build ;npm run start
 #################################################################################
+database types
+- caches (Redis)
+- graph databases (Neo4j)
+- document stores (MongoDB)
+- relational (PostgreSQL, MySQL)
+- columnar (Cassandra)  
+#################################################################################
 ===  PostgreSQL DATABASE  ===
 https://node-postgres.com/ <----- node.js modules for interfacing with PostgreSQL database
 

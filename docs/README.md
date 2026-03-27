@@ -20,7 +20,7 @@ Project sections:
 
 ![greenCircle](images/greenCircle.png) 1.2. The **Node.js** **Express** server.
 
-![greenCircle](images/greenCircle.png) 1.3. The databases.
+![greenCircle](images/greenCircle.png) 1.3. The data stores.
 
 - **PostgreSQL** tables
   - departments
