@@ -20,18 +20,16 @@ Project sections:
 
 ![greenCircle](images/greenCircle.png) 1.2. The **Node.js** **Express** server.
 
-Databases:
+![greenCircle](images/greenCircle.png) 1.3. The databases.
 
-- **PostgreSQL** database
-- **MongoDB** database
+- **PostgreSQL** tables
+  - departments
+  - employees
+- **MongoDB** collections
+  - departments
+  - employees
 
-| a | b | c |
-| :--- | :--- | :--- |
-| PostgreSQL tables | departments | employees |
-| MongoDB collections | departments | employees |
-
-
-![greenCircle](images/greenCircle.png) 1.3. The TypeScript, HTML, and CSS sources are located in the directory [src/app](https://github.com/k1729p/Study28/blob/main/src/app).
+![greenCircle](images/greenCircle.png) 1.4. The TypeScript sources are located in the directory [src](https://github.com/k1729p/Study28/blob/main/src).
 
 ![aquaHR](images/aquaHR-500.png)
 
@@ -137,7 +135,10 @@ to build and start the local application. \
 
 | Resource | Description |
 | :--- | :--- |
-| [Express](https://expressjs.com/) | Server. |
+| [Node.js](https://nodejs.org/en/) | JavaScript runtime environment |
+| [Express](https://expressjs.com/) | Web framework for Node.js |
+| [PostgreSQL](https://www.postgresql.org/) | Relational database |
+| [MongoDB Atlas](https://www.mongodb.com/products/platform/atlas-database) | Document-oriented database |
 
 ---
 
