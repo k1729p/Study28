@@ -20,21 +20,17 @@ Project sections:
 
 ![greenCircle](images/greenCircle.png) 1.1. Links to diagrams.
 
-- [Sequence diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagram.md) for "Create Department ??? " process.
-- [Class diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagram.md) for  models: Department, Employee, and Title.
-- [Flowchart diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/flowchartDiagram.md)
-  (with web page screenshots) for ???.
+- [Sequence diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagram.md)
+  for "Create Department" process with PostgreSQL Database.
+- [Class diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagram.md)
+  for  models: Department, Employee, and Title.
 
 ![greenCircle](images/greenCircle.png) 1.2. The **Node.js** **Express** server.
 
 ![greenCircle](images/greenCircle.png) 1.3. The data stores.
 
-- **PostgreSQL** tables
-  - departments
-  - employees
-- **MongoDB** collections
-  - departments
-  - employees
+- PostgreSQL
+- MongoDB
 
 ![greenCircle](images/greenCircle.png) 1.4. The TypeScript sources are located in the directory [src](https://github.com/k1729p/Study28/blob/main/src).
 
@@ -149,11 +145,25 @@ Action: \
   to create, read, update, and delete departments and employees. \
  ![orangeHR](images/orangeHR-500.png)
 
-![greenCircle](images/greenCircle.png) 3.1. See the screenshots showing the results of the CURL tests.
+![greenCircle](images/greenCircle.png) 3.1. See the screenshots showing the results of the cURL tests.
 
 [Back to the top of the page](#study28-readme-contents)
 
 ---
+
+## Data Stores
+
+| Data Store | Data Store Type | Storage Abstraction | Query Language |
+| :--- | :--- | :--- | :--- |
+| PostgreSQL | Relational | Table | SQL |
+| MySQL | Relational | Table | SQL |
+| SQL Server | Relational | Table | T-SQL |
+| Oracle | Relational | Table | PL/SQL |
+| MongoDB | Document Store | Collection | MQL (MongoDB Query Language) |
+| Redis | Key-Value / Cache | Hash / String | RESP (Redis Serialization Protocol) |
+| Cassandra | Columnar | Table | CQL (Cassandra Query Language) |
+| Neo4j | Graph Database | Node / Relationship | Cypher |
+| Chroma | Vector Database | Collection | Chroma API (Python/JS Client) |
 
 ## Links
 
