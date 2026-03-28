@@ -155,15 +155,15 @@ Action: \
 
 | Name | Type | Storage Abstraction | Query Language |
 | :--- | :--- | :--- | :--- |
-| PostgreSQL | Relational | Table | SQL |
-| MySQL | Relational | Table | SQL |
-| SQL Server | Relational | Table | T-SQL |
-| Oracle | Relational | Table | PL/SQL |
-| MongoDB | Document Store | Collection | MQL (MongoDB Query Language) |
-| Redis | Key-Value / Cache | Hash / String | RESP (Redis Serialization Protocol) |
-| Cassandra | Columnar | Table | CQL (Cassandra Query Language) |
-| Neo4j | Graph Database | Node / Relationship | Cypher |
-| Chroma | Vector Database | Collection | Chroma API (Python/JS Client) |
+| ✔️PostgreSQL | Relational | Table | SQL |
+| ❌MySQL | Relational | Table | SQL |
+| ❌SQL Server | Relational | Table | T-SQL |
+| ❌Oracle | Relational | Table | PL/SQL |
+| ✔️MongoDB | Document Store | Collection | MQL (MongoDB Query Language) |
+| ❌Redis | Key-Value / Cache | Hash / String | RESP (Redis Serialization Protocol) |
+| ❌Cassandra | Columnar | Table | CQL (Cassandra Query Language) |
+| ❌Neo4j | Graph Database | Node / Relationship | Cypher |
+| ❌Chroma | Vector Database | Collection | Chroma API (Python/JS Client) |
 
 ## Links
 
