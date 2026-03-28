@@ -1,4 +1,4 @@
-# Create Department Sequence Diagram for PostgreSQL Database
+# Create Department Sequence Diagram
 
 ```mermaid
 sequenceDiagram

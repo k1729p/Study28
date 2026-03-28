@@ -153,7 +153,7 @@ Action: \
 
 ## Data Stores
 
-| Data Store | Data Store Type | Storage Abstraction | Query Language |
+| Name | Type | Storage Abstraction | Query Language |
 | :--- | :--- | :--- | :--- |
 | PostgreSQL | Relational | Table | SQL |
 | MySQL | Relational | Table | SQL |
