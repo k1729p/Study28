@@ -112,7 +112,7 @@ Action: \
   to initialize database. \
  ![orangeSqr](images/orangeSquare.png) 3. Use the batch file
   ["03 CURL on Docker CRUD.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/03%20CURL%20on%20Docker%20CRUD.bat)
-  to create, read, update, and delete departments and employees. \
+  to create, read, update, and delete. \
  ![orangeHR](images/orangeHR-500.png)
 
 ![greenCircle](images/greenCircle.png) 2.1. **Docker** images are built using the following files:
@@ -142,7 +142,7 @@ Action: \
   to initialize database. \
  ![orangeSqr](images/orangeSquare.png) 3. Use the batch file
   ["06 CURL on local CRUD.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/06%20CURL%20on%20local%20CRUD.bat)
-  to create, read, update, and delete departments and employees. \
+  to create, read, update, and delete. \
  ![orangeHR](images/orangeHR-500.png)
 
 ![greenCircle](images/greenCircle.png) 3.1. See the screenshots showing the results of the cURL tests.
