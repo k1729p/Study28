@@ -4,7 +4,7 @@
 
 [![Color scheme for Study28 project](images/ColorScheme.png)](https://github.com/k1729p/Study28/tree/main/docs "View Study28 docs on GitHub")
 
-## Research on server and databases
+## Research on Express web framework and databases
 
 Project sections:
 
@@ -61,7 +61,7 @@ flowchart LR
 
 ![aquaHR](images/aquaHR-500.png)
 
-[server.ts](https://github.com/k1729p/Study28/blob/main/src/server.ts)
+- [server.ts](https://github.com/k1729p/Study28/blob/main/src/server.ts)
 
 <details>
 <summary>'Controllers' section:</summary>
@@ -144,6 +144,12 @@ Action: \
 
 - [Dockerfile](https://github.com/k1729p/Study28/blob/main/docker-config/Dockerfile)
 - [compose.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/compose.yaml)
+
+![greenCircle](images/greenCircle.png) 2.2. The [screenshot](images/ScreenshotCurlOnDockerInitDB.png)
+of the console log from the run of the batch file "**02 CURL on Docker init DB.bat**" with **PostgreSQL** selected.
+
+![greenCircle](images/greenCircle.png) 2.3. The [screenshot](images/ScreenshotCurlOnDockerCRUD.png)
+of the console log from the run of the batch file "**03 CURL on Docker CRUD.bat**" with **PostgreSQL** selected.
 
 [Back to the top of the page](#study28-readme-contents)
 
