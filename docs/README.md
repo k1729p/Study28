@@ -16,13 +16,35 @@ Project sections:
 
 ## ❶ Business Logic
 
+```mermaid
+flowchart LR
+  CTRL(Controllers):::greenBox
+  SERV(Services):::orangeBox
+  REPO(Repositories):::yellowBox
+  CLI("API<br>Client")
+  DB(Databases)
+%% Flows
+  CLI <-->CTRL
+  subgraph Node.js
+    subgraph "Express Server Application 'Study28'"
+      CTRL <--> SERV <--> REPO
+    end
+  end
+  REPO <--> DB
+%% Style Definitions
+  classDef redBox fill: #ff6666, stroke: #000, stroke-width: 2px
+  classDef greenBox fill: #00ff00, stroke: #000, stroke-width: 2px
+  classDef cyanBox fill: #00ffff, stroke: #000, stroke-width: 2px
+  classDef yellowBox fill: #ffff00, stroke: #000, stroke-width: 2px
+  classDef orangeBox  fill: #ffa500,stroke: #000, stroke-width:2px
+```
+
 ![greenCircle](images/greenCircle.png) 1.1. Links to diagrams.
 
-- [Flowchart diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/flowchartBusinessLogic.md)
-  (with web page screenshots) for  business logic.
 - [Sequence diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagram.md) for "Create Department ??? " process.
 - [Class diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagram.md) for  models: Department, Employee, and Title.
-
+- [Flowchart diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/flowchartDiagram.md)
+  (with web page screenshots) for ???.
 
 ![greenCircle](images/greenCircle.png) 1.2. The **Node.js** **Express** server.
 

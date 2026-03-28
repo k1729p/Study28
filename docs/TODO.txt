@@ -1,14 +1,10 @@
-# TODO
-#################################################################################
-Start application in Visual Studio Code TERMINAL tab:
-  npm run build ;npm run start
 #################################################################################
 database types
-- caches (Redis)
-- graph databases (Neo4j)
-- document stores (MongoDB)
 - relational (PostgreSQL, MySQL)
+- document stores (MongoDB)
+- caches (Redis)
 - columnar (Cassandra)  
+- graph databases (Neo4j)
 #################################################################################
 ===  PostgreSQL DATABASE  ===
 https://node-postgres.com/ <----- node.js modules for interfacing with PostgreSQL database
@@ -84,7 +80,11 @@ Commands to execute in 'redis-cli' console:
 Neo4j is the world's leading graph database, with native graph storage and processing. 
 https://hub.docker.com/_/neo4j
 #################################################################################
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #################################################################################
+Start application in Visual Studio Code TERMINAL tab:
+  npm run build ;npm run start
 #################################################################################
 Repository Vector Search Methods:
 https://spring.io/blog/2025/05/23/vector-search-methods
