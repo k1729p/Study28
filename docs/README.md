@@ -21,7 +21,7 @@ flowchart LR
   CTRL(Controllers):::greenBox
   SERV(Services):::orangeBox
   REPO(Repositories):::yellowBox
-  CLI("API<br>Client")
+  CLI("API Client")
   DB(Databases)
 %% Flows
   CLI <-->CTRL
