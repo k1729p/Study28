@@ -104,15 +104,15 @@ Project sections:
 
 Action: \
  ![orangeHR](images/orangeHR-500.png) \
- ![orangeSqr](images/orangeSquare.png) 1. Use the batch file
+ ![orangeSqr](images/orangeSquare.png) 1. Use
   ["01 Express on Docker build and run.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/01%20Express%20on%20Docker%20build%20and%20run.bat)
   to build the images and start the containers. \
- ![orangeSqr](images/orangeSquare.png) 2. Use the batch file
+ ![orangeSqr](images/orangeSquare.png) 2. Use
   ["02 CURL on Docker init DB.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/02%20CURL%20on%20Docker%20init%20DB.bat)
   to initialize database. \
- ![orangeSqr](images/orangeSquare.png) 3. Use the batch file
+ ![orangeSqr](images/orangeSquare.png) 3. Use
   ["03 CURL on Docker CRUD.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/03%20CURL%20on%20Docker%20CRUD.bat)
-  to create, read, update, and delete. \
+  to create, read, update, and delete departments and employees. \
  ![orangeHR](images/orangeHR-500.png)
 
 ![greenCircle](images/greenCircle.png) 2.1. **Docker** images are built using the following files:
@@ -134,15 +134,15 @@ of the console log from the run of the batch file "**03 CURL on Docker CRUD.bat*
 
 Action: \
  ![orangeHR](images/orangeHR-500.png) \
- ![orangeSqr](images/orangeSquare.png) 1. Use the batch file
+ ![orangeSqr](images/orangeSquare.png) 1. Use
   ["04 Express on local build and run.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/04%20Express%20on%20local%20build%20and%20run.bat)
   to build and start the local application. \
- ![orangeSqr](images/orangeSquare.png) 2. Use the batch file
+ ![orangeSqr](images/orangeSquare.png) 2. Use
   ["05 CURL on local init DB.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/05%20CURL%20on%20local%20init%20DB.bat)
   to initialize database. \
- ![orangeSqr](images/orangeSquare.png) 3. Use the batch file
+ ![orangeSqr](images/orangeSquare.png) 3. Use
   ["06 CURL on local CRUD.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/06%20CURL%20on%20local%20CRUD.bat)
-  to create, read, update, and delete. \
+  to create, read, update, and delete departments and employees. \
  ![orangeHR](images/orangeHR-500.png)
 
 ![greenCircle](images/greenCircle.png) 3.1. See the screenshots showing the results of the cURL tests.
