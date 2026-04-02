@@ -2,8 +2,6 @@ services:
   cassandra:
     container_name: cassandra
     image: cassandra
-    volumes:
-      - cassandra-node:/var/lib/cassandra:rw
     ports:
       - "7000:7000"
       - "9042:9042"
@@ -22,5 +20,7 @@ services:
       interval: 2m
       start_period: 2m
       timeout: 10s
+    volumes:
+      - cassandra-node:/var/lib/cassandra:rw
 volumes:
   cassandra-node:

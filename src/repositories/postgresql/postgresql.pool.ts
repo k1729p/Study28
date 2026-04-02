@@ -1,4 +1,5 @@
 import { Pool, PoolConfig } from "pg";
+
 import { config } from "./../../configuration/configuration.js";
 
 const POSTGRESQL_POOL_CONFIG: PoolConfig = {

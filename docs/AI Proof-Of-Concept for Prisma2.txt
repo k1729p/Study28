@@ -1,0 +1,132 @@
+It is absolutely possible to add Oracle to your stack. In fact, Oracle recently released a developer-friendly version called **Oracle Database 23ai Free**, which is the successor to the old "XE" (Express Edition). It runs perfectly in Docker and is the best choice for your "Study28" project.
+
+### 1. Oracle Database in Docker
+
+Oracle provides official images via their container registry. The **23ai Free** version is ideal because it has fewer limitations than previous versions and supports modern SQL features.
+
+#### `compose.yaml` (Services and Volumes)
+Add this to your existing Docker Compose file. Note that Oracle is "heavy"—it may take a minute or two to fully start up the first time.
+
+```yaml
+services:
+  oracle-db:
+    container_name: oracle-db
+    image: container-registry.oracle.com/database/free:latest
+    ports:
+      - "1521:1521"
+    environment:
+      - ORACLE_PWD=ABab1234  # Use the same password pattern for simplicity
+    volumes:
+      - oracle_data:/opt/oracle/oradata
+    restart: always
+
+volumes:
+  oracle_data:
+```
+
+#### `package.json` Additions
+You will need the official Oracle driver for Node.js (`oracledb`) and the Prisma dependencies.
+
+```json
+"dependencies": {
+  "oracledb": "^6.6.0",
+  "@prisma/client": "^5.20.0",
+  "lodash": "^4.17.21" // Useful for deep-comparing objects
+},
+"devDependencies": {
+  "prisma": "^5.20.0"
+}
+```
+
+---
+
+### 2. Learning Prisma by Comparing Databases
+
+This is a brilliant way to learn Prisma. Prisma is designed to abstract the database, so the code you write to query a "Department" in PostgreSQL should look identical to the code for Oracle.
+
+#### The "Comparison Service" Strategy
+Since Prisma is "Schema-First," you will define your models once. To connect to four different databases, you can instantiate four different `PrismaClient` objects in your comparison service.
+
+
+
+**Example: `DatabaseComparisonService.ts`**
+```typescript
+import { PrismaClient as PrismaPG } from '@prisma/client'
+import { PrismaClient as PrismaSQLServer } from '@prisma/client'
+import { PrismaClient as PrismaMySQL } from '@prisma/client'
+import { PrismaClient as PrismaOracle } from '@prisma/client'
+import _ from 'lodash';
+
+export class DatabaseComparisonService {
+    // You would initialize these with different connection strings
+    private pg = new PrismaPG({ datasources: { db: { url: process.env.PG_URL } } });
+    private mssql = new PrismaSQLServer({ datasources: { db: { url: process.env.MSSQL_URL } } });
+    private mysql = new PrismaMySQL({ datasources: { db: { url: process.env.MYSQL_URL } } });
+    private oracle = new PrismaOracle({ datasources: { db: { url: process.env.ORACLE_URL } } });
+
+    async compareDepartmentData(id: number) {
+        // Fetch from all four simultaneously
+        const [resPG, resMSSQL, resMySQL, resOracle] = await Promise.all([
+            this.pg.department.findUnique({ where: { id } }),
+            this.mssql.department.findUnique({ where: { id } }),
+            this.mysql.department.findUnique({ where: { id } }),
+            this.oracle.department.findUnique({ where: { id } })
+        ]);
+
+        const allMatch = _.isEqual(resPG, resMSSQL) && 
+                         _.isEqual(resMSSQL, resMySQL) && 
+                         _.isEqual(resMySQL, resOracle);
+
+        console.log(`Consistency Check for ID ${id}: ${allMatch ? 'PASSED' : 'FAILED'}`);
+        return { resPG, resMSSQL, resMySQL, resOracle, allMatch };
+    }
+}
+```
+
+---
+
+### 3. Java `IntSummaryStatistics` equivalent in TypeScript
+
+In Java, `IntSummaryStatistics` is a stateful object that consumes numbers and provides `min`, `max`, `count`, `sum`, and `average`. TypeScript doesn't have this in the standard library, but you can easily implement a class to do the exact same thing for your database result analysis.
+
+#### `SummaryStatistics.ts` implementation:
+```typescript
+export class IntSummaryStatistics {
+    count: number = 0;
+    sum: number = 0;
+    min: number = Number.MAX_SAFE_INTEGER;
+    max: number = Number.MIN_SAFE_INTEGER;
+
+    /**
+     * Records a new value into the statistics summary
+     */
+    accept(value: number): void {
+        this.count++;
+        this.sum += value;
+        this.min = Math.min(this.min, value);
+        this.max = Math.max(this.max, value);
+    }
+
+    get average(): number {
+        return this.count > 0 ? this.sum / this.count : 0;
+    }
+
+    toString(): string {
+        return `Count: ${this.count}, Sum: ${this.sum}, Min: ${this.min}, Max: ${this.max}, Avg: ${this.average}`;
+    }
+}
+
+// Example usage:
+const stats = new IntSummaryStatistics();
+const departmentEmployeeCounts = [10, 25, 5, 40]; // Data fetched via Prisma
+departmentEmployeeCounts.forEach(count => stats.accept(count));
+
+console.log(stats.toString());
+```
+
+### Analytical Summary for your Portfolio
+* **Oracle Strategy:** Use **Oracle Database 23ai Free**. It is modern, Docker-ready, and supported by the `oracledb` Node.js driver.
+* **Prisma Strategy:** Use one schema but multiple client instances. This is a "real-world" scenario for data migration or auditing tools.
+* **Logic Migration:** TypeScript's lack of built-in statistics classes like Java's `java.util` is usually solved by creating small, reusable utility classes or using the `reduce` function on arrays.
+
+**Would you like me to help you define the `schema.prisma` file that covers the specific data types (like Oracle's `NUMBER` vs Postgres `INT`) to ensure they stay in sync?**

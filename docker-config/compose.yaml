@@ -1,21 +1,23 @@
 include:
-  # - includes/cassandra.yaml
+  - includes/cassandra.yaml
   - includes/mongodb.yaml
-  # - includes/mysql.yaml
+  - includes/mysql.yaml
+  - includes/oracle.yaml
   - includes/postgresql.yaml
-  # - includes/redis.yaml
-  # - includes/sql-server.yaml
+  - includes/redis.yaml
+  - includes/sql-server.yaml
 services:
   study28:
     container_name: study28
     image: eeengcs/study28:1.0.0-SNAPSHOT
     depends_on:
-#      - cassandra
+      - cassandra
       - mongodb
-#      - mysql
+      - mysql
       - postgresql
-#      - redis
-#      - sql-server
+      - oracle
+      - redis
+      - sql-server
     ports:
       - "8028:8028"
     networks:

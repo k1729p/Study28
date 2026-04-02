@@ -3,7 +3,7 @@ services:
     container_name: mysql
     image: mysql
     ports:
-     - "3306:3306"
+      - "3306:3306"
     networks:
       - app-net
     environment:
@@ -12,3 +12,7 @@ services:
       - MYSQL_PASSWORD=mikimiki
       - MYSQL_DATABASE=kp_database
     restart: always
+    volumes:
+      - mysql-data:/var/lib/mysql
+volumes:
+  mysql-data:

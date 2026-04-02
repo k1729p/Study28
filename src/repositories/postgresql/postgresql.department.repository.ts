@@ -2,49 +2,51 @@ import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { pool } from "./postgresql.pool.js";
 
-
 const CREATE_DEPARTMENT_SQL = `
-    INSERT INTO departments (id, name, start_date, end_date, notes, keywords, image)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
-    RETURNING *
+  INSERT INTO departments (
+    id, name, start_date, end_date, notes, keywords, image
+  ) VALUES (
+    $1, $2, $3, $4, $5, $6, $7
+  )
+  RETURNING *
 `;
 const SELECT_DEPARTMENTS_SQL = `
-    SELECT 
-        d.id AS department_id, 
-        d.name AS department_name, 
-        d.start_date, 
-        d.end_date, 
-        d.notes, 
-        d.keywords, 
-        d.image,
-        e.id AS employee_id,
-        e.department_id AS employee_department_id,
-        e.first_name,
-        e.last_name,
-        e.title,
-        e.phone,
-        e.mail,
-        e.street_name,
-        e.house_number,
-        e.postal_code,
-        e.locality,
-        e.province,
-        e.country
-    FROM departments d
-    LEFT JOIN employees e ON d.id = e.department_id
+  SELECT 
+    d.id AS department_id, 
+    d.name AS department_name, 
+    d.start_date, 
+    d.end_date, 
+    d.notes, 
+    d.keywords, 
+    d.image,
+    e.id AS employee_id,
+    e.department_id AS employee_department_id,
+    e.first_name,
+    e.last_name,
+    e.title,
+    e.phone,
+    e.mail,
+    e.street_name,
+    e.house_number,
+    e.postal_code,
+    e.locality,
+    e.province,
+    e.country
+  FROM departments d
+  LEFT JOIN employees e ON d.id = e.department_id
 `;
 const SELECT_DEPARTMENT_SQL = SELECT_DEPARTMENTS_SQL + 'WHERE d.id = $1';
 const UPDATE_DEPARTMENT_SQL = `
-    UPDATE departments
-    SET name = $1, start_date = $2, end_date = $3, notes = $4, keywords = $5, image = $6
-    WHERE id = $7
-    RETURNING *
+  UPDATE departments
+  SET name = $1, start_date = $2, end_date = $3, notes = $4, keywords = $5, image = $6
+  WHERE id = $7
+  RETURNING *
 `;
 const UPDATE_EMPLOYEE_DEPARTMENT_SQL = `
-    UPDATE employees
-    SET department_id = $1
-    WHERE id = $2
-    RETURNING *
+  UPDATE employees
+  SET department_id = $1
+  WHERE id = $2
+  RETURNING *
 `;
 
 /**

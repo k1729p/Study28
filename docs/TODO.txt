@@ -1,10 +1,32 @@
+ADD TO package.json:
+"dependencies": {
+  "@prisma/client": "^5.20.0",
+  "lodash": "^4.17.21" // Useful for deep-comparing objects
+},
+"devDependencies": {
+  "prisma": "^5.20.0"
+}
 #################################################################################
-database types
-- relational (PostgreSQL, MySQL)
-- document stores (MongoDB)
-- caches (Redis)
-- columnar (Cassandra)  
-- graph databases (Neo4j)
+TESTCONTAINERS : https://github.com/testcontainers/testcontainers-node
+#################################################################################
+cassandra-nodejs-driver : Datastax Nodejs driver
+      https://github.com/apache/cassandra-nodejs-driver
+
+
+Elasticsearch
+  https://www.elastic.co/docs/reference/elasticsearch/clients/javascript/installation
+    npm install @elastic/elasticsearch
+  logs??? https://www.elastic.co/docs/reference/apm/agents/nodejs/logs
+CockroachDB
+  https://www.cockroachlabs.com/blog/what-is-distributed-sql/
+H2 is a relational database management system written in Java. 
+---------------------------------------------------------------------------------
+MariaDB - alternative to MySQL
+SQLite uses PostgreSQL as a reference platform
+Teradata Vantage Express
+    https://downloads.teradata.com/download/database/teradata-express/vmware
+---------------------------------------------------------------------------------
+Apache Spark
 #################################################################################
 ===  PostgreSQL DATABASE  ===
 https://node-postgres.com/ <----- node.js modules for interfacing with PostgreSQL database

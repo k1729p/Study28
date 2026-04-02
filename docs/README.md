@@ -156,9 +156,9 @@ Action: \
 | Name | Type | Storage Abstraction | Query Language |
 | :--- | :--- | :--- | :--- |
 | ✔️PostgreSQL | Relational | Table | SQL |
-| ❌MySQL | Relational | Table | SQL |
-| ❌SQL Server | Relational | Table | T-SQL |
-| ❌Oracle | Relational | Table | PL/SQL |
+| 🟡Oracle | Relational | Table | PL/SQL |
+| 🟡MySQL | Relational | Table | SQL |
+| 🟡MS SQL Server | Relational | Table | T-SQL |
 | ✔️MongoDB | Document Store | Collection | MQL (MongoDB Query Language) |
 | ❌Redis | Key-Value / Cache | Hash / String | RESP (Redis Serialization Protocol) |
 | ❌Cassandra | Columnar | Table | CQL (Cassandra Query Language) |
@@ -172,6 +172,9 @@ Action: \
 | [Node.js](https://nodejs.org/en/) | JavaScript runtime environment |
 | [Express](https://expressjs.com/) | Web framework for Node.js |
 | [PostgreSQL](https://www.postgresql.org/) | Relational database |
+| [Oracle AI Database 26ai](https://www.oracle.com/database/free/) | Relational database |
+| [MySQL](https://www.mysql.com/) | Relational database |
+| [Microsoft SQL Server](https://www.microsoft.com/en-us/sql-server) | Relational database |
 | [MongoDB Atlas](https://www.mongodb.com/products/platform/atlas-database) | Document-oriented database |
 
 ---

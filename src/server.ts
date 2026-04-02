@@ -1,3 +1,5 @@
+import { Aaa } from './aaa/aaa.js';
+// ####################################################################################################
 import express, { Request, Response, NextFunction, Router } from 'express';
 import cors from 'cors';
 import { config } from "./configuration/configuration.js";
@@ -48,6 +50,9 @@ function main() {
  */
 function createRouting(): Router {
     const router = Router();
+    // ####################################################################################################
+    router.get('/aaa/', new Aaa().aaa);
+    // ####################################################################################################
     const initializationController = new InitializationController();
     router.post('/load/', initializationController.loadInitialData);
 
