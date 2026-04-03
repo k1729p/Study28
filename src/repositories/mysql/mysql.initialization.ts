@@ -1,5 +1,5 @@
 import { Department } from "../../models/department.js";
-import { pool } from "./mysql.pool.js";
+import { poolPromise } from "./mysql.pool.js";
 
 const DROP_TABLE_EMPLOYEES_SQL = 'DROP TABLE IF EXISTS employees';
 const DROP_TABLE_DEPARTMENTS_SQL = 'DROP TABLE IF EXISTS departments';
@@ -54,6 +54,7 @@ export class MySQLInitialization {
    * @param departments the array of departments
    */
   async loadInitialData(departments: Department[]) {
+    const pool = await poolPromise;
     const connection = await pool.getConnection();
     try {
       await connection.beginTransaction();

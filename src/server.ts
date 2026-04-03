@@ -3,7 +3,11 @@ import { Aaa } from './aaa/aaa.js';
 import express, { Request, Response, NextFunction, Router } from 'express';
 import cors from 'cors';
 import { config } from "./configuration/configuration.js";
-import { pool } from "./repositories/postgresql/postgresql.pool.js";
+import { poolPromise as mySqlPoolPromise } from "./repositories/mysql/mysql.pool.js";
+import { poolPromise as oraclePoolPromise } from "./repositories/oracle/oracle.pool.js";
+import { poolPromise as postgreSqlPoolPromise } from "./repositories/postgresql/postgresql.pool.js";
+import { poolPromise as sqlServerPoolPromise } from "./repositories/sql-server/sql-server.pool.js";
+import { clientPromise as redisClientPromise } from "./repositories/redis/redis.pool.js";
 import { DepartmentController } from './controllers/department.controller.js';
 import { EmployeeController } from './controllers/employee.controller.js';
 import { InitializationController } from './controllers/initialization.controller.js';
@@ -29,17 +33,32 @@ function main() {
         console.log('main(): server is running on port[%s%d%s]', RED_BRIGHT, config.port, RESET);
     });
     const shutdown = async () => {
+        console.log('main(): shutdown signal received');
         server.close(async () => {
+            console.log("main(): HTTP server closed");
             try {
-                await pool.end();
-                console.log("main(): PostgreSQL pool closed");
+                await (await postgreSqlPoolPromise).end();
+                console.log("main(): PostgreSQL pool ended");
+                await (await mySqlPoolPromise).end();
+                console.log("main(): MySQL pool ended");
+                await (await oraclePoolPromise).close();
+                console.log("main(): Oracle pool closed");
+                await (await sqlServerPoolPromise).close();
+                console.log("main(): SQL Server pool closed");
+                await (await redisClientPromise).quit();
+                console.log("main(): Redis client quitted");
                 console.log("main(): shutdown completed");
                 process.exit(0);
             } catch (err) {
-                console.error("main(): error during shutdown:", err);
+                console.error("main(): error during database shutdown:", err);
                 process.exit(1);
             }
         });
+        // Forced shutdown if graceful closing takes too long (e.g., 10 seconds)
+        setTimeout(() => {
+            console.error("main(): could not close connections in time, forceful exit");
+            process.exit(1);
+        }, 10000);
     };
     process.on('SIGINT', shutdown);
     process.on('SIGTERM', shutdown);

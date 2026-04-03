@@ -1,6 +1,6 @@
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
-import { pool } from "./postgresql.pool.js";
+import { poolPromise } from "./postgresql.pool.js";
 
 const CREATE_DEPARTMENT_SQL = `
   INSERT INTO departments (
@@ -60,8 +60,10 @@ export class PostgreSQLDepartmentRepository {
      * @return void
      */
     async createDepartment(department: Department) {
+        const pool = await poolPromise;
         const client = await pool.connect();
         try {
+            await client.query('BEGIN');
             const result = await client.query(CREATE_DEPARTMENT_SQL, [
                 department.id,
                 department.name,
@@ -72,11 +74,14 @@ export class PostgreSQLDepartmentRepository {
                 department.image
             ]);
             if (!result.rowCount) {
+                await client.query('ROLLBACK');
                 console.log("PostgreSQLDepartmentRepository.createDepartment(): no department created with id[%d]",
                     department.id);
                 return;
             }
+            await client.query('COMMIT');
         } catch (err) {
+            await client.query('ROLLBACK');
             console.error("PostgreSQLDepartmentRepository.createDepartment():", err);
             throw err;
         } finally {
@@ -89,6 +94,7 @@ export class PostgreSQLDepartmentRepository {
      * @returns an array of Department objects
      */
     async getDepartments(): Promise<Department[]> {
+        const pool = await poolPromise;
         const client = await pool.connect();
         try {
             const result = await client.query(SELECT_DEPARTMENTS_SQL);
@@ -144,6 +150,7 @@ export class PostgreSQLDepartmentRepository {
      * @returns the Department object if found, otherwise undefined
      */
     async getDepartment(id: number): Promise<Department | undefined> {
+        const pool = await poolPromise;
         const client = await pool.connect();
         try {
             const result = await client.query(SELECT_DEPARTMENT_SQL, [id]);
@@ -199,8 +206,10 @@ export class PostgreSQLDepartmentRepository {
      * @returns void
      */
     async updateDepartment(department: Department) {
+        const pool = await poolPromise;
         const client = await pool.connect();
         try {
+            await client.query('BEGIN');
             let result = await client.query(UPDATE_DEPARTMENT_SQL, [
                 department.name,
                 department.startDate,
@@ -211,11 +220,14 @@ export class PostgreSQLDepartmentRepository {
                 department.id
             ]);
             if (!result.rowCount) {
+                await client.query('ROLLBACK');
                 console.log("PostgreSQLDepartmentRepository.updateDepartment(): no department updated with id[%d]",
                     department.id);
                 return;
             }
+            await client.query('COMMIT');
         } catch (err) {
+            await client.query('ROLLBACK');
             console.error("PostgreSQLDepartmentRepository.updateDepartment():", err);
             throw err;
         } finally {
@@ -230,18 +242,23 @@ export class PostgreSQLDepartmentRepository {
      * @returns void
      */
     private async updateEmployeeDepartment(employee: Employee) {
+        const pool = await poolPromise;
         const client = await pool.connect();
         try {
+            await client.query('BEGIN');
             const result = await client.query(UPDATE_EMPLOYEE_DEPARTMENT_SQL, [
                 employee.departmentId,
                 employee.id
             ]);
             if (!result.rowCount) {
+                await client.query('ROLLBACK');
                 console.log("PostgreSQLDepartmentRepository.updateEmployeeDepartment(): no employee updated, employee id[%d]",
                     employee.id);
                 return;
             }
+            await client.query('COMMIT');
         } catch (err) {
+            await client.query('ROLLBACK');
             console.error("PostgreSQLDepartmentRepository.updateEmployeeDepartment():", err);
             throw err;
         } finally {
@@ -255,10 +272,14 @@ export class PostgreSQLDepartmentRepository {
      * @returns void
      */
     async deleteDepartment(id: number) {
+        const pool = await poolPromise;
         const client = await pool.connect();
         try {
+            await client.query('BEGIN');
             await client.query('CALL delete_department_and_employees($1);', [id]);
+            await client.query('COMMIT');
         } catch (err) {
+            await client.query('ROLLBACK');
             console.error("PostgreSQLDepartmentRepository.deleteDepartment():", err);
             throw err;
         } finally {
@@ -275,13 +296,17 @@ export class PostgreSQLDepartmentRepository {
      * @returns void
      */
     async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]) {
+        const pool = await poolPromise;
         const client = await pool.connect();
         try {
+            await client.query('BEGIN');
             await client.query(
                 'CALL transfer_employees($1, $2, $3);',
                 [sourceDepartmentId, targetDepartmentId, employeeIds]
             );
+            await client.query('COMMIT');
         } catch (err) {
+            await client.query('ROLLBACK');
             console.error("PostgreSQLDepartmentRepository.transferEmployees():", err);
             throw err;
         } finally {

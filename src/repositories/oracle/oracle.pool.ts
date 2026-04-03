@@ -7,10 +7,10 @@ dotenv.config();
 oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
 
 /**
- * Configuration for Oracle connection pool.
+ * Configuration for connection pool.
  * Default values are derived from oracle.yaml and Oracle 23ai Free defaults.
  */
-const dbConfig = {
+const POOL_CONFIG = {
   user: process.env.ORACLE_USER || 'system',
   password: process.env.ORACLE_PASSWORD || 'ABab1234',
   connectString: process.env.ORACLE_CONNECT_STRING || 'localhost:1521/FREEPDB1',
@@ -22,7 +22,7 @@ const dbConfig = {
 /**
  * A promise that resolves to a connected Pool object.
  */
-export const poolPromise = oracledb.createPool(dbConfig)
+export const poolPromise = oracledb.createPool(POOL_CONFIG)
   .then(pool => {
     console.log('Oracle pool: connected to Oracle Database');
     return pool;

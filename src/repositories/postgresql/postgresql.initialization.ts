@@ -1,7 +1,7 @@
 import { PoolClient } from "pg";
 
 import { Department } from "../../models/department.js";
-import { pool } from "./postgresql.pool.js";
+import { poolPromise } from "./postgresql.pool.js";
 
 const DROP_TABLE_EMPLOYEES_SQL = 'DROP TABLE IF EXISTS employees';
 const DROP_TABLE_DEPARTMENTS_SQL = 'DROP TABLE IF EXISTS departments';
@@ -86,8 +86,10 @@ export class PostgreSQLInitialization {
      * @param departments the array of departments
      */
     async loadInitialData(departments: Department[]) {
+        const pool = await poolPromise;
         const client: PoolClient = await pool.connect();
         try {
+            await client.query('BEGIN');
             await client.query(DROP_PROCEDURE_TRANSFER_EMPLOYEES_SQL);
             await client.query(DROP_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL);
             await client.query(DROP_TABLE_EMPLOYEES_SQL);
@@ -103,7 +105,9 @@ export class PostgreSQLInitialization {
             } else {
                 console.warn("PostgreSQLInitialization.loadInitialData(): no departments to insert");
             }
+            await client.query('COMMIT');
         } catch (err) {
+            await client.query('ROLLBACK');
             console.error("PostgreSQLInitialization.loadInitialData():", err);
             throw err;
         } finally {

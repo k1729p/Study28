@@ -1,6 +1,6 @@
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
-import { pool } from "./mysql.pool.js";
+import { poolPromise } from "./mysql.pool.js";
 
 const CREATE_DEPARTMENT_SQL = `
   INSERT INTO departments (
@@ -30,15 +30,20 @@ export class MySQLDepartmentRepository {
    * @return void
    */
   async createDepartment(dept: Department): Promise<void> {
+    const pool = await poolPromise;
+    const connection = await pool.getConnection();
     try {
+      await connection.beginTransaction();
       const startDate = dept.startDate ? new Date(dept.startDate).toISOString().split('T')[0] : null;
       const endDate = dept.endDate ? new Date(dept.endDate).toISOString().split('T')[0] : null;
       const values = [
         dept.id, dept.name, startDate, endDate,
         dept.notes, dept.keywords ? dept.keywords.join(',') : null, dept.image
       ];
-      await pool.query(CREATE_DEPARTMENT_SQL, values);
+      await connection.query(CREATE_DEPARTMENT_SQL, values);
+      await connection.commit();
     } catch (err) {
+      await connection.rollback();
       console.error("MySQLDepartmentRepository.createDepartment():", err);
       throw err;
     }
@@ -49,6 +54,7 @@ export class MySQLDepartmentRepository {
    * @returns an array of Department objects
    */
   async getDepartments(): Promise<Department[]> {
+    const pool = await poolPromise;
     try {
       const [rows]: any = await pool.query(SELECT_DEPARTMENTS_SQL);
       const departmentMap = new Map<number, Department>();

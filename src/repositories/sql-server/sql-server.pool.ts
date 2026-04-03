@@ -4,10 +4,9 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 /**
- * Configuration for MS SQL Server connection.
- * Default values are derived from sql-server.yaml setup.
+ * Configuration for connection pool.
  */
-const config: sql.config = {
+const POOL_CONFIG = {
     user: process.env.SQL_USER || 'sa',
     password: process.env.SQL_PASSWORD || 'ABab1234',
     server: process.env.SQL_SERVER || 'localhost',//sql-server
@@ -23,13 +22,12 @@ const config: sql.config = {
         idleTimeoutMillis: 30000
     }
 };
-
 /**
  * A promise that resolves to a connected Pool object.
  * This pattern ensures that multiple repository calls share the same connection pool
  * and wait for the connection to be established.
  */
-export const poolPromise = new sql.ConnectionPool(config)
+export const poolPromise = new sql.ConnectionPool(POOL_CONFIG)
     .connect()
     .then(pool => {
         console.log('SQLServer pool: connected to MS SQL Server');

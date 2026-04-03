@@ -1,5 +1,5 @@
 import { Employee } from "../../models/employee.js";
-import { pool } from "./postgresql.pool.js";
+import { poolPromise } from "./postgresql.pool.js";
 
 const CREATE_EMPLOYEE_SQL = `
     INSERT INTO employees (
@@ -38,8 +38,10 @@ export class PostgreSQLEmployeeRepository {
      * @return void
      */
     async createEmployee(employee: Employee) {
+        const pool = await poolPromise;
         const client = await pool.connect();
         try {
+            await client.query('BEGIN');
             const result = await client.query(CREATE_EMPLOYEE_SQL, [
                 employee.id,
                 employee.departmentId,
@@ -56,12 +58,14 @@ export class PostgreSQLEmployeeRepository {
                 employee.country
             ]);
             if (!result.rowCount) {
+                await client.query('ROLLBACK');
                 console.log("PostgreSQLEmployeeRepository.createEmployee(): no employee created, employee id[%d]",
                     employee.id);
-
                 return;
             }
+            await client.query('COMMIT');
         } catch (err) {
+            await client.query('ROLLBACK');
             console.error("PostgreSQLEmployeeRepository.createEmployee():", err);
             throw err;
         } finally {
@@ -74,6 +78,7 @@ export class PostgreSQLEmployeeRepository {
      * @returns an array of Employee objects
      */
     async getEmployees(): Promise<Employee[]> {
+        const pool = await poolPromise;
         const client = await pool.connect();
         try {
             const result = await client.query(SELECT_EMPLOYEES_SQL);
@@ -92,6 +97,7 @@ export class PostgreSQLEmployeeRepository {
      * @returns the Employee object if found, otherwise undefined
      */
     async getEmployee(id: number): Promise<Employee | undefined> {
+        const pool = await poolPromise;
         const client = await pool.connect();
         try {
             const result = await client.query(SELECT_EMPLOYEE_SQL, [id]);
@@ -115,8 +121,10 @@ export class PostgreSQLEmployeeRepository {
      * @returns void
      */
     async updateEmployee(employee: Employee) {
+        const pool = await poolPromise;
         const client = await pool.connect();
         try {
+            await client.query('BEGIN');
             const result = await client.query(UPDATE_EMPLOYEE_SQL, [
                 employee.departmentId,
                 employee.firstName,
@@ -133,11 +141,14 @@ export class PostgreSQLEmployeeRepository {
                 employee.id
             ]);
             if (!result.rowCount) {
+            await client.query('ROLLBACK');
                 console.log("PostgreSQLEmployeeRepository.updateEmployee(): no employee updated, employee id[%d]",
                     employee.id);
                 return;
             }
+            await client.query('COMMIT');
         } catch (err) {
+            await client.query('ROLLBACK');
             console.error("PostgreSQLEmployeeRepository.updateEmployee():", err);
             throw err;
         } finally {
@@ -152,10 +163,14 @@ export class PostgreSQLEmployeeRepository {
      * @returns void
      */
     async deleteEmployee(id: number) {
+        const pool = await poolPromise;
         const client = await pool.connect();
         try {
+            await client.query('BEGIN');
             await client.query(DELETE_EMPLOYEE_SQL, [id]);
+            await client.query('COMMIT');
         } catch (err) {
+            await client.query('ROLLBACK');
             console.error("PostgreSQLEmployeeRepository.deleteEmployee():", err);
             throw err;
         } finally {

@@ -2,7 +2,10 @@ import { Pool, PoolConfig } from "pg";
 
 import { config } from "./../../configuration/configuration.js";
 
-const POSTGRESQL_POOL_CONFIG: PoolConfig = {
+/**
+ * Configuration for connection pool.
+ */
+const POOL_CONFIG: PoolConfig = {
     host: config.host,
     port: config.pgPort,
     database: config.pgDatabase,
@@ -10,6 +13,19 @@ const POSTGRESQL_POOL_CONFIG: PoolConfig = {
     password: config.pgPassword,
 };
 /**
- * PostgreSQL connection pool.
+ * Connection pool.
  */
-export const pool = new Pool(POSTGRESQL_POOL_CONFIG);
+const pool = new Pool(POOL_CONFIG);
+/**
+ * A promise that resolves to a connected Pool object.
+ */
+export const poolPromise = pool.connect()
+    .then(client => {
+        console.log('PostgreSQL pool: connected to PostgreSQL Database');
+        client.release(); // Release the test client
+        return pool;
+    })
+    .catch(err => {
+        console.error('PostgreSQL pool: database connection error', err);
+        throw err;
+    });

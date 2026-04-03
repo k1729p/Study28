@@ -8,6 +8,8 @@ import { MySQLInitialization } from "../repositories/mysql/mysql.initialization.
 import { MySQLDepartmentRepository } from "../repositories/mysql/mysql.department.repository.js";
 import { OracleInitialization } from "../repositories/oracle/oracle.initialization.js";
 import { OracleDepartmentRepository } from "../repositories/oracle/oracle.department.repository.js";
+import { RedisInitialization } from "../repositories/redis/redis.initialization.js";
+import { RedisDepartmentRepository } from "../repositories/redis/redis.department.repository.js";
 
 import { config as config } from "../configuration/configuration.js";
 
@@ -20,6 +22,8 @@ export class Aaa {
   mySQLDepartmentRepository: MySQLDepartmentRepository = new MySQLDepartmentRepository();
   oracleInitialization: OracleInitialization = new OracleInitialization();
   oracleDepartmentRepository: OracleDepartmentRepository = new OracleDepartmentRepository();
+  redisInitialization: RedisInitialization = new RedisInitialization();
+  redisDepartmentRepository: RedisDepartmentRepository = new RedisDepartmentRepository();
 
   aaa = async (req: Request, res: Response, next: NextFunction) => {
     // console.log('Aaa.aaa(): port[%d], host[%s], pgPort[%d], pgDatabase[%s], pgUser[%s], pgPassword[%s], mongoDbUri[%s], mongoDbDatabase[%s]',
@@ -27,6 +31,7 @@ export class Aaa {
     // );
     const initArray: Department[] = JSON.parse(DEPARTMENTS_DATA_1).departments;
     const department: Department = JSON.parse(DEPARTMENTS_DATA_2);
+
     const flag = true;
     if (flag) {
       await this.postgreSQLInitialization.loadInitialData(initArray);
@@ -68,7 +73,16 @@ export class Aaa {
         resultArray.length, resultArray[0].name, resultArray[0].employees[0].lastName,
         resultArray[1].name, resultArray[1].employees.length);
     }
-    
+    if (flag) {
+      await this.redisInitialization.loadInitialData(initArray);
+      await this.redisDepartmentRepository.createDepartment(department);
+      const resultArray: Department[] = await this.mySQLDepartmentRepository.getDepartments();
+      console.log('Aaa.aaa(): Redis resultArray departments.length[%d],\n' +
+        '\t1 dep name[%s], 1 emp lastName[%s]\n' +
+        '\t2 dep name[%s], 2 emp length[%d]',
+        resultArray.length, resultArray[0].name, resultArray[0].employees[0].lastName,
+        resultArray[1].name, resultArray[1].employees.length);
+    }
   }
 }
 
