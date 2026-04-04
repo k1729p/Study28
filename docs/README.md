@@ -27,6 +27,8 @@ Project sections:
 
 ![greenCircle](images/greenCircle.png) 1.2. The **Node.js** **Express** server.
 
+Environment variables file '[.env](https://github.com/k1729p/Study28/blob/main/.env)'.
+
 ![greenCircle](images/greenCircle.png) 1.3. The data stores.
 
 - PostgreSQL
@@ -187,3 +189,14 @@ Action: \
 [Back to the top of the page](#study28-readme-contents)
 
 ---
+
+## Info
+
+Comparison of "Startup Health Checks"
+
+| **Database** | **Driver** | **Behavior of createPool / connect** | **Recommended Health Check Logic** |
+| :--- | :--- | :--- | :--- |
+| MySQL | mysql2 | Lazy: Doesn't check connection until first query. | Required: Call pool.getConnection() then release(). |
+| PostgreSQL | pg | Lazy: Pool object is created synchronously. | Required: Call pool.connect() then release(). |
+| Oracle | oracledb | Eager: Fails if it can't open initial connections. | Optional: Call pool.getConnection() then close(). |
+| SQL Server | mssql | Eager: .connect() fails if server is unreachable. | Already Done: The .connect() call is the check. |

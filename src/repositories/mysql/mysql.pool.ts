@@ -1,29 +1,28 @@
 import mysql from 'mysql2/promise';
-import dotenv from 'dotenv';
 
-dotenv.config();
+import { config } from "./../../configuration/configuration.js";
 
 const POOL_CONFIG = {
-  host: process.env.MYSQL_HOST || 'localhost',
-  user: process.env.MYSQL_USER || 'kp',
-  password: process.env.MYSQL_PASSWORD || 'mikimiki',
-  database: process.env.MYSQL_DATABASE || 'kp_database',
-  port: parseInt(process.env.MYSQL_PORT || '3306'),
+  host: config.mySqlHost,
+  port: config.mySqlPort,
+  database: config.mySqlDatabase,
+  user: config.mySqlUser,
+  password: config.mySqlPassword,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
   dateStrings: true
 };
-
-// Create the pool instance
-const pool = mysql.createPool(POOL_CONFIG);
-
 /**
- * A promise that resolves to the validated MySQL Pool.
+ * Connection pool.
+ */
+const pool = mysql.createPool(POOL_CONFIG);
+/**
+ * A promise that resolves to a connected Pool object.
  */
 export const poolPromise = pool.getConnection()
   .then(connection => {
-    console.log('MySQL pool: connected to MySQL Database');
+    console.log('MySQL pool: connected and health-check passed');
     // After validation release the test connection immediately
     connection.release();
     return pool;

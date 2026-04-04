@@ -1,7 +1,8 @@
-import { MongoClient, Db, Collection } from 'mongodb'
+import { Db, Collection } from 'mongodb'
 
 import { Employee } from "../../models/employee.js";
 import { config } from "./../../configuration/configuration.js";
+import { poolPromise } from "./mongodb.pool.js";
 
 /**
  * This service class provides methods to manage employees.
@@ -14,7 +15,7 @@ export class MongoDbEmployeeRepository {
    * @return void
    */
   async createEmployee(employee: Employee) {
-    const client = new MongoClient(config.mongoDbUri);
+    const client = await poolPromise;
     try {
       const database: Db = client.db(config.mongoDbDatabase);
       const employeeCollection: Collection<Employee> = database.collection<Employee>('employees');
@@ -22,8 +23,6 @@ export class MongoDbEmployeeRepository {
     } catch (err) {
       console.error("MongoDbEmployeeRepository.createEmployee():", err);
       throw err;
-    } finally {
-      await client.close();
     }
     console.log("MongoDbEmployeeRepository.createEmployee() employee id[%s]", employee.id);
   }
@@ -34,7 +33,7 @@ export class MongoDbEmployeeRepository {
    */
   async getEmployees(departmentId: number): Promise<Employee[]> {
     const filter = { departmentId: departmentId };
-    const client = new MongoClient(config.mongoDbUri);
+    const client = await poolPromise;
     let employees: Employee[] = [];
     try {
       const database: Db = client.db(config.mongoDbDatabase);
@@ -43,8 +42,6 @@ export class MongoDbEmployeeRepository {
     } catch (err) {
       console.error("MongoDbEmployeeRepository.getEmployees():", err);
       throw err;
-    } finally {
-      await client.close();
     }
     console.log("MongoDbEmployeeRepository.getEmployees(): departmentId[%d], employees number[%s]",
       departmentId, employees.length);
@@ -57,7 +54,7 @@ export class MongoDbEmployeeRepository {
    */
   async updateEmployee(employee: Employee) {
     const filter = { id: employee.id };
-    const client = new MongoClient(config.mongoDbUri);
+    const client = await poolPromise;
     try {
       const database: Db = client.db(config.mongoDbDatabase);
       const employeeCollection: Collection<Employee> = database.collection<Employee>('employees');
@@ -65,8 +62,6 @@ export class MongoDbEmployeeRepository {
     } catch (err) {
       console.error("MongoDbEmployeeRepository.updateEmployee():", err);
       throw err;
-    } finally {
-      await client.close();
     }
     console.log("MongoDbEmployeeRepository.updateEmployee() employee id[%d]", employee.id);
   }
@@ -78,7 +73,7 @@ export class MongoDbEmployeeRepository {
    */
   async deleteEmployee(employeeId: number) {
     const filter = { id: employeeId };
-    const client = new MongoClient(config.mongoDbUri);
+    const client = await poolPromise;
     try {
       const database: Db = client.db(config.mongoDbDatabase);
       const employeeCollection: Collection<Employee> = database.collection<Employee>('employees');
@@ -86,8 +81,6 @@ export class MongoDbEmployeeRepository {
     } catch (err) {
       console.error("MongoDbEmployeeRepository.deleteEmployee():", err);
       throw err;
-    } finally {
-      await client.close();
     }
     console.log("MongoDbEmployeeRepository.deleteEmployee(): employee id[%d]", employeeId);
   }
@@ -103,7 +96,7 @@ export class MongoDbEmployeeRepository {
   async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]) {
     const filter = { departmentId: sourceDepartmentId };
     const update = { $set: { departmentId: targetDepartmentId } };
-    const client = new MongoClient(config.mongoDbUri);
+    const client = await poolPromise;
     try {
       const database: Db = client.db(config.mongoDbDatabase);
       const employeeCollection: Collection<Employee> = database.collection<Employee>('employees');
@@ -111,8 +104,6 @@ export class MongoDbEmployeeRepository {
     } catch (err) {
       console.error("MongoDbEmployeeRepository.transferEmployees():", err);
       throw err;
-    } finally {
-      await client.close();
     }
     console.log("MongoDbEmployeeRepository.transferEmployees(): " +
       "source department id[%d], target department id[%d], transferred employees number[%d]",

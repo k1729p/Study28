@@ -6,24 +6,52 @@ dotenv.config({ quiet: true });
  */
 interface Config {
     port: number;
-    host: string;
-    pgPort: number;
-    pgDatabase: string;
-    pgUser: string;
-    pgPassword: string;
     mongoDbUri: string;
     mongoDbDatabase: string;
+    mySqlHost: string;
+    mySqlPort: number;
+    mySqlDatabase: string;
+    mySqlUser: string;
+    mySqlPassword: string;
+    oracleConnectString: string;
+    oracleUser: string;
+    oraclePassword: string;
+    postgreSqlHost: string;
+    postgreSqlPort: number;
+    postgreSqlDatabase: string;
+    postgreSqlUser: string;
+    postgreSqlPassword: string;
+    redisUrl: string;
+    sqlServerHost: string;
+    sqlServerPort: number;
+    sqlServerDatabase: string;
+    sqlServerUser: string;
+    sqlServerPassword: string;
 }
 /**
  * Configuration object for the application.
  */
 export const config: Config = {
     port: Number(process.env.PORT),
-    host: String(process.env.PGHOST),
-    pgPort: Number(process.env.PGPORT),
-    pgDatabase: String(process.env.PGDATABASE),
-    pgUser: String(process.env.PGUSER),
-    pgPassword: String(process.env.PGPASSWORD),
-    mongoDbUri: String(process.env.MONGODBURI),
-    mongoDbDatabase: String(process.env.MONGODBDATABASE),
+    mongoDbUri: String(process.env.MONGODB_URI),
+    mongoDbDatabase: String(process.env.MONGODB_DATABASE),
+    mySqlHost: String(process.env.MY_SQL_HOST),
+    mySqlPort: Number(process.env.MY_SQL_PORT),
+    mySqlDatabase: String(process.env.MY_SQL_DATABASE),
+    mySqlUser: String(process.env.MY_SQL_USER),
+    mySqlPassword: String(process.env.MY_SQL_PASSWORD),
+    oracleConnectString: String(process.env.ORACLE_CONNECT_STRING),
+    oracleUser: String(process.env.ORACLE_USER),
+    oraclePassword: String(process.env.ORACLE_PASSWORD),
+    postgreSqlHost: String(process.env.POSTGRESQL_HOST),
+    postgreSqlPort: Number(process.env.POSTGRESQL_PORT),
+    postgreSqlDatabase: String(process.env.POSTGRESQL_DATABASE),
+    postgreSqlUser: String(process.env.POSTGRESQL_USER),
+    postgreSqlPassword: String(process.env.POSTGRESQL_PASSWORD),
+    redisUrl: String(process.env.REDIS_URL),
+    sqlServerHost: String(process.env.SQL_SERVER_HOST),
+    sqlServerPort: Number(process.env.SQL_SERVER_PORT),
+    sqlServerDatabase: String(process.env.SQL_SERVER_DATABASE),
+    sqlServerUser: String(process.env.SQL_SERVER_USER),
+    sqlServerPassword: String(process.env.SQL_SERVER_PASSWORD),
 };

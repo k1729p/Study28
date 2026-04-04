@@ -48,7 +48,7 @@ const INSERT_EMPLOYEE_SQL = `
 /**
  * This service class provides methods to initialize database and load data.
  */
-export class MySQLInitialization {
+export class MySqlInitialization {
   /**
    * Loads the initial data into the database.
    * @param departments the array of departments
@@ -62,22 +62,22 @@ export class MySQLInitialization {
       await connection.query(DROP_TABLE_DEPARTMENTS_SQL);
       await connection.query(CREATE_TABLE_DEPARTMENTS_SQL);
       await connection.query(CREATE_TABLE_EMPLOYEES_SQL);
-      console.log("MySQLInitialization.loadInitialData(): dropped and created tables");
+      console.log("MySqlInitialization.loadInitialData(): dropped and created tables");
       if (departments.length > 0) {
         await this.insertDepartments(connection, departments);
         await this.insertEmployees(connection, departments);
       } else {
-        console.warn("MySQLInitialization.loadInitialData(): no departments to insert");
+        console.warn("MySqlInitialization.loadInitialData(): no departments to insert");
       }
       await connection.commit();
     } catch (err) {
       await connection.rollback();
-      console.error("MySQLInitialization.loadInitialData():", err);
+      console.error("MySqlInitialization.loadInitialData():", err);
       throw err;
     } finally {
       connection.release();
     }
-    console.log("MySQLInitialization.loadInitialData(): data loaded successfully");
+    console.log("MySqlInitialization.loadInitialData(): data loaded successfully");
   }
   /**
    * Inserts the department data into the database.
@@ -99,7 +99,7 @@ export class MySQLInitialization {
       ];
       await connection.query(INSERT_DEPARTMENT_SQL, values);
     }
-    console.log("MySQLInitialization.insertDepartments(): inserted [%d] departments", departments.length);
+    console.log("MySqlInitialization.insertDepartments(): inserted [%d] departments", departments.length);
   }
   /**
    * Inserts the employee data into the database.
@@ -111,7 +111,7 @@ export class MySQLInitialization {
       dep.employees.map(emp => ({ ...emp, departmentId: dep.id }))
     );
     if (employees.length === 0) {
-      console.warn("MySQLInitialization.insertEmployees(): no employees to insert");
+      console.warn("MySqlInitialization.insertEmployees(): no employees to insert");
       return;
     }
     const values = employees.map(emp => [
@@ -120,6 +120,6 @@ export class MySQLInitialization {
       emp.locality || null, emp.province || null, emp.country || null
     ]);
     await connection.query(INSERT_EMPLOYEE_SQL, [values]);
-    console.log("MySQLInitialization.insertEmployees(): inserted [%d] employees", employees.length);
+    console.log("MySqlInitialization.insertEmployees(): inserted [%d] employees", employees.length);
   }
 }

@@ -3,6 +3,7 @@ import { Aaa } from './aaa/aaa.js';
 import express, { Request, Response, NextFunction, Router } from 'express';
 import cors from 'cors';
 import { config } from "./configuration/configuration.js";
+import { poolPromise as mongoDbPoolPromise } from "./repositories/mongodb/mongodb.pool.js";
 import { poolPromise as mySqlPoolPromise } from "./repositories/mysql/mysql.pool.js";
 import { poolPromise as oraclePoolPromise } from "./repositories/oracle/oracle.pool.js";
 import { poolPromise as postgreSqlPoolPromise } from "./repositories/postgresql/postgresql.pool.js";
@@ -37,12 +38,14 @@ function main() {
         server.close(async () => {
             console.log("main(): HTTP server closed");
             try {
-                await (await postgreSqlPoolPromise).end();
-                console.log("main(): PostgreSQL pool ended");
+                await (await mongoDbPoolPromise).close();
+                console.log("main(): MongoDB pool closed");                
                 await (await mySqlPoolPromise).end();
                 console.log("main(): MySQL pool ended");
                 await (await oraclePoolPromise).close();
                 console.log("main(): Oracle pool closed");
+                await (await postgreSqlPoolPromise).end();
+                console.log("main(): PostgreSQL pool ended");
                 await (await sqlServerPoolPromise).close();
                 console.log("main(): SQL Server pool closed");
                 await (await redisClientPromise).quit();

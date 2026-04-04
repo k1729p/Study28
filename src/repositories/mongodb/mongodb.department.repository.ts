@@ -1,7 +1,8 @@
-import { MongoClient, Db, Collection } from 'mongodb'
+import { Db, Collection } from 'mongodb'
 
 import { Department } from "../../models/department.js";
 import { config } from "./../../configuration/configuration.js";
+import { poolPromise } from "./mongodb.pool.js";
 
 /**
  * This service class provides methods to manage departments.
@@ -15,7 +16,7 @@ export class MongoDbDepartmentRepository {
  */
   async createDepartment(department: Department) {
     department.employees = [];
-    const client = new MongoClient(config.mongoDbUri);
+    const client = await poolPromise;
     try {
       const database: Db = client.db(config.mongoDbDatabase);
       const departmentCollection: Collection<Department> = database.collection<Department>('departments');
@@ -23,8 +24,6 @@ export class MongoDbDepartmentRepository {
     } catch (err) {
       console.error("MongoDbDepartmentRepository.createDepartment():", err);
       throw err;
-    } finally {
-      await client.close();
     }
     console.log("MongoDbDepartmentRepository.createDepartment(): department id[%s]", department.id);
   }
@@ -33,7 +32,7 @@ export class MongoDbDepartmentRepository {
    * @returns an array of Department objects
    */
   async getDepartments(): Promise<Department[]> {
-    const client = new MongoClient(config.mongoDbUri);
+    const client = await poolPromise;
     let departments: Department[] = [];
     try {
       const database: Db = client.db(config.mongoDbDatabase);
@@ -42,8 +41,6 @@ export class MongoDbDepartmentRepository {
     } catch (err) {
       console.error("MongoDbDepartmentRepository.getDepartments():", err);
       throw err;
-    } finally {
-      await client.close();
     }
     console.log("MongoDbDepartmentRepository.getDepartments() departments number[%s]", departments.length);
     return departments;
@@ -56,7 +53,7 @@ export class MongoDbDepartmentRepository {
   async updateDepartment(department: Department) {
     department.employees = [];
     const filter = { id: department.id };
-    const client = new MongoClient(config.mongoDbUri);
+    const client = await poolPromise;
     try {
       const database: Db = client.db(config.mongoDbDatabase);
       const departmentCollection: Collection<Department> = database.collection<Department>('departments');
@@ -64,8 +61,6 @@ export class MongoDbDepartmentRepository {
     } catch (err) {
       console.error("MongoDbDepartmentRepository.updateDepartment():", err);
       throw err;
-    } finally {
-      await client.close();
     }
     console.log("MongoDbDepartmentRepository.updateDepartment() department id[%d]", department.id);
   }
@@ -77,7 +72,7 @@ export class MongoDbDepartmentRepository {
    */
   async deleteDepartment(departmentId: number) {
     const filter = { id: departmentId };
-    const client = new MongoClient(config.mongoDbUri);
+    const client = await poolPromise;
     try {
       const database: Db = client.db(config.mongoDbDatabase);
       const departmentCollection: Collection<Department> = database.collection<Department>('departments');
@@ -85,8 +80,6 @@ export class MongoDbDepartmentRepository {
     } catch (err) {
       console.error("MongoDbDepartmentRepository.deleteDepartment():", err);
       throw err;
-    } finally {
-      await client.close();
     }
     console.log("MongoDbDepartmentRepository.deleteDepartment(): department id[%d]", departmentId);
   }

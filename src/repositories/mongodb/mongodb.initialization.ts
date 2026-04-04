@@ -1,8 +1,9 @@
-import { MongoClient, Db, Collection, InsertManyResult } from "mongodb";
+import { Db, Collection, InsertManyResult } from "mongodb";
 
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { config } from "./../../configuration/configuration.js";
+import { poolPromise } from "./mongodb.pool.js";
 
 /**
  * This service class provides methods to initialize database and load data.
@@ -18,7 +19,7 @@ export class MongoDbInitialization {
     );
     departments.forEach(department => department.employees = []);
 
-    const client = new MongoClient(config.mongoDbUri);
+    const client = await poolPromise;
     let insertedDepartments = 0, insertedEmployees = 0;
     try {
       const database: Db = client.db(config.mongoDbDatabase);
@@ -35,8 +36,6 @@ export class MongoDbInitialization {
     } catch (err) {
       console.error("MongoDbInitialization.loadInitialData():", err);
       throw err;
-    } finally {
-      await client.close();
     }
     console.log("MongoDbInitialization.loadInitialData(): inserted departments number[%d], inserted employees number[%d]",
       insertedDepartments, insertedEmployees);

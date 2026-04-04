@@ -1,13 +1,12 @@
 import { createClient } from 'redis';
-import dotenv from 'dotenv';
 
-dotenv.config();
+import { config } from "./../../configuration/configuration.js";
 
 /**
  * Configuration for connection pool.
  */
 const POOL_CONFIG = {
-    url: process.env.REDIS_URL || 'redis://localhost:6379'
+    url: config.redisUrl
 };
 /**
  * Redis client.
@@ -19,11 +18,11 @@ const client = createClient(POOL_CONFIG);
 client.on('error', (err) => console.error('Redis pool: runtime error', err));
 
 /**
- * A promise that resolves to a connected Redis Client.
+ * A promise that resolves to a connected client object.
  */
 export const clientPromise = client.connect()
     .then(() => {
-        console.log('Redis pool: connected to Redis Database');
+        console.log('Redis pool: connected to database');
         return client;
     })
     .catch(err => {

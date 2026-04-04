@@ -23,7 +23,7 @@ const SELECT_DEPARTMENTS_SQL = `
  * This service class provides methods to manage departments.
  * It includes CRUD methods to create, read, update, and delete departments.
  */
-export class MySQLDepartmentRepository {
+export class MySqlDepartmentRepository {
   /**
    * Creates a new department.
    * @param department the department to be created
@@ -44,10 +44,10 @@ export class MySQLDepartmentRepository {
       await connection.commit();
     } catch (err) {
       await connection.rollback();
-      console.error("MySQLDepartmentRepository.createDepartment():", err);
+      console.error("MySqlDepartmentRepository.createDepartment():", err);
       throw err;
     }
-    console.log("MySQLDepartmentRepository.createDepartment(): ID [%d]", dept.id);
+    console.log("MySqlDepartmentRepository.createDepartment(): ID [%d]", dept.id);
   }
   /**
    * Gets the departments.
@@ -91,10 +91,10 @@ export class MySQLDepartmentRepository {
           });
         }
       }
-      console.log("MySQLDepartmentRepository.getDepartments():");
+      console.log("MySqlDepartmentRepository.getDepartments():");
       return Array.from(departmentMap.values());
     } catch (err) {
-      console.error("MySQLDepartmentRepository.getDepartments():", err);
+      console.error("MySqlDepartmentRepository.getDepartments():", err);
       throw err;
     }
   }
