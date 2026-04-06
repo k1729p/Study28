@@ -23,6 +23,9 @@ CockroachDB
   https://www.cockroachlabs.com/blog/what-is-distributed-sql/
 H2 is a relational database management system written in Java. 
 ---------------------------------------------------------------------------------
+Amazon DynamoDB is a fully managed, serverless, NoSQL database service 
+https://aws.amazon.com/dynamodb
+---------------------------------------------------------------------------------
 MariaDB - alternative to MySQL
 SQLite uses PostgreSQL as a reference platform
 Teradata Vantage Express

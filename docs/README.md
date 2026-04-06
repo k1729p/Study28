@@ -157,25 +157,27 @@ Action: \
 
 | Name | Type | Storage Abstraction | Query Language |
 | :--- | :--- | :--- | :--- |
-| 🛠️[Cassandra][1] | Columnar | Table | CQL (Cassandra Query Language) |
-| ❌[Chroma][2] | Vector Database | Collection | Chroma API (Python/JS Client) |
-| ✔️[MongoDB][3] | Document Store | Collection | MQL (MongoDB Query Language) |
-| 🛠️[MySQL][4] | Relational | Table | SQL |
-| ❌[Neo4j][5] | Graph Database | Node / Relationship | Cypher |
-| 🛠️[Oracle][6] | Relational | Table | PL/SQL |
-| ✔️[PostgreSQL][7] | Relational | Table | SQL |
-| 🛠️[Redis][8] | Key-Value / Cache | Hash / String | RESP (Redis Serialization Protocol) |
-| 🛠️[SQL Server][9] | Relational | Table | T-SQL |
+| 🛠️[Cassandra][01] | Columnar | Table | CQL (Cassandra Query Language) |
+| ❌[Chroma][02] | Vector Database | Collection | Chroma API (Python/JS Client) |
+| ❌[Elasticsearch][03] | database | ? | Lucene? |
+| ✔️[MongoDB][04] | Document Store | Collection | MQL (MongoDB Query Language) |
+| 🛠️[MySQL][05] | Relational | Table | SQL |
+| ❌[Neo4j][06] | Graph Database | Node / Relationship | Cypher |
+| 🛠️[Oracle][07] | Relational | Table | PL/SQL |
+| ✔️[PostgreSQL][08] | Relational | Table | SQL |
+| 🛠️[Redis][09] | Key-Value / Cache | Hash / String | RESP (Redis Serialization Protocol) |
+| 🛠️[SQL Server][10] | Relational | Table | T-SQL |
 
-[1]: <https://cassandra.apache.org/_/index.html> "Apache Cassandra"
-[2]: <https://www.trychroma.com/> "Chroma"
-[3]: <https://www.mongodb.com/products/platform/atlas-database> "MongoDB Atlas"
-[4]: <https://www.mysql.com/> "MySQL"
-[5]: <https://neo4j.com/product/neo4j-graph-database/> "Neo4j"
-[6]: <https://www.oracle.com/database/free/> "Oracle AI Database 26ai"
-[7]: <https://www.postgresql.org/> "PostgreSQL"
-[8]: <https://redis.io/> "Redis"
-[9]: <https://www.microsoft.com/en-us/sql-server> "Microsoft SQL Server"
+[01]: <https://cassandra.apache.org/_/index.html> "Apache Cassandra"
+[02]: <https://www.trychroma.com/> "Chroma"
+[03]: <https://www.elastic.co/elasticsearch> "Elasticsearch"
+[04]: <https://www.mongodb.com/products/platform/atlas-database> "MongoDB Atlas"
+[05]: <https://www.mysql.com/> "MySQL"
+[06]: <https://neo4j.com/product/neo4j-graph-database/> "Neo4j"
+[07]: <https://www.oracle.com/database/free/> "Oracle AI Database 26ai"
+[08]: <https://www.postgresql.org/> "PostgreSQL"
+[09]: <https://redis.io/> "Redis"
+[10]: <https://www.microsoft.com/en-us/sql-server> "Microsoft SQL Server"
 
 ## Links
 
