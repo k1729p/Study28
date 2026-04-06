@@ -7,6 +7,8 @@ ADD TO package.json:
   "prisma": "^5.20.0"
 }
 #################################################################################
+CHECK IT: You do not need to install @types/redis anymore. Doing so might actually cause type conflicts.
+#################################################################################
 TESTCONTAINERS : https://github.com/testcontainers/testcontainers-node
 #################################################################################
 cassandra-nodejs-driver : Datastax Nodejs driver

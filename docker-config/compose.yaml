@@ -14,8 +14,8 @@ services:
       - cassandra
       - mongodb
       - mysql
-      - postgresql
       - oracle
+      - postgresql
       - redis
       - sql-server
     ports:

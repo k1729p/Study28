@@ -13,8 +13,7 @@ import { OracleDepartmentRepository } from "../repositories/oracle/oracle.depart
 import { RedisInitialization } from "../repositories/redis/redis.initialization.js";
 import { RedisDepartmentRepository } from "../repositories/redis/redis.department.repository.js";
 
-import { RED_BRIGHT, GREEN_BRIGHT, BLUE_BRIGHT, CYAN_BRIGHT, MAGENTA_BRIGHT, YELLOW_BRIGHT,
-   WHITE_BRIGHT, BG_RED, RESET } from "./../colors.js";
+import * as colors from "./../colors.js";
 import { config as config } from "../configuration/configuration.js";
 
 export class Aaa {
@@ -54,76 +53,76 @@ export class Aaa {
       );
     }
     if (true || flag) {
-      console.log('Aaa.aaa(): %s==============================%s', WHITE_BRIGHT + BG_RED, RESET);
+      console.log('Aaa.aaa(): %s==============================%s', colors.WHITE_BRIGHT + colors.BG_RED, colors.RESET);
       await this.mongoDbInitialization.loadInitialData(initArray);
       await this.mongoDbDepartmentRepository.createDepartment(department);
       const resultArray: Department[] = await this.mongoDbDepartmentRepository.getDepartments();
       console.log('Aaa.aaa(): %sMongoDB%s resultArray departments.length[%d],\n' +
         '\tdep name[%s], emp length[%d], emp lastName[%s]\n' +
         '\tdep name[%s], emp length[%d], emp lastName[%s]',
-        WHITE_BRIGHT + BG_RED, RESET,
+        colors.WHITE_BRIGHT + colors.BG_RED, colors.RESET,
         resultArray.length,
         resultArray[0].name, resultArray[0].employees.length, resultArray[0].employees.length > 0 ? resultArray[0].employees[0].lastName : '',
         resultArray[1].name, resultArray[1].employees.length, resultArray[1].employees.length > 0 ? resultArray[1].employees[0].lastName : '');
 
     }
     if (flag) {
-      console.log('Aaa.aaa(): %s==============================%s', RED_BRIGHT, RESET);
+      console.log('Aaa.aaa(): %s==============================%s', colors.RED_BRIGHT, colors.RESET);
       await this.postgreSQLInitialization.loadInitialData(initArray);
       await this.postgreSQLDepartmentRepository.createDepartment(department);
       const resultArray: Department[] = await this.postgreSQLDepartmentRepository.getDepartments();
       console.log('Aaa.aaa(): %sPostgreSQL%s resultArray departments.length[%d],\n' +
         '\t1 dep name[%s], 1 emp lastName[%s]\n' +
         '\t2 dep name[%s], 2 emp length[%d]',
-        RED_BRIGHT, RESET,
+        colors.RED_BRIGHT, colors.RESET,
         resultArray.length, resultArray[0].name, resultArray[0].employees[0].lastName,
         resultArray[1].name, resultArray[1].employees.length);
     }
     if (flag) {
-      console.log('Aaa.aaa(): %s==============================%s', GREEN_BRIGHT, RESET);
+      console.log('Aaa.aaa(): %s==============================%s', colors.GREEN_BRIGHT, colors.RESET);
       await this.sqlServerInitialization.loadInitialData(initArray);
       await this.sqlServerDepartmentRepository.createDepartment(department);
       const resultArray: Department[] = await this.sqlServerDepartmentRepository.getDepartments();
       console.log('Aaa.aaa(): %sSQL Server%s resultArray departments.length[%d],\n' +
         '\t1 dep name[%s], 1 emp lastName[%s]\n' +
         '\t2 dep name[%s], 2 emp length[%d]',
-        GREEN_BRIGHT, RESET,
+        colors.GREEN_BRIGHT, colors.RESET,
         resultArray.length, resultArray[0].name, resultArray[0].employees[0].lastName,
         resultArray[1].name, resultArray[1].employees.length);
     }
     if (flag) {
-      console.log('Aaa.aaa(): %s==============================%s', CYAN_BRIGHT, RESET);
+      console.log('Aaa.aaa(): %s==============================%s', colors.CYAN_BRIGHT, colors.RESET);
       await this.mySqlInitialization.loadInitialData(initArray);
       await this.mySqlDepartmentRepository.createDepartment(department);
       const resultArray: Department[] = await this.mySqlDepartmentRepository.getDepartments();
       console.log('Aaa.aaa(): %sMySQL%s resultArray departments.length[%d],\n' +
         '\t1 dep name[%s], 1 emp lastName[%s]\n' +
         '\t2 dep name[%s], 2 emp length[%d]',
-        CYAN_BRIGHT, RESET,
+        colors.CYAN_BRIGHT, colors.RESET,
         resultArray.length, resultArray[0].name, resultArray[0].employees[0].lastName,
         resultArray[1].name, resultArray[1].employees.length);
     }
     if (flag) {
-      console.log('Aaa.aaa(): %s==============================%s', MAGENTA_BRIGHT, RESET);
+      console.log('Aaa.aaa(): %s==============================%s', colors.MAGENTA_BRIGHT, colors.RESET);
       await this.oracleInitialization.loadInitialData(initArray);
       await this.oracleDepartmentRepository.createDepartment(department);
       const resultArray: Department[] = await this.oracleDepartmentRepository.getDepartments();
       console.log('Aaa.aaa(): %sOracle%s resultArray departments.length[%d],\n' +
         '\t1 dep name[%s], 1 emp lastName[%s]\n' +
         '\t2 dep name[%s], 2 emp length[%d]',
-        MAGENTA_BRIGHT, RESET,
+        colors.MAGENTA_BRIGHT, colors.RESET,
         resultArray.length, resultArray[0].name, resultArray[0].employees[0].lastName,
         resultArray[1].name, resultArray[1].employees.length);
     }
     if (flag) {
-      console.log('Aaa.aaa(): %s==============================%s', YELLOW_BRIGHT, RESET);
+      console.log('Aaa.aaa(): %s==============================%s', colors.YELLOW_BRIGHT, colors.RESET);
       await this.redisInitialization.loadInitialData(initArray);
       await this.redisDepartmentRepository.createDepartment(department);
       const resultArray: Department[] = await this.redisDepartmentRepository.getDepartments();
       console.log('Aaa.aaa(): %sRedis%s resultArray departments.length[%d],\n' +
         '\tdep name[%s], emp length[%d], emp lastName[%s]\n' +
         '\tdep name[%s], emp length[%d], emp lastName[%s]',
-        YELLOW_BRIGHT, RESET,
+        colors.YELLOW_BRIGHT, colors.RESET,
         resultArray.length,
         resultArray[0].name, resultArray[0].employees.length, resultArray[0].employees.length > 0 ? resultArray[0].employees[0].lastName : '',
         resultArray[1].name, resultArray[1].employees.length, resultArray[1].employees.length > 0 ? resultArray[1].employees[0].lastName : '');
