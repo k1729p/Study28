@@ -6,6 +6,8 @@ dotenv.config({ quiet: true });
  */
 interface Config {
     port: number;
+    cassandraHost: string;
+    cassandraLocalDataCenter: string;
     mongoDbUri: string;
     mongoDbDatabase: string;
     mySqlHost: string;
@@ -33,6 +35,8 @@ interface Config {
  */
 export const config: Config = {
     port: Number(process.env.PORT),
+    cassandraHost: String(process.env.CASSANDRA_HOST),
+    cassandraLocalDataCenter: String(process.env.CASSANDRA_DC),
     mongoDbUri: String(process.env.MONGODB_URI),
     mongoDbDatabase: String(process.env.MONGODB_DATABASE),
     mySqlHost: String(process.env.MY_SQL_HOST),

@@ -14,14 +14,14 @@ export class MongoDbInitialization {
    * @param departments the array of departments
    */
   async loadInitialData(departments: Department[]) {
+    const localDepartments: Department[] = structuredClone(departments);
+    localDepartments.forEach(department => department.employees = []);
     const allEmployees: Employee[] = departments.flatMap(department =>
       department.employees.map(employee => ({ ...employee, departmentId: department.id }))
     );
-    departments.forEach(department => department.employees = []);
-
-    const client = await poolPromise;
     let insertedDepartments = 0, insertedEmployees = 0;
     try {
+      const client = await poolPromise;
       const database: Db = client.db(config.mongoDbDatabase);
       const departmentCollection: Collection<Department> = database.collection<Department>('departments');
       const employeeCollection: Collection<Employee> = database.collection<Employee>('employees');
@@ -29,7 +29,7 @@ export class MongoDbInitialization {
       await departmentCollection.drop();
       await employeeCollection.drop();
 
-      const insertManyResultDep: InsertManyResult<Department> = await departmentCollection.insertMany(departments);
+      const insertManyResultDep: InsertManyResult<Department> = await departmentCollection.insertMany(localDepartments);
       insertedDepartments = insertManyResultDep.insertedCount;
       const insertManyResultEmp: InsertManyResult<Employee> = await employeeCollection.insertMany(allEmployees);
       insertedEmployees = insertManyResultEmp.insertedCount;

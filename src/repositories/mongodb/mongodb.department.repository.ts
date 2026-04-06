@@ -15,12 +15,13 @@ export class MongoDbDepartmentRepository {
  * @return void
  */
   async createDepartment(department: Department) {
-    department.employees = [];
     const client = await poolPromise;
     try {
       const database: Db = client.db(config.mongoDbDatabase);
       const departmentCollection: Collection<Department> = database.collection<Department>('departments');
-      await departmentCollection.insertOne(department);
+      const localDepartment = structuredClone(department);
+      localDepartment.employees = [];
+      await departmentCollection.insertOne(localDepartment);
     } catch (err) {
       console.error("MongoDbDepartmentRepository.createDepartment():", err);
       throw err;
@@ -51,13 +52,14 @@ export class MongoDbDepartmentRepository {
    * @returns void
    */
   async updateDepartment(department: Department) {
-    department.employees = [];
     const filter = { id: department.id };
     const client = await poolPromise;
     try {
       const database: Db = client.db(config.mongoDbDatabase);
       const departmentCollection: Collection<Department> = database.collection<Department>('departments');
-      await departmentCollection.replaceOne(filter, department);
+      const localDepartment = structuredClone(department);
+      localDepartment.employees = [];
+      await departmentCollection.replaceOne(filter, localDepartment);
     } catch (err) {
       console.error("MongoDbDepartmentRepository.updateDepartment():", err);
       throw err;

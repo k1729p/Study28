@@ -1,6 +1,7 @@
 @echo off
 set CURL=curl -g -i -H "Accept: application/json" -H "Content-Type: application/json"
 set PORT=8128
+set CASSANDRA_HOST=localhost
 set MONGODB_URI=mongodb://admin:secret@localhost:27017/?authSource=admin
 set MY_SQL_HOST=localhost
 set POSTGRESQL_HOST=localhost

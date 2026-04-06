@@ -157,15 +157,25 @@ Action: \
 
 | Name | Type | Storage Abstraction | Query Language |
 | :--- | :--- | :--- | :--- |
-| ✔️PostgreSQL | Relational | Table | SQL |
-| 🛠️Oracle | Relational | Table | PL/SQL |
-| 🛠️MySQL | Relational | Table | SQL |
-| 🛠️MS SQL Server | Relational | Table | T-SQL |
-| ✔️MongoDB | Document Store | Collection | MQL (MongoDB Query Language) |
-| 🛠️Redis | Key-Value / Cache | Hash / String | RESP (Redis Serialization Protocol) |
-| ❌Cassandra | Columnar | Table | CQL (Cassandra Query Language) |
-| ❌Neo4j | Graph Database | Node / Relationship | Cypher |
-| ❌Chroma | Vector Database | Collection | Chroma API (Python/JS Client) |
+| 🛠️[Cassandra][1] | Columnar | Table | CQL (Cassandra Query Language) |
+| ❌[Chroma][2] | Vector Database | Collection | Chroma API (Python/JS Client) |
+| ✔️[MongoDB][3] | Document Store | Collection | MQL (MongoDB Query Language) |
+| 🛠️[MySQL][4] | Relational | Table | SQL |
+| ❌[Neo4j][5] | Graph Database | Node / Relationship | Cypher |
+| 🛠️[Oracle][6] | Relational | Table | PL/SQL |
+| ✔️[PostgreSQL][7] | Relational | Table | SQL |
+| 🛠️[Redis][8] | Key-Value / Cache | Hash / String | RESP (Redis Serialization Protocol) |
+| 🛠️[SQL Server][9] | Relational | Table | T-SQL |
+
+[1]: <https://cassandra.apache.org/_/index.html> "Apache Cassandra"
+[2]: <https://www.trychroma.com/> "Chroma"
+[3]: <https://www.mongodb.com/products/platform/atlas-database> "MongoDB Atlas"
+[4]: <https://www.mysql.com/> "MySQL"
+[5]: <https://neo4j.com/product/neo4j-graph-database/> "Neo4j"
+[6]: <https://www.oracle.com/database/free/> "Oracle AI Database 26ai"
+[7]: <https://www.postgresql.org/> "PostgreSQL"
+[8]: <https://redis.io/> "Redis"
+[9]: <https://www.microsoft.com/en-us/sql-server> "Microsoft SQL Server"
 
 ## Links
 
@@ -173,11 +183,6 @@ Action: \
 | :--- | :--- |
 | [Node.js](https://nodejs.org/en/) | JavaScript runtime environment |
 | [Express](https://expressjs.com/) | Web framework for Node.js |
-| [PostgreSQL](https://www.postgresql.org/) | Relational database |
-| [Oracle AI Database 26ai](https://www.oracle.com/database/free/) | Relational database |
-| [MySQL](https://www.mysql.com/) | Relational database |
-| [Microsoft SQL Server](https://www.microsoft.com/en-us/sql-server) | Relational database |
-| [MongoDB Atlas](https://www.mongodb.com/products/platform/atlas-database) | Document-oriented database |
 
 ---
 
