@@ -313,7 +313,7 @@ export class PostgreSQLDepartmentRepository {
             client.release();
         }
         console.log("PostgreSQLDepartmentRepository.transferEmployees(): " +
-            "transferred employees number[%d], source department id[%d], target department id[%d]",
+            "transferred employees count[%d], source department id[%d], target department id[%d]",
             employeeIds.length, sourceDepartmentId, targetDepartmentId);
     }
 }

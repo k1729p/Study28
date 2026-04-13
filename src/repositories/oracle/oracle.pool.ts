@@ -6,7 +6,7 @@ import { config } from "./../../configuration/configuration.js";
 oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
 
 /**
- * Configuration for connection pool.
+ * Configuration for the connection pool.
  */
 const POOL_CONFIG = {
   connectString: config.oracleConnectString,

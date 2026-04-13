@@ -43,7 +43,7 @@ export class MongoDbEmployeeRepository {
       console.error("MongoDbEmployeeRepository.getEmployees():", err);
       throw err;
     }
-    console.log("MongoDbEmployeeRepository.getEmployees(): departmentId[%d], employees number[%s]",
+    console.log("MongoDbEmployeeRepository.getEmployees(): departmentId[%d], employees count[%s]",
       departmentId, employees.length);
     return employees;
   }
@@ -106,7 +106,7 @@ export class MongoDbEmployeeRepository {
       throw err;
     }
     console.log("MongoDbEmployeeRepository.transferEmployees(): " +
-      "source department id[%d], target department id[%d], transferred employees number[%d]",
+      "source department id[%d], target department id[%d], transferred employees count[%d]",
       sourceDepartmentId, targetDepartmentId, employeeIds.length);
   }
 }

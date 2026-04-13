@@ -7,7 +7,7 @@ const DROP_TABLE_EMPLOYEES_SQL = 'DROP TABLE IF EXISTS employees';
 const DROP_TABLE_DEPARTMENTS_SQL = 'DROP TABLE IF EXISTS departments';
 const DROP_PROCEDURE_TRANSFER_EMPLOYEES_SQL = 'DROP PROCEDURE IF EXISTS transfer_employees';
 const DROP_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL =
-    `DROP PROCEDURE IF EXISTS delete_department_and_employees`;
+    'DROP PROCEDURE IF EXISTS delete_department_and_employees';
 const CREATE_TABLE_DEPARTMENTS_SQL = `
     CREATE TABLE departments (
         id integer PRIMARY KEY,

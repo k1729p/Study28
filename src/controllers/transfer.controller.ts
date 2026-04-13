@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 
 import { TransferService } from "../services/transfer.service.js";
 import { RepositoryType } from '../repositories/repository-type.js';
-import { BLUE_BRIGHT, RESET } from "../colors.js";
+import * as colors from "../utils/colors.js";
 /**
  * This controller class provides methods to manage transfers.
  */
@@ -36,6 +36,6 @@ export class TransferController {
     res.status(StatusCodes.NO_CONTENT).json();
     console.log(
       "%sTransferController.transferEmployees():%s repositoryType[%s], source id[%s], target id[%s], employees %j",
-      BLUE_BRIGHT, RESET, repositoryType, sourceDepartmentId, targetDepartmentId, employeeIds);
+      colors.BLUE_BRIGHT, colors.RESET, repositoryType, sourceDepartmentId, targetDepartmentId, employeeIds);
   };
 }

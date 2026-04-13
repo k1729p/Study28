@@ -3,7 +3,7 @@ import sql from 'mssql';
 import { config } from "./../../configuration/configuration.js";
 
 /**
- * Configuration for connection pool.
+ * Configuration for the connection pool.
  */
 const POOL_CONFIG = {
     server: config.sqlServerHost,

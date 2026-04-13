@@ -4,7 +4,7 @@ import { StatusCodes } from 'http-status-codes';
 import { Department } from "../models/department.js";
 import { DepartmentService } from "../services/department.service.js";
 import { RepositoryType } from '../repositories/repository-type.js';
-import { RED_BRIGHT, GREEN_BRIGHT, CYAN_BRIGHT, MAGENTA_BRIGHT, RESET } from "../colors.js";
+import * as colors from "./../utils/colors.js";
 /**
  * This controller class provides methods to manage departments.
  */
@@ -33,7 +33,7 @@ export class DepartmentController {
     }
     res.status(StatusCodes.CREATED).json();
     console.log("%sDepartmentController.createDepartment():%s repositoryType[%s], id[%s]",
-      RED_BRIGHT, RESET, repositoryType, department.id);
+      colors.RED_BRIGHT, colors.RESET, repositoryType, department.id);
   };
   /**
    * Get all departments.
@@ -52,7 +52,7 @@ export class DepartmentController {
       return;
     }
     console.log("%sDepartmentController.getDepartments():%s repositoryType[%s]",
-      GREEN_BRIGHT, RESET, repositoryType);
+      colors.GREEN_BRIGHT, colors.RESET, repositoryType);
   };
   /**
    * Get a department by ID.
@@ -108,7 +108,7 @@ export class DepartmentController {
     }
     res.status(StatusCodes.NO_CONTENT).json();
     console.log("%sDepartmentController.updateDepartment():%s repositoryType[%s], id[%s]",
-      MAGENTA_BRIGHT, RESET, repositoryType, department.id);
+      colors.MAGENTA_BRIGHT, colors.RESET, repositoryType, department.id);
   };
   /**
    * Delete a department.
@@ -133,6 +133,6 @@ export class DepartmentController {
     }
     res.status(StatusCodes.NO_CONTENT).json();
     console.log("%sDepartmentController.deleteDepartment():%s repositoryType[%s], id[%s]",
-      CYAN_BRIGHT, RESET, repositoryType, id);
+      colors.CYAN_BRIGHT, colors.RESET, repositoryType, id);
   };
 }

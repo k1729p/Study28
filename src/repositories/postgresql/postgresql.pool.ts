@@ -3,7 +3,7 @@ import { Pool } from "pg";
 import { config } from "./../../configuration/configuration.js";
 
 /**
- * Configuration for connection pool.
+ * Configuration for the connection pool.
  */
 const POOL_CONFIG = {
     host: config.postgreSqlHost,

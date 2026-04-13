@@ -3,6 +3,7 @@ import { Aaa } from './aaa/aaa.js';
 import express, { Request, Response, NextFunction, Router } from 'express';
 import cors from 'cors';
 import { config } from "./configuration/configuration.js";
+import { clientPromise as cassandraClientPromise } from "./repositories/cassandra/cassandra.pool.js";
 import { poolPromise as mongoDbPoolPromise } from "./repositories/mongodb/mongodb.pool.js";
 import { poolPromise as mySqlPoolPromise } from "./repositories/mysql/mysql.pool.js";
 import { poolPromise as oraclePoolPromise } from "./repositories/oracle/oracle.pool.js";
@@ -13,7 +14,7 @@ import { DepartmentController } from './controllers/department.controller.js';
 import { EmployeeController } from './controllers/employee.controller.js';
 import { InitializationController } from './controllers/initialization.controller.js';
 import { TransferController } from './controllers/transfer.controller.js';
-import { RED_BRIGHT, RESET } from "./colors.js";
+import { RED_BRIGHT, RESET } from "./utils/colors.js";
 
 main();
 
@@ -21,80 +22,84 @@ main();
  * This is the main entry point of the application.
  */
 function main() {
-    const app = express();
-    app.use(express.json());
-    app.use(cors());
-    app.use('/api/', createRouting());
-    app.use(errorHandler);
-    const server = app.listen(config.port, () => {
-        console.log(`
+  const app = express();
+  app.use(express.json());
+  app.use(cors());
+  app.use('/api/', createRouting());
+  app.use(errorHandler);
+  const server = app.listen(config.port, () => {
+    console.log(`
 ╭────────────────────────────╮
 │ ▀▄▀▄▀▄▀▄▀▄ Study 28 ▀▄▀▄▀▄▀▄▀▄ │
 ╰────────────────────────────╯`);
-        console.log('main(): server is running on port[%s%d%s]', RED_BRIGHT, config.port, RESET);
+    console.log('%s main(): server is running on port[%s%d%s]',
+      new Date().toTimeString().slice(0, 8), RED_BRIGHT, config.port, RESET);
+  });
+  const shutdown = async () => {
+    console.log('main(): shutdown signal received');
+    server.close(async () => {
+      console.log("main(): HTTP server closed");
+      try {
+        await (await cassandraClientPromise).shutdown();
+        console.log("main(): Cassandra client shut down");
+        await (await mongoDbPoolPromise).close();
+        console.log("main(): MongoDB pool closed");
+        await (await mySqlPoolPromise).end();
+        console.log("main(): MySQL pool ended");
+        await (await oraclePoolPromise).close();
+        console.log("main(): Oracle pool closed");
+        await (await postgreSqlPoolPromise).end();
+        console.log("main(): PostgreSQL pool ended");
+        await (await sqlServerPoolPromise).close();
+        console.log("main(): SQL Server pool closed");
+        await (await redisClientPromise).quit();
+        console.log("main(): Redis client quitted");
+        console.log("main(): shutdown completed");
+        process.exit(0);
+      } catch (err) {
+        console.error("main(): error during database shutdown:", err);
+        process.exit(1);
+      }
     });
-    const shutdown = async () => {
-        console.log('main(): shutdown signal received');
-        server.close(async () => {
-            console.log("main(): HTTP server closed");
-            try {
-                await (await mongoDbPoolPromise).close();
-                console.log("main(): MongoDB pool closed");                
-                await (await mySqlPoolPromise).end();
-                console.log("main(): MySQL pool ended");
-                await (await oraclePoolPromise).close();
-                console.log("main(): Oracle pool closed");
-                await (await postgreSqlPoolPromise).end();
-                console.log("main(): PostgreSQL pool ended");
-                await (await sqlServerPoolPromise).close();
-                console.log("main(): SQL Server pool closed");
-                await (await redisClientPromise).quit();
-                console.log("main(): Redis client quitted");
-                console.log("main(): shutdown completed");
-                process.exit(0);
-            } catch (err) {
-                console.error("main(): error during database shutdown:", err);
-                process.exit(1);
-            }
-        });
-        // Forced shutdown if graceful closing takes too long (e.g., 10 seconds)
-        setTimeout(() => {
-            console.error("main(): could not close connections in time, forceful exit");
-            process.exit(1);
-        }, 10000);
-    };
-    process.on('SIGINT', shutdown);
-    process.on('SIGTERM', shutdown);
+    // Forced shutdown if graceful closing takes too long (e.g., 10 seconds)
+    setTimeout(() => {
+      console.error("main(): could not close connections in time, forceful exit");
+      process.exit(1);
+    }, 10000);
+  };
+  process.on('SIGINT', shutdown);
+  process.on('SIGTERM', shutdown);
 }
 /**
  * This function creates a new Router instance and sets up a basic route.
  * @returns Router
  */
 function createRouting(): Router {
-    const router = Router();
-    // ####################################################################################################
-    router.get('/aaa/', new Aaa().aaa);
-    // ####################################################################################################
-    const initializationController = new InitializationController();
-    router.post('/load/', initializationController.loadInitialData);
+  const router = Router();
+  // ####################################################################################################
+  router.get('/initialize/', new Aaa().initialize);
+  router.get('/read/', new Aaa().read);
+  // ####################################################################################################
+  const initializationController = new InitializationController();
+  router.post('/load/', initializationController.loadInitialData);
 
-    const departmentController = new DepartmentController();
-    router.post('/departments/', departmentController.createDepartment);
-    router.get('/departments/', departmentController.getDepartments);
-    router.get('/departments/:id', departmentController.getDepartmentById);
-    router.patch('/departments/:id', departmentController.updateDepartment);
-    router.delete('/departments/:id', departmentController.deleteDepartment);
+  const departmentController = new DepartmentController();
+  router.post('/departments/', departmentController.createDepartment);
+  router.get('/departments/', departmentController.getDepartments);
+  router.get('/departments/:id', departmentController.getDepartmentById);
+  router.patch('/departments/:id', departmentController.updateDepartment);
+  router.delete('/departments/:id', departmentController.deleteDepartment);
 
-    const employeeController = new EmployeeController();
-    router.post('/employees/', employeeController.createEmployee);
-    router.get('/employees/', employeeController.getEmployees);
-    router.get('/employees/:id', employeeController.getEmployeeById);
-    router.patch('/employees/:id', employeeController.updateEmployee);
-    router.delete('/employees/:id', employeeController.deleteEmployee);
+  const employeeController = new EmployeeController();
+  router.post('/employees/', employeeController.createEmployee);
+  router.get('/employees/', employeeController.getEmployees);
+  router.get('/employees/:id', employeeController.getEmployeeById);
+  router.patch('/employees/:id', employeeController.updateEmployee);
+  router.delete('/employees/:id', employeeController.deleteEmployee);
 
-    const transferController = new TransferController();
-    router.post('/transfers/', transferController.transferEmployees);
-    return router;
+  const transferController = new TransferController();
+  router.post('/transfers/', transferController.transferEmployees);
+  return router;
 }
 /**
  * Error handling middleware.
@@ -104,7 +109,7 @@ function createRouting(): Router {
  * @param next - The next middleware function.
  */
 function errorHandler(err: Error, req: Request, res: Response, next: NextFunction) {
-    res.status(500).json('Internal Server Error');
-    next(err);
-    console.error("errorHandler():", err);
+  res.status(500).json('Internal Server Error');
+  next(err);
+  console.error("errorHandler():", err);
 }

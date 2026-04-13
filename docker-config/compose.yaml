@@ -1,5 +1,6 @@
 include:
   - includes/cassandra.yaml
+  - includes/elasticsearch.yaml
   - includes/mongodb.yaml
   - includes/mysql.yaml
   - includes/oracle.yaml
@@ -12,6 +13,7 @@ services:
     image: eeengcs/study28:1.0.0-SNAPSHOT
     depends_on:
       - cassandra
+      - elasticsearch
       - mongodb
       - mysql
       - oracle

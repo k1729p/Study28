@@ -3,7 +3,7 @@ import { createClient } from 'redis';
 import { config } from "./../../configuration/configuration.js";
 
 /**
- * Configuration for connection pool.
+ * Configuration for the connection pool.
  */
 const POOL_CONFIG = {
     url: config.redisUrl

@@ -3,11 +3,14 @@ import { MongoClient } from 'mongodb';
 import { config } from "../../configuration/configuration.js";
 
 /**
- * Connection pool.
- * The MongoClient instance acts as the connection pool manager.
- * It is initialized once and shared across the application.
+ * Configuration for the connection pool.
  */
-const client = new MongoClient(config.mongoDbUri);
+const POOL_CONFIG = {
+}
+/**
+ * Connection pool.
+ */
+const client = new MongoClient(config.mongoDbUri, POOL_CONFIG);
 
 /**
  * A promise that resolves to a connected client object.

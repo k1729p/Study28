@@ -117,10 +117,23 @@ Action: \
   to create, read, update, and delete departments and employees. \
  ![orangeHR](images/orangeHR-500.png)
 
-![greenCircle](images/greenCircle.png) 2.1. **Docker** images are built using the following files:
+![greenCircle](images/greenCircle.png) 2.1. **Docker** images are built using the following files.
+
+<details>
+<summary>Docker scripts:</summary>
 
 - [Dockerfile](https://github.com/k1729p/Study28/blob/main/docker-config/Dockerfile)
 - [compose.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/compose.yaml)
+  - [cassandra.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/cassandra.yaml)
+  - [elasticsearch.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/elasticsearch.yaml)
+  - [mongodb.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/mongodb.yaml)
+  - [mysql.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/mysql.yaml)
+  - [oracle.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/oracle.yaml)
+  - [postgresql.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/postgresql.yaml)
+  - [redis.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/redis.yaml)
+  - [sql-server.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/sql-server.yaml)
+
+</details>
 
 ![greenCircle](images/greenCircle.png) 2.2. The [screenshot](images/ScreenshotCurlOnDockerInitDB.png)
 of the console log from the run of the batch file "**02 CURL on Docker init DB.bat**" with **PostgreSQL** selected.
@@ -155,29 +168,34 @@ Action: \
 
 ## Data Stores
 
-| Name | Type | Storage Abstraction | Query Language |
-| :--- | :--- | :--- | :--- |
-| 🛠️[Cassandra][01] | Columnar | Table | CQL (Cassandra Query Language) |
-| ❌[Chroma][02] | Vector Database | Collection | Chroma API (Python/JS Client) |
-| ❌[Elasticsearch][03] | database | ? | Lucene? |
-| ✔️[MongoDB][04] | Document Store | Collection | MQL (MongoDB Query Language) |
-| 🛠️[MySQL][05] | Relational | Table | SQL |
-| ❌[Neo4j][06] | Graph Database | Node / Relationship | Cypher |
-| 🛠️[Oracle][07] | Relational | Table | PL/SQL |
-| ✔️[PostgreSQL][08] | Relational | Table | SQL |
-| 🛠️[Redis][09] | Key-Value / Cache | Hash / String | RESP (Redis Serialization Protocol) |
-| 🛠️[SQL Server][10] | Relational | Table | T-SQL |
+| Name | Type | Storage Abstraction | Query Language | Implementation |
+| :--- | :--- | :--- | :--- | :--- |
+| [Cassandra][ds01] | Columnar | Table | CQL (Cassandra Query Language) | 🛠️ |
+| [Chroma][ds02] | Vector Database | Collection | Chroma API (Python/JS Client) | ❌ |
+| [Elasticsearch][ds03] | database | ? | Lucene? | ❌ |
+| [MongoDB][ds04] | Document Store | Collection | MQL (MongoDB Query Language) | ✔️ |
+| [MySQL][ds05] | Relational | Table | SQL | 🛠️ |
+| [Neo4j][ds06] | Graph Database | Node / Relationship | Cypher | ❌ |
+| [Oracle][ds07] | Relational | Table | PL/SQL | 🛠️ |
+| [PostgreSQL][ds08] | Relational | Table | SQL | ✔️ |
+| [Redis][ds09] | Key-Value / Cache | Hash / String | RESP (Redis Serialization Protocol) | 🛠️ |
+| [SQL Server][ds10] | Relational | Table | T-SQL | 🛠️ |
 
-[01]: <https://cassandra.apache.org/_/index.html> "Apache Cassandra"
-[02]: <https://www.trychroma.com/> "Chroma"
-[03]: <https://www.elastic.co/elasticsearch> "Elasticsearch"
-[04]: <https://www.mongodb.com/products/platform/atlas-database> "MongoDB Atlas"
-[05]: <https://www.mysql.com/> "MySQL"
-[06]: <https://neo4j.com/product/neo4j-graph-database/> "Neo4j"
-[07]: <https://www.oracle.com/database/free/> "Oracle AI Database 26ai"
-[08]: <https://www.postgresql.org/> "PostgreSQL"
-[09]: <https://redis.io/> "Redis"
-[10]: <https://www.microsoft.com/en-us/sql-server> "Microsoft SQL Server"
+[ds01]: <https://cassandra.apache.org/_/index.html> "Apache Cassandra"
+[ds02]: <https://www.trychroma.com/> "Chroma"
+[ds03]: <https://www.elastic.co/elasticsearch> "Elasticsearch"
+[ds04]: <https://www.mongodb.com/products/platform/atlas-database> "MongoDB Atlas"
+[ds05]: <https://www.mysql.com/> "MySQL"
+[ds06]: <https://neo4j.com/product/neo4j-graph-database/> "Neo4j"
+[ds07]: <https://www.oracle.com/database/free/> "Oracle AI Database 26ai"
+[ds08]: <https://www.postgresql.org/> "PostgreSQL"
+[ds09]: <https://redis.io/> "Redis"
+[ds10]: <https://www.microsoft.com/en-us/sql-server> "Microsoft SQL Server"
+
+- **Cassandra** is a NoSQL distributed database.
+  [Cassandra glossary](https://cassandra.apache.org/_/glossary.html).
+- Diagram for database tables:
+  [Mermaid Entity Relationship Diagram](https://mermaid.ai/open-source/syntax/entityRelationshipDiagram.html)
 
 ## Links
 

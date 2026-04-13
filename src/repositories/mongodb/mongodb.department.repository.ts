@@ -43,7 +43,7 @@ export class MongoDbDepartmentRepository {
       console.error("MongoDbDepartmentRepository.getDepartments():", err);
       throw err;
     }
-    console.log("MongoDbDepartmentRepository.getDepartments() departments number[%s]", departments.length);
+    console.log("MongoDbDepartmentRepository.getDepartments() departments count[%s]", departments.length);
     return departments;
   }
   /**

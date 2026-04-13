@@ -1,0 +1,91 @@
+Aaa.aaa():  ==================================================
+Cassandra Initialization: 1
+CassandraInitialization.loadInitialData(): OperationTimedOutError: The host 127.0.0.1:9042 did not reply before timeout 12000 ms
+    at Timeout.requestTimedOut [as _onTimeout] (d:\1_node_workspace\Study28\node_modules\cassandra-driver\lib\operation-state.js:107:28)
+    at listOnTimeout (node:internal/timers:605:17)
+    at process.processTimers (node:internal/timers:541:7) {
+  info: 'Represents a client-side error that is raised when the client did not hear back from the server within socketOptions.readTimeout',
+  host: '127.0.0.1:9042',
+  coordinator: '127.0.0.1:9042',
+  query: 'DROP TABLE IF EXISTS study28.departments'
+}
+error[OperationTimedOutError: The host 127.0.0.1:9042 did not reply before timeout 12000 ms
+    at Timeout.requestTimedOut [as _onTimeout] (d:\1_node_workspace\Study28\node_modules\cassandra-driver\lib\operation-state.js:107:28)
+    at listOnTimeout (node:internal/timers:605:17)
+    at process.processTimers (node:internal/timers:541:7) {
+  info: 'Represents a client-side error that is raised when the client did not hear back from the server within socketOptions.readTimeout',
+  host: '127.0.0.1:9042',
+  coordinator: '127.0.0.1:9042',
+  query: 'DROP TABLE IF EXISTS study28.departments'
+}]
+vvv begin sleeping some seconds vvv
+Cassandra Initialization: 2
+CassandraInitialization.loadInitialData(): OperationTimedOutError: The host 127.0.0.1:9042 did not reply before timeout 12000 ms
+    at Timeout.requestTimedOut [as _onTimeout] (d:\1_node_workspace\Study28\node_modules\cassandra-driver\lib\operation-state.js:107:28)
+    at listOnTimeout (node:internal/timers:605:17)
+    at process.processTimers (node:internal/timers:541:7) {
+  info: 'Represents a client-side error that is raised when the client did not hear back from the server within socketOptions.readTimeout',
+  host: '127.0.0.1:9042',
+  coordinator: '127.0.0.1:9042',
+  query: '\n' +
+    '  CREATE TABLE study28.departments (\n' +
+    '    id int PRIMARY KEY,\n' +
+    '    name text,\n' +
+    '    start_date date,\n' +
+    '    end_date date,\n' +
+    '    notes text,\n' +
+    '    keywords list<text>,\n' +
+    '    image text\n' +
+    '  )\n'
+}
+error[OperationTimedOutError: The host 127.0.0.1:9042 did not reply before timeout 12000 ms
+    at Timeout.requestTimedOut [as _onTimeout] (d:\1_node_workspace\Study28\node_modules\cassandra-driver\lib\operation-state.js:107:28)
+    at listOnTimeout (node:internal/timers:605:17)
+    at process.processTimers (node:internal/timers:541:7) {
+  info: 'Represents a client-side error that is raised when the client did not hear back from the server within socketOptions.readTimeout',
+  host: '127.0.0.1:9042',
+  coordinator: '127.0.0.1:9042',
+  query: '\n' +
+    '  CREATE TABLE study28.departments (\n' +
+    '    id int PRIMARY KEY,\n' +
+    '    name text,\n' +
+    '    start_date date,\n' +
+    '    end_date date,\n' +
+    '    notes text,\n' +
+    '    keywords list<text>,\n' +
+    '    image text\n' +
+    '  )\n'
+}]
+vvv begin sleeping some seconds vvv
+Cassandra Initialization: 3
+CassandraInitialization.loadInitialData(): OperationTimedOutError: The host 127.0.0.1:9042 did not reply before timeout 12000 ms
+    at Timeout.requestTimedOut [as _onTimeout] (d:\1_node_workspace\Study28\node_modules\cassandra-driver\lib\operation-state.js:107:28)
+    at listOnTimeout (node:internal/timers:605:17)
+    at process.processTimers (node:internal/timers:541:7) {
+  info: 'Represents a client-side error that is raised when the client did not hear back from the server within socketOptions.readTimeout',
+  host: '127.0.0.1:9042',
+  coordinator: '127.0.0.1:9042',
+  query: 'DROP TABLE IF EXISTS study28.departments'
+}
+error[OperationTimedOutError: The host 127.0.0.1:9042 did not reply before timeout 12000 ms
+    at Timeout.requestTimedOut [as _onTimeout] (d:\1_node_workspace\Study28\node_modules\cassandra-driver\lib\operation-state.js:107:28)
+    at listOnTimeout (node:internal/timers:605:17)
+    at process.processTimers (node:internal/timers:541:7) {
+  info: 'Represents a client-side error that is raised when the client did not hear back from the server within socketOptions.readTimeout',
+  host: '127.0.0.1:9042',
+  coordinator: '127.0.0.1:9042',
+  query: 'DROP TABLE IF EXISTS study28.departments'
+}]
+vvv begin sleeping some seconds vvv
+Cassandra Initialization: 4
+CassandraInitialization.loadInitialData(): dropped and created tables
+CassandraInitialization.insertDepartments(): inserted [1] departments
+CassandraInitialization.insertEmployees(): inserted [1] employees
+CassandraInitialization.loadInitialData(): data loaded successfully
+Cassandra: 1:43.160 (m:ss.mmm) loaded initial data
+CassandraDepartmentRepository.createDepartment(): id[12345]
+CassandraDepartmentRepository.getDepartments(): departments count[2]
+Aaa.aaa(): Cassandra resultArray departments.length[2],
+        dep name[1st Front Office], emp length[1], emp lastName[Doe]
+        dep name[D-Name-CREATE], emp length[0], emp lastName[]
+Cassandra: 1:43.189 (m:ss.mmm)

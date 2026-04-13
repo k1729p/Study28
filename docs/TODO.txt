@@ -7,20 +7,23 @@ ADD TO package.json:
   "prisma": "^5.20.0"
 }
 #################################################################################
+IN Study27 RECOMMENDED CHANGE: in tsconfig.json use a prefix for paths ("@models/*": ["src/app/models/*"]) to distinguish them from standard node_modules packages and avoid naming collisions.
+#################################################################################
 CHECK IT: You do not need to install @types/redis anymore. Doing so might actually cause type conflicts.
 #################################################################################
 TESTCONTAINERS : https://github.com/testcontainers/testcontainers-node
 #################################################################################
-cassandra-nodejs-driver : Datastax Nodejs driver
-      https://github.com/apache/cassandra-nodejs-driver
-
-
-Elasticsearch
-  https://www.elastic.co/docs/reference/elasticsearch/clients/javascript/installation
-    npm install @elastic/elasticsearch
-  logs??? https://www.elastic.co/docs/reference/apm/agents/nodejs/logs
+CAP theorem states that a distributed database system can only provide two of three guarantees:
+ - Consistency (all nodes see the same data)
+ - Availability (every request gets a response)
+ - Partition Tolerance (system operates despite network failures).
+Cassandra is by default an AP database.
+#################################################################################
 CockroachDB
   https://www.cockroachlabs.com/blog/what-is-distributed-sql/
+  CockroachDB versus Apache Cassandra:
+    https://hackernoon.com/cockroachdb-vs-apache-cassandra-choosing-the-right-distributed-database-for-your-use-case
+
 H2 is a relational database management system written in Java. 
 ---------------------------------------------------------------------------------
 Amazon DynamoDB is a fully managed, serverless, NoSQL database service 
@@ -32,6 +35,17 @@ Teradata Vantage Express
     https://downloads.teradata.com/download/database/teradata-express/vmware
 ---------------------------------------------------------------------------------
 Apache Spark
+#################################################################################
+===  Elasticsearch DATABASE  ===
+  https://www.elastic.co/docs/reference/elasticsearch/clients/javascript/installation
+    npm install @elastic/elasticsearch
+  logs??? https://www.elastic.co/docs/reference/apm/agents/nodejs/logs
+
+From AI: added xpack.security.enabled=false. In modern Elasticsearch (8.x and 9.x), security is on by default. To keep it consistent with your other repositories where you are likely connecting without complex SSL/Auth setups for local study, disabling it is usually the path of least resistance.
+  A few tips for Elasticsearch 9.3.0:
+  Virtual Memory: On Windows/Docker Desktop, this usually works fine. However, if the container crashes immediately with an "exit code 137" or a "max virtual memory areas" error, you might need to run wsl -d docker-desktop and execute sysctl -w vm.max_map_count=262144.
+  Healthcheck: I included a healthcheck using curl. This ensures your Node.js app doesn't try to connect before the Elasticsearch engine has fully finished its internal "bootstrap" checks.
+  Are you planning to use the official @elastic/elasticsearch client for the repository implementation in your Node.js app?
 #################################################################################
 ===  PostgreSQL DATABASE  ===
 https://node-postgres.com/ <----- node.js modules for interfacing with PostgreSQL database
@@ -79,9 +93,15 @@ In Docker container ".....", in "Exec" tab:
   /opt/mssql-tools18/bin/sqlcmd -S mssql -No -U sa -P ABab1234 -Q "select 12345"
 #################################################################################
 ===  Cassandra DATABASE  ===
-https://en.wikipedia.org/wiki/Apache_Cassandra
-Docker compose: https://github.com/kayvansol/Cassandra
+Note: Apache Cassandra does not support ACID transactions across multiple tables.
 
+https://en.wikipedia.org/wiki/Apache_Cassandra
+cassandra-nodejs-driver : Datastax Nodejs driver
+      https://docs.datastax.com/en/developer/nodejs-driver/4.8/index.html
+      https://github.com/apache/cassandra-nodejs-driver
+
+
+Docker compose: https://github.com/kayvansol/Cassandra
 In Docker container "cassandra-1", in "Exec" tab:
   cqlsh
 Commands to execute in 'cqlsh' console:
@@ -94,6 +114,12 @@ Commands to execute in 'cqlsh' console:
       (id, name, last_update_timestamp) values (2, 'xyz', totimestamp(now()));
   select id, name, last_update_timestamp from company.departments;
   exit;
+----------------------------------------------
+const client = new Client({
+   contactPoints: ['10.1.1.3', '10.1.1.4', '10.1.1.5'], 
+   localDataCenter: 'us-east-1',
+   credentials: { username: 'my_username', password: 'my_p@ssword1!' }
+});
 #################################################################################
 ===  Redis DATABASE  ===
 https://redis.io/docs/latest/develop/tools/cli/
@@ -118,9 +144,6 @@ https://spring.io/blog/2025/05/23/vector-search-methods
 Two main types of databases:
     Dedicated Vector Databases
     Database Engines with Vector Search Capabilities
-#################################################################################
-CockroachDB versus Apache Cassandra:
-  https://hackernoon.com/cockroachdb-vs-apache-cassandra-choosing-the-right-distributed-database-for-your-use-case
 #################################################################################
 JSON:API specification. Updating Resources: https://jsonapi.org/format/#crud-updating
 

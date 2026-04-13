@@ -3,11 +3,11 @@ services:
     container_name: redis
     image: redis
     ports:
-    - "6379:6379"
+      - "6379:6379"
     networks:
-    - app-net
+      - app-net
     restart: always
     volumes:
-    - redis-data:/data
+      - redis-data:/data
 volumes:
   redis-data:
