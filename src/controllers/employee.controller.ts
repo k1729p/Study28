@@ -3,8 +3,8 @@ import { StatusCodes } from 'http-status-codes';
 
 import { Employee } from "../models/employee.js";
 import { EmployeeService } from "../services/employee.service.js";
-import { RepositoryType } from '../repositories/repository-type.js';
 import * as colors from "./../utils/colors.js";
+import * as helpers from "./../utils/helpers.js";
 /**
  * This controller class provides methods to manage employees.
  */
@@ -17,7 +17,7 @@ export class EmployeeController {
    * @param next - The next middleware function.
    */
   createEmployee = async (req: Request, res: Response, next: NextFunction) => {
-    const repositoryType = req.query.repositoryType as RepositoryType || RepositoryType.PostgreSQL;
+    const repositoryType = helpers.getRepositoryType(req.query.repositoryType);
     const employee: Employee = req.body;
     if (!employee || !employee.id) {
       res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid employee id' });
@@ -42,7 +42,7 @@ export class EmployeeController {
    * @param next - The next middleware function.
    */
   getEmployees = async (req: Request, res: Response, next: NextFunction) => {
-    const repositoryType = req.query.repositoryType as RepositoryType || RepositoryType.PostgreSQL;
+    const repositoryType = helpers.getRepositoryType(req.query.repositoryType);
     try {
       const employees = await this.employeeService.getEmployees(repositoryType);
       res.status(StatusCodes.OK).json(employees);
@@ -61,7 +61,7 @@ export class EmployeeController {
    * @returns void
    */
   getEmployeeById = async (req: Request, res: Response, next: NextFunction) => {
-    const repositoryType = req.query.repositoryType as RepositoryType || RepositoryType.PostgreSQL;
+    const repositoryType = helpers.getRepositoryType(req.query.repositoryType);
     const id = parseInt(req.params.id as string);
     if (isNaN(id)) {
       res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid employee id' });
@@ -91,7 +91,7 @@ export class EmployeeController {
    * @returns void
    */
   updateEmployee = async (req: Request, res: Response, next: NextFunction) => {
-    const repositoryType = req.query.repositoryType as RepositoryType || RepositoryType.PostgreSQL;
+    const repositoryType = helpers.getRepositoryType(req.query.repositoryType);
     const employee: Employee = req.body;
     if (!employee || !employee.id) {
       res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid employee id' });
@@ -117,7 +117,7 @@ export class EmployeeController {
    * @returns void
    */
   deleteEmployee = async (req: Request, res: Response, next: NextFunction) => {
-    const repositoryType = req.query.repositoryType as RepositoryType || RepositoryType.PostgreSQL;
+    const repositoryType = helpers.getRepositoryType(req.query.repositoryType);
     const id = parseInt(req.params.id as string);
     if (isNaN(id)) {
       res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid employee id' });

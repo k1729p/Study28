@@ -1,17 +1,5 @@
 import { Pool } from "pg";
-
-import { config } from "./../../configuration/configuration.js";
-
-/**
- * Configuration for the connection pool.
- */
-const POOL_CONFIG = {
-    host: config.postgreSqlHost,
-    port: config.postgreSqlPort,
-    database: config.postgreSqlDatabase,
-    user: config.postgreSqlUser,
-    password: config.postgreSqlPassword,
-};
+import { POOL_CONFIG } from "./postgresql.constants.js";
 /**
  * Connection pool.
  */

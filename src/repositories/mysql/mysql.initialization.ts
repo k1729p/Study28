@@ -1,50 +1,10 @@
 import { Department } from "../../models/department.js";
 import { poolPromise } from "./mysql.pool.js";
-
-const DROP_TABLE_EMPLOYEES_SQL = 'DROP TABLE IF EXISTS employees';
-const DROP_TABLE_DEPARTMENTS_SQL = 'DROP TABLE IF EXISTS departments';
-const CREATE_TABLE_DEPARTMENTS_SQL = `
-  CREATE TABLE departments (
-    id INT PRIMARY KEY,
-    name VARCHAR(40) NOT NULL,
-    start_date DATE,
-    end_date DATE,
-    notes TEXT,
-    keywords TEXT,
-    image VARCHAR(255)
-  )
-`;
-const CREATE_TABLE_EMPLOYEES_SQL = `
-  CREATE TABLE employees (
-    id INT PRIMARY KEY,
-    department_id INT,
-    first_name VARCHAR(40) NOT NULL,
-    last_name VARCHAR(40) NOT NULL,
-    title VARCHAR(40) NOT NULL,
-    phone VARCHAR(30) NOT NULL,
-    mail VARCHAR(80) NOT NULL,
-    street_name VARCHAR(80),
-    house_number VARCHAR(20),
-    postal_code VARCHAR(20),
-    locality VARCHAR(40),
-    province VARCHAR(40),
-    country VARCHAR(40),
-    FOREIGN KEY (department_id) REFERENCES departments(id)
-  )
-`;
-const INSERT_DEPARTMENT_SQL = `
-  INSERT INTO departments (
-    id, name, start_date, end_date, notes, keywords, image
-  ) VALUES (
-    ?, ?, ?, ?, ?, ?, ?
-  )
-`;
-const INSERT_EMPLOYEE_SQL = `
-  INSERT INTO employees (
-    id, department_id, first_name, last_name, title, phone, mail, 
-    street_name, house_number, postal_code, locality, province, country
-  ) VALUES ?
-`;
+import {
+  DROP_TABLE_EMPLOYEES_SQL, DROP_TABLE_DEPARTMENTS_SQL,
+  CREATE_TABLE_DEPARTMENTS_SQL, CREATE_TABLE_EMPLOYEES_SQL,
+  INSERT_DEPARTMENT_SQL, INSERT_EMPLOYEE_SQL
+} from "./mysql.constants.js";
 /**
  * This service class provides methods to initialize database and load data.
  */

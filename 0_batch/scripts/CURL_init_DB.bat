@@ -10,7 +10,7 @@
 
 
 %HR_YELLOW%
-@powershell -Command Write-Host "Load initial data into the database PostgreSQL" -foreground "Green"
+@powershell -Command Write-Host "Load initial data" -foreground "Green"
 %CURL% -d @%QUERY_DIR%/initial_data.json -X POST "%SITE%/load?%REPO_TYPE%"
 @echo.
 

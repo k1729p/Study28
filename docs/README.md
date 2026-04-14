@@ -172,7 +172,7 @@ Action: \
 | :--- | :--- | :--- | :--- | :--- |
 | [Cassandra][ds01] | Columnar | Table | CQL (Cassandra Query Language) | 🛠️ |
 | [Chroma][ds02] | Vector Database | Collection | Chroma API (Python/JS Client) | ❌ |
-| [Elasticsearch][ds03] | database | ? | Lucene? | ❌ |
+| [Elasticsearch][ds03] | database | ? | Lucene? | 🛠️ |
 | [MongoDB][ds04] | Document Store | Collection | MQL (MongoDB Query Language) | ✔️ |
 | [MySQL][ds05] | Relational | Table | SQL | 🛠️ |
 | [Neo4j][ds06] | Graph Database | Node / Relationship | Cypher | ❌ |

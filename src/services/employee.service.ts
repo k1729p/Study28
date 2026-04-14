@@ -18,12 +18,27 @@ export class EmployeeService {
    */
   async createEmployee(repositoryType: RepositoryType, employee: Employee) {
     switch (repositoryType) {
+      case RepositoryType.Cassandra:
+        break;
+      case RepositoryType.Chroma:
+        break;
+      case RepositoryType.Elasticsearch:
+        break;
       case RepositoryType.MongoDB:
         await this.mongoDbEmployeeRepository.createEmployee(employee);
         break;
+      case RepositoryType.MySQL:
+        break;
+      case RepositoryType.Neo4j:
+        break;
+      case RepositoryType.Oracle:
+        break;
       case RepositoryType.PostgreSQL:
-      default:
         await this.postgreSQLEmployeeRepository.createEmployee(employee);
+        break;
+      case RepositoryType.Redis:
+        break;
+      case RepositoryType.SQLServer:
         break;
     }
   }
@@ -34,12 +49,26 @@ export class EmployeeService {
    */
   async getEmployees(repositoryType: RepositoryType,): Promise<Employee[]> {
     switch (repositoryType) {
+      case RepositoryType.Cassandra:
+        return [];
+      case RepositoryType.Chroma:
+        return [];
+      case RepositoryType.Elasticsearch:
+        return [];
       case RepositoryType.MongoDB:
-        console.error("EmployeeService.getEmployees(): case not implemented");
+        return await this.mongoDbEmployeeRepository.getEmployees();
+      case RepositoryType.MySQL:
+        return [];
+      case RepositoryType.Neo4j:
+        return [];
+      case RepositoryType.Oracle:
         return [];
       case RepositoryType.PostgreSQL:
-      default:
         return await this.postgreSQLEmployeeRepository.getEmployees();
+      case RepositoryType.Redis:
+        return [];
+      case RepositoryType.SQLServer:
+        return [];
     }
   }
 
@@ -51,12 +80,26 @@ export class EmployeeService {
    */
   async getEmployee(repositoryType: RepositoryType, id: number): Promise<Employee | undefined> {
     switch (repositoryType) {
+      case RepositoryType.Cassandra:
+        return undefined;
+      case RepositoryType.Chroma:
+        return undefined;
+      case RepositoryType.Elasticsearch:
+        return undefined;
       case RepositoryType.MongoDB:
-        console.error("EmployeeService.getEmployee(): case not implemented");
+        return await this.mongoDbEmployeeRepository.getEmployee(id);
+      case RepositoryType.MySQL:
+        return undefined;
+      case RepositoryType.Neo4j:
+        return undefined;
+      case RepositoryType.Oracle:
         return undefined;
       case RepositoryType.PostgreSQL:
-      default:
         return await this.postgreSQLEmployeeRepository.getEmployee(id);
+      case RepositoryType.Redis:
+        return undefined;
+      case RepositoryType.SQLServer:
+        return undefined;
     }
   }
   /**
@@ -67,12 +110,27 @@ export class EmployeeService {
    */
   async updateEmployee(repositoryType: RepositoryType, employee: Employee) {
     switch (repositoryType) {
+      case RepositoryType.Cassandra:
+        break;
+      case RepositoryType.Chroma:
+        break;
+      case RepositoryType.Elasticsearch:
+        break;
       case RepositoryType.MongoDB:
         await this.mongoDbEmployeeRepository.updateEmployee(employee);
         break;
+      case RepositoryType.MySQL:
+        break;
+      case RepositoryType.Neo4j:
+        break;
+      case RepositoryType.Oracle:
+        break;
       case RepositoryType.PostgreSQL:
-      default:
         await this.postgreSQLEmployeeRepository.updateEmployee(employee);
+        break;
+      case RepositoryType.Redis:
+        break;
+      case RepositoryType.SQLServer:
         break;
     }
   }
@@ -83,12 +141,27 @@ export class EmployeeService {
    */
   async deleteEmployee(repositoryType: RepositoryType, id: number) {
     switch (repositoryType) {
+      case RepositoryType.Cassandra:
+        break;
+      case RepositoryType.Chroma:
+        break;
+      case RepositoryType.Elasticsearch:
+        break;
       case RepositoryType.MongoDB:
         await this.mongoDbEmployeeRepository.deleteEmployee(id);
         break;
+      case RepositoryType.MySQL:
+        break;
+      case RepositoryType.Neo4j:
+        break;
+      case RepositoryType.Oracle:
+        break;
       case RepositoryType.PostgreSQL:
-      default:
         await this.postgreSQLEmployeeRepository.deleteEmployee(id);
+        break;
+      case RepositoryType.Redis:
+        break;
+      case RepositoryType.SQLServer:
         break;
     }
   }

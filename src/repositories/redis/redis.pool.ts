@@ -1,15 +1,8 @@
 import { createClient } from 'redis';
 
-import { config } from "./../../configuration/configuration.js";
-
+import { POOL_CONFIG } from './redis.constants.js';
 /**
- * Configuration for the connection pool.
- */
-const POOL_CONFIG = {
-    url: config.redisUrl
-};
-/**
- * Redis client.
+ * Client.
  */
 const client = createClient(POOL_CONFIG);
 

@@ -5,20 +5,6 @@ import { RepositoryType } from '../repositories/repository-type.js';
 import { Department } from "../models/department.js";
 import { InitializationService } from "../services/initialization.service.js";
 import { DepartmentService } from "../services/department.service.js";
-import { CassandraInitialization } from "../repositories/cassandra/cassandra.initialization.js";
-import { CassandraDepartmentRepository } from "../repositories/cassandra/cassandra.department.repository.js";
-import { MongoDbInitialization } from "../repositories/mongodb/mongodb.initialization.js";
-import { MongoDbDepartmentRepository } from "../repositories/mongodb/mongodb.department.repository.js";
-import { MySqlInitialization } from "../repositories/mysql/mysql.initialization.js";
-import { MySqlDepartmentRepository } from "../repositories/mysql/mysql.department.repository.js";
-import { OracleInitialization } from "../repositories/oracle/oracle.initialization.js";
-import { OracleDepartmentRepository } from "../repositories/oracle/oracle.department.repository.js";
-import { PostgreSQLInitialization } from "../repositories/postgresql/postgresql.initialization.js";
-import { PostgreSQLDepartmentRepository } from "../repositories/postgresql/postgresql.department.repository.js";
-import { RedisInitialization } from "../repositories/redis/redis.initialization.js";
-import { RedisDepartmentRepository } from "../repositories/redis/redis.department.repository.js";
-import { SQLServerInitialization } from "../repositories/sql-server/sql-server.initialization.js";
-import { SQLServerDepartmentRepository } from "../repositories/sql-server/sql-server.department.repository.js";
 import * as colors from "../utils/styledColors.js";
 import { config as config } from "../configuration/configuration.js";
 
@@ -26,6 +12,7 @@ import { Bbb } from "./bbb.js";
 
 const REPOSITORY_TYPES = [
   RepositoryType.Cassandra,
+  RepositoryType.Elasticsearch,
   RepositoryType.MongoDB,
   RepositoryType.MySQL,
   RepositoryType.Oracle,
@@ -39,20 +26,6 @@ const REPOSITORY_TYPES = [
 export class Aaa {
   initializationService: InitializationService = new InitializationService();
   departmentService: DepartmentService = new DepartmentService();
-  cassandraInitialization: CassandraInitialization = new CassandraInitialization();
-  cassandraDepartmentRepository: CassandraDepartmentRepository = new CassandraDepartmentRepository();
-  mongoDbInitialization: MongoDbInitialization = new MongoDbInitialization();
-  mongoDbDepartmentRepository: MongoDbDepartmentRepository = new MongoDbDepartmentRepository();
-  mySqlInitialization: MySqlInitialization = new MySqlInitialization();
-  mySqlDepartmentRepository: MySqlDepartmentRepository = new MySqlDepartmentRepository();
-  oracleInitialization: OracleInitialization = new OracleInitialization();
-  oracleDepartmentRepository: OracleDepartmentRepository = new OracleDepartmentRepository();
-  postgreSQLInitialization: PostgreSQLInitialization = new PostgreSQLInitialization();
-  postgreSQLDepartmentRepository: PostgreSQLDepartmentRepository = new PostgreSQLDepartmentRepository();
-  sqlServerInitialization: SQLServerInitialization = new SQLServerInitialization();
-  sqlServerDepartmentRepository: SQLServerDepartmentRepository = new SQLServerDepartmentRepository();
-  redisInitialization: RedisInitialization = new RedisInitialization();
-  redisDepartmentRepository: RedisDepartmentRepository = new RedisDepartmentRepository();
   /**
    * 
    * @param req 
@@ -63,19 +36,21 @@ export class Aaa {
     res.status(StatusCodes.OK).json('OK OK OK OK OK OK OK OK OK OK OK');
     console.log('Aaa.initialize(): port[%d],\n' +
       '   cassandraHost[%s], cassandraLocalDataCenter[%s],\n' +
-      '   mongoDbUri[%s], mongoDbDatabase[%s],\n' +
+      '   elasticsearchHost[%s], elasticsearchPort[%d],\n' +
+      '   mongoDbHost[%s], mongoDbPort[%d], mongoDbDatabase[%s],\n' +
       '   mySqlHost[%s], mySqlPort[%d], mySqlDatabase[%s], mySqlUser[%s], mySqlPassword[%s],\n' +
-      '   oracleConnectString[%s], oracleUser[%s], oraclePassword[%s],\n' +
+      '   oracleHost[%s], oraclePort[%d], oracleUser[%s], oraclePassword[%s],\n' +
       '   postgresqlHost[%s], postgresqlPort[%d], postgresqlDatabase[%s], postgresqlUser[%s], postgresqlPassword[%s],\n' +
-      '   redisUrl[%s],\n' +
+      '   redisHost[%s], redisPort[%d], ,\n' +
       '   sqlServerHost[%s], sqlServerPort[%d], sqlServerDatabase[%s], sqlServerUser[%s], sqlServerPassword[%s]',
       config.port,
       config.cassandraHost, config.cassandraLocalDataCenter,
-      config.mongoDbUri, config.mongoDbDatabase,
+      config.elasticsearchHost, config.elasticsearchPort,
+      config.mongoDbHost, config.mongoDbPort, config.mongoDbDatabase,
       config.mySqlHost, config.mySqlPort, config.mySqlDatabase, config.mySqlUser, config.mySqlPassword,
-      config.oracleConnectString, config.oracleUser, config.oraclePassword,
+      config.oracleHost, config.oraclePort, config.oracleUser, config.oraclePassword,
       config.postgreSqlHost, config.postgreSqlPort, config.postgreSqlDatabase, config.postgreSqlUser, config.postgreSqlPassword,
-      config.redisUrl,
+      config.redisHost, config.redisPort,
       config.sqlServerHost, config.sqlServerPort, config.sqlServerDatabase, config.sqlServerUser, config.sqlServerPassword
     );
     await this.process(true);

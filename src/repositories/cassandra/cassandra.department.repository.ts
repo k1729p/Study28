@@ -1,17 +1,10 @@
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { clientPromise } from "./cassandra.pool.js";
+import {
+  CREATE_DEPARTMENT_CQL, SELECT_DEPARTMENTS_CQL, SELECT_EMPLOYEES_CQL
+} from "./cassandra.constants.js";
 
-const KEYSPACE = 'study28';
-const CREATE_DEPARTMENT_CQL = `
-  INSERT INTO ${KEYSPACE}.departments (
-    id, name, start_date, end_date, notes, keywords, image
-  ) VALUES (
-    ?, ?, ?, ?, ?, ?, ?
-  )
-`;
-const SELECT_DEPARTMENTS_CQL = `SELECT * FROM ${KEYSPACE}.departments`;
-const SELECT_EMPLOYEES_CQL = `SELECT * FROM ${KEYSPACE}.employees`;
 /**
  * This service class provides methods to manage departments.
  * It includes CRUD methods to create, read, update, and delete departments.

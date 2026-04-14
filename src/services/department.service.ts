@@ -1,7 +1,7 @@
 import { Department } from "../models/department.js";
-import { Employee } from "../models/employee.js";
 import { RepositoryType } from "../repositories/repository-type.js";
 import { CassandraDepartmentRepository } from "../repositories/cassandra/cassandra.department.repository.js";
+import { ElasticsearchDepartmentRepository } from "../repositories/elasticsearch/elasticsearch.department.repository.js";
 import { MongoDbDepartmentRepository } from "../repositories/mongodb/mongodb.department.repository.js";
 import { MongoDbEmployeeRepository } from "../repositories/mongodb/mongodb.employee.repository.js";
 import { MySqlDepartmentRepository } from "../repositories/mysql/mysql.department.repository.js";
@@ -16,6 +16,7 @@ import { SQLServerDepartmentRepository } from "../repositories/sql-server/sql-se
  */
 export class DepartmentService {
   cassandraDepartmentRepository: CassandraDepartmentRepository = new CassandraDepartmentRepository();
+  elasticsearchDepartmentRepository: ElasticsearchDepartmentRepository = new ElasticsearchDepartmentRepository();
   mongoDbDepartmentRepository: MongoDbDepartmentRepository = new MongoDbDepartmentRepository();
   mongoDbEmployeeRepository: MongoDbEmployeeRepository = new MongoDbEmployeeRepository();
   mySqlDepartmentRepository: MySqlDepartmentRepository = new MySqlDepartmentRepository();
@@ -37,6 +38,7 @@ export class DepartmentService {
       case RepositoryType.Chroma:
         break;
       case RepositoryType.Elasticsearch:
+        await this.elasticsearchDepartmentRepository.createDepartment(department);
         break;
       case RepositoryType.MongoDB:
         await this.mongoDbDepartmentRepository.createDepartment(department);
@@ -72,14 +74,9 @@ export class DepartmentService {
       case RepositoryType.Chroma:
         return [];
       case RepositoryType.Elasticsearch:
-        return [];
+        return await this.elasticsearchDepartmentRepository.getDepartments();
       case RepositoryType.MongoDB:
-        const departments: Department[] = await this.mongoDbDepartmentRepository.getDepartments();
-        for (const department of departments) {
-          const employees: Employee[] = await this.mongoDbEmployeeRepository.getEmployees(department.id);
-          department.employees = employees;
-        }
-        return departments;
+        return await this.mongoDbDepartmentRepository.getDepartments();
       case RepositoryType.MySQL:
         return await this.mySqlDepartmentRepository.getDepartments();
       case RepositoryType.Neo4j:
@@ -102,12 +99,26 @@ export class DepartmentService {
    */
   async getDepartment(repositoryType: RepositoryType, id: number): Promise<Department | undefined> {
     switch (repositoryType) {
+      case RepositoryType.Cassandra:
+        return undefined;
+      case RepositoryType.Chroma:
+        return undefined;
+      case RepositoryType.Elasticsearch:
+        return undefined;
       case RepositoryType.MongoDB:
-        console.error("DepartmentService.getDepartment(): case not implemented");
+        return await this.mongoDbDepartmentRepository.getDepartment(id);
+      case RepositoryType.MySQL:
+        return undefined;
+      case RepositoryType.Neo4j:
+        return undefined;
+      case RepositoryType.Oracle:
         return undefined;
       case RepositoryType.PostgreSQL:
-      default:
         return await this.postgreSQLDepartmentRepository.getDepartment(id);
+      case RepositoryType.Redis:
+        return undefined;
+      case RepositoryType.SQLServer:
+        return undefined;
     }
   }
   /**
@@ -118,12 +129,27 @@ export class DepartmentService {
    */
   async updateDepartment(repositoryType: RepositoryType, department: Department) {
     switch (repositoryType) {
+      case RepositoryType.Cassandra:
+        break;
+      case RepositoryType.Chroma:
+        break;
+      case RepositoryType.Elasticsearch:
+        break;
       case RepositoryType.MongoDB:
         await this.mongoDbDepartmentRepository.updateDepartment(department);
         break;
+      case RepositoryType.MySQL:
+        break;
+      case RepositoryType.Neo4j:
+        break;
+      case RepositoryType.Oracle:
+        break;
       case RepositoryType.PostgreSQL:
-      default:
         await this.postgreSQLDepartmentRepository.updateDepartment(department);
+        break;
+      case RepositoryType.Redis:
+        break;
+      case RepositoryType.SQLServer:
         break;
     }
   }
@@ -136,16 +162,27 @@ export class DepartmentService {
    */
   async deleteDepartment(repositoryType: RepositoryType, id: number) {
     switch (repositoryType) {
+      case RepositoryType.Cassandra:
+        break;
+      case RepositoryType.Chroma:
+        break;
+      case RepositoryType.Elasticsearch:
+        break;
       case RepositoryType.MongoDB:
-        const employees: Employee[] = await this.mongoDbEmployeeRepository.getEmployees(id);
-        for (const employee of employees) {
-          await this.mongoDbEmployeeRepository.deleteEmployee(employee.id);
-        }
         await this.mongoDbDepartmentRepository.deleteDepartment(id);
         break;
+      case RepositoryType.MySQL:
+        break;
+      case RepositoryType.Neo4j:
+        break;
+      case RepositoryType.Oracle:
+        break;
       case RepositoryType.PostgreSQL:
-      default:
         await this.postgreSQLDepartmentRepository.deleteDepartment(id);
+        break;
+      case RepositoryType.Redis:
+        break;
+      case RepositoryType.SQLServer:
         break;
     }
   }

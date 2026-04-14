@@ -1,19 +1,7 @@
 import { Client } from 'cassandra-driver';
-
-import { config } from "../../configuration/configuration.js";
+import { POOL_CONFIG } from "./cassandra.constants.js"
 /**
- * Configuration for the connection pool.
- */
-const POOL_CONFIG = {
-  contactPoints: [config.cassandraHost],
-  localDataCenter: config.cassandraLocalDataCenter,
-  socketOptions: {
-    readTimeout: 30000,
-    connectTimeout: 10000
-  }
-};
-/**
- * Cassandra Client pool.
+ * Client.
  * 
  * The DataStax driver handles connection pooling internally.
  */

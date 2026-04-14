@@ -14,7 +14,7 @@ export class MongoDbEmployeeRepository {
    * @param employee the employee to be created
    * @return void
    */
-  async createEmployee(employee: Employee) {
+  async createEmployee(employee: Employee): Promise<void> {
     const client = await poolPromise;
     try {
       const database: Db = client.db(config.mongoDbDatabase);
@@ -27,32 +27,47 @@ export class MongoDbEmployeeRepository {
     console.log("MongoDbEmployeeRepository.createEmployee() employee id[%s]", employee.id);
   }
   /**
-   * Gets the employees by the department id.
-   * @param departmentId the department id of the employees to retrieve
+   * Gets the employees.
    * @returns an array of Employee objects
    */
-  async getEmployees(departmentId: number): Promise<Employee[]> {
-    const filter = { departmentId: departmentId };
+  async getEmployees(): Promise<Employee[]> {
     const client = await poolPromise;
     let employees: Employee[] = [];
     try {
       const database: Db = client.db(config.mongoDbDatabase);
       const employeeCollection: Collection<Employee> = database.collection<Employee>('employees');
-      employees = await employeeCollection.find(filter).sort({ id: 1 }).toArray();
+      employees = await employeeCollection.find().sort({ id: 1 }).toArray();
     } catch (err) {
       console.error("MongoDbEmployeeRepository.getEmployees():", err);
       throw err;
     }
-    console.log("MongoDbEmployeeRepository.getEmployees(): departmentId[%d], employees count[%s]",
-      departmentId, employees.length);
+    console.log("MongoDbEmployeeRepository.getEmployees(): employees count[%s]", employees.length);
     return employees;
+  }
+  /**
+   * Gets the employee by id.
+   * @param id the id of the employee to retrieve
+   * @returns the Employee object if found, otherwise undefined
+   */
+  async getEmployee(id: number): Promise<Employee | undefined> {
+    const client = await poolPromise;
+    try {
+      const database: Db = client.db(config.mongoDbDatabase);
+      const employeeCollection: Collection<Employee> = database.collection<Employee>('employees');
+      const employee = await employeeCollection.findOne({ id: id });
+      console.log("MongoDbEmployeeRepository.getEmployee():%s id[%d]", id, employee ? "" : " employee not found,");
+      return employee ?? undefined;
+    } catch (err) {
+      console.error("MongoDbEmployeeRepository.getEmployee():", err);
+      throw err;
+    }
   }
   /**
    * Updates an existing employee.
    * @param employee the employee to be updated
    * @returns void
    */
-  async updateEmployee(employee: Employee) {
+  async updateEmployee(employee: Employee): Promise<void> {
     const filter = { id: employee.id };
     const client = await poolPromise;
     try {
@@ -71,7 +86,7 @@ export class MongoDbEmployeeRepository {
    * @param employeeId the id of the employee to be deleted
    * @returns void
    */
-  async deleteEmployee(employeeId: number) {
+  async deleteEmployee(employeeId: number): Promise<void> {
     const filter = { id: employeeId };
     const client = await poolPromise;
     try {
@@ -84,7 +99,6 @@ export class MongoDbEmployeeRepository {
     }
     console.log("MongoDbEmployeeRepository.deleteEmployee(): employee id[%d]", employeeId);
   }
-
   /**
    * Transfers the employees from source department to target department.
    * 

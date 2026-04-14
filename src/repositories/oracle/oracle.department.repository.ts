@@ -1,39 +1,7 @@
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { poolPromise } from "./oracle.pool.js";
-
-const CREATE_DEPARTMENT_SQL = `
-  INSERT INTO departments (
-    id, name, start_date, end_date, notes, keywords, image
-  ) VALUES (
-   :id, :name, :startDate, :endDate, :notes, :keywords, :image
-  )
-`;
-const SELECT_DEPARTMENTS_SQL = `
-  SELECT 
-    d.id AS "department_id", 
-    d.name AS "department_name", 
-    d.start_date AS "start_date", 
-    d.end_date AS "end_date", 
-    d.notes AS "notes", 
-    d.keywords AS "keywords", 
-    d.image AS "image",
-    e.id AS "employee_id",
-    e.department_id AS "employee_department_id",
-    e.first_name AS "first_name",
-    e.last_name AS "last_name",
-    e.title AS "title",
-    e.phone AS "phone",
-    e.mail AS "mail",
-    e.street_name AS "street_name",
-    e.house_number AS "house_number",
-    e.postal_code AS "postal_code",
-    e.locality AS "locality",
-    e.province AS "province",
-    e.country AS "country"
-  FROM departments d
-  LEFT JOIN employees e ON d.id = e.department_id
-`;
+import { CREATE_DEPARTMENT_SQL, SELECT_DEPARTMENTS_SQL } from "./oracle.constants.js";
 /**
  * This service class provides methods to manage departments.
  * It includes CRUD methods to create, read, update, and delete departments.

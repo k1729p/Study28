@@ -1,6 +1,7 @@
 import { Department } from "../models/department.js";
 import { RepositoryType } from "../repositories/repository-type.js";
 import { CassandraInitialization } from "../repositories/cassandra/cassandra.initialization.js";
+import { ElasticsearchInitialization } from "../repositories/elasticsearch/elasticsearch.initialization.js";
 import { MongoDbInitialization } from "../repositories/mongodb/mongodb.initialization.js";
 import { MySqlInitialization } from "../repositories/mysql/mysql.initialization.js";
 import { OracleInitialization } from "../repositories/oracle/oracle.initialization.js";
@@ -13,6 +14,7 @@ import { RedisInitialization } from "../repositories/redis/redis.initialization.
  */
 export class InitializationService {
   cassandraInitialization: CassandraInitialization = new CassandraInitialization();
+  elasticsearchInitialization: ElasticsearchInitialization = new ElasticsearchInitialization();
   mongoDbInitialization: MongoDbInitialization = new MongoDbInitialization();
   mySqlInitialization: MySqlInitialization = new MySqlInitialization();
   oracleInitialization: OracleInitialization = new OracleInitialization();
@@ -33,6 +35,7 @@ export class InitializationService {
       case RepositoryType.Chroma:
         break;
       case RepositoryType.Elasticsearch:
+        await this.elasticsearchInitialization.loadInitialData(departmentArray);
         break;
       case RepositoryType.MongoDB:
         await this.mongoDbInitialization.loadInitialData(departmentArray);

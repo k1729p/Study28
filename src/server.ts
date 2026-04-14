@@ -4,6 +4,7 @@ import express, { Request, Response, NextFunction, Router } from 'express';
 import cors from 'cors';
 import { config } from "./configuration/configuration.js";
 import { clientPromise as cassandraClientPromise } from "./repositories/cassandra/cassandra.pool.js";
+import { clientPromise as elasticsearchClientPromise } from "./repositories/elasticsearch/elasticsearch.pool.js";
 import { poolPromise as mongoDbPoolPromise } from "./repositories/mongodb/mongodb.pool.js";
 import { poolPromise as mySqlPoolPromise } from "./repositories/mysql/mysql.pool.js";
 import { poolPromise as oraclePoolPromise } from "./repositories/oracle/oracle.pool.js";
@@ -42,6 +43,8 @@ function main() {
       try {
         await (await cassandraClientPromise).shutdown();
         console.log("main(): Cassandra client shut down");
+        await (await elasticsearchClientPromise).close();
+        console.log("main(): Elasticsearch client closed");
         await (await mongoDbPoolPromise).close();
         console.log("main(): MongoDB pool closed");
         await (await mySqlPoolPromise).end();
@@ -76,10 +79,10 @@ function main() {
  */
 function createRouting(): Router {
   const router = Router();
-  // ####################################################################################################
+  // // ####################################################################################################
   router.get('/initialize/', new Aaa().initialize);
   router.get('/read/', new Aaa().read);
-  // ####################################################################################################
+  // // ####################################################################################################
   const initializationController = new InitializationController();
   router.post('/load/', initializationController.loadInitialData);
 

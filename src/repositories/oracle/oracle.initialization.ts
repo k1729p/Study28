@@ -2,53 +2,11 @@ import oracledb from 'oracledb';
 
 import { Department } from "../../models/department.js";
 import { poolPromise } from "./oracle.pool.js";
-
-const DROP_TABLE_EMPLOYEES_SQL = `DROP TABLE IF EXISTS employees CASCADE CONSTRAINTS`;
-const DROP_TABLE_DEPARTMENTS_SQL = `DROP TABLE IF EXISTS departments CASCADE CONSTRAINTS`;
-const CREATE_TABLE_DEPARTMENTS_SQL = `
-  CREATE TABLE departments (
-    id NUMBER PRIMARY KEY,
-    name VARCHAR2(40) NOT NULL,
-    start_date DATE,
-    end_date DATE,
-    notes VARCHAR2(4000),
-    keywords VARCHAR2(4000), 
-    image VARCHAR2(255)
-  )
-`;
-const CREATE_TABLE_EMPLOYEES_SQL = `
-  CREATE TABLE employees (
-    id NUMBER PRIMARY KEY,
-    department_id NUMBER REFERENCES departments(id),
-    first_name VARCHAR2(40) NOT NULL,
-    last_name VARCHAR2(40) NOT NULL,
-    title VARCHAR2(40) NOT NULL,
-    phone VARCHAR2(30) NOT NULL,
-    mail VARCHAR2(80) NOT NULL,
-    street_name VARCHAR2(80),
-    house_number VARCHAR2(20),
-    postal_code VARCHAR2(20),
-    locality VARCHAR2(40),
-    province VARCHAR2(40),
-    country VARCHAR2(40)
-  )
-`;
-const INSERT_DEPARTMENT_SQL = `
-  INSERT INTO departments (
-    id, name, start_date, end_date, notes, keywords, image
-  ) VALUES (
-   :id, :name, :startDate, :endDate, :notes, :keywords, :image
-  )
-`;
-const INSERT_EMPLOYEE_SQL = `
-  INSERT INTO employees (
-    id, department_id, first_name, last_name, title, phone, mail,
-    street_name, house_number, postal_code, locality, province, country
-  ) VALUES (
-    :id, :depId, :fname, :lname, :title, :phone, :mail, 
-    :street, :hnum, :pcode, :loc, :prov, :country
-  )
-`;
+import {
+  DROP_TABLE_EMPLOYEES_SQL, DROP_TABLE_DEPARTMENTS_SQL,
+  CREATE_TABLE_DEPARTMENTS_SQL, CREATE_TABLE_EMPLOYEES_SQL,
+  INSERT_DEPARTMENT_SQL, INSERT_EMPLOYEE_SQL
+} from "./oracle.constants.js";
 /**
  * This service class provides methods to initialize database and load data.
  */

@@ -1,11 +1,12 @@
 @echo off
 set PORT=8128
 set CASSANDRA_HOST=localhost
-set MONGODB_URI=mongodb://admin:secret@localhost:27017/?authSource=admin
+set ELASTICSEARCH_HOST=localhost
+set MONGODB_HOST=localhost
 set MY_SQL_HOST=localhost
 set POSTGRESQL_HOST=localhost
-set ORACLE_CONNECT_STRING=localhost:1521/FREEPDB1
-set REDIS_URL=redis://localhost:6379
+set ORACLE_HOST=localhost
+set REDIS_HOST=localhost
 set SQL_SERVER_HOST=localhost
 
 if [%1] == [] (

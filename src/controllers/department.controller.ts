@@ -3,8 +3,8 @@ import { StatusCodes } from 'http-status-codes';
 
 import { Department } from "../models/department.js";
 import { DepartmentService } from "../services/department.service.js";
-import { RepositoryType } from '../repositories/repository-type.js';
 import * as colors from "./../utils/colors.js";
+import * as helpers from "./../utils/helpers.js";
 /**
  * This controller class provides methods to manage departments.
  */
@@ -17,7 +17,7 @@ export class DepartmentController {
    * @param next - The next middleware function.
    */
   createDepartment = async (req: Request, res: Response, next: NextFunction) => {
-    const repositoryType = req.query.repositoryType as RepositoryType || RepositoryType.PostgreSQL;
+    const repositoryType = helpers.getRepositoryType(req.query.repositoryType);
     const department: Department = req.body;
     if (!department || !department.id) {
       res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid department id' });
@@ -42,7 +42,7 @@ export class DepartmentController {
    * @param next - The next middleware function.
    */
   getDepartments = async (req: Request, res: Response, next: NextFunction) => {
-    const repositoryType = req.query.repositoryType as RepositoryType || RepositoryType.PostgreSQL;
+    const repositoryType = helpers.getRepositoryType(req.query.repositoryType);
     try {
       const departments = await this.departmentService.getDepartments(repositoryType);
       res.status(StatusCodes.OK).json(departments);
@@ -62,7 +62,7 @@ export class DepartmentController {
    * @returns void
    */
   getDepartmentById = async (req: Request, res: Response, next: NextFunction) => {
-    const repositoryType = req.query.repositoryType as RepositoryType || RepositoryType.PostgreSQL;
+    const repositoryType = helpers.getRepositoryType(req.query.repositoryType);
     const id = parseInt(req.params.id as string);
     if (isNaN(id)) {
       res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid department id' });
@@ -92,7 +92,7 @@ export class DepartmentController {
    * @returns void
    */
   updateDepartment = async (req: Request, res: Response, next: NextFunction) => {
-    const repositoryType = req.query.repositoryType as RepositoryType || RepositoryType.PostgreSQL;
+    const repositoryType = helpers.getRepositoryType(req.query.repositoryType);
     const department: Department = req.body;
     if (!department || !department.id) {
       res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid department id' });
@@ -118,7 +118,7 @@ export class DepartmentController {
    * @returns void
    */
   deleteDepartment = async (req: Request, res: Response, next: NextFunction) => {
-    const repositoryType = req.query.repositoryType as RepositoryType || RepositoryType.PostgreSQL;
+    const repositoryType = helpers.getRepositoryType(req.query.repositoryType);
     const id = parseInt(req.params.id as string);
     if (isNaN(id)) {
       res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid department id' });
