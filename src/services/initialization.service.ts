@@ -4,6 +4,7 @@ import { CassandraInitialization } from "../repositories/cassandra/cassandra.ini
 import { ElasticsearchInitialization } from "../repositories/elasticsearch/elasticsearch.initialization.js";
 import { MongoDbInitialization } from "../repositories/mongodb/mongodb.initialization.js";
 import { MySqlInitialization } from "../repositories/mysql/mysql.initialization.js";
+import { Neo4jInitialization } from "../repositories/neo4j/neo4j.initialization.js";
 import { OracleInitialization } from "../repositories/oracle/oracle.initialization.js";
 import { PostgreSQLInitialization } from "../repositories/postgresql/postgresql.initialization.js";
 import { SQLServerInitialization } from "../repositories/sql-server/sql-server.initialization.js";
@@ -17,6 +18,7 @@ export class InitializationService {
   elasticsearchInitialization: ElasticsearchInitialization = new ElasticsearchInitialization();
   mongoDbInitialization: MongoDbInitialization = new MongoDbInitialization();
   mySqlInitialization: MySqlInitialization = new MySqlInitialization();
+  neo4jInitialization: Neo4jInitialization = new Neo4jInitialization();
   oracleInitialization: OracleInitialization = new OracleInitialization();
   postgreSQLInitialization: PostgreSQLInitialization = new PostgreSQLInitialization();
   sqlServerInitialization: SQLServerInitialization = new SQLServerInitialization();
@@ -44,6 +46,7 @@ export class InitializationService {
         await this.mySqlInitialization.loadInitialData(departmentArray);
         break;
       case RepositoryType.Neo4j:
+        await this.neo4jInitialization.loadInitialData(departmentArray);
         break;
       case RepositoryType.Oracle:
         await this.oracleInitialization.loadInitialData(departmentArray);

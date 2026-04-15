@@ -12,6 +12,11 @@ services:
       - MYSQL_PASSWORD=mikimiki
       - MYSQL_DATABASE=kp_database
     restart: always
+    # healthcheck:
+    #   test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
+    #   interval: 3s
+    #   retries: 5
+    #   start_period: 30s    
     volumes:
       - mysql-data:/var/lib/mysql
 volumes:

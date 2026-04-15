@@ -1,0 +1,31 @@
+services:
+  neo4j:
+    container_name: neo4j
+    image: neo4j:latest
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    networks:
+      - app-net
+    environment:
+      - NEO4J_AUTH=neo4j/mikimiki
+      - NEO4J_server_memory_pagecache_size=50M
+      - NEO4J_server_memory_heap_initial__size=256M
+      - NEO4J_server_memory_heap_max__size=256M
+    restart: always
+    healthcheck:
+      # Tests the Bolt port natively using Cypher shell to ensure the DB is queryable
+      test: ["CMD-SHELL", "cypher-shell -u neo4j -p mikimiki 'RETURN 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - neo4j-data:/data
+      - neo4j-logs:/logs
+      - neo4j-config:/config
+      - neo4j-plugins:/plugins
+volumes:
+  neo4j-data:
+  neo4j-logs:
+  neo4j-config:
+  neo4j-plugins:

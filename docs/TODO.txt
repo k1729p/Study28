@@ -36,6 +36,37 @@ Teradata Vantage Express
 ---------------------------------------------------------------------------------
 Apache Spark
 #################################################################################
+#################################################################################
+===  Neo4j DATABASE  ===
+Neo4j is the world's leading graph database, with native graph storage and processing. 
+Neo4j browser http://localhost:7474 <--- enter username and password.
+Beginner Guide
+  https://console.neo4j.io/projects/42243282-5dee-4da0-a808-d8d0518bc0d1/guides/beginner
+Building Neo4j Applications with Node.js
+  https://graphacademy.neo4j.com/courses/app-nodejs/?category=development
+Deploy a Neo4j standalone server using Docker Compose
+  https://neo4j.com/docs/operations-manual/current/docker/docker-compose-standalone/  
+Simple Graph Database Setup with Neo4j and Docker Compose
+  https://medium.com/@matthewghannoum/simple-graph-database-setup-with-neo4j-and-docker-compose-061253593b5a  
+
+https://hub.docker.com/_/neo4j
+---------------------------------------------------------------------------------
+https://console.neo4j.io/projects/42243282-5dee-4da0-a808-d8d0518bc0d1/instances
+Credentials for Instance01
+Username
+125f67dc
+Password
+MTnDOHJKx6SlO6RxonLc32RCvGUFSZI1_-cd598RVvs
+---------------------------------------------------------------------------------
+# Wait 60 seconds before connecting using these details, or login to https://console.neo4j.io to validate the Aura Instance is available
+NEO4J_URI=neo4j+s://125f67dc.databases.neo4j.io
+NEO4J_USERNAME=125f67dc
+NEO4J_PASSWORD=MTnDOHJKx6SlO6RxonLc32RCvGUFSZI1_-cd598RVvs
+NEO4J_DATABASE=125f67dc
+AURA_INSTANCEID=125f67dc
+AURA_INSTANCENAME=Instance01
+
+#################################################################################
 ===  Elasticsearch DATABASE  ===
   https://www.elastic.co/docs/reference/elasticsearch/clients/javascript/installation
     npm install @elastic/elasticsearch
@@ -129,12 +160,11 @@ In Docker container "redis", in "Exec" tab:
 Commands to execute in 'redis-cli' console:
   INCR mycounter
 #################################################################################
-===  Neo4j DATABASE  ===
-Neo4j is the world's leading graph database, with native graph storage and processing. 
-https://hub.docker.com/_/neo4j
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #################################################################################
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   * Gets the departments along with their associated employees.
+   * Retrieves all departments and their related employees.
 #################################################################################
 Start application in Visual Studio Code TERMINAL tab:
   npm run build ;npm run start

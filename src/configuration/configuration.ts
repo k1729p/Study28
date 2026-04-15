@@ -20,6 +20,10 @@ interface Config {
   mySqlDatabase: string;
   mySqlUser: string;
   mySqlPassword: string;
+  neo4jHost: string;
+  neo4jPort: number;
+  neo4jUser: string;
+  neo4jPassword: string;
   oracleHost: string;
   oraclePort: number;
   oracleUser: string;
@@ -56,6 +60,10 @@ export const config: Config = {
   mySqlDatabase: String(process.env.MY_SQL_DATABASE),
   mySqlUser: String(process.env.MY_SQL_USER),
   mySqlPassword: String(process.env.MY_SQL_PASSWORD),
+  neo4jHost: String(process.env.NEO4J_HOST),
+  neo4jPort: Number(process.env.NEO4J_PORT),
+  neo4jUser: String(process.env.NEO4J_USER),
+  neo4jPassword: String(process.env.NEO4J_PASSWORD),
   oracleHost: String(process.env.ORACLE_HOST),
   oraclePort: Number(process.env.ORACLE_PORT),
   oracleUser: String(process.env.ORACLE_USER),

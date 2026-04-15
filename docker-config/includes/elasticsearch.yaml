@@ -24,6 +24,6 @@ services:
       timeout: 10s
       retries: 5
     volumes:
-      - es-data:/usr/share/elasticsearch/data
+      - elasticsearch-data:/usr/share/elasticsearch/data
 volumes:
-  es-data:
+  elasticsearch-data:

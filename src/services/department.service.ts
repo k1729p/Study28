@@ -5,6 +5,7 @@ import { ElasticsearchDepartmentRepository } from "../repositories/elasticsearch
 import { MongoDbDepartmentRepository } from "../repositories/mongodb/mongodb.department.repository.js";
 import { MongoDbEmployeeRepository } from "../repositories/mongodb/mongodb.employee.repository.js";
 import { MySqlDepartmentRepository } from "../repositories/mysql/mysql.department.repository.js";
+import { Neo4jDepartmentRepository } from "../repositories/neo4j/neo4j.department.repository.js";
 import { OracleDepartmentRepository } from "../repositories/oracle/oracle.department.repository.js";
 import { PostgreSQLDepartmentRepository } from "../repositories/postgresql/postgresql.department.repository.js";
 import { RedisDepartmentRepository } from "../repositories/redis/redis.department.repository.js";
@@ -20,6 +21,7 @@ export class DepartmentService {
   mongoDbDepartmentRepository: MongoDbDepartmentRepository = new MongoDbDepartmentRepository();
   mongoDbEmployeeRepository: MongoDbEmployeeRepository = new MongoDbEmployeeRepository();
   mySqlDepartmentRepository: MySqlDepartmentRepository = new MySqlDepartmentRepository();
+  neo4jDepartmentRepository: Neo4jDepartmentRepository = new Neo4jDepartmentRepository();
   oracleDepartmentRepository: OracleDepartmentRepository = new OracleDepartmentRepository();
   postgreSQLDepartmentRepository: PostgreSQLDepartmentRepository = new PostgreSQLDepartmentRepository();
   sqlServerDepartmentRepository: SQLServerDepartmentRepository = new SQLServerDepartmentRepository();
@@ -47,6 +49,7 @@ export class DepartmentService {
         await this.mySqlDepartmentRepository.createDepartment(department);
         break;
       case RepositoryType.Neo4j:
+        await this.neo4jDepartmentRepository.createDepartment(department);
         break;
       case RepositoryType.Oracle:
         await this.oracleDepartmentRepository.createDepartment(department);

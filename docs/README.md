@@ -175,7 +175,7 @@ Action: \
 | [Elasticsearch][ds03] | database | ? | Lucene? | 🛠️ |
 | [MongoDB][ds04] | Document Store | Collection | MQL (MongoDB Query Language) | ✔️ |
 | [MySQL][ds05] | Relational | Table | SQL | 🛠️ |
-| [Neo4j][ds06] | Graph Database | Node / Relationship | Cypher | ❌ |
+| [Neo4j][ds06] | Graph Database | Node / Relationship | Cypher | 🛠️ |
 | [Oracle][ds07] | Relational | Table | PL/SQL | 🛠️ |
 | [PostgreSQL][ds08] | Relational | Table | SQL | ✔️ |
 | [Redis][ds09] | Key-Value / Cache | Hash / String | RESP (Redis Serialization Protocol) | 🛠️ |

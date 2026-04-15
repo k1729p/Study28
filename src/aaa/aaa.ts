@@ -11,14 +11,15 @@ import { config as config } from "../configuration/configuration.js";
 import { Bbb } from "./bbb.js";
 
 const REPOSITORY_TYPES = [
-  RepositoryType.Cassandra,
-  RepositoryType.Elasticsearch,
-  RepositoryType.MongoDB,
-  RepositoryType.MySQL,
-  RepositoryType.Oracle,
-  RepositoryType.PostgreSQL,
-  RepositoryType.Redis,
-  RepositoryType.SQLServer,
+  // RepositoryType.Cassandra,
+  // RepositoryType.Elasticsearch,
+  // RepositoryType.MongoDB,
+  // RepositoryType.MySQL,
+  RepositoryType.Neo4j,
+  // RepositoryType.Oracle,
+  // RepositoryType.PostgreSQL,
+  // RepositoryType.Redis,
+  // RepositoryType.SQLServer,
 ];
 /**
  * 
@@ -39,6 +40,7 @@ export class Aaa {
       '   elasticsearchHost[%s], elasticsearchPort[%d],\n' +
       '   mongoDbHost[%s], mongoDbPort[%d], mongoDbDatabase[%s],\n' +
       '   mySqlHost[%s], mySqlPort[%d], mySqlDatabase[%s], mySqlUser[%s], mySqlPassword[%s],\n' +
+      '   neo4jHost[%s], neo4jPort[%d], neo4jUser[%s], neo4jPassword[%s],\n' +
       '   oracleHost[%s], oraclePort[%d], oracleUser[%s], oraclePassword[%s],\n' +
       '   postgresqlHost[%s], postgresqlPort[%d], postgresqlDatabase[%s], postgresqlUser[%s], postgresqlPassword[%s],\n' +
       '   redisHost[%s], redisPort[%d], ,\n' +
@@ -48,6 +50,7 @@ export class Aaa {
       config.elasticsearchHost, config.elasticsearchPort,
       config.mongoDbHost, config.mongoDbPort, config.mongoDbDatabase,
       config.mySqlHost, config.mySqlPort, config.mySqlDatabase, config.mySqlUser, config.mySqlPassword,
+      config.neo4jHost, config.neo4jPort, config.neo4jUser, config.neo4jPassword,
       config.oracleHost, config.oraclePort, config.oracleUser, config.oraclePassword,
       config.postgreSqlHost, config.postgreSqlPort, config.postgreSqlDatabase, config.postgreSqlUser, config.postgreSqlPassword,
       config.redisHost, config.redisPort,

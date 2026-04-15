@@ -3,6 +3,7 @@ include:
   - includes/elasticsearch.yaml
   - includes/mongodb.yaml
   - includes/mysql.yaml
+  - includes/neo4j.yaml
   - includes/oracle.yaml
   - includes/postgresql.yaml
   - includes/redis.yaml
@@ -12,20 +13,28 @@ services:
     container_name: study28
     image: eeengcs/study28:1.0.0-SNAPSHOT
     depends_on:
-      - cassandra
-      - elasticsearch
-      - mongodb
-      - mysql
-      - oracle
-      - postgresql
-      - redis
-      - sql-server
+      cassandra:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
+      mysql:
+        condition: service_started
+      neo4j:
+        condition: service_healthy
+      oracle:
+        condition: service_started
+      postgresql:
+        condition: service_started
+      redis:
+        condition: service_started
+      sql-server:
+        condition: service_started
     ports:
       - "8028:8028"
     networks:
       - app-net
-      #- frontend <--- ALTERNATIVE WITH TWO NETWORKS
-      #- backend  <--- ALTERNATIVE WITH TWO NETWORKS
     restart: always
 networks:
   app-net:

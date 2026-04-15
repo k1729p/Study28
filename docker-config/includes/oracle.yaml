@@ -10,6 +10,6 @@ services:
       - ORACLE_PWD=ABab1234
     restart: always
     volumes:
-      - oracle_data:/opt/oracle/oradata
+      - oracle-data:/opt/oracle/oradata
 volumes:
-  oracle_data:
+  oracle-data:

@@ -24,6 +24,6 @@ services:
       start_period: 30s
       timeout: 10s
     volumes:
-      - cassandra-node:/var/lib/cassandra:rw
+      - cassandra-data:/var/lib/cassandra:rw
 volumes:
-  cassandra-node:
+  cassandra-data:

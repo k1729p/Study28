@@ -7,6 +7,7 @@ import { clientPromise as cassandraClientPromise } from "./repositories/cassandr
 import { clientPromise as elasticsearchClientPromise } from "./repositories/elasticsearch/elasticsearch.pool.js";
 import { poolPromise as mongoDbPoolPromise } from "./repositories/mongodb/mongodb.pool.js";
 import { poolPromise as mySqlPoolPromise } from "./repositories/mysql/mysql.pool.js";
+import { driverPromise as neo4jDriverPromise } from "./repositories/neo4j/neo4j.pool.js";
 import { poolPromise as oraclePoolPromise } from "./repositories/oracle/oracle.pool.js";
 import { poolPromise as postgreSqlPoolPromise } from "./repositories/postgresql/postgresql.pool.js";
 import { poolPromise as sqlServerPoolPromise } from "./repositories/sql-server/sql-server.pool.js";
@@ -50,6 +51,8 @@ function main() {
         await (await mySqlPoolPromise).end();
         console.log("main(): MySQL pool ended");
         await (await oraclePoolPromise).close();
+        console.log("main(): Neo4j driver closed");
+        await (await neo4jDriverPromise).close();
         console.log("main(): Oracle pool closed");
         await (await postgreSqlPoolPromise).end();
         console.log("main(): PostgreSQL pool ended");
