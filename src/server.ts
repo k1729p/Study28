@@ -135,14 +135,14 @@ function shutdownServer(server: Server) {
       console.log("shutdownServer(): SQL Server pool closed");
       await (await redisClientPromise).quit();
       console.log("shutdownServer(): Redis client quitted");
-      console.log("shutdownServer(): shutdown completed");
-      process.exit(0);
     } catch (err) {
       console.error("shutdownServer(): error during database shutdown:", err);
       process.exit(1);
     }
+    console.log("shutdownServer(): shutdown completed");
+    process.exit(0);
   });
-  // Forced shutdown if graceful closing takes too long (e.g., 10 seconds)
+  // Forced shutdown if graceful closing takes too long
   setTimeout(() => {
     console.error("shutdownServer(): could not close connections in time, forceful exit");
     process.exit(1);

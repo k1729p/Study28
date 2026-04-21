@@ -197,6 +197,7 @@ Action: \
 - **Neo4j** is the graph database, with native graph storage and processing.
   [Neo4j browser](http://localhost:7474/browser/)
   Neo4j user and password are in [.env](https://github.com/k1729p/Study28/blob/main/.env) file.
+- [Neo4j Database Graph](https://github.com/k1729p/Study28/blob/main/docs/mermaid/flowchartNeo4jGraph.md)
 - Diagram for database tables:
   [Mermaid Entity Relationship Diagram](https://mermaid.ai/open-source/syntax/entityRelationshipDiagram.html)
 

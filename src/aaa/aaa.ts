@@ -110,11 +110,9 @@ export class Aaa {
         console.error('Aaa.process():', err);
       }
     };
-    console.log(colors.red('#####=====#####'), colors.green('#####=====#####'),
-      colors.yellow('#####=====#####'), colors.cyan('#####=====#####'),
-      colors.red('#####=====#####'), colors.green('#####=====#####'),
-      colors.yellow('#####=====#####'), colors.cyan('#####=====#####')
-    );
+    const label = '#####=====#####';
+    console.log(colors.red(label), colors.green(label), colors.yellow(label), colors.cyan(label),
+      colors.red(label), colors.green(label), colors.yellow(label), colors.cyan(label));
   };
 }
 

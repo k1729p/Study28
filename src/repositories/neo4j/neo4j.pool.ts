@@ -1,16 +1,9 @@
 import neo4j from 'neo4j-driver';
-import { config } from "../../configuration/configuration.js";
+import { CONNECTION_URI, AUTH_TOKEN, DRIVER_CONFIG } from "./neo4j.constants.js";
 /**
  * The driver connection.
  */
-const driver = neo4j.driver(
-  `bolt://${config.neo4jHost}:${config.neo4jPort}`,
-  neo4j.auth.basic(config.neo4jUser, config.neo4jPassword),
-  { 
-    encrypted: 'ENCRYPTION_OFF', 
-    trust: 'TRUST_ALL_CERTIFICATES' 
-  }
-);
+const driver = neo4j.driver(CONNECTION_URI, AUTH_TOKEN, DRIVER_CONFIG);
 /**
  * A promise that resolves to a connected Driver object.
  * Includes a simple retry to wait for the container to open the Bolt port.

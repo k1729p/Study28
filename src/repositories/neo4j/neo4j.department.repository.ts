@@ -56,14 +56,13 @@ export class Neo4jDepartmentRepository {
     try {
       // Cypher query to fetch Departments and collect their associated Employees via the WORKS_IN relationship
       const readDepartmentsQuery = `
-        MATCH (d:Department)
-        OPTIONAL MATCH (e:Employee)-[:WORKS_IN]->(d)
-        RETURN d AS department, collect(e) AS employees
+        MATCH (dep:Department)
+        OPTIONAL MATCH (emp:Employee)-[:WORKS_IN]->(dep)
+        RETURN dep AS department, collect(emp) AS employees
       `;
       const result = await session.executeRead(transaction => transaction.run(readDepartmentsQuery));
       const departments: Department[] = result.records.map(record => {
         const departmentNode = record.get('department').properties;
-        const employeesNodes = record.get('employees');
         const department: Department = {
           id: departmentNode.id.toNumber ? departmentNode.id.toNumber() : Number(departmentNode.id),
           name: departmentNode.name,
@@ -74,25 +73,26 @@ export class Neo4jDepartmentRepository {
           image: departmentNode.image,
           employees: []
         };
+        const employeesNodes = record.get('employees');
         if (employeesNodes && employeesNodes.length > 0) {
           department.employees = employeesNodes
             .filter((node: any) => node !== null) // Filter out nulls from empty OPTIONAL MATCH collections
             .map((node: any) => {
-              const empProp = node.properties;
+              const employeeProperties = node.properties;
               return {
-                id: empProp.id.toNumber ? empProp.id.toNumber() : Number(empProp.id),
+                id: employeeProperties.id.toNumber ? employeeProperties.id.toNumber() : Number(employeeProperties.id),
                 departmentId: department.id,
-                firstName: empProp.firstName,
-                lastName: empProp.lastName,
-                title: empProp.title,
-                phone: empProp.phone,
-                mail: empProp.mail,
-                streetName: empProp.streetName,
-                houseNumber: empProp.houseNumber,
-                postalCode: empProp.postalCode,
-                locality: empProp.locality,
-                province: empProp.province,
-                country: empProp.country
+                firstName: employeeProperties.firstName,
+                lastName: employeeProperties.lastName,
+                title: employeeProperties.title,
+                phone: employeeProperties.phone,
+                mail: employeeProperties.mail,
+                streetName: employeeProperties.streetName,
+                houseNumber: employeeProperties.houseNumber,
+                postalCode: employeeProperties.postalCode,
+                locality: employeeProperties.locality,
+                province: employeeProperties.province,
+                country: employeeProperties.country
               } as Employee;
             });
         }
