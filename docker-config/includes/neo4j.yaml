@@ -6,7 +6,7 @@ services:
       - "7474:7474"
       - "7687:7687"
     networks:
-      - app-net
+      - net
     environment:
       - NEO4J_AUTH=neo4j/mikimiki
       - NEO4J_server_memory_pagecache_size=50M
@@ -15,10 +15,12 @@ services:
     restart: always
     healthcheck:
       # Tests the Bolt port natively using Cypher shell to ensure the DB is queryable
-      test: ["CMD-SHELL", "cypher-shell -u neo4j -p mikimiki 'RETURN 1' || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test:
+        ["CMD-SHELL", "cypher-shell -u neo4j -p mikimiki 'RETURN 1' || exit 1"]
+      start_period: 60s
+      interval: 30s
+      timeout: 10s
+      retries: 10
     volumes:
       - neo4j-data:/data
       - neo4j-logs:/logs

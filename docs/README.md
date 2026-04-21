@@ -194,6 +194,9 @@ Action: \
 
 - **Cassandra** is a NoSQL distributed database.
   [Cassandra glossary](https://cassandra.apache.org/_/glossary.html).
+- **Neo4j** is the graph database, with native graph storage and processing.
+  [Neo4j browser](http://localhost:7474/browser/)
+  Neo4j user and password are in [.env](https://github.com/k1729p/Study28/blob/main/.env) file.
 - Diagram for database tables:
   [Mermaid Entity Relationship Diagram](https://mermaid.ai/open-source/syntax/entityRelationshipDiagram.html)
 

@@ -5,18 +5,19 @@ services:
     ports:
       - "3306:3306"
     networks:
-      - app-net
+      - net
     environment:
       - MYSQL_ROOT_PASSWORD=mikimiki
       - MYSQL_USER=kp
       - MYSQL_PASSWORD=mikimiki
       - MYSQL_DATABASE=kp_database
     restart: always
-    # healthcheck:
-    #   test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
-    #   interval: 3s
-    #   retries: 5
-    #   start_period: 30s    
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      start_period: 60s
+      interval: 30s
+      timeout: 10s
+      retries: 10
     volumes:
       - mysql-data:/var/lib/mysql
 volumes:

@@ -83,7 +83,7 @@ export class DepartmentService {
       case RepositoryType.MySQL:
         return await this.mySqlDepartmentRepository.getDepartments();
       case RepositoryType.Neo4j:
-        return [];
+        return await this.neo4jDepartmentRepository.getDepartments();
       case RepositoryType.Oracle:
         return await this.oracleDepartmentRepository.getDepartments();
       case RepositoryType.PostgreSQL:

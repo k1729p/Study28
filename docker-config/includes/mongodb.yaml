@@ -1,15 +1,22 @@
 services:
   mongodb:
     container_name: mongodb
+    # image: mongo
     image: mongodb/mongodb-community-server
     ports:
       - "27017:27017"
     networks:
-      - app-net
+      - net
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=secret
     restart: always
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      start_period: 60s
+      interval: 30s
+      timeout: 10s
+      retries: 10
     volumes:
       - mongo-data:/data/db
       - mongo-config:/data/configdb

@@ -6,7 +6,7 @@ services:
       - "7000:7000"
       - "9042:9042"
     networks:
-      - app-net
+      - net
     environment:
       - CASSANDRA_START_RPC=true
       - CASSANDRA_RPC_ADDRESS=0.0.0.0
@@ -20,9 +20,10 @@ services:
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "nodetool status"]
-      interval: 15s 
-      start_period: 30s
+      start_period: 60s
+      interval: 30s
       timeout: 10s
+      retries: 10
     volumes:
       - cassandra-data:/var/lib/cassandra:rw
 volumes:

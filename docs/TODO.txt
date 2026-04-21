@@ -36,9 +36,16 @@ Teradata Vantage Express
 ---------------------------------------------------------------------------------
 Apache Spark
 #################################################################################
+##### Important Memory Note from Google Gemini #####
+You are running 9 databases plus an application. This is extremely RAM-intensive. 
+Ensure your Docker Desktop / Engine has at least 12GB–16GB of RAM allocated, or several containers
+(especially Oracle and SQL Server) will fail to start.
+Startup Time: With all these healthchecks, the first time you run docker-compose up,
+it might take 2–3 minutes before the study28 container actually starts, as it will wait for the slowest database
+(usually Oracle or Cassandra) to be fully ready.
+Does your local machine have enough RAM to handle all these instances at once, or are you running them selectively?
 #################################################################################
 ===  Neo4j DATABASE  ===
-Neo4j is the world's leading graph database, with native graph storage and processing. 
 Neo4j browser http://localhost:7474 <--- enter username and password.
 Beginner Guide
   https://console.neo4j.io/projects/42243282-5dee-4da0-a808-d8d0518bc0d1/guides/beginner

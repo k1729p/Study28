@@ -1,0 +1,14 @@
+include:
+  - includes/cassandra.yaml
+  - includes/elasticsearch.yaml
+  - includes/mongodb.yaml
+  - includes/mysql.yaml
+  - includes/neo4j.yaml
+  - includes/oracle.yaml
+  - includes/postgresql.yaml
+  - includes/redis.yaml
+  - includes/sql-server.yaml
+networks:
+  net:
+    driver: bridge
+    external: true

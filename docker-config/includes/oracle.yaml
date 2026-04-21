@@ -5,10 +5,16 @@ services:
     ports:
       - "1521:1521"
     networks:
-      - app-net
+      - net
     environment:
       - ORACLE_PWD=ABab1234
     restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "lsnrctl status || exit 1"]
+      start_period: 60s
+      interval: 30s
+      timeout: 10s
+      retries: 10
     volumes:
       - oracle-data:/opt/oracle/oradata
 volumes:

@@ -6,7 +6,7 @@ services:
       - "9200:9200"
       - "9300:9300"
     networks:
-      - app-net
+      - net
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
@@ -20,9 +20,10 @@ services:
           "CMD-SHELL",
           'curl -s http://localhost:9200/_cluster/health | grep -vq ''"status":"red"''',
         ]
+      start_period: 60s
       interval: 30s
       timeout: 10s
-      retries: 5
+      retries: 10
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
 volumes:

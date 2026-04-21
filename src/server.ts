@@ -1,6 +1,7 @@
 import { Aaa } from './aaa/aaa.js';
 // ####################################################################################################
 import express, { Request, Response, NextFunction, Router } from 'express';
+import { Server } from 'http';
 import cors from 'cors';
 import { config } from "./configuration/configuration.js";
 import { clientPromise as cassandraClientPromise } from "./repositories/cassandra/cassandra.pool.js";
@@ -20,6 +21,10 @@ import { RED_BRIGHT, RESET } from "./utils/colors.js";
 
 main();
 
+const BANNER = `
+╭────────────────────────────╮
+│ ▀▄▀▄▀▄▀▄▀▄ Study 28 ▀▄▀▄▀▄▀▄▀▄ │
+╰────────────────────────────╯`;
 /**
  * This is the main entry point of the application.
  */
@@ -30,51 +35,11 @@ function main() {
   app.use('/api/', createRouting());
   app.use(errorHandler);
   const server = app.listen(config.port, () => {
-    console.log(`
-╭────────────────────────────╮
-│ ▀▄▀▄▀▄▀▄▀▄ Study 28 ▀▄▀▄▀▄▀▄▀▄ │
-╰────────────────────────────╯`);
-    console.log('%s main(): server is running on port[%s%d%s]',
-      new Date().toTimeString().slice(0, 8), RED_BRIGHT, config.port, RESET);
+    console.log('main(): server is running on port[%s%d%s]', RED_BRIGHT, config.port, RESET);
+    initializeDatabasePools();
   });
-  const shutdown = async () => {
-    console.log('main(): shutdown signal received');
-    server.close(async () => {
-      console.log("main(): HTTP server closed");
-      try {
-        await (await cassandraClientPromise).shutdown();
-        console.log("main(): Cassandra client shut down");
-        await (await elasticsearchClientPromise).close();
-        console.log("main(): Elasticsearch client closed");
-        await (await mongoDbPoolPromise).close();
-        console.log("main(): MongoDB pool closed");
-        await (await mySqlPoolPromise).end();
-        console.log("main(): MySQL pool ended");
-        await (await oraclePoolPromise).close();
-        console.log("main(): Neo4j driver closed");
-        await (await neo4jDriverPromise).close();
-        console.log("main(): Oracle pool closed");
-        await (await postgreSqlPoolPromise).end();
-        console.log("main(): PostgreSQL pool ended");
-        await (await sqlServerPoolPromise).close();
-        console.log("main(): SQL Server pool closed");
-        await (await redisClientPromise).quit();
-        console.log("main(): Redis client quitted");
-        console.log("main(): shutdown completed");
-        process.exit(0);
-      } catch (err) {
-        console.error("main(): error during database shutdown:", err);
-        process.exit(1);
-      }
-    });
-    // Forced shutdown if graceful closing takes too long (e.g., 10 seconds)
-    setTimeout(() => {
-      console.error("main(): could not close connections in time, forceful exit");
-      process.exit(1);
-    }, 10000);
-  };
-  process.on('SIGINT', shutdown);
-  process.on('SIGTERM', shutdown);
+  process.on('SIGINT', async () => shutdownServer(server));
+  process.on('SIGTERM', async () => shutdownServer(server));
 }
 /**
  * This function creates a new Router instance and sets up a basic route.
@@ -118,4 +83,68 @@ function errorHandler(err: Error, req: Request, res: Response, next: NextFunctio
   res.status(500).json('Internal Server Error');
   next(err);
   console.error("errorHandler():", err);
+}
+/**
+ * Initialize and verify all database pools are ready
+ */
+async function initializeDatabasePools() {
+  try {
+    await Promise.all([
+      cassandraClientPromise,
+      elasticsearchClientPromise,
+      mongoDbPoolPromise,
+      mySqlPoolPromise,
+      neo4jDriverPromise,
+      oraclePoolPromise,
+      postgreSqlPoolPromise,
+      sqlServerPoolPromise,
+      redisClientPromise
+    ]);
+  } catch (err) {
+    console.error('initializeDatabasePools(): error initializing database pools:', err);
+    process.exit(1);
+  }
+  console.log('initializeDatabasePools(): database pools started, UTC time[%s], time[%s]%s',
+    new Date().toUTCString().slice(17, 25), new Date().toTimeString().slice(0, 8), BANNER
+  );
+}
+/**
+ * Shutdowns the Express server.
+ * @param server the server
+ */
+function shutdownServer(server: Server) {
+  console.log('shutdownServer(): shutdown signal received');
+  server.close(async () => {
+    console.log("shutdownServer(): HTTP server closed");
+    try {
+      await (await cassandraClientPromise).shutdown();
+      console.log("shutdownServer(): Cassandra client shut down");
+      await (await elasticsearchClientPromise).close();
+      console.log("shutdownServer(): Elasticsearch client closed");
+      await (await mongoDbPoolPromise).close();
+      console.log("shutdownServer(): MongoDB pool closed");
+      await (await mySqlPoolPromise).end();
+      console.log("shutdownServer(): MySQL pool ended");
+      await (await oraclePoolPromise).close();
+      console.log("shutdownServer(): Neo4j driver closed");
+      await (await neo4jDriverPromise).close();
+      console.log("shutdownServer(): Oracle pool closed");
+      await (await postgreSqlPoolPromise).end();
+      console.log("shutdownServer(): PostgreSQL pool ended");
+      await (await sqlServerPoolPromise).close();
+      console.log("shutdownServer(): SQL Server pool closed");
+      await (await redisClientPromise).quit();
+      console.log("shutdownServer(): Redis client quitted");
+      console.log("shutdownServer(): shutdown completed");
+      process.exit(0);
+    } catch (err) {
+      console.error("shutdownServer(): error during database shutdown:", err);
+      process.exit(1);
+    }
+  });
+  // Forced shutdown if graceful closing takes too long (e.g., 10 seconds)
+  setTimeout(() => {
+    console.error("shutdownServer(): could not close connections in time, forceful exit");
+    process.exit(1);
+  }, 10000);
 }

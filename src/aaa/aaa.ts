@@ -11,15 +11,15 @@ import { config as config } from "../configuration/configuration.js";
 import { Bbb } from "./bbb.js";
 
 const REPOSITORY_TYPES = [
-  // RepositoryType.Cassandra,
-  // RepositoryType.Elasticsearch,
-  // RepositoryType.MongoDB,
-  // RepositoryType.MySQL,
+  RepositoryType.Cassandra,
+  RepositoryType.Elasticsearch,
+  RepositoryType.MongoDB,
+  RepositoryType.MySQL,
   RepositoryType.Neo4j,
-  // RepositoryType.Oracle,
-  // RepositoryType.PostgreSQL,
-  // RepositoryType.Redis,
-  // RepositoryType.SQLServer,
+  RepositoryType.Oracle,
+  RepositoryType.PostgreSQL,
+  RepositoryType.Redis,
+  RepositoryType.SQLServer,
 ];
 /**
  * 
@@ -27,6 +27,11 @@ const REPOSITORY_TYPES = [
 export class Aaa {
   initializationService: InitializationService = new InitializationService();
   departmentService: DepartmentService = new DepartmentService();
+  MESSAGE = `
+  ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  █▌OK▐██▌OK▐██▌OK▐█
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀`;
+
   /**
    * 
    * @param req 
@@ -34,7 +39,7 @@ export class Aaa {
    * @param next 
    */
   initialize = async (req: Request, res: Response, next: NextFunction) => {
-    res.status(StatusCodes.OK).json('OK OK OK OK OK OK OK OK OK OK OK');
+    res.status(StatusCodes.OK).send(this.MESSAGE);
     console.log('Aaa.initialize(): port[%d],\n' +
       '   cassandraHost[%s], cassandraLocalDataCenter[%s],\n' +
       '   elasticsearchHost[%s], elasticsearchPort[%d],\n' +
@@ -65,7 +70,7 @@ export class Aaa {
    * @param next 
    */
   read = async (req: Request, res: Response, next: NextFunction) => {
-    res.status(StatusCodes.OK).json('OK OK OK OK OK OK OK OK OK OK OK');
+    res.status(StatusCodes.OK).send(this.MESSAGE);
     await this.process(false);
     if (false) {
       new Bbb().researchLogging();
