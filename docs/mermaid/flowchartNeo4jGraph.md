@@ -21,7 +21,7 @@ flowchart
     E32 -- WORKS_IN --> D3
 %% Node Subgraphs    
     subgraph Departments and Employees
-        direction LR
+        direction TB
         subgraph Front Offices
             direction TB
             dep01[name: 1st Front Office] --- D1
