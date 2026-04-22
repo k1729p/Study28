@@ -23,7 +23,10 @@ Project sections:
 - [Sequence diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagram.md)
   for "Create Department" process with PostgreSQL Database.
 - [Class diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagram.md)
-  for  models: Department, Employee, and Title.
+  for  models:
+  [Department](https://github.com/k1729p/Study28/blob/main/src/models/department.ts),
+  [Employee](https://github.com/k1729p/Study28/blob/main/src/models/employee.ts), and
+  [Title](https://github.com/k1729p/Study28/blob/main/src/models/title.ts)
 - Entity relationship diagrams for database tables:
   - [??? Cassandra Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipCassandra.md)
   - [??? Elasticsearch Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipElasticsearch.md)
@@ -35,18 +38,37 @@ Project sections:
   - [SQL Server Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipSQL-Server.md)
   - [??? Redis Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipRedis.md)
 
-![greenCircle](images/greenCircle.png) 1.2. The **Node.js** **Express** server.
+![greenCircle](images/greenCircle.png) 1.2. The data stores.
 
-Environment variables file '[.env](https://github.com/k1729p/Study28/blob/main/.env)'.
-Databases user and password are in this file.
+| Name | Type | Storage Abstraction | Query Language | Implementation |
+| :--- | :--- | :--- | :--- | :--- |
+| [Cassandra][ds01] | Columnar | Table | CQL (Cassandra Query Language) | 🛠️ |
+| [Chroma][ds02] | Vector Database | Collection | Chroma API (Python/JS Client) | ❌ |
+| [Elasticsearch][ds03] | database | ? | Lucene? | 🛠️ |
+| [MongoDB][ds04] | Document Store | Collection | MQL (MongoDB Query Language) | ✔️ |
+| [MySQL][ds05] | Relational | Table | SQL | 🛠️ |
+| [Neo4j][ds06] | Graph Database | Node / Relationship | Cypher | 🛠️ |
+| [Oracle][ds07] | Relational | Table | PL/SQL | 🛠️ |
+| [PostgreSQL][ds08] | Relational | Table | SQL | ✔️ |
+| [Redis][ds09] | Key-Value / Cache | Hash / String | RESP (Redis Serialization Protocol) | 🛠️ |
+| [SQL Server][ds10] | Relational | Table | T-SQL | 🛠️ |
 
-![greenCircle](images/greenCircle.png) 1.3. The data stores.
+[ds01]: <https://cassandra.apache.org/_/index.html> "Apache Cassandra"
+[ds02]: <https://www.trychroma.com/> "Chroma"
+[ds03]: <https://www.elastic.co/elasticsearch> "Elasticsearch"
+[ds04]: <https://www.mongodb.com/products/platform/atlas-database> "MongoDB Atlas"
+[ds05]: <https://www.mysql.com/> "MySQL"
+[ds06]: <https://neo4j.com/product/neo4j-graph-database/> "Neo4j"
+[ds07]: <https://www.oracle.com/database/free/> "Oracle AI Database 26ai"
+[ds08]: <https://www.postgresql.org/> "PostgreSQL"
+[ds09]: <https://redis.io/> "Redis"
+[ds10]: <https://www.microsoft.com/en-us/sql-server> "Microsoft SQL Server"
 
-- LOOK DOWN BELOW !!!
-- LOOK DOWN BELOW !!!
-- LOOK DOWN BELOW !!!
-- LOOK DOWN BELOW !!!
-- LOOK DOWN BELOW !!!
+- **Cassandra** is a NoSQL distributed database.
+- **Neo4j** is the graph database, with native graph storage and processing.
+
+![greenCircle](images/greenCircle.png) 1.3. The environment variables file '[.env](https://github.com/k1729p/Study28/blob/main/.env)'.
+In this file are users and passwords for databases.
 
 ![greenCircle](images/greenCircle.png) 1.4. The TypeScript sources are located in the directory [src](https://github.com/k1729p/Study28/blob/main/src).
 
@@ -180,43 +202,14 @@ Action: \
 
 ---
 
-## Data Stores
-
-| Name | Type | Storage Abstraction | Query Language | Implementation |
-| :--- | :--- | :--- | :--- | :--- |
-| [Cassandra][ds01] | Columnar | Table | CQL (Cassandra Query Language) | 🛠️ |
-| [Chroma][ds02] | Vector Database | Collection | Chroma API (Python/JS Client) | ❌ |
-| [Elasticsearch][ds03] | database | ? | Lucene? | 🛠️ |
-| [MongoDB][ds04] | Document Store | Collection | MQL (MongoDB Query Language) | ✔️ |
-| [MySQL][ds05] | Relational | Table | SQL | 🛠️ |
-| [Neo4j][ds06] | Graph Database | Node / Relationship | Cypher | 🛠️ |
-| [Oracle][ds07] | Relational | Table | PL/SQL | 🛠️ |
-| [PostgreSQL][ds08] | Relational | Table | SQL | ✔️ |
-| [Redis][ds09] | Key-Value / Cache | Hash / String | RESP (Redis Serialization Protocol) | 🛠️ |
-| [SQL Server][ds10] | Relational | Table | T-SQL | 🛠️ |
-
-[ds01]: <https://cassandra.apache.org/_/index.html> "Apache Cassandra"
-[ds02]: <https://www.trychroma.com/> "Chroma"
-[ds03]: <https://www.elastic.co/elasticsearch> "Elasticsearch"
-[ds04]: <https://www.mongodb.com/products/platform/atlas-database> "MongoDB Atlas"
-[ds05]: <https://www.mysql.com/> "MySQL"
-[ds06]: <https://neo4j.com/product/neo4j-graph-database/> "Neo4j"
-[ds07]: <https://www.oracle.com/database/free/> "Oracle AI Database 26ai"
-[ds08]: <https://www.postgresql.org/> "PostgreSQL"
-[ds09]: <https://redis.io/> "Redis"
-[ds10]: <https://www.microsoft.com/en-us/sql-server> "Microsoft SQL Server"
-
-- **Cassandra** is a NoSQL distributed database.
-  [Cassandra glossary](https://cassandra.apache.org/_/glossary.html).
-- **Neo4j** is the graph database, with native graph storage and processing.
-  [Neo4j browser](http://localhost:7474/browser/)
-
 ## Links
 
 | Resource | Description |
 | :--- | :--- |
 | [Node.js](https://nodejs.org/en/) | JavaScript runtime environment |
 | [Express](https://expressjs.com/) | Web framework for Node.js |
+| [Cassandra glossary](https://cassandra.apache.org/_/glossary.html).
+| [Neo4j browser](http://localhost:7474/browser/)
 
 ---
 
