@@ -10,7 +10,7 @@ direction LR
     date start_date "start date"
     date end_date "end date"
     nvarchar(MAX) notes "notes"
-    nvarchar(MAX) keywords "keywords"
+    nvarchar(450) keywords "keywords"
     nvarchar(255) image "image"
   }
   EMP[employees] {

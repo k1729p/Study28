@@ -3,38 +3,10 @@ import sql from 'mssql';
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { poolPromise } from "./sql-server.pool.js";
-
-const CREATE_DEPARTMENT_SQL = `
-  INSERT INTO departments (id, name, start_date, end_date, notes, keywords, image)
-  OUTPUT INSERTED.*
-  VALUES (@id, @name, @startDate, @endDate, @notes, @keywords, @image)
-`;
-const SELECT_DEPARTMENTS_SQL = `
-  SELECT 
-    d.id AS department_id, 
-    d.name AS department_name, 
-    d.start_date, 
-    d.end_date, 
-    d.notes, 
-    d.keywords, 
-    d.image,
-    e.id AS employee_id,
-    e.department_id AS employee_department_id,
-    e.first_name,
-    e.last_name,
-    e.title,
-    e.phone,
-    e.mail,
-    e.street_name,
-    e.house_number,
-    e.postal_code,
-    e.locality,
-    e.province,
-    e.country
-  FROM departments d
-  LEFT JOIN employees e ON d.id = e.department_id
-`;
-
+import {
+  CREATE_DEPARTMENT_SQL,
+  SELECT_DEPARTMENTS_SQL
+} from "./sql-server.constants.js";
 /**
  * This service class provides methods to manage departments.
  * It includes CRUD methods to create, read, update, and delete departments.

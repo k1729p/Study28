@@ -8,7 +8,7 @@ services:
     networks:
       - net
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=kp
+      - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=mikimiki
     restart: always
     healthcheck:

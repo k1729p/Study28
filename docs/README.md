@@ -18,7 +18,7 @@ Project sections:
 
 ![flowchart](images/ScreenshotFlowchartBusinessLogic.jpg)
 
-![greenCircle](images/greenCircle.png) 1.1. Links to diagrams.
+![greenCircle](images/greenCircle.png) 1.1. The diagrams.
 
 - [Sequence diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagram.md)
   for "Create Department" process with PostgreSQL Database.
@@ -28,15 +28,15 @@ Project sections:
   [Employee](https://github.com/k1729p/Study28/blob/main/src/models/employee.ts), and
   [Title](https://github.com/k1729p/Study28/blob/main/src/models/title.ts)
 - Entity relationship diagrams for database tables:
-  - [??? Cassandra Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipCassandra.md)
-  - [??? Elasticsearch Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipElasticsearch.md)
-  - [??? MongoDB Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipMongoDB.md)
+  - [Cassandra Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipCassandra.md)
+  - [Elasticsearch Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipElasticsearch.md)
+  - [MongoDB Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipMongoDB.md)
   - [MySQL Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipMySQL.md)
   - [Neo4j Database Graph](https://github.com/k1729p/Study28/blob/main/docs/mermaid/flowchartNeo4jGraph.md)
   - [Oracle Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipOracle.md)
   - [PostgreSQL Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipPostgreSQL.md)
   - [SQL Server Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipSQL-Server.md)
-  - [??? Redis Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipRedis.md)
+  - [Redis Flowchart Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/flowchartRedis.md)
 
 ![greenCircle](images/greenCircle.png) 1.2. The data stores.
 

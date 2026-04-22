@@ -17,13 +17,7 @@ export const DRIVER_CONFIG: Config = {
   encrypted: 'ENCRYPTION_OFF',
   trust: 'TRUST_ALL_CERTIFICATES'
 };
-/**
- * Cypher query to delete all.
- */
 export const DELETE_QUERY = 'MATCH (n) DETACH DELETE n';
-/**
- * Cypher query to create departments.
- */
 export const CREATE_DEPARTMENTS_QUERY = `
   UNWIND $departments AS dep
   CREATE (department:Department {
@@ -36,9 +30,6 @@ export const CREATE_DEPARTMENTS_QUERY = `
     image: dep.image
   })
 `;
-/**
- * Cypher query to create employees.
- */
 export const CREATE_EMPLOYEES_QUERY = `
   UNWIND $employees AS emp
   MATCH (department:Department {id: emp.departmentId})
@@ -58,9 +49,6 @@ export const CREATE_EMPLOYEES_QUERY = `
     country: emp.country
   })-[:WORKS_IN]->(department)
 `;
-/**
- * Cypher query to create department.
- */
 export const CREATE_DEPARTMENT_QUERY = `
   CREATE (department:Department {
     id: $id,
