@@ -1,12 +1,10 @@
 # MongoDB Logical Schema Diagram
 
-MongoDB collections store BSON documents. Even though it is schema-less, the diagram represents the logical structure of the `departments` and `employees` collections.
-
 ```mermaid
 erDiagram
 direction LR
 %% Entities
-    DEP[collection: departments] {
+    DEP["collection: departments"] {
         int id "ID"
         string name "name"
         date startDate "start date"
@@ -15,7 +13,7 @@ direction LR
         string_array keywords "keywords"
         string image "image"
     }
-    EMP[collection: employees] {
+    EMP["collection: employees"] {
         int id "ID"
         int departmentId "department ID"
         string firstName "first name"
@@ -35,3 +33,7 @@ direction LR
 %%  Styles
     style DEP stroke:orange
 ```
+
+> [!NOTE]
+> MongoDB collections store BSON documents.
+> Even though it is schema-less, the diagram represents the logical structure of the `departments` and `employees` collections.

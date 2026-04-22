@@ -1,12 +1,10 @@
 # Elasticsearch Logical Schema Diagram
 
-Elasticsearch stores documents in indices.
-
 ```mermaid
 erDiagram
 direction LR
 %% Entities
-    DEP[index: departments] {
+    DEP["index: departments"] {
         integer id "ID"
         text name "name"
         date startDate "start date"
@@ -15,7 +13,7 @@ direction LR
         text_array keywords "keywords"
         text image "image"
     }
-    EMP[index: employees] {
+    EMP["index: employees"] {
         integer id "ID"
         integer departmentId "department ID"
         text firstName "first name"
@@ -35,3 +33,6 @@ direction LR
 %%  Styles
     style DEP stroke:orange
 ```
+
+> [!NOTE]
+> Elasticsearch stores documents in indices.
