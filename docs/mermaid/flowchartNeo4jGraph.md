@@ -1,5 +1,7 @@
-#  Neo4j Database Graph
-Presented are three selected departments:
+# Neo4j Database Graph
+
+Presented are the selected departments:
+
 - 1st Front Office
 - 1st Middle Office
 - 1st Back Office
@@ -59,9 +61,11 @@ flowchart
 
 - **Department**
   - node label: Department
+  - node property: id
   - node property: name
 - **Employee**
   - node label: Employee
+  - node property: id
   - node property: firstName
   - node property: lastName
 

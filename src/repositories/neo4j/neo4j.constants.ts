@@ -73,7 +73,7 @@ export const CREATE_DEPARTMENT_QUERY = `
   })
 `;
 /**
- * Cypher query to fetch Departments and collect their associated Employees via the WORKS_IN relationship
+ * Cypher query to fetch Departments and collect their associated Employees via the WORKS_IN relationship.
  */
 export const READ_DEPARTMENTS_QUERY = `
   MATCH (department:Department)
