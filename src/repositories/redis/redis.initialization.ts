@@ -41,6 +41,10 @@ export class RedisInitialization {
    */
   private async insertDepartments(client: any, departments: Department[]) {
     for (const dept of departments) {
+      /* This line uses a combination of Object Destructuring and
+       * the Rest Syntax to effectively "filter out"
+       * the employees property while keeping everything else.
+       */
       const { employees, ...deptWithoutEmployees } = dept;
       const key = `department:${dept.id}`;
       await client.set(key, JSON.stringify(deptWithoutEmployees));
