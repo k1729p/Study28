@@ -18,6 +18,13 @@ flowchart LR
     E_Val -.->|contains departmentId| D_Key
 
     subgraph Department Fields
+        D_Val --- d["`id: number
+                      name: string
+                      startDate: string
+                      endDate: string
+                      notes: string
+                      keywords: string array
+                      image: string`"]    
         D_Val --- d01[id: number]
         D_Val --- d02[name: string]
         D_Val --- d03[startDate: string]
