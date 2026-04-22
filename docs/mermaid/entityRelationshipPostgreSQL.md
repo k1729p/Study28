@@ -29,7 +29,7 @@ direction LR
         varchar(40) country "country"
     }
 %% Relationships 
-    DEP ||--o{ EMP: contains
+    DEP ||--o{ EMP: employs
 %%  Styles
     style DEP stroke:orange
 ```
