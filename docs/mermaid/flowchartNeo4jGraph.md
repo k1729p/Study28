@@ -1,4 +1,8 @@
 #  Neo4j Database Graph
+Presented are three selected departments:
+- 1st Front Office
+- 1st Middle Office
+- 1st Back Office
 
 ```mermaid
 flowchart
@@ -24,21 +28,21 @@ flowchart
         direction TB
         subgraph Front Offices
             direction TB
-            dep01[name: 1st Front Office] --- D1
-            emp11[firstName: John\n lastName: Doe] --- E11
-            emp12[firstName: Brett\n lastName: Boe] --- E12
+            dep01[id: 1\n name: 1st Front Office] --- D1
+            emp11[id: 1\n firstName: John\n lastName: Doe] --- E11
+            emp12[id: 2\n firstName: Brett\n lastName: Boe] --- E12
         end
         subgraph Middle Offices
             direction TB
-            dep02[name: 1st Middle Office] --- D2
-            emp21[firstName: Vince\n lastName: Voe] --- E21
-            emp22[firstName: William\n lastName: Woe] --- E22
+            dep02[id: 3\n name: 1st Middle Office] --- D2
+            emp21[id: 11\n firstName: Vince\n lastName: Voe] --- E21
+            emp22[id: 12\n firstName: William\n lastName: Woe] --- E22
         end
         subgraph Back Offices
             direction TB
-            dep03[name: 1st Back Office] --- D3
-            emp31[firstName: John\n lastName: Noakes] --- E31
-            emp32[firstName: Mary\n lastName: Major] --- E32
+            dep03[id: 5\n name: 1st Back Office] --- D3
+            emp31[id: 21\n firstName: John\n lastName: Noakes] --- E31
+            emp32[id: 22\n firstName: Mary\n lastName: Major] --- E32
         end
     end
 %% Styling
@@ -61,6 +65,6 @@ flowchart
   - node property: firstName
   - node property: lastName
 
-Relationship type between **Employee** and **Department**: **WORKS_IN**
+The relationship type between **Employee** and **Department**: **WORKS_IN**
 
 ---

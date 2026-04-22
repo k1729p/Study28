@@ -7,10 +7,10 @@ services:
     networks:
       - net
     environment:
+      - MYSQL_DATABASE=kp_database
       - MYSQL_ROOT_PASSWORD=mikimiki
       - MYSQL_USER=kp
       - MYSQL_PASSWORD=mikimiki
-      - MYSQL_DATABASE=kp_database
     restart: always
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]

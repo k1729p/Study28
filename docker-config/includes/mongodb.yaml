@@ -8,8 +8,8 @@ services:
     networks:
       - net
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=secret
+      - MONGO_INITDB_ROOT_USERNAME=kp
+      - MONGO_INITDB_ROOT_PASSWORD=mikimiki
     restart: always
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]

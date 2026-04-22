@@ -1,6 +1,7 @@
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { driverPromise } from "./neo4j.pool.js";
+import { CREATE_DEPARTMENT_QUERY, READ_DEPARTMENTS_QUERY } from "./neo4j.constants.js";
 /**
  * This service class provides methods to manage departments.
  * It includes CRUD methods to create, read, update, and delete departments.
@@ -17,17 +18,6 @@ export class Neo4jDepartmentRepository {
     try {
       const startDate = department.startDate ? new Date(department.startDate).toISOString().split('T')[0] : null;
       const endDate = department.endDate ? new Date(department.endDate).toISOString().split('T')[0] : null;
-      const createDepartmentQuery = `
-        CREATE (d:Department {
-          id: $id,
-          name: $name,
-          startDate: $startDate,
-          endDate: $endDate,
-          notes: $notes,
-          keywords: $keywords,
-          image: $image
-        })
-      `;
       const parameters = {
         id: department.id,
         name: department.name,
@@ -37,7 +27,7 @@ export class Neo4jDepartmentRepository {
         keywords: department.keywords ? department.keywords.join(',') : null,
         image: department.image || null
       };
-      await session.executeWrite(transaction => transaction.run(createDepartmentQuery, parameters));
+      await session.executeWrite(transaction => transaction.run(CREATE_DEPARTMENT_QUERY, parameters));
       console.log("Neo4jDepartmentRepository.createDepartment(): id[%d]", department.id);
     } catch (err) {
       console.error("Neo4jDepartmentRepository.createDepartment():", err);
@@ -54,13 +44,7 @@ export class Neo4jDepartmentRepository {
     const driver = await driverPromise;
     const session = driver.session();
     try {
-      // Cypher query to fetch Departments and collect their associated Employees via the WORKS_IN relationship
-      const readDepartmentsQuery = `
-        MATCH (dep:Department)
-        OPTIONAL MATCH (emp:Employee)-[:WORKS_IN]->(dep)
-        RETURN dep AS department, collect(emp) AS employees
-      `;
-      const result = await session.executeRead(transaction => transaction.run(readDepartmentsQuery));
+      const result = await session.executeRead(transaction => transaction.run(READ_DEPARTMENTS_QUERY));
       const departments: Department[] = result.records.map(record => {
         const departmentNode = record.get('department').properties;
         const department: Department = {

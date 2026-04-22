@@ -11,15 +11,15 @@ import { config as config } from "../configuration/configuration.js";
 import { Bbb } from "./bbb.js";
 
 const REPOSITORY_TYPES = [
-  RepositoryType.Cassandra,
-  RepositoryType.Elasticsearch,
-  RepositoryType.MongoDB,
-  RepositoryType.MySQL,
+  // RepositoryType.Cassandra,
+  // RepositoryType.Elasticsearch,
+  // RepositoryType.MongoDB,
+  // RepositoryType.MySQL,
   RepositoryType.Neo4j,
-  RepositoryType.Oracle,
-  RepositoryType.PostgreSQL,
-  RepositoryType.Redis,
-  RepositoryType.SQLServer,
+  // RepositoryType.Oracle,
+  // RepositoryType.PostgreSQL,
+  // RepositoryType.Redis,
+  // RepositoryType.SQLServer,
 ];
 /**
  * 
@@ -27,11 +27,6 @@ const REPOSITORY_TYPES = [
 export class Aaa {
   initializationService: InitializationService = new InitializationService();
   departmentService: DepartmentService = new DepartmentService();
-  MESSAGE = `
-  ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-  █▌OK▐██▌OK▐██▌OK▐█
-  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀`;
-
   /**
    * 
    * @param req 
@@ -39,28 +34,7 @@ export class Aaa {
    * @param next 
    */
   initialize = async (req: Request, res: Response, next: NextFunction) => {
-    res.status(StatusCodes.OK).send(this.MESSAGE);
-    console.log('Aaa.initialize(): port[%d],\n' +
-      '   cassandraHost[%s], cassandraLocalDataCenter[%s],\n' +
-      '   elasticsearchHost[%s], elasticsearchPort[%d],\n' +
-      '   mongoDbHost[%s], mongoDbPort[%d], mongoDbDatabase[%s],\n' +
-      '   mySqlHost[%s], mySqlPort[%d], mySqlDatabase[%s], mySqlUser[%s], mySqlPassword[%s],\n' +
-      '   neo4jHost[%s], neo4jPort[%d], neo4jUser[%s], neo4jPassword[%s],\n' +
-      '   oracleHost[%s], oraclePort[%d], oracleUser[%s], oraclePassword[%s],\n' +
-      '   postgresqlHost[%s], postgresqlPort[%d], postgresqlDatabase[%s], postgresqlUser[%s], postgresqlPassword[%s],\n' +
-      '   redisHost[%s], redisPort[%d], ,\n' +
-      '   sqlServerHost[%s], sqlServerPort[%d], sqlServerDatabase[%s], sqlServerUser[%s], sqlServerPassword[%s]',
-      config.port,
-      config.cassandraHost, config.cassandraLocalDataCenter,
-      config.elasticsearchHost, config.elasticsearchPort,
-      config.mongoDbHost, config.mongoDbPort, config.mongoDbDatabase,
-      config.mySqlHost, config.mySqlPort, config.mySqlDatabase, config.mySqlUser, config.mySqlPassword,
-      config.neo4jHost, config.neo4jPort, config.neo4jUser, config.neo4jPassword,
-      config.oracleHost, config.oraclePort, config.oracleUser, config.oraclePassword,
-      config.postgreSqlHost, config.postgreSqlPort, config.postgreSqlDatabase, config.postgreSqlUser, config.postgreSqlPassword,
-      config.redisHost, config.redisPort,
-      config.sqlServerHost, config.sqlServerPort, config.sqlServerDatabase, config.sqlServerUser, config.sqlServerPassword
-    );
+    res.status(StatusCodes.OK).send(MESSAGE);
     await this.process(true);
   }
   /**
@@ -70,7 +44,7 @@ export class Aaa {
    * @param next 
    */
   read = async (req: Request, res: Response, next: NextFunction) => {
-    res.status(StatusCodes.OK).send(this.MESSAGE);
+    res.status(StatusCodes.OK).send(MESSAGE);
     await this.process(false);
     if (false) {
       new Bbb().researchLogging();
@@ -115,7 +89,25 @@ export class Aaa {
       colors.red(label), colors.green(label), colors.yellow(label), colors.cyan(label));
   };
 }
-
+const MESSAGE = `
+    port[${config.port}],
+    ▌▀ cassandraHost[${config.cassandraHost}], cassandraLocalDataCenter[${config.cassandraLocalDataCenter}],
+    ▌▀ elasticsearchHost[${config.elasticsearchHost}], elasticsearchPort[${config.elasticsearchPort}],
+    ▌▀ mongoDbHost[${config.mongoDbHost}], mongoDbPort[${config.mongoDbPort}], mongoDbDatabase[${config.mongoDbDatabase}],
+    ▌▀ mySqlHost[${config.mySqlHost}], mySqlPort[${config.mySqlPort}], mySqlDatabase[${config.mySqlDatabase}],
+    ▌     mySqlUser[${config.mySqlUser}], mySqlPassword[${config.mySqlPassword}],
+    ▌▀ neo4jHost[${config.neo4jHost}], neo4jPort[${config.neo4jPort}],
+    ▌     neo4jUser[${config.neo4jUser}], neo4jPassword[${config.neo4jPassword}],
+    ▌▀ oracleHost[${config.oracleHost}], oraclePort[${config.oraclePort}],
+    ▌     oracleUser[${config.oracleUser}], oraclePassword[${config.oraclePassword}],
+    ▌▀ postgresqlHost[${config.postgreSqlHost}], postgresqlPort[${config.postgreSqlPort}], postgresqlDatabase[${config.postgreSqlDatabase}],
+    ▌     postgresqlUser[${config.postgreSqlUser}], postgresqlPassword[${config.postgreSqlPassword}],
+    ▌▀ redisHost[${config.redisHost}], redisPort[${config.redisPort}],
+    ▌▀ sqlServerHost[${config.sqlServerHost}], sqlServerPort[${config.sqlServerPort}], sqlServerDatabase[${config.sqlServerDatabase}],
+    ▌     sqlServerUser[${config.sqlServerUser}], sqlServerPassword[${config.sqlServerPassword}]
+    ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+    █▌OK▐██▌OK▐██▌OK▐█
+    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀`;
 const INITIALIZE_DEPARTMENT_DATA = `
 {
   "id": 1,

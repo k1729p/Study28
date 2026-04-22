@@ -7,7 +7,7 @@ services:
     networks:
       - net
     environment:
-      - ORACLE_PWD=ABab1234
+      - ORACLE_PWD=mikimiki
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "lsnrctl status || exit 1"]
