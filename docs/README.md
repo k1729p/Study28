@@ -24,15 +24,29 @@ Project sections:
   for "Create Department" process with PostgreSQL Database.
 - [Class diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagram.md)
   for  models: Department, Employee, and Title.
+- Entity relationship diagrams for database tables:
+  - [??? Cassandra Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipCassandra.md)
+  - [??? Elasticsearch Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipElasticsearch.md)
+  - [??? MongoDB Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipMongoDB.md)
+  - [MySQL Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipMySQL.md)
+  - [Neo4j Database Graph](https://github.com/k1729p/Study28/blob/main/docs/mermaid/flowchartNeo4jGraph.md)
+  - [Oracle Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipOracle.md)
+  - [PostgreSQL Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipPostgreSQL.md)
+  - [SQL Server Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipSQL-Server.md)
+  - [??? Redis Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipRedis.md)
 
 ![greenCircle](images/greenCircle.png) 1.2. The **Node.js** **Express** server.
 
 Environment variables file '[.env](https://github.com/k1729p/Study28/blob/main/.env)'.
+Databases user and password are in this file.
 
 ![greenCircle](images/greenCircle.png) 1.3. The data stores.
 
-- PostgreSQL
-- MongoDB
+- LOOK DOWN BELOW !!!
+- LOOK DOWN BELOW !!!
+- LOOK DOWN BELOW !!!
+- LOOK DOWN BELOW !!!
+- LOOK DOWN BELOW !!!
 
 ![greenCircle](images/greenCircle.png) 1.4. The TypeScript sources are located in the directory [src](https://github.com/k1729p/Study28/blob/main/src).
 
@@ -196,10 +210,6 @@ Action: \
   [Cassandra glossary](https://cassandra.apache.org/_/glossary.html).
 - **Neo4j** is the graph database, with native graph storage and processing.
   [Neo4j browser](http://localhost:7474/browser/)
-  Neo4j user and password are in [.env](https://github.com/k1729p/Study28/blob/main/.env) file.
-- [Neo4j Database Graph](https://github.com/k1729p/Study28/blob/main/docs/mermaid/flowchartNeo4jGraph.md)
-- Diagram for database tables:
-  [Mermaid Entity Relationship Diagram](https://mermaid.ai/open-source/syntax/entityRelationshipDiagram.html)
 
 ## Links
 

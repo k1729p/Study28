@@ -1,21 +1,21 @@
-# PostgreSQL Entity Relationship Diagram
+# MySQL Entity Relationship Diagram
 
 ```mermaid
 erDiagram
 direction LR
 %% Entities
   DEP[departments] {
-    integer id PK "ID"
+    int id PK "ID"
     varchar(40) name "name"
     date start_date "start date"
     date end_date "end date"
     text notes "notes"
-    text[] keywords "keywords"
+    text keywords "keywords"
     varchar(255) image "image"
   }
   EMP[employees] {
-    integer id PK "ID"
-    integer department_id FK "department ID"
+    int id PK "ID"
+    int department_id FK "department ID"
     varchar(40) first_name "first name"
     varchar(40) last_name "last name"
     varchar(40) title "title"
