@@ -2,6 +2,7 @@
 
 ```mermaid
 erDiagram
+direction LR
 %% Entities
     DEP[departments] {
         integer id PK "ID"
@@ -30,8 +31,5 @@ erDiagram
 %% Relationships 
     DEP ||--o{ EMP: contains
 %%  Styles
-    %%style DEP fill:#f9f,stroke:#333,stroke-width:4px
-    %%style EMP fill:#bbf,stroke:#f66,stroke-width:2px,color:#fff,stroke-dasharray: 5 5
-
-    %%classDef className fill:#f9f,stroke:#333,stroke-width:4px
+    style DEP stroke:orange
 ```
