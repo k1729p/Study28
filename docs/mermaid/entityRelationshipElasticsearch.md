@@ -4,34 +4,34 @@
 erDiagram
 direction LR
 %% Entities
-    DEP["index: departments"] {
-        integer id "ID"
-        text name "name"
-        date startDate "start date"
-        date endDate "end date"
-        text notes "notes"
-        text_array keywords "keywords"
-        text image "image"
-    }
-    EMP["index: employees"] {
-        integer id "ID"
-        integer departmentId "department ID"
-        text firstName "first name"
-        text lastName "last name"
-        text title "title"
-        text phone "phone"
-        text mail "mail"
-        text streetName "street name"
-        text houseNumber "house number"
-        text postalCode "postal code"
-        text locality "locality"
-        text province "province"
-        text country "country"
-    }
+  DEP["index: departments"] {
+    long id "ID"
+    text name "name"
+    date startDate "start date"
+    date endDate "end date"
+    text notes "notes"
+    keyword keywords "keywords (array)"
+    keyword image "image"
+  }
+  EMP["index: employees"] {
+    long id "ID"
+    long departmentId "department ID"
+    text firstName "first name"
+    text lastName "last name"
+    keyword title "title"
+    keyword phone "phone"
+    keyword mail "mail"
+    text streetName "street name"
+    keyword houseNumber "house number"
+    keyword postalCode "postal code"
+    keyword locality "locality"
+    keyword province "province"
+    keyword country "country"
+  }
 %% Relationships 
-    DEP ||--o{ EMP: employs
+  DEP ||--o{ EMP: employs
 %%  Styles
-    style DEP stroke:orange
+  style DEP stroke:orange
 ```
 
 > [!NOTE]
