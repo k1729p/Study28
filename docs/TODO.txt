@@ -27,6 +27,7 @@ CockroachDB
 H2 is a relational database management system written in Java. 
 ---------------------------------------------------------------------------------
 Amazon DynamoDB is a fully managed, serverless, NoSQL database service 
+DynamoDB is cloud-native in that it does not run on-premises
 https://aws.amazon.com/dynamodb
 ---------------------------------------------------------------------------------
 MariaDB - alternative to MySQL

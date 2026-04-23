@@ -20,14 +20,14 @@ Project sections:
 
 ![greenCircle](images/greenCircle.png) 1.1. The diagrams.
 
-- 1️⃣ Sequence diagrams
+- 🔸 Sequence diagrams
   - [Create Department Sequence Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagram.md) for process with PostgreSQL Database
-- 2️⃣ Class diagrams
+- 🔸 Class diagrams
   - [Models Class diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagram.md) for
     [Department](https://github.com/k1729p/Study28/blob/main/src/models/department.ts),
     [Employee](https://github.com/k1729p/Study28/blob/main/src/models/employee.ts), and
     [Title](https://github.com/k1729p/Study28/blob/main/src/models/title.ts)
-- 3️⃣ Entity relationship diagrams
+- 🔸 Entity relationship diagrams
   - [Cassandra Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipCassandra.md)
   - [Elasticsearch Logical Schema Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipElasticsearch.md)
   - [MongoDB Logical Schema Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipMongoDB.md)
@@ -72,11 +72,12 @@ In this file are users and passwords for databases.
 
 ![greenCircle](images/greenCircle.png) 1.4. The TypeScript sources are located in the directory [src](https://github.com/k1729p/Study28/blob/main/src).
 
-![aquaHR](images/aquaHR-500.png) \
-![aquaSqr](images/aquaSquare.png)
-[server.ts](https://github.com/k1729p/Study28/blob/main/src/server.ts)
+🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹
+
+🔹 [server.ts](https://github.com/k1729p/Study28/blob/main/src/server.ts)
+
 <details>
-<summary>'Controllers' section:</summary>
+<summary>🔹 'Controllers' section:</summary>
 
 - directory [controllers](https://github.com/k1729p/Study28/blob/main/src/controllers)
   - DepartmentController
@@ -90,7 +91,7 @@ In this file are users and passwords for databases.
 
 </details>
 <details>
-<summary>'Models' section:</summary>
+<summary>🔹 'Models' section:</summary>
 
 - directory [models](https://github.com/k1729p/Study28/blob/main/src/models)
   - Department
@@ -102,7 +103,7 @@ In this file are users and passwords for databases.
 
 </details>
 <details>
-<summary>'Services' section:</summary>
+<summary>🔹 'Services' section:</summary>
 
 - directory [services](https://github.com/k1729p/Study28/blob/main/src/services)
   - DepartmentService
@@ -116,7 +117,7 @@ In this file are users and passwords for databases.
 
 </details>
 <details>
-<summary>'Repositories' section:</summary>
+<summary>🔹 'Repositories' section:</summary>
 
 - directory [repositories/mongodb](https://github.com/k1729p/Study28/blob/main/src/repositories/mongodb)
   - MongoDbDepartmentRepository
@@ -131,8 +132,7 @@ In this file are users and passwords for databases.
 
 </details>
 
-![aquaSqr](images/aquaSquare.png) \
-![aquaHR](images/aquaHR-500.png)
+🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹
 
 [Back to the top of the page](#study28-readme-contents)
 
