@@ -12,58 +12,49 @@ import { RedisDepartmentRepository } from "../repositories/redis/redis.departmen
 import { SQLServerDepartmentRepository } from "../repositories/sql-server/sql-server.department.repository.js";
 
 /**
+ * The  structural contract.
+ */
+export interface IDepartmentRepository {
+  // Optional properties (?) allow WIP repositories to safely omit methods ???????????????
+  createDepartment(department: Department): Promise<void>;
+  getDepartments(): Promise<Department[]>;
+  getDepartment(id: number): Promise<Department | undefined>;
+  updateDepartment(department: Department): Promise<void>;
+  deleteDepartment(id: number): Promise<void>;
+}
+/**
  * This service class provides methods to manage departments.
  * It includes methods to get, set, create, update, and delete departments.
  */
 export class DepartmentService {
-  cassandraDepartmentRepository: CassandraDepartmentRepository = new CassandraDepartmentRepository();
-  elasticsearchDepartmentRepository: ElasticsearchDepartmentRepository = new ElasticsearchDepartmentRepository();
-  mongoDbDepartmentRepository: MongoDbDepartmentRepository = new MongoDbDepartmentRepository();
-  mongoDbEmployeeRepository: MongoDbEmployeeRepository = new MongoDbEmployeeRepository();
-  mySqlDepartmentRepository: MySqlDepartmentRepository = new MySqlDepartmentRepository();
-  neo4jDepartmentRepository: Neo4jDepartmentRepository = new Neo4jDepartmentRepository();
-  oracleDepartmentRepository: OracleDepartmentRepository = new OracleDepartmentRepository();
-  postgreSQLDepartmentRepository: PostgreSQLDepartmentRepository = new PostgreSQLDepartmentRepository();
-  sqlServerDepartmentRepository: SQLServerDepartmentRepository = new SQLServerDepartmentRepository();
-  redisDepartmentRepository: RedisDepartmentRepository = new RedisDepartmentRepository();
+
+  private readonly strategies: Partial<Record<RepositoryType, IDepartmentRepository>>;
+  constructor() {
+    this.strategies = {
+      [RepositoryType.Cassandra]: new CassandraDepartmentRepository(),
+      [RepositoryType.Elasticsearch]: new ElasticsearchDepartmentRepository(),
+      [RepositoryType.MongoDB]: new MongoDbDepartmentRepository(),
+      [RepositoryType.MySQL]: new MySqlDepartmentRepository(),
+      [RepositoryType.Neo4j]: new Neo4jDepartmentRepository(),
+      [RepositoryType.Oracle]: new OracleDepartmentRepository(),
+      [RepositoryType.PostgreSQL]: new PostgreSQLDepartmentRepository(),
+      [RepositoryType.Redis]: new RedisDepartmentRepository(),
+      [RepositoryType.SQLServer]: new SQLServerDepartmentRepository(),
+    };
+  }
   /**
    * Creates a new department.
    * @param repositoryType the type of repository to use
    * @param department the department to be created
    * @return void
    */
-  async createDepartment(repositoryType: RepositoryType, department: Department) {
-    switch (repositoryType) {
-      case RepositoryType.Cassandra:
-        await this.cassandraDepartmentRepository.createDepartment(department);
-        break;
-      case RepositoryType.Chroma:
-        break;
-      case RepositoryType.Elasticsearch:
-        await this.elasticsearchDepartmentRepository.createDepartment(department);
-        break;
-      case RepositoryType.MongoDB:
-        await this.mongoDbDepartmentRepository.createDepartment(department);
-        break;
-      case RepositoryType.MySQL:
-        await this.mySqlDepartmentRepository.createDepartment(department);
-        break;
-      case RepositoryType.Neo4j:
-        await this.neo4jDepartmentRepository.createDepartment(department);
-        break;
-      case RepositoryType.Oracle:
-        await this.oracleDepartmentRepository.createDepartment(department);
-        break;
-      case RepositoryType.PostgreSQL:
-        await this.postgreSQLDepartmentRepository.createDepartment(department);
-        break;
-      case RepositoryType.Redis:
-        await this.redisDepartmentRepository.createDepartment(department);
-        break;
-      case RepositoryType.SQLServer:
-        await this.sqlServerDepartmentRepository.createDepartment(department);
-        break;
+  async createDepartment(repositoryType: RepositoryType, department: Department): Promise<void> {
+    const strategy = this.strategies[repositoryType];
+    if (strategy == undefined) {
+      console.warn("DepartmentService.createDepartment(): not implemented strategy for [%s]", repositoryType);
+      throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
     }
+    return await strategy.createDepartment(department);
   }
   /**
    * Gets the departments.
@@ -71,28 +62,12 @@ export class DepartmentService {
    * @returns an array of Department objects
    */
   async getDepartments(repositoryType: RepositoryType): Promise<Department[]> {
-    switch (repositoryType) {
-      case RepositoryType.Cassandra:
-        return await this.cassandraDepartmentRepository.getDepartments();
-      case RepositoryType.Chroma:
-        return [];
-      case RepositoryType.Elasticsearch:
-        return await this.elasticsearchDepartmentRepository.getDepartments();
-      case RepositoryType.MongoDB:
-        return await this.mongoDbDepartmentRepository.getDepartments();
-      case RepositoryType.MySQL:
-        return await this.mySqlDepartmentRepository.getDepartments();
-      case RepositoryType.Neo4j:
-        return await this.neo4jDepartmentRepository.getDepartments();
-      case RepositoryType.Oracle:
-        return await this.oracleDepartmentRepository.getDepartments();
-      case RepositoryType.PostgreSQL:
-        return await this.postgreSQLDepartmentRepository.getDepartments();
-      case RepositoryType.Redis:
-        return await this.redisDepartmentRepository.getDepartments();
-      case RepositoryType.SQLServer:
-        return await this.sqlServerDepartmentRepository.getDepartments();
+    const strategy = this.strategies[repositoryType];
+    if (strategy == undefined) {
+      console.warn("DepartmentService.getDepartments(): not implemented strategy for [%s]", repositoryType);
+      throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
     }
+    return strategy.getDepartments();
   }
   /**
    * Gets the department by id.
@@ -101,28 +76,12 @@ export class DepartmentService {
    * @returns the Department object if found, otherwise undefined
    */
   async getDepartment(repositoryType: RepositoryType, id: number): Promise<Department | undefined> {
-    switch (repositoryType) {
-      case RepositoryType.Cassandra:
-        return undefined;
-      case RepositoryType.Chroma:
-        return undefined;
-      case RepositoryType.Elasticsearch:
-        return undefined;
-      case RepositoryType.MongoDB:
-        return await this.mongoDbDepartmentRepository.getDepartment(id);
-      case RepositoryType.MySQL:
-        return undefined;
-      case RepositoryType.Neo4j:
-        return undefined;
-      case RepositoryType.Oracle:
-        return undefined;
-      case RepositoryType.PostgreSQL:
-        return await this.postgreSQLDepartmentRepository.getDepartment(id);
-      case RepositoryType.Redis:
-        return undefined;
-      case RepositoryType.SQLServer:
-        return undefined;
+    const strategy = this.strategies[repositoryType];
+    if (strategy == undefined) {
+      console.warn("DepartmentService.getDepartment(): not implemented strategy for [%s]", repositoryType);
+      throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
     }
+    return strategy.getDepartment(id);
   }
   /**
    * Updates an existing department.
@@ -131,30 +90,12 @@ export class DepartmentService {
    * @returns void
    */
   async updateDepartment(repositoryType: RepositoryType, department: Department) {
-    switch (repositoryType) {
-      case RepositoryType.Cassandra:
-        break;
-      case RepositoryType.Chroma:
-        break;
-      case RepositoryType.Elasticsearch:
-        break;
-      case RepositoryType.MongoDB:
-        await this.mongoDbDepartmentRepository.updateDepartment(department);
-        break;
-      case RepositoryType.MySQL:
-        break;
-      case RepositoryType.Neo4j:
-        break;
-      case RepositoryType.Oracle:
-        break;
-      case RepositoryType.PostgreSQL:
-        await this.postgreSQLDepartmentRepository.updateDepartment(department);
-        break;
-      case RepositoryType.Redis:
-        break;
-      case RepositoryType.SQLServer:
-        break;
+    const strategy = this.strategies[repositoryType];
+    if (strategy == undefined) {
+      console.warn("DepartmentService.updateDepartment(): not implemented strategy for [%s]", repositoryType);
+      throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
     }
+    await strategy.updateDepartment(department);
   }
   /**
    * Deletes a department by its id.
@@ -164,29 +105,11 @@ export class DepartmentService {
    * @returns void
    */
   async deleteDepartment(repositoryType: RepositoryType, id: number) {
-    switch (repositoryType) {
-      case RepositoryType.Cassandra:
-        break;
-      case RepositoryType.Chroma:
-        break;
-      case RepositoryType.Elasticsearch:
-        break;
-      case RepositoryType.MongoDB:
-        await this.mongoDbDepartmentRepository.deleteDepartment(id);
-        break;
-      case RepositoryType.MySQL:
-        break;
-      case RepositoryType.Neo4j:
-        break;
-      case RepositoryType.Oracle:
-        break;
-      case RepositoryType.PostgreSQL:
-        await this.postgreSQLDepartmentRepository.deleteDepartment(id);
-        break;
-      case RepositoryType.Redis:
-        break;
-      case RepositoryType.SQLServer:
-        break;
+    const strategy = this.strategies[repositoryType];
+    if (strategy == undefined) {
+      console.warn("DepartmentService.deleteDepartment(): not implemented strategy for [%s]", repositoryType);
+      throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
     }
+    await strategy.deleteDepartment(id);
   }
 }

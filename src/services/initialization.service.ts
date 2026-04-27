@@ -11,55 +11,42 @@ import { SQLServerInitialization } from "../repositories/sql-server/sql-server.i
 import { RedisInitialization } from "../repositories/redis/redis.initialization.js";
 
 /**
+ * The  structural contract.
+ */
+export interface IInitializationRepository {
+  loadInitialData(departmentArray: Department[]): Promise<void>;
+}
+/**
  * This service class provides methods to initialize the database and load initial data.
  */
 export class InitializationService {
-  cassandraInitialization: CassandraInitialization = new CassandraInitialization();
-  elasticsearchInitialization: ElasticsearchInitialization = new ElasticsearchInitialization();
-  mongoDbInitialization: MongoDbInitialization = new MongoDbInitialization();
-  mySqlInitialization: MySqlInitialization = new MySqlInitialization();
-  neo4jInitialization: Neo4jInitialization = new Neo4jInitialization();
-  oracleInitialization: OracleInitialization = new OracleInitialization();
-  postgreSQLInitialization: PostgreSQLInitialization = new PostgreSQLInitialization();
-  sqlServerInitialization: SQLServerInitialization = new SQLServerInitialization();
-  redisInitialization: RedisInitialization = new RedisInitialization();
+
+  private readonly strategies: Partial<Record<RepositoryType, IInitializationRepository>>;
+  constructor() {
+    this.strategies = {
+      [RepositoryType.Cassandra]: new CassandraInitialization(),
+      [RepositoryType.Elasticsearch]: new ElasticsearchInitialization(),
+      [RepositoryType.MongoDB]: new MongoDbInitialization(),
+      [RepositoryType.MySQL]: new MySqlInitialization(),
+      [RepositoryType.Neo4j]: new Neo4jInitialization(),
+      [RepositoryType.Oracle]: new OracleInitialization(),
+      [RepositoryType.PostgreSQL]: new PostgreSQLInitialization(),
+      [RepositoryType.SQLServer]: new SQLServerInitialization(),
+      [RepositoryType.Redis]: new RedisInitialization(),
+    };
+  }
   /**
    * Loads the initial data into the database.
    * @param repositoryType the type of repository to use
    * @param departmentArray the array of departments
    * @returns void
    */
-  async loadInitialData(repositoryType: RepositoryType, departmentArray: Department[]) {
-    switch (repositoryType) {
-      case RepositoryType.Cassandra:
-        await this.cassandraInitialization.loadInitialData(departmentArray);
-        break;
-      case RepositoryType.Chroma:
-        break;
-      case RepositoryType.Elasticsearch:
-        await this.elasticsearchInitialization.loadInitialData(departmentArray);
-        break;
-      case RepositoryType.MongoDB:
-        await this.mongoDbInitialization.loadInitialData(departmentArray);
-        break;
-      case RepositoryType.MySQL:
-        await this.mySqlInitialization.loadInitialData(departmentArray);
-        break;
-      case RepositoryType.Neo4j:
-        await this.neo4jInitialization.loadInitialData(departmentArray);
-        break;
-      case RepositoryType.Oracle:
-        await this.oracleInitialization.loadInitialData(departmentArray);
-        break;
-      case RepositoryType.PostgreSQL:
-        await this.postgreSQLInitialization.loadInitialData(departmentArray);
-        break;
-      case RepositoryType.Redis:
-        await this.redisInitialization.loadInitialData(departmentArray);
-        break;
-      case RepositoryType.SQLServer:
-        await this.sqlServerInitialization.loadInitialData(departmentArray);
-        break;
+  async loadInitialData(repositoryType: RepositoryType, departmentArray: Department[]): Promise<void> {
+    const strategy = this.strategies[repositoryType];
+    if (strategy == undefined) {
+      console.warn("InitializationService.loadInitialData(): not implemented strategy for [%s]", repositoryType);
+      throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
     }
+    await strategy.loadInitialData(departmentArray);
   }
 }

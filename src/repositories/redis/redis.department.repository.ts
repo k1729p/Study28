@@ -17,7 +17,6 @@ export class RedisDepartmentRepository {
     try {
       const key = `${'department:'}${dept.id}`;
       const { employees, ...deptData } = dept; // Exclude employees if storing separately
-      
       await client.set(key, JSON.stringify(deptData));
       console.log("RedisDepartmentRepository.createDepartment(): ID [%d]", dept.id);
     } catch (err) {
@@ -25,7 +24,6 @@ export class RedisDepartmentRepository {
       throw err;
     }
   }
-
   /**
    * Gets the departments and reconstructs the relationships with employees.
    * @returns an array of Department objects
@@ -33,53 +31,50 @@ export class RedisDepartmentRepository {
   async getDepartments(): Promise<Department[]> {
     const client = await clientPromise;
     try {
-      // 1. Fetch all Department keys
-      const depKeys = await client.keys('department:*');
+      const departmentKeys = await client.keys('department:*');
       const departments: Department[] = [];
       const departmentMap = new Map<number, Department>();
-
-      if (depKeys.length > 0) {
-        // Fetch all department JSON strings at once using mGet
-        const depStrings = await client.mGet(depKeys);
-        
-        for (const depStr of depStrings) {
-          if (depStr) {
-            const parsed = JSON.parse(depStr);
-            // Reconstruct the Date objects from the JSON strings
-            const dept: Department = {
-              ...parsed,
-              startDate: parsed.startDate ? new Date(parsed.startDate) : undefined,
-              endDate: parsed.endDate ? new Date(parsed.endDate) : undefined,
-              employees: [] // Initialize empty array
+      if (departmentKeys.length > 0) {
+        const departmentStrings = await client.mGet(departmentKeys);
+        for (const departmentStr of departmentStrings) {
+          if (departmentStr) {
+            const departmentParsed = JSON.parse(departmentStr);
+            const department: Department = {
+              ...departmentParsed,
+              startDate: departmentParsed.startDate ? new Date(departmentParsed.startDate) : undefined,
+              endDate: departmentParsed.endDate ? new Date(departmentParsed.endDate) : undefined,
+              employees: []
             };
-            departments.push(dept);
-            departmentMap.set(dept.id, dept);
+            departments.push(department);
+            departmentMap.set(department.id, department);
           }
         }
       }
-
-      // 2. Fetch all Employee keys to simulate the SQL JOIN
-      const empKeys = await client.keys('employee:*');
-      if (empKeys.length > 0) {
-        const empStrings = await client.mGet(empKeys);
-        
-        for (const empStr of empStrings) {
-          if (empStr) {
-            const emp: Employee = JSON.parse(empStr);
-            // Map the employee back to its parent department
-            const parentDept = departmentMap.get(emp.departmentId);
-            if (parentDept) {
-              parentDept.employees.push(emp);
+      const employeeKeys = await client.keys('employee:*');
+      if (employeeKeys.length > 0) {
+        const employeeStrings = await client.mGet(employeeKeys);
+        for (const employeeStr of employeeStrings) {
+          if (employeeStr) {
+            const employeeParsed: Employee = JSON.parse(employeeStr);
+            const parentDepartment = departmentMap.get(employeeParsed.departmentId);
+            if (parentDepartment) {
+              parentDepartment.employees.push(employeeParsed);
             }
           }
         }
       }
-
       console.log("RedisDepartmentRepository.getDepartments(): Retrieved [%d] departments", departments.length);
       return departments;
     } catch (err) {
       console.error("RedisDepartmentRepository.getDepartments():", err);
       throw err;
     }
+  }
+  async getDepartment(id: number): Promise<Department | undefined> {
+    return undefined;
+  }
+  async updateDepartment(department: Department): Promise<void> {
+  }
+  async deleteDepartment(departmentId: number): Promise<void> {
   }
 }

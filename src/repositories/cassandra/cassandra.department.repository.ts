@@ -84,4 +84,11 @@ export class CassandraDepartmentRepository {
       throw err;
     }
   }
+  async getDepartment(id: number): Promise<Department | undefined> {
+    return undefined;
+  }
+  async updateDepartment(department: Department): Promise<void> {
+  }
+  async deleteDepartment(departmentId: number): Promise<void> {
+  }
 }
