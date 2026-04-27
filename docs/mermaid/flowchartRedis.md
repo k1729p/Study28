@@ -30,7 +30,7 @@ flowchart LR
   end
 
   subgraph Employee Fields
-    E_Val --- e["`
+    Emp_Val --- e["`
       id: number
       departmentId: number
       firstName: string
