@@ -20,6 +20,9 @@ Project sections:
 
 ![greenCircle](images/greenCircle.png) 1.1. The diagrams.
 
+- 🔸 Layered Architecture diagrams
+  - [Layers Dependency Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/layersDependencyDiagram.md)
+  - [Layers Data Flow Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/layersDataFlowDiagram.md)
 - 🔸 Sequence diagrams
   - [Create Department Sequence Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagram.md) for process with PostgreSQL Database
 - 🔸 Class diagrams
