@@ -26,10 +26,13 @@ Project sections:
 - 🔸 Sequence diagrams
   - [Create Department Sequence Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagram.md) for process with PostgreSQL Database
 - 🔸 Class diagrams
-  - [Models Class diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagram.md) for
+  - [Models Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramModels.md) for
     [Department](https://github.com/k1729p/Study28/blob/main/src/models/department.ts),
     [Employee](https://github.com/k1729p/Study28/blob/main/src/models/employee.ts), and
     [Title](https://github.com/k1729p/Study28/blob/main/src/models/title.ts)
+  - [Initialization Repository Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramInitializationRepository.md)
+  - [Department Repository Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramDepartmentRepository.md)
+  - [Employee Repository Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramEmployeeRepository.md)
 - 🔸 Entity relationship diagrams
   - [Cassandra Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipCassandra.md)
   - [Elasticsearch Logical Schema Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipElasticsearch.md)
