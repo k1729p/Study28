@@ -4,7 +4,7 @@ DepartmentRepository: The core interface defining the contract for department ma
 
 ```mermaid
 classDiagram
-direction TD
+direction LR
   class DepartmentRepository {
     <<interface>>
     +createDepartment(department: Department) Promise~void~
