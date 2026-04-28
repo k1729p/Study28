@@ -1,4 +1,4 @@
-# Layers Dependency
+# Layers Dependencies
 
 ``` mermaid
 flowchart LR
