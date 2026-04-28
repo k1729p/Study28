@@ -1,5 +1,7 @@
 # Department Repository Class Diagram
 
+DepartmentRepository: The core interface defining the contract for department management, including CRUD operations and employee transfers.
+
 ```mermaid
 classDiagram
 direction TD
@@ -22,9 +24,33 @@ direction TD
   class MongoDbDepartmentRepository {
   }
 
+  class MySqlDepartmentRepository {
+  }
+
+  class Neo4jDepartmentRepository {
+  }
+
+  class OracleDepartmentRepository {
+  }
+
+  class PostgreSQLDepartmentRepository {
+  }
+
+  class RedisDepartmentRepository {
+  }
+
+  class SQLServerDepartmentRepository {
+  }
+
   DepartmentRepository <|.. CassandraDepartmentRepository
   DepartmentRepository <|.. ElasticsearchDepartmentRepository
   DepartmentRepository <|.. MongoDbDepartmentRepository
+  DepartmentRepository <|.. MySqlDepartmentRepository
+  DepartmentRepository <|.. Neo4jDepartmentRepository
+  DepartmentRepository <|.. OracleDepartmentRepository
+  DepartmentRepository <|.. PostgreSQLDepartmentRepository
+  DepartmentRepository <|.. RedisDepartmentRepository
+  DepartmentRepository <|.. SQLServerDepartmentRepository
 ```
 
 ---
