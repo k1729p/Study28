@@ -1,6 +1,7 @@
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { poolPromise } from "./postgresql.pool.js";
+import { DepartmentRepository } from "../department.repository.js";
 import {
   CREATE_DEPARTMENT_SQL, SELECT_DEPARTMENTS_SQL, SELECT_DEPARTMENT_SQL,
   UPDATE_DEPARTMENT_SQL, UPDATE_EMPLOYEE_DEPARTMENT_SQL
@@ -9,7 +10,7 @@ import {
  * This service class provides methods to manage departments.
  * It includes CRUD methods to create, read, update, and delete departments.
  */
-export class PostgreSQLDepartmentRepository {
+export class PostgreSQLDepartmentRepository implements DepartmentRepository {
   /**
    * Creates a new department.
    * @param department the department to be created

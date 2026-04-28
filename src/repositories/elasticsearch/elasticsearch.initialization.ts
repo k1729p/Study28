@@ -2,12 +2,13 @@ import { Client } from '@elastic/elasticsearch';
 
 import { Department } from "../../models/department.js";
 import { clientPromise } from "./elasticsearch.pool.js";
+import { Initialization } from "../initialization.js";
 import { INDEX_DEPARTMENTS, INDEX_EMPLOYEES} from "./elasticsearch.constants.js";
 
 /**
  * This service class provides methods to initialize database and load data.
  */
-export class ElasticsearchInitialization {
+export class ElasticsearchInitialization implements Initialization {
   /**
    * Loads the initial data into the database.
    * @param departments the array of departments

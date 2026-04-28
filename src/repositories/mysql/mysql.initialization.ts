@@ -1,5 +1,6 @@
 import { Department } from "../../models/department.js";
 import { poolPromise } from "./mysql.pool.js";
+import { Initialization } from "../initialization.js";
 import {
   DROP_TABLE_EMPLOYEES_SQL, DROP_TABLE_DEPARTMENTS_SQL,
   CREATE_TABLE_DEPARTMENTS_SQL, CREATE_TABLE_EMPLOYEES_SQL,
@@ -8,7 +9,7 @@ import {
 /**
  * This service class provides methods to initialize database and load data.
  */
-export class MySqlInitialization {
+export class MySqlInitialization implements Initialization {
   /**
    * Loads the initial data into the database.
    * @param departments the array of departments

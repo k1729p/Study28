@@ -1,6 +1,7 @@
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { clientPromise } from "./cassandra.pool.js";
+import { DepartmentRepository } from "../department.repository.js";
 import {
   CREATE_DEPARTMENT_CQL, SELECT_DEPARTMENTS_CQL, SELECT_EMPLOYEES_CQL
 } from "./cassandra.constants.js";
@@ -9,7 +10,7 @@ import {
  * This service class provides methods to manage departments.
  * It includes CRUD methods to create, read, update, and delete departments.
  */
-export class CassandraDepartmentRepository {
+export class CassandraDepartmentRepository implements DepartmentRepository {
   /**
    * Creates a new department.
    * @param department the department to be created
@@ -90,5 +91,7 @@ export class CassandraDepartmentRepository {
   async updateDepartment(department: Department): Promise<void> {
   }
   async deleteDepartment(departmentId: number): Promise<void> {
+  }
+  async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]): Promise<void> {
   }
 }

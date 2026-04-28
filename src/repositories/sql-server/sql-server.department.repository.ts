@@ -3,6 +3,7 @@ import sql from 'mssql';
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { poolPromise } from "./sql-server.pool.js";
+import { DepartmentRepository } from "../department.repository.js";
 import {
   CREATE_DEPARTMENT_SQL,
   SELECT_DEPARTMENTS_SQL
@@ -11,7 +12,7 @@ import {
  * This service class provides methods to manage departments.
  * It includes CRUD methods to create, read, update, and delete departments.
  */
-export class SQLServerDepartmentRepository {
+export class SQLServerDepartmentRepository implements DepartmentRepository {
   /**
    * Creates a new department.
    * @param department the department to be created
@@ -94,5 +95,7 @@ export class SQLServerDepartmentRepository {
   async updateDepartment(department: Department): Promise<void> {
   }
   async deleteDepartment(departmentId: number): Promise<void> {
+  }
+  async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]): Promise<void> {
   }
 }

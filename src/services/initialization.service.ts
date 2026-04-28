@@ -1,5 +1,6 @@
 import { Department } from "../models/department.js";
 import { RepositoryType } from "../repositories/repository-type.js";
+import { Initialization } from "../repositories/initialization.js";
 import { CassandraInitialization } from "../repositories/cassandra/cassandra.initialization.js";
 import { ElasticsearchInitialization } from "../repositories/elasticsearch/elasticsearch.initialization.js";
 import { MongoDbInitialization } from "../repositories/mongodb/mongodb.initialization.js";
@@ -11,17 +12,14 @@ import { SQLServerInitialization } from "../repositories/sql-server/sql-server.i
 import { RedisInitialization } from "../repositories/redis/redis.initialization.js";
 
 /**
- * The  structural contract.
- */
-export interface IInitializationRepository {
-  loadInitialData(departmentArray: Department[]): Promise<void>;
-}
-/**
  * This service class provides methods to initialize the database and load initial data.
  */
 export class InitializationService {
 
-  private readonly strategies: Partial<Record<RepositoryType, IInitializationRepository>>;
+  private readonly strategies: Partial<Record<RepositoryType, Initialization>>;
+  /**
+   * Initializes the service with available repository strategies.
+   */  
   constructor() {
     this.strategies = {
       [RepositoryType.Cassandra]: new CassandraInitialization(),

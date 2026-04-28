@@ -1,10 +1,11 @@
 import { Department } from "../../models/department.js";
 import { clientPromise } from "./redis.pool.js";
+import { Initialization } from "../initialization.js";
 
 /**
  * This service class provides methods to initialize the database and load data.
  */
-export class RedisInitialization {
+export class RedisInitialization implements Initialization {
   /**
    * Loads the initial data.
    * @param departments the array of departments

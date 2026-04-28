@@ -2,6 +2,7 @@ import sql from 'mssql';
 
 import { Department } from "../../models/department.js";
 import { poolPromise } from "./sql-server.pool.js";
+import { Initialization } from "../initialization.js";
 import {
   DROP_TABLE_DEPARTMENTS_SQL,
   DROP_TABLE_EMPLOYEES_SQL,
@@ -13,7 +14,7 @@ import {
 /**
  * This service class provides methods to initialize database and load data.
  */
-export class SQLServerInitialization {
+export class SQLServerInitialization implements Initialization {
   /**
    * Loads the initial data into database.
    * @param departments the array of departments

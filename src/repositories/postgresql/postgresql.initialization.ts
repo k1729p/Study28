@@ -2,6 +2,7 @@ import { PoolClient } from "pg";
 
 import { Department } from "../../models/department.js";
 import { poolPromise } from "./postgresql.pool.js";
+import { Initialization } from "../initialization.js";
 import {
   DROP_TABLE_EMPLOYEES_SQL, DROP_TABLE_DEPARTMENTS_SQL,
   DROP_PROCEDURE_TRANSFER_EMPLOYEES_SQL, DROP_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL,
@@ -12,7 +13,7 @@ import {
 /**
  * This service class provides methods to initialize database and load data.
  */
-export class PostgreSQLInitialization {
+export class PostgreSQLInitialization implements Initialization {
   /**
    * Loads the initial data into the database.
    * @param departments the array of departments

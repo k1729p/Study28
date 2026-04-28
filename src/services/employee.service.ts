@@ -1,15 +1,39 @@
 import { Employee } from "../models/employee.js";
 import { RepositoryType } from "../repositories/repository-type.js";
+import { EmployeeRepository } from "../repositories/employee.repository.js";
+import { CassandraEmployeeRepository } from "../repositories/cassandra/cassandra.employee.repository.js";
+import { ElasticsearchEmployeeRepository } from "../repositories/elasticsearch/elasticsearch.employee.repository.js";
 import { MongoDbEmployeeRepository } from "../repositories/mongodb/mongodb.employee.repository.js";
+import { MySqlEmployeeRepository } from "../repositories/mysql/mysql.employee.repository.js";
+import { Neo4jEmployeeRepository } from "../repositories/neo4j/neo4j.employee.repository.js";
+import { OracleEmployeeRepository } from "../repositories/oracle/oracle.employee.repository.js";
 import { PostgreSQLEmployeeRepository } from "../repositories/postgresql/postgresql.employee.repository.js";
+import { RedisEmployeeRepository } from "../repositories/redis/redis.employee.repository.js";
+import { SQLServerEmployeeRepository } from "../repositories/sql-server/sql-server.employee.repository.js";
 
 /**
  * This service class provides methods to manage employees.
  * It includes methods to get, set, create, update, and delete employees.
  */
 export class EmployeeService {
-  mongoDbEmployeeRepository: MongoDbEmployeeRepository = new MongoDbEmployeeRepository();
-  postgreSQLEmployeeRepository: PostgreSQLEmployeeRepository = new PostgreSQLEmployeeRepository();
+
+  private readonly strategies: Partial<Record<RepositoryType, EmployeeRepository>>;
+  /**
+   * Initializes the service with available repository strategies.
+   */  
+  constructor() {
+    this.strategies = {
+      [RepositoryType.Cassandra]: new CassandraEmployeeRepository(),
+      [RepositoryType.Elasticsearch]: new ElasticsearchEmployeeRepository(),
+      [RepositoryType.MongoDB]: new MongoDbEmployeeRepository(),
+      [RepositoryType.MySQL]: new MySqlEmployeeRepository(),
+      [RepositoryType.Neo4j]: new Neo4jEmployeeRepository(),
+      [RepositoryType.Oracle]: new OracleEmployeeRepository(),
+      [RepositoryType.PostgreSQL]: new PostgreSQLEmployeeRepository(),
+      [RepositoryType.Redis]: new RedisEmployeeRepository(),
+      [RepositoryType.SQLServer]: new SQLServerEmployeeRepository(),
+    };
+  }
   /**
    * Creates a new employee in the specified department.
    * @param repositoryType the type of repository to use
@@ -17,30 +41,12 @@ export class EmployeeService {
    * @return void
    */
   async createEmployee(repositoryType: RepositoryType, employee: Employee) {
-    switch (repositoryType) {
-      case RepositoryType.Cassandra:
-        break;
-      case RepositoryType.Chroma:
-        break;
-      case RepositoryType.Elasticsearch:
-        break;
-      case RepositoryType.MongoDB:
-        await this.mongoDbEmployeeRepository.createEmployee(employee);
-        break;
-      case RepositoryType.MySQL:
-        break;
-      case RepositoryType.Neo4j:
-        break;
-      case RepositoryType.Oracle:
-        break;
-      case RepositoryType.PostgreSQL:
-        await this.postgreSQLEmployeeRepository.createEmployee(employee);
-        break;
-      case RepositoryType.Redis:
-        break;
-      case RepositoryType.SQLServer:
-        break;
+    const strategy = this.strategies[repositoryType];
+    if (strategy == undefined) {
+      console.warn("EmployeeService.createEmployee(): not implemented strategy for [%s]", repositoryType);
+      throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
     }
+    return await strategy.createEmployee(employee);
   }
   /**
    * Gets all employees.
@@ -48,28 +54,12 @@ export class EmployeeService {
    * @returns an array of Employee objects
    */
   async getEmployees(repositoryType: RepositoryType,): Promise<Employee[]> {
-    switch (repositoryType) {
-      case RepositoryType.Cassandra:
-        return [];
-      case RepositoryType.Chroma:
-        return [];
-      case RepositoryType.Elasticsearch:
-        return [];
-      case RepositoryType.MongoDB:
-        return await this.mongoDbEmployeeRepository.getEmployees();
-      case RepositoryType.MySQL:
-        return [];
-      case RepositoryType.Neo4j:
-        return [];
-      case RepositoryType.Oracle:
-        return [];
-      case RepositoryType.PostgreSQL:
-        return await this.postgreSQLEmployeeRepository.getEmployees();
-      case RepositoryType.Redis:
-        return [];
-      case RepositoryType.SQLServer:
-        return [];
+    const strategy = this.strategies[repositoryType];
+    if (strategy == undefined) {
+      console.warn("EmployeeService.getEmployees(): not implemented strategy for [%s]", repositoryType);
+      throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
     }
+    return strategy.getEmployees();
   }
 
   /**
@@ -79,28 +69,12 @@ export class EmployeeService {
    * @return the employee with the specified id, or undefined if not found
    */
   async getEmployee(repositoryType: RepositoryType, id: number): Promise<Employee | undefined> {
-    switch (repositoryType) {
-      case RepositoryType.Cassandra:
-        return undefined;
-      case RepositoryType.Chroma:
-        return undefined;
-      case RepositoryType.Elasticsearch:
-        return undefined;
-      case RepositoryType.MongoDB:
-        return await this.mongoDbEmployeeRepository.getEmployee(id);
-      case RepositoryType.MySQL:
-        return undefined;
-      case RepositoryType.Neo4j:
-        return undefined;
-      case RepositoryType.Oracle:
-        return undefined;
-      case RepositoryType.PostgreSQL:
-        return await this.postgreSQLEmployeeRepository.getEmployee(id);
-      case RepositoryType.Redis:
-        return undefined;
-      case RepositoryType.SQLServer:
-        return undefined;
+    const strategy = this.strategies[repositoryType];
+    if (strategy == undefined) {
+      console.warn("EmployeeService.getEmployee(): not implemented strategy for [%s]", repositoryType);
+      throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
     }
+    return strategy.getEmployee(id);
   }
   /**
    * Updates an existing employee.
@@ -109,30 +83,12 @@ export class EmployeeService {
    * @return void
    */
   async updateEmployee(repositoryType: RepositoryType, employee: Employee) {
-    switch (repositoryType) {
-      case RepositoryType.Cassandra:
-        break;
-      case RepositoryType.Chroma:
-        break;
-      case RepositoryType.Elasticsearch:
-        break;
-      case RepositoryType.MongoDB:
-        await this.mongoDbEmployeeRepository.updateEmployee(employee);
-        break;
-      case RepositoryType.MySQL:
-        break;
-      case RepositoryType.Neo4j:
-        break;
-      case RepositoryType.Oracle:
-        break;
-      case RepositoryType.PostgreSQL:
-        await this.postgreSQLEmployeeRepository.updateEmployee(employee);
-        break;
-      case RepositoryType.Redis:
-        break;
-      case RepositoryType.SQLServer:
-        break;
+    const strategy = this.strategies[repositoryType];
+    if (strategy == undefined) {
+      console.warn("EmployeeService.updateEmployee(): not implemented strategy for [%s]", repositoryType);
+      throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
     }
+    await strategy.updateEmployee(employee);
   }
   /**
    * Deletes an employee by its id.
@@ -140,29 +96,11 @@ export class EmployeeService {
    * @return void
    */
   async deleteEmployee(repositoryType: RepositoryType, id: number) {
-    switch (repositoryType) {
-      case RepositoryType.Cassandra:
-        break;
-      case RepositoryType.Chroma:
-        break;
-      case RepositoryType.Elasticsearch:
-        break;
-      case RepositoryType.MongoDB:
-        await this.mongoDbEmployeeRepository.deleteEmployee(id);
-        break;
-      case RepositoryType.MySQL:
-        break;
-      case RepositoryType.Neo4j:
-        break;
-      case RepositoryType.Oracle:
-        break;
-      case RepositoryType.PostgreSQL:
-        await this.postgreSQLEmployeeRepository.deleteEmployee(id);
-        break;
-      case RepositoryType.Redis:
-        break;
-      case RepositoryType.SQLServer:
-        break;
+    const strategy = this.strategies[repositoryType];
+    if (strategy == undefined) {
+      console.warn("EmployeeService.deleteEmployee(): not implemented strategy for [%s]", repositoryType);
+      throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
     }
+    await strategy.deleteEmployee(id);
   }
 }

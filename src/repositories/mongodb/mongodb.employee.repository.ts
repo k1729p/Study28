@@ -3,12 +3,13 @@ import { Db, Collection } from 'mongodb'
 import { Employee } from "../../models/employee.js";
 import { config } from "./../../configuration/configuration.js";
 import { poolPromise } from "./mongodb.pool.js";
+import { EmployeeRepository } from "../employee.repository.js";
 
 /**
  * This service class provides methods to manage employees.
  * It includes CRUD methods to create, read, update, and delete employees.
  */
-export class MongoDbEmployeeRepository {
+export class MongoDbEmployeeRepository implements EmployeeRepository {
   /**
    * Creates a new employee.
    * @param employee the employee to be created
@@ -98,29 +99,5 @@ export class MongoDbEmployeeRepository {
       throw err;
     }
     console.log("MongoDbEmployeeRepository.deleteEmployee(): employee id[%d]", employeeId);
-  }
-  /**
-   * Transfers the employees from source department to target department.
-   * 
-   * @param sourceDepartmentId the id of the source department
-   * @param targetDepartmentId the id of the target department
-   * @param employeeIds the transferred employees array
-   * @returns void
-   */
-  async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]) {
-    const filter = { departmentId: sourceDepartmentId };
-    const update = { $set: { departmentId: targetDepartmentId } };
-    const client = await poolPromise;
-    try {
-      const database: Db = client.db(config.mongoDbDatabase);
-      const employeeCollection: Collection<Employee> = database.collection<Employee>('employees');
-      await employeeCollection.updateMany(filter, update);
-    } catch (err) {
-      console.error("MongoDbEmployeeRepository.transferEmployees():", err);
-      throw err;
-    }
-    console.log("MongoDbEmployeeRepository.transferEmployees(): " +
-      "source department id[%d], target department id[%d], transferred employees count[%d]",
-      sourceDepartmentId, targetDepartmentId, employeeIds.length);
   }
 }

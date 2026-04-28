@@ -1,5 +1,6 @@
 import { Department } from "../../models/department.js";
 import { clientPromise } from "./cassandra.pool.js";
+import { Initialization } from "../initialization.js";
 import {
   CREATE_KEYSPACE_CQL, DROP_TABLE_EMPLOYEES_CQL, DROP_TABLE_DEPARTMENTS_CQL,
   CREATE_TABLE_DEPARTMENTS_CQL, CREATE_TABLE_EMPLOYEES_CQL,
@@ -8,7 +9,7 @@ import {
 /**
  * This service class provides methods to initialize the database and load data.
  */
-export class CassandraInitialization {
+export class CassandraInitialization implements Initialization {
   /**
    * Loads the initial data into the database.
    * @param departments the array of departments

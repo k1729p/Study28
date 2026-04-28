@@ -4,12 +4,13 @@ import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { config } from "./../../configuration/configuration.js";
 import { poolPromise } from "./mongodb.pool.js";
+import { DepartmentRepository } from "../department.repository.js";
 
 /**
  * This service class provides methods to manage departments.
  * It includes CRUD methods to create, read, update, and delete departments.
  */
-export class MongoDbDepartmentRepository {
+export class MongoDbDepartmentRepository implements DepartmentRepository {
   /**
  * Creates a new department.
  * @param department the department to be created
@@ -78,12 +79,12 @@ export class MongoDbDepartmentRepository {
       const departments = await departmentCollection.aggregate<Department>([
         {// Find the department
           $match: {
-             id: id
-             }
-        }, 
+            id: id
+          }
+        },
         {// Join with employees collection
           $lookup: {
-            from: 'employees',          
+            from: 'employees',
             localField: 'id',
             foreignField: 'departmentId',
             as: 'employees'
@@ -105,7 +106,7 @@ export class MongoDbDepartmentRepository {
       console.error("MongoDbDepartmentRepository.getDepartment():", err);
       throw err;
     }
-  }  
+  }
   /**
    * Updates an existing department.
    * @param department the department to be updated
@@ -145,5 +146,29 @@ export class MongoDbDepartmentRepository {
       throw err;
     }
     console.log("MongoDbDepartmentRepository.deleteDepartment(): department id[%d]", departmentId);
+  }
+  /**
+   * Transfers the employees from source department to target department.
+   * 
+   * @param sourceDepartmentId the id of the source department
+   * @param targetDepartmentId the id of the target department
+   * @param employeeIds the transferred employees array
+   * @returns void
+   */
+  async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]): Promise<void> {
+    const filter = { departmentId: sourceDepartmentId };
+    const update = { $set: { departmentId: targetDepartmentId } };
+    const client = await poolPromise;
+    try {
+      const database: Db = client.db(config.mongoDbDatabase);
+      const employeeCollection: Collection<Employee> = database.collection<Employee>('employees');
+      await employeeCollection.updateMany(filter, update);
+    } catch (err) {
+      console.error("MongoDbEmployeeRepository.transferEmployees():", err);
+      throw err;
+    }
+    console.log("MongoDbEmployeeRepository.transferEmployees(): " +
+      "source department id[%d], target department id[%d], transferred employees count[%d]",
+      sourceDepartmentId, targetDepartmentId, employeeIds.length);
   }
 }

@@ -1,12 +1,13 @@
 import { Department } from "../../models/department.js";
 import { driverPromise } from "./neo4j.pool.js";
+import { Initialization } from "../initialization.js";
 import {
   DELETE_QUERY, CREATE_DEPARTMENTS_QUERY, CREATE_EMPLOYEES_QUERY
 } from "./neo4j.constants.js";
 /**
  * This service class provides methods to initialize database and load data.
  */
-export class Neo4jInitialization {
+export class Neo4jInitialization implements Initialization {
   /**
    * Loads the initial data into the database.
    * @param departments the array of departments

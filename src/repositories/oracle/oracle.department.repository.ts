@@ -1,12 +1,13 @@
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { poolPromise } from "./oracle.pool.js";
+import { DepartmentRepository } from "../department.repository.js";
 import { CREATE_DEPARTMENT_SQL, SELECT_DEPARTMENTS_SQL } from "./oracle.constants.js";
 /**
  * This service class provides methods to manage departments.
  * It includes CRUD methods to create, read, update, and delete departments.
  */
-export class OracleDepartmentRepository {
+export class OracleDepartmentRepository implements DepartmentRepository {
   /**
    * Creates a new department.
    * @param department the department to be created
@@ -106,5 +107,7 @@ export class OracleDepartmentRepository {
   async updateDepartment(department: Department): Promise<void> {
   }
   async deleteDepartment(departmentId: number): Promise<void> {
+  }
+  async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]): Promise<void> {
   }
 }

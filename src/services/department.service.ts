@@ -1,9 +1,9 @@
 import { Department } from "../models/department.js";
 import { RepositoryType } from "../repositories/repository-type.js";
+import { DepartmentRepository } from "../repositories/department.repository.js";
 import { CassandraDepartmentRepository } from "../repositories/cassandra/cassandra.department.repository.js";
 import { ElasticsearchDepartmentRepository } from "../repositories/elasticsearch/elasticsearch.department.repository.js";
 import { MongoDbDepartmentRepository } from "../repositories/mongodb/mongodb.department.repository.js";
-import { MongoDbEmployeeRepository } from "../repositories/mongodb/mongodb.employee.repository.js";
 import { MySqlDepartmentRepository } from "../repositories/mysql/mysql.department.repository.js";
 import { Neo4jDepartmentRepository } from "../repositories/neo4j/neo4j.department.repository.js";
 import { OracleDepartmentRepository } from "../repositories/oracle/oracle.department.repository.js";
@@ -12,23 +12,15 @@ import { RedisDepartmentRepository } from "../repositories/redis/redis.departmen
 import { SQLServerDepartmentRepository } from "../repositories/sql-server/sql-server.department.repository.js";
 
 /**
- * The  structural contract.
- */
-export interface IDepartmentRepository {
-  // Optional properties (?) allow WIP repositories to safely omit methods ???????????????
-  createDepartment(department: Department): Promise<void>;
-  getDepartments(): Promise<Department[]>;
-  getDepartment(id: number): Promise<Department | undefined>;
-  updateDepartment(department: Department): Promise<void>;
-  deleteDepartment(id: number): Promise<void>;
-}
-/**
  * This service class provides methods to manage departments.
  * It includes methods to get, set, create, update, and delete departments.
  */
 export class DepartmentService {
 
-  private readonly strategies: Partial<Record<RepositoryType, IDepartmentRepository>>;
+  private readonly strategies: Partial<Record<RepositoryType, DepartmentRepository>>;
+  /**
+   * Initializes the service with available repository strategies.
+   */  
   constructor() {
     this.strategies = {
       [RepositoryType.Cassandra]: new CassandraDepartmentRepository(),

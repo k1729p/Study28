@@ -1,5 +1,6 @@
 import { Employee } from "../../models/employee.js";
 import { poolPromise } from "./postgresql.pool.js";
+import { EmployeeRepository } from "../employee.repository.js";
 import {
   CREATE_EMPLOYEE_SQL, SELECT_EMPLOYEES_SQL, SELECT_EMPLOYEE_SQL,
   UPDATE_EMPLOYEE_SQL, DELETE_EMPLOYEE_SQL
@@ -8,7 +9,7 @@ import {
  * This service class provides methods to manage employees.
  * It includes CRUD methods to create, read, update, and delete employees.
  */
-export class PostgreSQLEmployeeRepository {
+export class PostgreSQLEmployeeRepository implements EmployeeRepository {
   /**
    * Creates a new employee.
    * @param employee the employee to be created

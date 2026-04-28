@@ -1,13 +1,14 @@
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { clientPromise } from "./elasticsearch.pool.js";
-import { INDEX_DEPARTMENTS, INDEX_EMPLOYEES} from "./elasticsearch.constants.js";
+import { DepartmentRepository } from "../department.repository.js";
+import { INDEX_DEPARTMENTS, INDEX_EMPLOYEES } from "./elasticsearch.constants.js";
 
 /**
  * This service class provides methods to manage departments.
  * It includes CRUD methods to create, read, update, and delete departments.
  */
-export class ElasticsearchDepartmentRepository {
+export class ElasticsearchDepartmentRepository implements DepartmentRepository {
   /**
    * Creates a new department.
    * @param dept the department to be created
@@ -101,5 +102,7 @@ export class ElasticsearchDepartmentRepository {
   async updateDepartment(department: Department): Promise<void> {
   }
   async deleteDepartment(departmentId: number): Promise<void> {
+  }
+  async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]): Promise<void> {
   }
 }

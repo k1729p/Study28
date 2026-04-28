@@ -4,11 +4,12 @@ import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { config } from "./../../configuration/configuration.js";
 import { poolPromise } from "./mongodb.pool.js";
+import { Initialization } from "../initialization.js";
 
 /**
  * This service class provides methods to initialize database and load data.
  */
-export class MongoDbInitialization {
+export class MongoDbInitialization implements Initialization {
   /**
    * Loads the initial data into the database.
    * @param departments the array of departments

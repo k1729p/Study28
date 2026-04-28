@@ -1,12 +1,13 @@
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { clientPromise } from "./redis.pool.js";
+import { DepartmentRepository } from "../department.repository.js";
 
 /**
  * This service class provides methods to manage departments.
  * It includes CRUD methods adapted for a NoSQL Key-Value store.
  */
-export class RedisDepartmentRepository {
+export class RedisDepartmentRepository implements DepartmentRepository {
   /**
    * Creates a new department.
    * @param dept the department to be created
@@ -76,5 +77,7 @@ export class RedisDepartmentRepository {
   async updateDepartment(department: Department): Promise<void> {
   }
   async deleteDepartment(departmentId: number): Promise<void> {
+  }
+  async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]): Promise<void> {
   }
 }
