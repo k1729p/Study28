@@ -26,14 +26,8 @@ Project sections:
 - 🔸 Sequence diagrams
   - [Create Department Sequence Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagram.md) for process with PostgreSQL Database
 - 🔸 Class diagrams
-  - [Models Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramModels.md) for
-    [Department](https://github.com/k1729p/Study28/blob/main/src/models/department.ts),
-    [Employee](https://github.com/k1729p/Study28/blob/main/src/models/employee.ts), and
-    [Title](https://github.com/k1729p/Study28/blob/main/src/models/title.ts)
-  - [Initialization Controller Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramInitializationController.md)
-  - [Department Controller Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramDepartmentController.md)
-  - [Employee Controller Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramEmployeeController.md)
-  - [Transfer Controller Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramTransferController.md)
+  - [Models Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramModels.md)
+  - [Controllers Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramControllers.md)
   - [Initialization Repository Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramInitializationRepository.md)
   - [Department Repository Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramDepartmentRepository.md)
   - [Employee Repository Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramEmployeeRepository.md)

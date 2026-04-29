@@ -1,4 +1,4 @@
-# Controllers Class Diagrams
+# Controllers Class Diagram
 
 ```mermaid
 classDiagram
@@ -6,7 +6,6 @@ classDiagram
     +InitializationService initializationService
     +loadInitialData(req: Request, res: Response, next: NextFunction) Promise~void~
   }
-
   class DepartmentController {
     +DepartmentService departmentService
     +createDepartment(req: Request, res: Response, next: NextFunction) Promise~void~
@@ -15,7 +14,6 @@ classDiagram
     +updateDepartment(req: Request, res: Response, next: NextFunction) Promise~void~
     +deleteDepartment(req: Request, res: Response, next: NextFunction) Promise~void~
   }
-
   class EmployeeController {
     +employeeService: EmployeeService
     +createEmployee(req: Request, res: Response, next: NextFunction) Promise~void~
@@ -24,7 +22,6 @@ classDiagram
     +updateEmployee(req: Request, res: Response, next: NextFunction) Promise~void~
     +deleteEmployee(req: Request, res: Response, next: NextFunction) Promise~void~
   }
-
   class TransferController {
     +transferService: TransferService
     +transferEmployees(req: Request, res: Response, next: NextFunction) Promise~void~
