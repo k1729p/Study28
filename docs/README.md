@@ -28,9 +28,7 @@ Project sections:
 - 🔸 Class diagrams
   - [Models Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramModels.md)
   - [Controllers Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramControllers.md)
-  - [Initialization Repository Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramInitializationRepository.md)
-  - [Department Repository Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramDepartmentRepository.md)
-  - [Employee Repository Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramEmployeeRepository.md)
+  - [Repositories Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramRepositories.md)
 - 🔸 Entity relationship diagrams
   - [Cassandra Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipCassandra.md)
   - [Elasticsearch Logical Schema Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipElasticsearch.md)

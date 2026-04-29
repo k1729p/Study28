@@ -1,4 +1,4 @@
-# Initialization Repository Class Diagram
+# Repositories Class Diagram
 
 ```mermaid
 ---
@@ -8,6 +8,7 @@
 ---
 classDiagram
   direction LR
+%% Initialization Repositories
   class InitializationRepository {
     <<interface>>
     +loadInitialData(departmentArray: Department[]) Promise~void~
@@ -32,7 +33,7 @@ classDiagram
   InitializationRepository <|.. PostgreSQLInitializationRepository
   InitializationRepository <|.. RedisInitializationRepository
   InitializationRepository <|.. SQLServerInitializationRepository
-
+%% Department Repositories
   class DepartmentRepository {
     <<interface>>
     +createDepartment(department: Department) Promise~void~
@@ -62,7 +63,7 @@ classDiagram
   DepartmentRepository <|.. PostgreSQLDepartmentRepository
   DepartmentRepository <|.. RedisDepartmentRepository
   DepartmentRepository <|.. SQLServerDepartmentRepository
-
+%% Employee Repositories
   class EmployeeRepository {
     <<interface>>
     +createEmployee(employee: Employee) Promise~void~
@@ -71,6 +72,7 @@ classDiagram
     +updateEmployee(employee: Employee) Promise~void~
     +deleteEmployee(id: number) Promise~void~
   }
+
   class CassandraEmployeeRepository:::gold { }
   class ElasticsearchEmployeeRepository:::salmon { }
   class MongoDbEmployeeRepository:::red { }
