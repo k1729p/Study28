@@ -3,14 +3,14 @@
 ```mermaid
 classDiagram
   direction LR
-  class InitializationService {
-    -strategies: Partial~Record~RepositoryType, Initialization~~
+  class InitializationService:::mistyrose {
+    -strategies: Partial&lt;Record&lt;RepositoryType, Initialization&gt;&gt;
     +constructor()
     +loadInitialData(repositoryType: RepositoryType, departmentArray: Department[]) Promise~void~
   }
 
-  class DepartmentService {
-    -strategies: Partial~Record~RepositoryType, DepartmentRepository~~
+  class DepartmentService:::lightcyan {
+    -strategies: Partial&lt;Record&lt;RepositoryType, DepartmentRepository&gt;&gt;
     +constructor()
     +createDepartment(repositoryType: RepositoryType, department: Department) Promise~void~
     +getDepartments(repositoryType: RepositoryType) Promise~Department[]~
@@ -19,8 +19,8 @@ classDiagram
     +deleteDepartment(repositoryType: RepositoryType, id: number) Promise~void~
   }
 
-  class EmployeeService {
-    -strategies: Partial~Record~RepositoryType, EmployeeRepository~~
+  class EmployeeService:::honeydew {
+    -strategies: Partial&lt;Record&lt;RepositoryType, EmployeeRepository&gt;&gt;
     +constructor()
     +createEmployee(repositoryType: RepositoryType, employee: Employee) Promise~void~
     +getEmployees(repositoryType: RepositoryType) Promise~Employee[]~
@@ -29,11 +29,21 @@ classDiagram
     +deleteEmployee(repositoryType: RepositoryType, id: number) Promise~void~
   }
 
-  class TransferService {
-    -strategies: Partial~Record~RepositoryType, DepartmentRepository~~
+  class TransferService:::lavender {
+    -strategies: Partial&lt;Record&lt;RepositoryType, DepartmentRepository&gt;&gt;
     +constructor()
     +transferEmployees(repositoryType: RepositoryType, sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]) Promise~void~
   }
+%% Styles
+  classDef aliceblue fill:aliceblue,stroke:black,stroke-width:1px
+  classDef bisque fill:bisque,stroke:black,stroke-width:1px
+  classDef cornsilk fill:cornsilk,stroke:black,stroke-width:1px
+  classDef honeydew fill:honeydew,stroke:black,stroke-width:1px
+  classDef lavender fill:lavender,stroke:black,stroke-width:1px
+  classDef lightcyan fill:lightcyan,stroke:black,stroke-width:1px
+  classDef lightgray fill:lightgray,stroke:black,stroke-width:1px
+  classDef lightyellow fill:lightyellow,stroke:black,stroke-width:1px
+  classDef mistyrose fill:mistyrose,stroke:black,stroke-width:1px
 ```
 
 ---
