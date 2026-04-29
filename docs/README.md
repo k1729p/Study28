@@ -30,6 +30,10 @@ Project sections:
     [Department](https://github.com/k1729p/Study28/blob/main/src/models/department.ts),
     [Employee](https://github.com/k1729p/Study28/blob/main/src/models/employee.ts), and
     [Title](https://github.com/k1729p/Study28/blob/main/src/models/title.ts)
+  - [Initialization Controller Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramInitializationController.md)
+  - [Department Controller Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramDepartmentController.md)
+  - [Employee Controller Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramEmployeeController.md)
+  - [Transfer Controller Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramTransferController.md)
   - [Initialization Repository Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramInitializationRepository.md)
   - [Department Repository Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramDepartmentRepository.md)
   - [Employee Repository Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramEmployeeRepository.md)
