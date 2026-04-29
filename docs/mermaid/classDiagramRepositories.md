@@ -34,7 +34,7 @@ classDiagram
   InitializationRepository <|.. RedisInitializationRepository
   InitializationRepository <|.. SQLServerInitializationRepository
 %% Department Repositories
-  class DepartmentRepository:::lightcyan {
+  class DepartmentRepository:::light_c_y_a_n {
     <<interface>>
     +createDepartment(department: Department) Promise~void~
     +getDepartments() Promise~Department[]~
@@ -95,7 +95,7 @@ classDiagram
 %% Styles
 %% Styles
   classDef honeydew fill:honeydew,stroke:black,stroke-width:1px
-  classDef lightcyan fill:lightcyan,stroke:black,stroke-width:1px
+  classDef light_c_y_a_n fill:lightcyan,stroke:black,stroke-width:1px
   classDef mistyrose fill:mistyrose,stroke:black,stroke-width:1px
 
   classDef brown stroke:saddlebrown,stroke-width:3px
