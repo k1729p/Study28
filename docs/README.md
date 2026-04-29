@@ -23,8 +23,6 @@ Project sections:
 - 🔸 Layered architecture diagrams
   - [Layer Dependencies Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/layerDependenciesDiagram.md)
   - [Layer Data Flow Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/layerDataFlowDiagram.md)
-- 🔸 Sequence diagrams
-  - [Create Department Sequence Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagram.md) for process with PostgreSQL Database
 - 🔸 Class diagrams
   - [Models Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramModels.md)
   - [Controllers Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramControllers.md)
@@ -40,6 +38,8 @@ Project sections:
   - [PostgreSQL Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipPostgreSQL.md)
   - [SQL Server Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipSQL-Server.md)
   - [Redis Data Structure Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/flowchartRedis.md)
+- 🔸 Sequence diagrams
+  - [Create Department Sequence Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagram.md) for process with PostgreSQL Database
 
 ![greenCircle](images/greenCircle.png) 1.2. The data stores.
 

@@ -42,3 +42,12 @@ classDiagram
 ```
 
 ---
+
+Summary of Classes:
+
+1. InitializationService: Handles the initial database setup and data loading for the supported repositories.
+1. DepartmentService: Provides methods for CRUD operations on departments across different database types.
+1. EmployeeService: Provides methods for CRUD operations on employees across different database types.
+1. TransferService: Specifically handles the logic for transferring employees between departments.
+
+---
