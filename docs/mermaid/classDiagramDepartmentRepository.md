@@ -28,7 +28,7 @@ classDiagram
     class Neo4jDepartmentRepository:::blue { }
     class OracleDepartmentRepository:::cyan { }
     class PostgreSQLDepartmentRepository:::lime { }
-    class RedisDepartmentRepository::green { }
+    class RedisDepartmentRepository:::green { }
     class SQLServerDepartmentRepository:::brown { }
 
     DepartmentRepository <|.. CassandraDepartmentRepository
