@@ -1,7 +1,6 @@
 # Department Repository Class Diagram
 
-DepartmentRepository: The core interface defining the contract for department management, including CRUD operations and
-employee transfers.
+DepartmentRepository: The core interface defining the contract for department management, including CRUD operations and employee transfers.
 
 ```mermaid
 ---
