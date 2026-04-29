@@ -4,13 +4,13 @@
 classDiagram
   direction LR
   class InitializationService {
-    -strategies: Partial<Record<RepositoryType, Initialization>>
+    -strategies: Partial~Record~RepositoryType, Initialization~~
     +constructor()
     +loadInitialData(repositoryType: RepositoryType, departmentArray: Department[]) Promise~void~
   }
 
   class DepartmentService {
-    -strategies: Partial<Record<RepositoryType, DepartmentRepository>>
+    -strategies: Partial~Record~RepositoryType, DepartmentRepository~~
     +constructor()
     +createDepartment(repositoryType: RepositoryType, department: Department) Promise~void~
     +getDepartments(repositoryType: RepositoryType) Promise~Department[]~
@@ -20,7 +20,7 @@ classDiagram
   }
 
   class EmployeeService {
-    -strategies: Partial<Record<RepositoryType, EmployeeRepository>>
+    -strategies: Partial~Record~RepositoryType, EmployeeRepository~~
     +constructor()
     +createEmployee(repositoryType: RepositoryType, employee: Employee) Promise~void~
     +getEmployees(repositoryType: RepositoryType) Promise~Employee[]~
@@ -30,7 +30,7 @@ classDiagram
   }
 
   class TransferService {
-    -strategies: Partial<Record<RepositoryType, DepartmentRepository>>
+    -strategies: Partial~Record~RepositoryType, DepartmentRepository~~
     +constructor()
     +transferEmployees(repositoryType: RepositoryType, sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]) Promise~void~
   }
