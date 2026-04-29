@@ -32,6 +32,64 @@ classDiagram
   InitializationRepository <|.. PostgreSQLInitializationRepository
   InitializationRepository <|.. RedisInitializationRepository
   InitializationRepository <|.. SQLServerInitializationRepository
+
+  class DepartmentRepository {
+    <<interface>>
+    +createDepartment(department: Department) Promise~void~
+    +getDepartments() Promise~Department[]~
+    +getDepartment(id: number) Promise~Department | undefined~
+    +updateDepartment(department: Department) Promise~void~
+    +deleteDepartment(id: number) Promise~void~
+    +transferEmployees(sourceId: number, targetId: number, employeeIds: number[]) Promise~void~
+  }
+
+  class CassandraDepartmentRepository:::gold { }
+  class ElasticsearchDepartmentRepository:::salmon { }
+  class MongoDbDepartmentRepository:::red { }
+  class MySqlDepartmentRepository:::magenta { }
+  class Neo4jDepartmentRepository:::blue { }
+  class OracleDepartmentRepository:::cyan { }
+  class PostgreSQLDepartmentRepository:::lime { }
+  class RedisDepartmentRepository:::green { }
+  class SQLServerDepartmentRepository:::brown { }
+
+  DepartmentRepository <|.. CassandraDepartmentRepository
+  DepartmentRepository <|.. ElasticsearchDepartmentRepository
+  DepartmentRepository <|.. MongoDbDepartmentRepository
+  DepartmentRepository <|.. MySqlDepartmentRepository
+  DepartmentRepository <|.. Neo4jDepartmentRepository
+  DepartmentRepository <|.. OracleDepartmentRepository
+  DepartmentRepository <|.. PostgreSQLDepartmentRepository
+  DepartmentRepository <|.. RedisDepartmentRepository
+  DepartmentRepository <|.. SQLServerDepartmentRepository
+
+  class EmployeeRepository {
+    <<interface>>
+    +createEmployee(employee: Employee) Promise~void~
+    +getEmployees() Promise~Employee[]~
+    +getEmployee(id: number) Promise~Employee | undefined~
+    +updateEmployee(employee: Employee) Promise~void~
+    +deleteEmployee(id: number) Promise~void~
+  }
+  class CassandraEmployeeRepository:::gold { }
+  class ElasticsearchEmployeeRepository:::salmon { }
+  class MongoDbEmployeeRepository:::red { }
+  class MySqlEmployeeRepository:::magenta { }
+  class Neo4jEmployeeRepository:::blue { }
+  class OracleEmployeeRepository:::cyan { }
+  class PostgreSQLEmployeeRepository:::lime { }
+  class RedisEmployeeRepository:::green { }
+  class SQLServerEmployeeRepository:::brown { }
+
+  EmployeeRepository <|.. CassandraEmployeeRepository
+  EmployeeRepository <|.. ElasticsearchEmployeeRepository
+  EmployeeRepository <|.. MongoDbEmployeeRepository
+  EmployeeRepository <|.. MySqlEmployeeRepository
+  EmployeeRepository <|.. Neo4jEmployeeRepository
+  EmployeeRepository <|.. OracleEmployeeRepository
+  EmployeeRepository <|.. PostgreSQLEmployeeRepository
+  EmployeeRepository <|.. RedisEmployeeRepository
+  EmployeeRepository <|.. SQLServerEmployeeRepository
 %% Styles
   classDef brown stroke:saddlebrown,stroke-width:3px
   classDef blue stroke:blue,stroke-width:3px
