@@ -9,7 +9,7 @@
 classDiagram
   direction LR
 %% Initialization Repositories
-  class InitializationRepository {
+  class InitializationRepository:::mistyrose {
     <<interface>>
     +loadInitialData(departmentArray: Department[]) Promise~void~
   }
@@ -34,7 +34,7 @@ classDiagram
   InitializationRepository <|.. RedisInitializationRepository
   InitializationRepository <|.. SQLServerInitializationRepository
 %% Department Repositories
-  class DepartmentRepository {
+  class DepartmentRepository:::lightcyan {
     <<interface>>
     +createDepartment(department: Department) Promise~void~
     +getDepartments() Promise~Department[]~
@@ -64,7 +64,7 @@ classDiagram
   DepartmentRepository <|.. RedisDepartmentRepository
   DepartmentRepository <|.. SQLServerDepartmentRepository
 %% Employee Repositories
-  class EmployeeRepository {
+  class EmployeeRepository:::honeydew {
     <<interface>>
     +createEmployee(employee: Employee) Promise~void~
     +getEmployees() Promise~Employee[]~
@@ -93,6 +93,11 @@ classDiagram
   EmployeeRepository <|.. RedisEmployeeRepository
   EmployeeRepository <|.. SQLServerEmployeeRepository
 %% Styles
+%% Styles
+  classDef honeydew fill:honeydew,stroke:black,stroke-width:1px
+  classDef lightcyan fill:lightcyan,stroke:black,stroke-width:1px
+  classDef mistyrose fill:mistyrose,stroke:black,stroke-width:1px
+
   classDef brown stroke:saddlebrown,stroke-width:3px
   classDef blue stroke:blue,stroke-width:3px
   classDef chocolate stroke:chocolate,stroke-width:3px

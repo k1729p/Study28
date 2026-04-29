@@ -35,14 +35,9 @@ classDiagram
     +transferEmployees(repositoryType: RepositoryType, sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]) Promise~void~
   }
 %% Styles
-  classDef aliceblue fill:aliceblue,stroke:black,stroke-width:1px
-  classDef bisque fill:bisque,stroke:black,stroke-width:1px
-  classDef cornsilk fill:cornsilk,stroke:black,stroke-width:1px
   classDef honeydew fill:honeydew,stroke:black,stroke-width:1px
   classDef lavender fill:lavender,stroke:black,stroke-width:1px
   classDef lightcyan fill:lightcyan,stroke:black,stroke-width:1px
-  classDef lightgray fill:lightgray,stroke:black,stroke-width:1px
-  classDef lightyellow fill:lightyellow,stroke:black,stroke-width:1px
   classDef mistyrose fill:mistyrose,stroke:black,stroke-width:1px
 ```
 
