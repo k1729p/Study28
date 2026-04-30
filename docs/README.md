@@ -21,8 +21,8 @@ Project sections:
 ![greenCircle](images/greenCircle.png) 1.1. The diagrams.
 
 - 🔸 Layered architecture diagrams
-  - [Layer Dependencies](https://github.com/k1729p/Study28/blob/main/docs/mermaid/layerDependenciesDiagram.md)
-  - [Layer Data Flow](https://github.com/k1729p/Study28/blob/main/docs/mermaid/layerDataFlowDiagram.md)
+  - [Layer dependencies](https://github.com/k1729p/Study28/blob/main/docs/mermaid/layerDependenciesDiagram.md)
+  - [Layer data flow](https://github.com/k1729p/Study28/blob/main/docs/mermaid/layerDataFlowDiagram.md)
 - 🔸 Class diagrams
   - [Models](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramModels.md)
   - [Controllers](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramControllers.md)
@@ -39,7 +39,16 @@ Project sections:
   - [SQL Server](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipSQL-Server.md)
   - [Redis](https://github.com/k1729p/Study28/blob/main/docs/mermaid/flowchartRedis.md)
 - 🔸 Sequence diagrams
-  - [Create Department](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagram.md)
+  - Load initial data
+  - [Create department](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagram.md)
+  - Read department by id
+  - Update department by id
+  - Delete department by id
+  - Create employee
+  - Read employee by id
+  - Update employee by id
+  - Delete employee by id
+  - Transfer employees
 
 ![greenCircle](images/greenCircle.png) 1.2. The data stores.
 
