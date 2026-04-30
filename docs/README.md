@@ -21,25 +21,25 @@ Project sections:
 ![greenCircle](images/greenCircle.png) 1.1. The diagrams.
 
 - 🔸 Layered architecture diagrams
-  - [Layer Dependencies Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/layerDependenciesDiagram.md)
-  - [Layer Data Flow Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/layerDataFlowDiagram.md)
+  - [Layer Dependencies](https://github.com/k1729p/Study28/blob/main/docs/mermaid/layerDependenciesDiagram.md)
+  - [Layer Data Flow](https://github.com/k1729p/Study28/blob/main/docs/mermaid/layerDataFlowDiagram.md)
 - 🔸 Class diagrams
-  - [Models Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramModels.md)
-  - [Controllers Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramControllers.md)
-  - [Services Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramServices.md)
-  - [Repositories Class Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramRepositories.md)
+  - [Models](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramModels.md)
+  - [Controllers](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramControllers.md)
+  - [Services](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramServices.md)
+  - [Repositories](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramRepositories.md)
 - 🔸 Entity relationship diagrams
-  - [Cassandra Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipCassandra.md)
-  - [Elasticsearch Logical Schema Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipElasticsearch.md)
-  - [MongoDB Logical Schema Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipMongoDB.md)
-  - [MySQL Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipMySQL.md)
-  - [Neo4j Database Graph](https://github.com/k1729p/Study28/blob/main/docs/mermaid/flowchartNeo4jGraph.md)
-  - [Oracle Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipOracle.md)
-  - [PostgreSQL Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipPostgreSQL.md)
-  - [SQL Server Entity Relationship Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipSQL-Server.md)
-  - [Redis Data Structure Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/flowchartRedis.md)
+  - [Cassandra](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipCassandra.md)
+  - [Elasticsearch](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipElasticsearch.md)
+  - [MongoDB](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipMongoDB.md)
+  - [MySQL](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipMySQL.md)
+  - [Neo4j](https://github.com/k1729p/Study28/blob/main/docs/mermaid/flowchartNeo4jGraph.md)
+  - [Oracle](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipOracle.md)
+  - [PostgreSQL](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipPostgreSQL.md)
+  - [SQL Server](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipSQL-Server.md)
+  - [Redis](https://github.com/k1729p/Study28/blob/main/docs/mermaid/flowchartRedis.md)
 - 🔸 Sequence diagrams
-  - [Create Department Sequence Diagram](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagram.md) for process with PostgreSQL Database
+  - [Create Department](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagram.md)
 
 ![greenCircle](images/greenCircle.png) 1.2. The data stores.
 
