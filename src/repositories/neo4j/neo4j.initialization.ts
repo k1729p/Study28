@@ -35,10 +35,10 @@ export class Neo4jInitialization implements Initialization {
   /**
    * Inserts the department nodes into the database.
    * @param session the Neo4j session
-   * @param departments the array of departments
+   * @param departmentsParam the array of departments
    */
-  private async insertDepartments(session: any, departments: Department[]): Promise<void> {
-    const departmentData = departments.map(department => ({
+  private async insertDepartments(session: any, departmentsParam: Department[]): Promise<void> {
+    const transformedDepartments = departmentsParam.map(department => ({
       id: department.id,
       name: department.name,
       startDate: department.startDate ? new Date(department.startDate).toISOString().split('T')[0] : null,
@@ -48,9 +48,9 @@ export class Neo4jInitialization implements Initialization {
       image: department.image || null
     }));
     await session.executeWrite((transaction: any) => transaction.run(
-      CREATE_DEPARTMENTS_QUERY, { departments: departmentData }
+      CREATE_DEPARTMENTS_QUERY, { departments: transformedDepartments }
     ));
-    console.log("Neo4jInitialization.insertDepartments(): inserted [%d] departments", departments.length);
+    console.log("Neo4jInitialization.insertDepartments(): inserted [%d] departments", departmentsParam.length);
   }
   /**
    * Inserts the employee nodes and their relationships into the database.
@@ -58,14 +58,14 @@ export class Neo4jInitialization implements Initialization {
    * @param departments the array of departments with employees
    */
   private async insertEmployees(session: any, departments: Department[]): Promise<void> {
-    const employees = departments.flatMap(dep =>
+    const employeesFromDepartments = departments.flatMap(dep =>
       dep.employees.map(emp => ({ ...emp, departmentId: dep.id }))
     );
-    if (employees.length === 0) {
+    if (employeesFromDepartments.length === 0) {
       console.warn("Neo4jInitialization.insertEmployees(): no employees to insert");
       return;
     }
-    const employeeData = employees.map(employee => ({
+    const transformedEmployees = employeesFromDepartments.map(employee => ({
       id: employee.id,
       departmentId: employee.departmentId,
       firstName: employee.firstName,
@@ -81,8 +81,8 @@ export class Neo4jInitialization implements Initialization {
       country: employee.country || null
     }));
     await session.executeWrite((transaction: any) => transaction.run(
-      CREATE_EMPLOYEES_QUERY, { employees: employeeData }
+      CREATE_EMPLOYEES_QUERY, { employees: transformedEmployees }
     ));
-    console.log("Neo4jInitialization.insertEmployees(): inserted [%d] employees", employees.length);
+    console.log("Neo4jInitialization.insertEmployees(): inserted [%d] employees", employeesFromDepartments.length);
   }
 }

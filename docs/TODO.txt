@@ -11,32 +11,6 @@ IN Study27 RECOMMENDED CHANGE: in tsconfig.json use a prefix for paths ("@models
 #################################################################################
 CHECK IT: You do not need to install @types/redis anymore. Doing so might actually cause type conflicts.
 #################################################################################
-TESTCONTAINERS : https://github.com/testcontainers/testcontainers-node
-#################################################################################
-CAP theorem states that a distributed database system can only provide two of three guarantees:
- - Consistency (all nodes see the same data)
- - Availability (every request gets a response)
- - Partition Tolerance (system operates despite network failures).
-Cassandra is by default an AP database.
-#################################################################################
-CockroachDB
-  https://www.cockroachlabs.com/blog/what-is-distributed-sql/
-  CockroachDB versus Apache Cassandra:
-    https://hackernoon.com/cockroachdb-vs-apache-cassandra-choosing-the-right-distributed-database-for-your-use-case
-
-H2 is a relational database management system written in Java. 
----------------------------------------------------------------------------------
-Amazon DynamoDB is a fully managed, serverless, NoSQL database service 
-DynamoDB is cloud-native in that it does not run on-premises
-https://aws.amazon.com/dynamodb
----------------------------------------------------------------------------------
-MariaDB - alternative to MySQL
-SQLite uses PostgreSQL as a reference platform
-Teradata Vantage Express
-    https://downloads.teradata.com/download/database/teradata-express/vmware
----------------------------------------------------------------------------------
-Apache Spark
-#################################################################################
 ##### Important Memory Note from Google Gemini #####
 You are running 9 databases plus an application. This is extremely RAM-intensive. 
 Ensure your Docker Desktop / Engine has at least 12GB–16GB of RAM allocated, or several containers
@@ -46,99 +20,32 @@ it might take 2–3 minutes before the study28 container actually starts, as it 
 (usually Oracle or Cassandra) to be fully ready.
 Does your local machine have enough RAM to handle all these instances at once, or are you running them selectively?
 #################################################################################
-===  Neo4j DATABASE  ===
-Neo4j browser http://localhost:7474 <--- enter username and password.
-Beginner Guide
-  https://console.neo4j.io/projects/42243282-5dee-4da0-a808-d8d0518bc0d1/guides/beginner
-Building Neo4j Applications with Node.js
-  https://graphacademy.neo4j.com/courses/app-nodejs/?category=development
-Deploy a Neo4j standalone server using Docker Compose
-  https://neo4j.com/docs/operations-manual/current/docker/docker-compose-standalone/  
-Simple Graph Database Setup with Neo4j and Docker Compose
-  https://medium.com/@matthewghannoum/simple-graph-database-setup-with-neo4j-and-docker-compose-061253593b5a  
+===  Chroma DATABASE  ===
+https://docs.trychroma.com/docs/overview/getting-started
+https://docs.trychroma.com/guides/deploy/docker#typescript
 
-https://hub.docker.com/_/neo4j
----------------------------------------------------------------------------------
-https://console.neo4j.io/projects/42243282-5dee-4da0-a808-d8d0518bc0d1/instances
-Credentials for Instance01
-Username
-125f67dc
-Password
-MTnDOHJKx6SlO6RxonLc32RCvGUFSZI1_-cd598RVvs
----------------------------------------------------------------------------------
-# Wait 60 seconds before connecting using these details, or login to https://console.neo4j.io to validate the Aura Instance is available
-NEO4J_URI=neo4j+s://125f67dc.databases.neo4j.io
-NEO4J_USERNAME=125f67dc
-NEO4J_PASSWORD=MTnDOHJKx6SlO6RxonLc32RCvGUFSZI1_-cd598RVvs
-NEO4J_DATABASE=125f67dc
-AURA_INSTANCEID=125f67dc
-AURA_INSTANCENAME=Instance01
+AI comment to returned refactored 'package.json': 
+    "Because I avoided the OpenAI/HuggingFace/default-embed embedding packages, that's the only line to add."
 
-#################################################################################
-===  Elasticsearch DATABASE  ===
-  https://www.elastic.co/docs/reference/elasticsearch/clients/javascript/installation
-    npm install @elastic/elasticsearch
-  logs??? https://www.elastic.co/docs/reference/apm/agents/nodejs/logs
+docker run -v ./chroma-data:/data -p 8000:8000 chromadb/chroma
+- - - - -
+  import { ChromaClient } from "chromadb";
+  const chromaClient = new ChromaClient({
+    host: "localhost",
+    port: 8000,
+  });
+  chromaClient.heartbeat();
+- - - - -
 
-From AI: added xpack.security.enabled=false. In modern Elasticsearch (8.x and 9.x), security is on by default. To keep it consistent with your other repositories where you are likely connecting without complex SSL/Auth setups for local study, disabling it is usually the path of least resistance.
-  A few tips for Elasticsearch 9.3.0:
-  Virtual Memory: On Windows/Docker Desktop, this usually works fine. However, if the container crashes immediately with an "exit code 137" or a "max virtual memory areas" error, you might need to run wsl -d docker-desktop and execute sysctl -w vm.max_map_count=262144.
-  Healthcheck: I included a healthcheck using curl. This ensures your Node.js app doesn't try to connect before the Elasticsearch engine has fully finished its internal "bootstrap" checks.
-  Are you planning to use the official @elastic/elasticsearch client for the repository implementation in your Node.js app?
-#################################################################################
-===  PostgreSQL DATABASE  ===
-https://node-postgres.com/ <----- node.js modules for interfacing with PostgreSQL database
-
-https://www.docker.com/blog/how-to-use-the-postgres-docker-official-image/
-https://www.npmjs.com/package/pg
-https://dopebase.com/blog/angular-postgresql-building-full-stack-app
-https://www.tembo.io/docs/getting-started/postgres_guides/connecting-to-postgres-with-nodejs
-
-In Docker container "postgresql", in "Exec" tab:
-  export PGPASSWORD='mikimiki'; psql --host=postgresql --username=postgres --command='select 12345'
-
-Installing 'node-postgres' - PostgreSQL client for Node.js:
-   ??? npm install --save-dev pg
-   ??? npm i --save-dev @types/express
-   ??? npm i --save-dev @types/pg
-#################################################################################
-===  MongoDB DATABASE  ===
-
-In Docker container "mongodb", in "Exec" tab:
-  mongosh mongodb://admin:secret@mongodb
-  mongosh mongodb://admin:secret@localhost <---- With 'localhost' goes only in 'mongodb' container!
-  The commands to execute in 'mongosh' console:
-    use kp_database
-    db.departments.insertMany( [ {id:1, name:'abc'},{id:2, name:'def'}] )
-    db.departments.find()
-    db.departments.deleteMany({})
-    exit
-
-https://www.mongodb.com/docs/drivers/node/current/
-https://www.mongodb.com/docs/drivers/node/current/get-started/#std-label-node-get-started-download-and-install
-https://www.mongodb.com/docs/languages/javascript/
-BSON (Binary JSON) parser: https://www.npmjs.com/package/bson
-#################################################################################
-===  MySQL DATABASE (ORACLE) ===
-https://www.baeldung.com/ops/docker-mysql-container
-
-In Docker container ".....", in "Exec" tab:
-  mysql --host=mysql --user=root --password='mikimiki' --execute='select 12345 from dual;'
-#################################################################################
-===  MS SQLServer DATABASE  ===
-https://learn.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker?view=sql-server-ver17&tabs=cli&pivots=cs1-cmd
-
-In Docker container ".....", in "Exec" tab:
-  /opt/mssql-tools18/bin/sqlcmd -S mssql -No -U sa -P ABab1234 -Q "select 12345"
 #################################################################################
 ===  Cassandra DATABASE  ===
 Note: Apache Cassandra does not support ACID transactions across multiple tables.
 
 https://en.wikipedia.org/wiki/Apache_Cassandra
+https://en.wikipedia.org/wiki/Wide-column_store
 cassandra-nodejs-driver : Datastax Nodejs driver
       https://docs.datastax.com/en/developer/nodejs-driver/4.8/index.html
       https://github.com/apache/cassandra-nodejs-driver
-
 
 Docker compose: https://github.com/kayvansol/Cassandra
 In Docker container "cassandra-1", in "Exec" tab:
@@ -160,6 +67,80 @@ const client = new Client({
    credentials: { username: 'my_username', password: 'my_p@ssword1!' }
 });
 #################################################################################
+===  Elasticsearch DATABASE  ===
+  https://www.elastic.co/docs/reference/elasticsearch/clients/javascript/installation
+    npm install @elastic/elasticsearch
+  logs??? https://www.elastic.co/docs/reference/apm/agents/nodejs/logs
+
+From AI: added xpack.security.enabled=false. In modern Elasticsearch (8.x and 9.x), security is on by default. To keep it consistent with your other repositories where you are likely connecting without complex SSL/Auth setups for local study, disabling it is usually the path of least resistance.
+  A few tips for Elasticsearch 9.3.0:
+  Virtual Memory: On Windows/Docker Desktop, this usually works fine. However, if the container crashes immediately with an "exit code 137" or a "max virtual memory areas" error, you might need to run wsl -d docker-desktop and execute sysctl -w vm.max_map_count=262144.
+  Healthcheck: I included a healthcheck using curl. This ensures your Node.js app doesn't try to connect before the Elasticsearch engine has fully finished its internal "bootstrap" checks.
+  Are you planning to use the official @elastic/elasticsearch client for the repository implementation in your Node.js app?
+#################################################################################
+===  MongoDB DATABASE  ===
+In Docker container "mongodb", in "Exec" tab:
+  mongosh mongodb://admin:secret@mongodb
+  mongosh mongodb://admin:secret@localhost <---- With 'localhost' goes only in 'mongodb' container!
+  The commands to execute in 'mongosh' console:
+    use kp_database
+    db.departments.insertMany( [ {id:1, name:'abc'},{id:2, name:'def'}] )
+    db.departments.find()
+    db.departments.deleteMany({})
+    exit
+
+https://www.mongodb.com/docs/drivers/node/current/
+https://www.mongodb.com/docs/drivers/node/current/get-started/#std-label-node-get-started-download-and-install
+https://www.mongodb.com/docs/languages/javascript/
+BSON (Binary JSON) parser: https://www.npmjs.com/package/bson
+#################################################################################
+===  MySQL DATABASE ===
+https://www.baeldung.com/ops/docker-mysql-container
+
+In Docker container ".....", in "Exec" tab:
+  mysql --host=mysql --user=root --password='mikimiki' --execute='select 12345 from dual;'
+#################################################################################
+===  MS SQLServer DATABASE  ===
+https://learn.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker?view=sql-server-ver17&tabs=cli&pivots=cs1-cmd
+
+In Docker container ".....", in "Exec" tab:
+  /opt/mssql-tools18/bin/sqlcmd -S mssql -No -U sa -P ABab1234 -Q "select 12345"
+#################################################################################
+===  Neo4j DATABASE  ===
+Beginner Guide
+  https://console.neo4j.io/projects/42243282-5dee-4da0-a808-d8d0518bc0d1/guides/beginner
+Building Neo4j Applications with Node.js
+  https://graphacademy.neo4j.com/courses/app-nodejs/?category=development
+Deploy a Neo4j standalone server using Docker Compose
+  https://neo4j.com/docs/operations-manual/current/docker/docker-compose-standalone/  
+Simple Graph Database Setup with Neo4j and Docker Compose
+  https://medium.com/@matthewghannoum/simple-graph-database-setup-with-neo4j-and-docker-compose-061253593b5a  
+
+When deriving a graph model from a relational model, you should keep a couple of general guidelines in mind.
+ - A row is a node.
+ - A table name is a label name.
+ - A join or foreign key is a relationship.
+ - Nodes have labels and relationships have types.
+ - A single node can have multiple labels (e.g., :Person:Employee:Manager), which doesn't happen with tables.
+
+https://hub.docker.com/_/neo4j
+#################################################################################
+===  PostgreSQL DATABASE  ===
+https://node-postgres.com/ <----- node.js modules for interfacing with PostgreSQL database
+
+https://www.docker.com/blog/how-to-use-the-postgres-docker-official-image/
+https://www.npmjs.com/package/pg
+https://dopebase.com/blog/angular-postgresql-building-full-stack-app
+https://www.tembo.io/docs/getting-started/postgres_guides/connecting-to-postgres-with-nodejs
+
+In Docker container "postgresql", in "Exec" tab:
+  export PGPASSWORD='mikimiki'; psql --host=postgresql --username=postgres --command='select 12345'
+
+Installing 'node-postgres' - PostgreSQL client for Node.js:
+   ??? npm install --save-dev pg
+   ??? npm i --save-dev @types/express
+   ??? npm i --save-dev @types/pg
+#################################################################################
 ===  Redis DATABASE  ===
 https://redis.io/docs/latest/develop/tools/cli/
 
@@ -167,8 +148,31 @@ In Docker container "redis", in "Exec" tab:
   redis-cli
 Commands to execute in 'redis-cli' console:
   INCR mycounter
-#################################################################################
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+################################################################################# OTHER DATABASES
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ OTHER DATABASES
+--------------------------------------------------------------------------------- OTHER DATABASES
+OceanBase (www.gartner.com/reviews/product/oceanbase)
+Qdrant 
+Milvus
+
+CockroachDB
+  https://www.cockroachlabs.com/blog/what-is-distributed-sql/
+  CockroachDB versus Apache Cassandra:
+    https://hackernoon.com/cockroachdb-vs-apache-cassandra-choosing-the-right-distributed-database-for-your-use-case
+---------------------------------------------------------------------------------
+H2 is a relational database management system written in Java. 
+---------------------------------------------------------------------------------
+Amazon DynamoDB is a fully managed, serverless, NoSQL database service 
+DynamoDB is cloud-native in that it does not run on-premises
+https://aws.amazon.com/dynamodb
+---------------------------------------------------------------------------------
+MariaDB - alternative to MySQL
+SQLite uses PostgreSQL as a reference platform
+Teradata Vantage Express
+    https://downloads.teradata.com/download/database/teradata-express/vmware
+---------------------------------------------------------------------------------
+Apache Spark
+---------------------------------------------------------------------------------
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #################################################################################
    * Gets the departments along with their associated employees.

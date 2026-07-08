@@ -2,7 +2,7 @@ import { Client } from '@elastic/elasticsearch';
 
 import { POOL_CONFIG } from "./elasticsearch.constants.js";
 /**
- * Client.
+ * Client instance.
  * 
  * The official Node.js client automatically manages connection pooling.
  */

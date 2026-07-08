@@ -1,7 +1,7 @@
 import { Client } from 'cassandra-driver';
 import { POOL_CONFIG } from "./cassandra.constants.js"
 /**
- * Client.
+ * Client instance.
  * 
  * The DataStax driver handles connection pooling internally.
  */

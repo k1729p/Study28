@@ -2,7 +2,7 @@ import { MongoClient } from 'mongodb';
 
 import { MONGODB_URI } from "./mongodb.constants.js";
 /**
- * Client.
+ * Client instance.
  */
 const client = new MongoClient(MONGODB_URI);
 /**

@@ -2,7 +2,7 @@ import { createClient } from 'redis';
 
 import { POOL_CONFIG } from './redis.constants.js';
 /**
- * Client.
+ * Client instance.
  */
 const client = createClient(POOL_CONFIG);
 

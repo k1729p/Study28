@@ -1,7 +1,7 @@
 import { Pool } from "pg";
 import { POOL_CONFIG } from "./postgresql.constants.js";
 /**
- * Connection pool.
+ * Connection pool instance.
  */
 const pool = new Pool(POOL_CONFIG);
 /**

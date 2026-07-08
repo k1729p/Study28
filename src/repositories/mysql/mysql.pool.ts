@@ -2,7 +2,7 @@ import mysql from 'mysql2/promise';
 
 import { POOL_CONFIG } from "./mysql.constants.js";
 /**
- * Connection pool.
+ * Connection pool instance.
  */
 const pool = mysql.createPool(POOL_CONFIG);
 /**

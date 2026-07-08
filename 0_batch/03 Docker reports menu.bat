@@ -66,7 +66,7 @@ goto menu
 :: =================================================================================================================================================
 :ContainerPs
 cls
-docker container ps --format "table {{.Names}}\t{{.Status}}"
+start "Container Health" /MAX 0_batch\scripts\showContainerHealth.bat
 call :RedLabelAndPause
 cls
 goto :eof

@@ -1,5 +1,6 @@
 include:
   - includes/cassandra.yaml
+  - includes/chroma.yaml
   - includes/elasticsearch.yaml
   - includes/mongodb.yaml
   - includes/mysql.yaml

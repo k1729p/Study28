@@ -2,6 +2,7 @@ import { Department } from "../models/department.js";
 import { RepositoryType } from "../repositories/repository-type.js";
 import { Initialization } from "../repositories/initialization.js";
 import { CassandraInitialization } from "../repositories/cassandra/cassandra.initialization.js";
+import { ChromaInitialization } from "../repositories/chroma/chroma.initialization.js";
 import { ElasticsearchInitialization } from "../repositories/elasticsearch/elasticsearch.initialization.js";
 import { MongoDbInitialization } from "../repositories/mongodb/mongodb.initialization.js";
 import { MySqlInitialization } from "../repositories/mysql/mysql.initialization.js";
@@ -23,6 +24,7 @@ export class InitializationService {
   constructor() {
     this.strategies = {
       [RepositoryType.Cassandra]: new CassandraInitialization(),
+      [RepositoryType.Chroma]: new ChromaInitialization(),
       [RepositoryType.Elasticsearch]: new ElasticsearchInitialization(),
       [RepositoryType.MongoDB]: new MongoDbInitialization(),
       [RepositoryType.MySQL]: new MySqlInitialization(),

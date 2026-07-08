@@ -8,6 +8,8 @@ interface Config {
   port: number;
   cassandraHost: string;
   cassandraLocalDataCenter: string;
+  chromaHost: string;
+  chromaPort: number;
   elasticsearchHost: string;
   elasticsearchPort: number;
   mongoDbHost: string;
@@ -48,6 +50,8 @@ export const config: Config = {
   port: Number(process.env.PORT),
   cassandraHost: String(process.env.CASSANDRA_HOST),
   cassandraLocalDataCenter: String(process.env.CASSANDRA_DC),
+  chromaHost: String(process.env.CHROMA_HOST),
+  chromaPort: Number(process.env.CHROMA_PORT),
   elasticsearchHost: String(process.env.ELASTICSEARCH_HOST),
   elasticsearchPort: Number(process.env.ELASTICSEARCH_PORT),
   mongoDbHost: String(process.env.MONGODB_HOST),

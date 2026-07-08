@@ -1,6 +1,7 @@
 @echo off
 set PORT=8128
 set CASSANDRA_HOST=localhost
+set CHROMA_HOST=localhost
 set ELASTICSEARCH_HOST=localhost
 set MONGODB_HOST=localhost
 set MY_SQL_HOST=localhost

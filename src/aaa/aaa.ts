@@ -11,15 +11,16 @@ import { config as config } from "../configuration/configuration.js";
 import { Bbb } from "./bbb.js";
 
 const REPOSITORY_TYPES = [
-  // RepositoryType.Cassandra,
-  // RepositoryType.Elasticsearch,
-  // RepositoryType.MongoDB,
-  // RepositoryType.MySQL,
+  RepositoryType.Cassandra,
+  RepositoryType.Chroma,
+  RepositoryType.Elasticsearch,
+  RepositoryType.MongoDB,
+  RepositoryType.MySQL,
   RepositoryType.Neo4j,
-  // RepositoryType.Oracle,
-  // RepositoryType.PostgreSQL,
-  // RepositoryType.Redis,
-  // RepositoryType.SQLServer,
+  RepositoryType.Oracle,
+  RepositoryType.PostgreSQL,
+  RepositoryType.Redis,
+  RepositoryType.SQLServer,
 ];
 /**
  * 
@@ -92,6 +93,7 @@ export class Aaa {
 const MESSAGE = `
     port[${config.port}],
     ▌▀ cassandraHost[${config.cassandraHost}], cassandraLocalDataCenter[${config.cassandraLocalDataCenter}],
+    ▌▀ chromaHost[${config.chromaHost}], chromaPort[${config.chromaPort}],
     ▌▀ elasticsearchHost[${config.elasticsearchHost}], elasticsearchPort[${config.elasticsearchPort}],
     ▌▀ mongoDbHost[${config.mongoDbHost}], mongoDbPort[${config.mongoDbPort}], mongoDbDatabase[${config.mongoDbDatabase}],
     ▌▀ mySqlHost[${config.mySqlHost}], mySqlPort[${config.mySqlPort}], mySqlDatabase[${config.mySqlDatabase}],

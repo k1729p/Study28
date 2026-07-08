@@ -12,7 +12,7 @@ export const POOL_CONFIG = {
 };
 // Keyspaces serve as containers for tables
 const KEYSPACE = 'study28';
-// using Cassandra Query Language
+// CQL: Cassandra Query Language
 export const CREATE_KEYSPACE_CQL = `
   CREATE KEYSPACE IF NOT EXISTS ${KEYSPACE}
   WITH REPLICATION = {
@@ -22,6 +22,7 @@ export const CREATE_KEYSPACE_CQL = `
 `;
 export const DROP_TABLE_EMPLOYEES_CQL = `DROP TABLE IF EXISTS ${KEYSPACE}.employees`;
 export const DROP_TABLE_DEPARTMENTS_CQL = `DROP TABLE IF EXISTS ${KEYSPACE}.departments`;
+// https://cassandra.apache.org/doc/latest/cassandra/developing/cql/ddl.html#create-table-statement
 export const CREATE_TABLE_DEPARTMENTS_CQL = `
   CREATE TABLE ${KEYSPACE}.departments (
     id int PRIMARY KEY,
@@ -33,10 +34,9 @@ export const CREATE_TABLE_DEPARTMENTS_CQL = `
     image text
   )
 `;
-// Primary key columns:
-//  - department_id is the partition key
-//  - id is the clustering key
-// This allows us to efficiently query all employees for a specific department.
+// CQL primary key is composed of two parts: partition key and clustering columns
+// Table 'employees' partition key  : 'department_id'
+// Table 'employees' clustering key : 'id'
 export const CREATE_TABLE_EMPLOYEES_CQL = `
   CREATE TABLE ${KEYSPACE}.employees (
     department_id int,
