@@ -30,6 +30,7 @@ Project sections:
   - [Repositories](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramRepositories.md)
 - 🔸 Entity relationship diagrams
   - [Cassandra](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipCassandra.md)
+  - [Chroma](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipChroma.md)
   - [Elasticsearch](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipElasticsearch.md)
   - [MongoDB](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipMongoDB.md)
   - [MySQL](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipMySQL.md)
@@ -129,16 +130,56 @@ In this file are users and passwords for databases.
 <details>
 <summary>🔹 'Repositories' section:</summary>
 
+- directory [repositories/cassandra](https://github.com/k1729p/Study28/blob/main/src/repositories/cassandra)
+  - CassandraDepartmentRepository
+    [cassandra.department.repository.ts](https://github.com/k1729p/Study28/blob/main/src/repositories/cassandra/cassandra.department.repository.ts)
+  - CassandraEmployeeRepository
+    [cassandra.employee.repository.ts](https://github.com/k1729p/Study28/blob/main/src/repositories/cassandra/cassandra.employee.repository.ts)
+- directory [repositories/chroma](https://github.com/k1729p/Study28/blob/main/src/repositories/chroma)
+  - ChromaDepartmentRepository
+    [chroma.department.repository.ts](https://github.com/k1729p/Study28/blob/main/src/repositories/chroma/chroma.department.repository.ts)
+  - ChromaEmployeeRepository
+    [chroma.employee.repository.ts](https://github.com/k1729p/Study28/blob/main/src/repositories/chroma/chroma.employee.repository.ts)
+- directory [repositories/elasticsearch](https://github.com/k1729p/Study28/blob/main/src/repositories/elasticsearch)
+  - ElasticsearchDepartmentRepository
+    [elasticsearch.department.repository.ts](https://github.com/k1729p/Study28/blob/main/src/repositories/elasticsearch/elasticsearch.department.repository.ts)
+  - ElasticsearchEmployeeRepository
+    [elasticsearch.employee.repository.ts](https://github.com/k1729p/Study28/blob/main/src/repositories/elasticsearch/elasticsearch.employee.repository.ts)
 - directory [repositories/mongodb](https://github.com/k1729p/Study28/blob/main/src/repositories/mongodb)
   - MongoDbDepartmentRepository
     [mongodb.department.repository.ts](https://github.com/k1729p/Study28/blob/main/src/repositories/mongodb/mongodb.department.repository.ts)
   - MongoDbEmployeeRepository
     [mongodb.employee.repository.ts](https://github.com/k1729p/Study28/blob/main/src/repositories/mongodb/mongodb.employee.repository.ts)
+- directory [repositories/mysql](https://github.com/k1729p/Study28/blob/main/src/repositories/mysql)
+  - MySqlDepartmentRepository
+    [mysql.department.repository.ts](https://github.com/k1729p/Study28/blob/main/src/repositories/mysql/mysql.department.repository.ts)
+  - MySqlEmployeeRepository
+    [mysql.employee.repository.ts](https://github.com/k1729p/Study28/blob/main/src/repositories/mysql/mysql.employee.repository.ts)
+- directory [repositories/neo4j](https://github.com/k1729p/Study28/blob/main/src/repositories/neo4j)
+  - Neo4jDepartmentRepository
+    [neo4j.department.repository.ts](https://github.com/k1729p/Study28/blob/main/src/repositories/neo4j/neo4j.department.repository.ts)
+  - Neo4jEmployeeRepository
+    [neo4j.employee.repository.ts](https://github.com/k1729p/Study28/blob/main/src/repositories/neo4j/neo4j.employee.repository.ts)
+- directory [repositories/oracle](https://github.com/k1729p/Study28/blob/main/src/repositories/oracle)
+  - OracleDepartmentRepository
+    [oracle.department.repository.ts](https://github.com/k1729p/Study28/blob/main/src/repositories/oracle/oracle.department.repository.ts)
+  - OracleEmployeeRepository
+    [oracle.employee.repository.ts](https://github.com/k1729p/Study28/blob/main/src/repositories/oracle/oracle.employee.repository.ts)
 - directory [repositories/postgresql](https://github.com/k1729p/Study28/blob/main/src/repositories/postgresql)
   - PostgreSQLDepartmentRepository
     [postgresql.department.repository.ts](https://github.com/k1729p/Study28/blob/main/src/repositories/postgresql/postgresql.department.repository.ts)
   - PostgreSQLEmployeeRepository
     [postgresql.employee.repository.ts](https://github.com/k1729p/Study28/blob/main/src/repositories/postgresql/postgresql.employee.repository.ts)
+- directory [repositories/redis](https://github.com/k1729p/Study28/blob/main/src/repositories/redis)
+  - RedisDepartmentRepository
+    [redis.department.repository.ts](https://github.com/k1729p/Study28/blob/main/src/repositories/redis/redis.department.repository.ts)
+  - RedisEmployeeRepository
+    [redis.employee.repository.ts](https://github.com/k1729p/Study28/blob/main/src/repositories/redis/redis.employee.repository.ts)
+- directory [repositories/sql-server](https://github.com/k1729p/Study28/blob/main/src/repositories/sql-server)
+  - SQLServerDepartmentRepository
+    [sql-server.department.repository.ts](https://github.com/k1729p/Study28/blob/main/src/repositories/sql-server/sql-server.department.repository.ts)
+  - SQLServerEmployeeRepository
+    [sql-server.employee.repository.ts](https://github.com/k1729p/Study28/blob/main/src/repositories/sql-server/sql-server.employee.repository.ts)
 
 </details>
 
@@ -219,6 +260,7 @@ Action: \
 | [Node.js](https://nodejs.org/en/) | JavaScript runtime environment |
 | [Express](https://expressjs.com/) | Web framework for Node.js |
 | [Cassandra glossary](https://cassandra.apache.org/_/glossary.html) | |
+| [Chroma Data Model](https://docs.trychroma.com/reference/architecture/overview#chroma-data-model) | |
 | [Neo4j browser](http://localhost:7474/browser/) | |
 | [Neo4j Cypher cheat sheet](https://neo4j.com/docs/cypher-cheat-sheet/) | Cypher is Neo4j’s graph query language |
 | [Neo4j Cypher manual](https://neo4j.com/docs/cypher-manual/) | |

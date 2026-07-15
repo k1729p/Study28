@@ -1,3 +1,4 @@
+TODO: Prisma ORM https://www.prisma.io/orm for object-relational mappings
 ADD TO package.json:
 "dependencies": {
   "@prisma/client": "^5.20.0",
@@ -6,6 +7,15 @@ ADD TO package.json:
 "devDependencies": {
   "prisma": "^5.20.0"
 }
+#################################################################################
+TODO: design logic for "Replica Synchronization"
+
+consistency, replication,  replicated to multiple replica databases, 
+add table column: last_update_timestamp timestamp
+Column contains a name, a value, and a timestamp?
+last-write-wins model where every mutation is timestamped (including deletes? NOT) 
+mutation timestamp versioning 
+a time series–style design (NOT USED HERE) would store each transaction as a timestamped row
 #################################################################################
 IN Study27 RECOMMENDED CHANGE: in tsconfig.json use a prefix for paths ("@models/*": ["src/app/models/*"]) to distinguish them from standard node_modules packages and avoid naming collisions.
 #################################################################################
@@ -24,19 +34,8 @@ Does your local machine have enough RAM to handle all these instances at once, o
 https://docs.trychroma.com/docs/overview/getting-started
 https://docs.trychroma.com/guides/deploy/docker#typescript
 
-AI comment to returned refactored 'package.json': 
+AI comment to 'package.json' that you could add more dependencies for Chroma: 
     "Because I avoided the OpenAI/HuggingFace/default-embed embedding packages, that's the only line to add."
-
-docker run -v ./chroma-data:/data -p 8000:8000 chromadb/chroma
-- - - - -
-  import { ChromaClient } from "chromadb";
-  const chromaClient = new ChromaClient({
-    host: "localhost",
-    port: 8000,
-  });
-  chromaClient.heartbeat();
-- - - - -
-
 #################################################################################
 ===  Cassandra DATABASE  ===
 Note: Apache Cassandra does not support ACID transactions across multiple tables.

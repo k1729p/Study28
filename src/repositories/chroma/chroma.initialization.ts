@@ -2,18 +2,19 @@ import { ChromaClient } from "chromadb";
 
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
+import { DEPARTMENTS_COLLECTION, EMPLOYEES_COLLECTION } from "./chroma.constants.js";
+import {
+  toDepartmentMetadata, toEmployeeMetadata, toPlaceholderEmbedding
+} from "./chroma.helpers.js";
 import { clientPromise } from "./chroma.pool.js";
 import { Initialization } from "../initialization.js";
-import {
-  DEPARTMENTS_COLLECTION, EMPLOYEES_COLLECTION,
-  toDepartmentMetadata, toEmployeeMetadata, toPlaceholderEmbedding
-} from "./chroma.constants.js";
 /**
  * This service class provides methods to initialize database and load data.
  */
 export class ChromaInitialization implements Initialization {
   /**
    * Loads the initial data into the database.
+   * 
    * @param departments the array of departments
    */
   async loadInitialData(departments: Department[]) {
@@ -56,6 +57,7 @@ export class ChromaInitialization implements Initialization {
   }
   /**
    * Inserts the department data into the database.
+   * 
    * @param collection the "departments" collection
    * @param departments the array of departments
    */

@@ -1,11 +1,10 @@
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
-import { clientPromise } from "./chroma.pool.js";
 import { DepartmentRepository } from "../department.repository.js";
-import {
-  DEPARTMENTS_COLLECTION, EMPLOYEES_COLLECTION,
-  toDepartmentMetadata, toEmployeeMetadata, toPlaceholderEmbedding
-} from "./chroma.constants.js";
+import { DEPARTMENTS_COLLECTION, EMPLOYEES_COLLECTION } from "./chroma.constants.js";
+import { toDepartmentMetadata, toPlaceholderEmbedding } from "./chroma.helpers.js";
+import { clientPromise } from "./chroma.pool.js";
+
 /**
  * This service class provides methods to manage departments.
  * It includes CRUD methods to create, read, update, and delete departments.
@@ -18,6 +17,7 @@ import {
 export class ChromaDepartmentRepository implements DepartmentRepository {
   /**
    * Creates a new department.
+   * 
    * @param department the department to be created
    * @return void
    */
@@ -42,6 +42,7 @@ export class ChromaDepartmentRepository implements DepartmentRepository {
   }
   /**
    * Gets the departments, each populated with its employees.
+   * 
    * @returns an array of Department objects
    */
   async getDepartments(): Promise<Department[]> {
@@ -75,9 +76,9 @@ export class ChromaDepartmentRepository implements DepartmentRepository {
 
       employeeRows.ids.forEach((id: string, index: number) => {
         const meta: any = employeeRows.metadatas?.[index] ?? {};
-        const dept = departmentMap.get(Number(meta.departmentId));
-        if (dept) {
-          dept.employees.push({
+        const department = departmentMap.get(Number(meta.departmentId));
+        if (department) {
+          department.employees.push({
             id: Number(id),
             departmentId: Number(meta.departmentId),
             firstName: meta.firstName,

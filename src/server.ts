@@ -5,7 +5,6 @@ import { Server } from 'http';
 import cors from 'cors';
 import { config } from "./configuration/configuration.js";
 import { clientPromise as cassandraClientPromise } from "./repositories/cassandra/cassandra.pool.js";
-import { clientPromise as chromaClientPromise } from "./repositories/chroma/chroma.pool.js";
 import { clientPromise as elasticsearchClientPromise } from "./repositories/elasticsearch/elasticsearch.pool.js";
 import { poolPromise as mongoDbPoolPromise } from "./repositories/mongodb/mongodb.pool.js";
 import { poolPromise as mySqlPoolPromise } from "./repositories/mysql/mysql.pool.js";
@@ -48,10 +47,10 @@ function main() {
  */
 function createRouting(): Router {
   const router = Router();
-  // // ####################################################################################################
+  // #################################################################################################### AAA
   router.get('/initialize/', new Aaa().initialize);
   router.get('/read/', new Aaa().read);
-  // // ####################################################################################################
+  // ####################################################################################################
   const initializationController = new InitializationController();
   router.post('/load/', initializationController.loadInitialData);
 
@@ -92,7 +91,6 @@ async function initializeDatabasePools() {
   try {
     await Promise.all([
       cassandraClientPromise,
-      chromaClientPromise,
       elasticsearchClientPromise,
       mongoDbPoolPromise,
       mySqlPoolPromise,
@@ -121,8 +119,6 @@ function shutdownServer(server: Server) {
     try {
       await (await cassandraClientPromise).shutdown();
       console.log("shutdownServer(): Cassandra client shut down");
-// ???      await (await chromaClientPromise).close();
-// ???      console.log("shutdownServer(): Chroma client shut down");
       await (await elasticsearchClientPromise).close();
       console.log("shutdownServer(): Elasticsearch client closed");
       await (await mongoDbPoolPromise).close();
