@@ -11,6 +11,7 @@ import { OracleInitialization } from "../repositories/oracle/oracle.initializati
 import { PostgreSQLInitialization } from "../repositories/postgresql/postgresql.initialization.js";
 import { SQLServerInitialization } from "../repositories/sql-server/sql-server.initialization.js";
 import { RedisInitialization } from "../repositories/redis/redis.initialization.js";
+import { INITIAL_DATA } from './initial-data.js';
 
 /**
  * This service class provides methods to initialize the database and load initial data.
@@ -47,6 +48,7 @@ export class InitializationService {
       console.warn("InitializationService.loadInitialData(): not implemented strategy for [%s]", repositoryType);
       throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
     }
-    await strategy.loadInitialData(departmentArray);
+    const dataToLoad = departmentArray?.length ? departmentArray : INITIAL_DATA;
+    await strategy.loadInitialData(dataToLoad);
   }
 }

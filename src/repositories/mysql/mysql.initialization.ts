@@ -1,9 +1,13 @@
+import { PoolConnection } from "mysql2/promise";
+
 import { Department } from "../../models/department.js";
 import { poolPromise } from "./mysql.pool.js";
 import { Initialization } from "../initialization.js";
 import {
   DROP_TABLE_EMPLOYEES_SQL, DROP_TABLE_DEPARTMENTS_SQL,
+  DROP_PROCEDURE_TRANSFER_EMPLOYEES_SQL, DROP_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL,
   CREATE_TABLE_DEPARTMENTS_SQL, CREATE_TABLE_EMPLOYEES_SQL,
+  CREATE_PROCEDURE_TRANSFER_EMPLOYEES_SQL, CREATE_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL,
   INSERT_DEPARTMENT_SQL, INSERT_EMPLOYEE_SQL
 } from "./mysql.constants.js";
 /**
@@ -16,14 +20,18 @@ export class MySqlInitialization implements Initialization {
    */
   async loadInitialData(departments: Department[]) {
     const pool = await poolPromise;
-    const connection = await pool.getConnection();
+    const connection: PoolConnection = await pool.getConnection();
     try {
       await connection.beginTransaction();
+      await connection.query(DROP_PROCEDURE_TRANSFER_EMPLOYEES_SQL);
+      await connection.query(DROP_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL);
       await connection.query(DROP_TABLE_EMPLOYEES_SQL);
       await connection.query(DROP_TABLE_DEPARTMENTS_SQL);
       await connection.query(CREATE_TABLE_DEPARTMENTS_SQL);
       await connection.query(CREATE_TABLE_EMPLOYEES_SQL);
-      console.log("MySqlInitialization.loadInitialData(): dropped and created tables");
+      await connection.query(CREATE_PROCEDURE_TRANSFER_EMPLOYEES_SQL);
+      await connection.query(CREATE_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL);
+      console.log("MySqlInitialization.loadInitialData(): dropped and created tables & procedures");
       if (departments.length > 0) {
         await this.insertDepartments(connection, departments);
         await this.insertEmployees(connection, departments);
@@ -45,7 +53,7 @@ export class MySqlInitialization implements Initialization {
    * @param connection the database connection
    * @param departments the array of departments
    */
-  private async insertDepartments(connection: any, departments: Department[]) {
+  private async insertDepartments(connection: PoolConnection, departments: Department[]) {
     for (const dept of departments) {
       const startDate = dept.startDate ? new Date(dept.startDate).toISOString().split('T')[0] : null;
       const endDate = dept.endDate ? new Date(dept.endDate).toISOString().split('T')[0] : null;
@@ -67,7 +75,7 @@ export class MySqlInitialization implements Initialization {
    * @param connection the database connection
    * @param departments the array of departments with employees
    */
-  private async insertEmployees(connection: any, departments: Department[]) {
+  private async insertEmployees(connection: PoolConnection, departments: Department[]) {
     const employees = departments.flatMap(dep =>
       dep.employees.map(emp => ({ ...emp, departmentId: dep.id }))
     );

@@ -4,32 +4,33 @@
     "start": "node dist/server.js"
   },
   "type": "module",
-  "devDependencies": {
-    "@elastic/elasticsearch": "9.4.2",
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.6",
-    "@types/mssql": "^12.3.0",
-    "@types/node": "^26.1.0",
-    "@types/oracledb": "^7.0.1",
-    "@types/pg": "^8.20.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^6.0.3"
-  },
   "dependencies": {
     "cassandra-driver": "^4.9.0",
-    "cors": "^2.8.6",
     "chromadb": "^3.5.0",
+    "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "http-server": "^14.1.1",
     "http-status-codes": "^2.3.0",
     "list": "^2.0.19",
-    "mongodb": "^7.4.0",
+    "mongodb": "^7.5.0",
     "mssql": "^12.7.0",
-    "mysql2": "^3.22.5",
+    "mysql2": "^3.23.1",
     "neo4j-driver": "^6.2.0",
-    "oracledb": "^7.0.0",
+    "oracledb": "^7.0.1",
     "pg": "^8.22.0",
     "redis": "^6.1.0"
+  },
+  "devDependencies": {
+    "@elastic/elasticsearch": "9.4.2",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/mssql": "^12.3.0",
+    "@types/node": "^26.1.1",
+    "@types/oracledb": "^7.0.1",
+    "@types/pg": "^8.20.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
   }
 }

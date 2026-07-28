@@ -1,5 +1,4 @@
 @echo off
-set PORT=8128
 set CASSANDRA_HOST=localhost
 set CHROMA_HOST=localhost
 set ELASTICSEARCH_HOST=localhost
@@ -10,15 +9,11 @@ set ORACLE_HOST=localhost
 set POSTGRESQL_HOST=localhost
 set REDIS_HOST=localhost
 set SQL_SERVER_HOST=localhost
+set CLI_ARGS=
+set CLI_ARGS=--disableConsoleIntercept
+set CLI_ARGS=%CLI_ARGS% --reporter=tree
+::set CLI_ARGS=%CLI_ARGS% --silent=true
+::set CLI_ARGS=%CLI_ARGS% --no-color
 cd ..
-rmdir /S/Q dist > nul 2>&1
-call tsc -p tsconfig.json
-if not exist "dist\" (
-  echo.
-  echo COMPILATION ERROR
-  pause
-  exit /b
-)
-::start "Study 28" /MAX node dist/server.js
-node dist/server.js
+powershell npx vitest %CLI_ARGS% run
 pause

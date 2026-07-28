@@ -1,4 +1,5 @@
 import { config } from "./../../configuration/configuration.js";
+
 /**
  * Configuration for the connection pool.
  */
@@ -14,8 +15,13 @@ export const POOL_CONFIG = {
   dateStrings: true,
   connectTimeout: 30000
 };
+
 export const DROP_TABLE_EMPLOYEES_SQL = 'DROP TABLE IF EXISTS employees';
 export const DROP_TABLE_DEPARTMENTS_SQL = 'DROP TABLE IF EXISTS departments';
+export const DROP_PROCEDURE_TRANSFER_EMPLOYEES_SQL = 'DROP PROCEDURE IF EXISTS transfer_employees';
+export const DROP_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL =
+  'DROP PROCEDURE IF EXISTS delete_department_and_employees';
+
 export const CREATE_TABLE_DEPARTMENTS_SQL = `
   CREATE TABLE departments (
     id INT PRIMARY KEY,
@@ -45,6 +51,31 @@ export const CREATE_TABLE_EMPLOYEES_SQL = `
     FOREIGN KEY (department_id) REFERENCES departments(id)
   )
 `;
+
+export const CREATE_PROCEDURE_TRANSFER_EMPLOYEES_SQL = `
+  CREATE PROCEDURE transfer_employees (
+    IN source_department_id INT,
+    IN target_department_id INT,
+    IN employee_ids VARCHAR(1000)
+  )
+  BEGIN
+    UPDATE employees
+    SET department_id = target_department_id
+    WHERE department_id = source_department_id AND FIND_IN_SET(id, employee_ids) > 0;
+  END
+`;
+export const CREATE_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL = `
+  CREATE PROCEDURE delete_department_and_employees (
+    IN department_id_par INT
+  )
+  BEGIN
+    DELETE FROM employees
+    WHERE department_id = department_id_par;
+    DELETE FROM departments
+    WHERE id = department_id_par;
+  END
+`;
+
 export const INSERT_DEPARTMENT_SQL = `
   INSERT INTO departments (
     id, name, start_date, end_date, notes, keywords, image
@@ -75,3 +106,40 @@ export const SELECT_DEPARTMENTS_SQL = `
   FROM departments d
   LEFT JOIN employees e ON d.id = e.department_id
 `;
+export const SELECT_DEPARTMENT_SQL = SELECT_DEPARTMENTS_SQL + ' WHERE d.id = ?';
+export const UPDATE_DEPARTMENT_SQL = `
+  UPDATE departments
+  SET name = ?, start_date = ?, end_date = ?, notes = ?, keywords = ?, image = ?
+  WHERE id = ?
+`;
+export const UPDATE_EMPLOYEE_DEPARTMENT_SQL = `
+  UPDATE employees
+  SET department_id = ?
+  WHERE id = ?
+`;
+export const CREATE_EMPLOYEE_SQL = `
+  INSERT INTO employees (
+    id, department_id, first_name, last_name, title, phone, mail,
+    street_name, house_number, postal_code, locality, province, country
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+`;
+export const SELECT_EMPLOYEES_SQL = `
+  SELECT
+    id, department_id, first_name, last_name, title, phone, mail,
+    street_name, house_number, postal_code, locality, province, country
+  FROM employees
+`;
+export const SELECT_EMPLOYEE_SQL = SELECT_EMPLOYEES_SQL + ' WHERE id = ?';
+export const UPDATE_EMPLOYEE_SQL = `
+  UPDATE employees
+  SET
+    department_id = ?, first_name = ?, last_name = ?, title = ?, phone = ?, mail = ?, street_name = ?,
+    house_number = ?, postal_code = ?, locality = ?, province = ?, country = ?
+  WHERE id = ?
+`;
+export const DELETE_EMPLOYEE_SQL = `
+  DELETE FROM employees
+  WHERE id = ?
+`;
+export const CALL_TRANSFER_EMPLOYEES_SQL = 'CALL transfer_employees(?, ?, ?)';
+export const CALL_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL = 'CALL delete_department_and_employees(?)';

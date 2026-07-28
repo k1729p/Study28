@@ -1,3 +1,47 @@
+################################################################################# TESTING
+Vitest https://vitest.dev/
+You are writing modern TypeScript and want first-class TS support,
+ instant hot reloading, and clean test syntax out of the box.
+
+Example using Vitest: 
+
+                  import { describe, it, expect } from 'vitest';
+                  const cities = ["Madrid", "Rome", "Paris", "London"];
+                  describe('isBlank', () => {
+                    // Pass array directly into .each
+                    it.each(cities)('should return false for "%s"', (city) => {
+                      expect(isBlank(city)).toBe(false);
+                    });
+                  });
+
+You can also pass multi-variable tuples (like @CsvSource in JUnit):
+
+                  it.each([
+                    ["Madrid", false],
+                    ["", true],
+                    ["   ", true],
+                    ["Paris", false],
+                  ])('isBlank("%s") should be %s', (input, expected) => {
+                    expect(isBlank(input)).toBe(expected);
+                  });
+
+-------------------------------------------------------------
+Testcontainers for Node.js https://node.testcontainers.org/
+https://node.testcontainers.org/modules/postgresql/
+
+npm install testcontainers --save-dev
+npm install @testcontainers/cassandra --save-dev
+npm install @testcontainers/chromadb --save-dev
+npm install @testcontainers/elasticsearch --save-dev
+npm install @testcontainers/mongodb --save-dev
+npm install @testcontainers/mysql --save-dev
+npm install @testcontainers/neo4j --save-dev
+npm install @testcontainers/oraclefree --save-dev
+npm install @testcontainers/postgresql --save-dev
+npm install @testcontainers/redis --save-dev
+npm install @testcontainers/mssqlserver --save-dev
+
+#################################################################################
 TODO: Prisma ORM https://www.prisma.io/orm for object-relational mappings
 ADD TO package.json:
 "dependencies": {

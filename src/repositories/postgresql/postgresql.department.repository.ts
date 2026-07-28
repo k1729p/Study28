@@ -4,7 +4,8 @@ import { poolPromise } from "./postgresql.pool.js";
 import { DepartmentRepository } from "../department.repository.js";
 import {
   CREATE_DEPARTMENT_SQL, SELECT_DEPARTMENTS_SQL, SELECT_DEPARTMENT_SQL,
-  UPDATE_DEPARTMENT_SQL, UPDATE_EMPLOYEE_DEPARTMENT_SQL
+  UPDATE_DEPARTMENT_SQL, UPDATE_EMPLOYEE_DEPARTMENT_SQL,
+  CALL_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL, CALL_TRANSFER_EMPLOYEES_SQL
 } from "./postgresql.constants.js";
 /**
  * This service class provides methods to manage departments.
@@ -17,6 +18,7 @@ export class PostgreSQLDepartmentRepository implements DepartmentRepository {
    * @return void
    */
   async createDepartment(department: Department) {
+
     const pool = await poolPromise;
     const client = await pool.connect();
     try {
@@ -233,7 +235,7 @@ export class PostgreSQLDepartmentRepository implements DepartmentRepository {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
-      await client.query('CALL delete_department_and_employees($1);', [id]);
+      await client.query(CALL_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL, [id]);
       await client.query('COMMIT');
     } catch (err) {
       await client.query('ROLLBACK');
@@ -257,8 +259,7 @@ export class PostgreSQLDepartmentRepository implements DepartmentRepository {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
-      await client.query(
-        'CALL transfer_employees($1, $2, $3);',
+      await client.query(CALL_TRANSFER_EMPLOYEES_SQL,
         [sourceDepartmentId, targetDepartmentId, employeeIds]
       );
       await client.query('COMMIT');

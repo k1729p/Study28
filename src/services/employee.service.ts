@@ -53,7 +53,7 @@ export class EmployeeService {
    * @param repositoryType the type of repository to use
    * @returns an array of Employee objects
    */
-  async getEmployees(repositoryType: RepositoryType,): Promise<Employee[]> {
+  async getEmployees(repositoryType: RepositoryType): Promise<Employee[]> {
     const strategy = this.strategies[repositoryType];
     if (strategy == undefined) {
       console.warn("EmployeeService.getEmployees(): not implemented strategy for [%s]", repositoryType);

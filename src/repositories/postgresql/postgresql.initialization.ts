@@ -1,4 +1,4 @@
-import { PoolClient } from "pg";
+import { PoolClient, types } from "pg";
 
 import { Department } from "../../models/department.js";
 import { poolPromise } from "./postgresql.pool.js";
@@ -19,6 +19,7 @@ export class PostgreSQLInitialization implements Initialization {
    * @param departments the array of departments
    */
   async loadInitialData(departments: Department[]) {
+    types.setTypeParser(1082, (val: string) => val);
     const pool = await poolPromise;
     const client: PoolClient = await pool.connect();
     try {
@@ -29,9 +30,9 @@ export class PostgreSQLInitialization implements Initialization {
       await client.query(DROP_TABLE_DEPARTMENTS_SQL);
       await client.query(CREATE_TABLE_DEPARTMENTS_SQL);
       await client.query(CREATE_TABLE_EMPLOYEES_SQL);
-      console.log("PostgreSQLInitialization.loadInitialData(): dropped and created tables");
       await client.query(CREATE_PROCEDURE_TRANSFER_EMPLOYEES_SQL);
       await client.query(CREATE_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL);
+      console.log("PostgreSQLInitialization.loadInitialData(): dropped and created tables & procedures");
       if (departments.length > 0) {
         await this.insertDepartments(client, departments);
         await this.insertEmployees(client, departments);
@@ -57,8 +58,8 @@ export class PostgreSQLInitialization implements Initialization {
     const values: any[] = [];
     const valuePlaceholders: string[] = [];
     departments.forEach((dep, i) => {
-      const startDate = dep.startDate ? new Date(dep.startDate) : null;
-      const endDate = dep.endDate ? new Date(dep.endDate) : null;
+      const startDate = dep.startDate ? dep.startDate : null;
+      const endDate = dep.endDate ? dep.endDate : null;
       const idx = i * 7;
       valuePlaceholders.push(
         `($${idx + 1}, $${idx + 2}, $${idx + 3}, $${idx + 4}, $${idx + 5}, $${idx + 6}, $${idx + 7})`
@@ -66,8 +67,8 @@ export class PostgreSQLInitialization implements Initialization {
       values.push(
         dep.id,
         dep.name,
-        startDate ? startDate.toISOString().split('T')[0] : null,
-        endDate ? endDate.toISOString().split('T')[0] : null,
+        this.formatDate(startDate),
+        this.formatDate(endDate),
         dep.notes ?? null,
         dep.keywords ?? null,
         dep.image ?? null
@@ -129,4 +130,21 @@ export class PostgreSQLInitialization implements Initialization {
     }
     console.log("PostgreSQLInitialization.insertEmployees(): inserted [%d] employees", employees.length);
   }
+  /**
+   * Formats the date.
+   * @param date the date
+   * @returns the date
+   */
+  private formatDate(date: Date | string | null | undefined): string | null {
+    if (!date) {
+      return null;
+    }
+    if (typeof date === 'string') {
+      return date.split('T')[0];
+    }
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
 }

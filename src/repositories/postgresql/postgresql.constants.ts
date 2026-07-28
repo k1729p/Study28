@@ -60,15 +60,15 @@ export const CREATE_PROCEDURE_TRANSFER_EMPLOYEES_SQL = `
 `;
 export const CREATE_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL = `
     CREATE OR REPLACE PROCEDURE delete_department_and_employees (
-        dep_id integer
+        department_id_par integer
     )
     LANGUAGE plpgsql
     AS $$
     BEGIN
         DELETE FROM employees
-        WHERE department_id = dep_id;
+        WHERE department_id = department_id_par;
         DELETE FROM departments
-        WHERE id = dep_id;
+        WHERE id = department_id_par;
     END;
     $$;
 `;
@@ -156,3 +156,5 @@ export const DELETE_EMPLOYEE_SQL = `
     DELETE FROM employees
     WHERE id = $1
 `;
+export const CALL_TRANSFER_EMPLOYEES_SQL = 'CALL transfer_employees($1, $2, $3)';
+export const CALL_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL = 'CALL delete_department_and_employees($1)';

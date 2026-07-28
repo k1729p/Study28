@@ -18,7 +18,7 @@ export class InitializationController {
    */
   loadInitialData = async (req: Request, res: Response, next: NextFunction) => {
     const repositoryType = helpers.getRepositoryType(req.query.repositoryType);
-    const departments: Department[] = req.body.departments || [];
+    const departments: Department[] = req.body?.departments ?? [];
     console.count(repositoryType);
     try {
       await this.initializationService.loadInitialData(repositoryType, departments);
