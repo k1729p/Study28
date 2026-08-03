@@ -2,6 +2,7 @@ import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { poolPromise } from "./postgresql.pool.js";
 import { DepartmentRepository } from "../department.repository.js";
+import * as helpers from "../../utils/helpers.js";
 import {
   CREATE_DEPARTMENT_SQL, SELECT_DEPARTMENTS_SQL, SELECT_DEPARTMENT_SQL,
   UPDATE_DEPARTMENT_SQL, UPDATE_EMPLOYEE_DEPARTMENT_SQL,
@@ -61,37 +62,12 @@ export class PostgreSQLDepartmentRepository implements DepartmentRepository {
       for (const row of result.rows) {
         const departmentId = row.department_id;
         let department = departmentMap.get(departmentId);
-
         if (!department) {
-          department = {
-            id: row.department_id,
-            name: row.department_name,
-            startDate: row.start_date,
-            endDate: row.end_date,
-            notes: row.notes,
-            keywords: row.keywords,
-            image: row.image,
-            employees: []
-          };
+          department = helpers.mapDatabaseRowToDepartment(row);
           departmentMap.set(departmentId, department);
         }
         if (row.employee_id) {
-          const employee: Employee = {
-            id: row.employee_id,
-            departmentId: row.employee_department_id,
-            firstName: row.first_name,
-            lastName: row.last_name,
-            title: row.title,
-            phone: row.phone,
-            mail: row.mail,
-            streetName: row.street_name,
-            houseNumber: row.house_number,
-            postalCode: row.postal_code,
-            locality: row.locality,
-            province: row.province,
-            country: row.country
-          };
-          department.employees.push(employee);
+          department.employees.push(helpers.mapDatabaseRowToEmployee(row, false));
         }
       }
       console.log("PostgreSQLDepartmentRepository.getDepartments():");
@@ -118,35 +94,10 @@ export class PostgreSQLDepartmentRepository implements DepartmentRepository {
         return undefined;
       }
       const rows = result.rows;
-      const row = rows[0];
-      const department: Department = {
-        id: row.department_id,
-        name: row.department_name,
-        startDate: row.start_date,
-        endDate: row.end_date,
-        notes: row.notes,
-        keywords: row.keywords,
-        image: row.image,
-        employees: []
-      };
+      const department = helpers.mapDatabaseRowToDepartment(rows[0]);
       for (const row of rows) {
         if (row.employee_id) {
-          const employee: Employee = {
-            id: row.employee_id,
-            departmentId: row.employee_department_id,
-            firstName: row.first_name,
-            lastName: row.last_name,
-            title: row.title,
-            phone: row.phone,
-            mail: row.mail,
-            streetName: row.street_name,
-            houseNumber: row.house_number,
-            postalCode: row.postal_code,
-            locality: row.locality,
-            province: row.province,
-            country: row.country
-          };
-          department.employees.push(employee);
+          department.employees.push(helpers.mapDatabaseRowToEmployee(row, false));
         }
       }
       console.log("PostgreSQLDepartmentRepository.getDepartment(): id[%d]", id);

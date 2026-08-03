@@ -1,25 +1,23 @@
-import { Employee } from "../models/employee.js";
-import { RepositoryType } from '../repositories/repository-type.js';
-import { InitializationService } from './initialization.service.js';
-import { DepartmentService } from './department.service.js';
-import { EmployeeService } from './employee.service.js';
-import { INITIAL_DATA } from './initial-data.js';
+import { Employee } from "../../models/employee.js";
+import { RepositoryType } from '../../repositories/repository-type.js';
+import { InitializationService } from '../initialization.service.js';
+import { EmployeeService } from '../employee.service.js';
+import { INITIAL_DATA } from '../initial-data.js';
 import { describe, beforeAll, it, expect, assert } from "vitest";
 
 /**
- * Unit tests for the {@link DepartmentService}.
+ * Unit tests for the {@link EmployeeService}.
  *
- * This test suite verifies that the {@link DepartmentService} functions correctly.
+ * This test suite verifies that the {@link EmployeeService} functions correctly.
+ * @param repositoryType the repository type
  */
-describe.for([
-  RepositoryType.PostgreSQL,
-])('repository type %s', repositoryType => {
+export function employeeServiceTests(repositoryType: RepositoryType) {
   const initializationService = new InitializationService();
   const employeeService = new EmployeeService();
   const TEST_DEPARTMENT = INITIAL_DATA[0];
   const TEST_EMPLOYEE = TEST_DEPARTMENT.employees[0];
   /**
-   * Sets up the testing module for the DepartmentService.
+   * Sets up the testing module for the EmployeeService.
    */
   beforeAll(async () => {
     await initializationService.loadInitialData(repositoryType, []);
@@ -36,8 +34,9 @@ describe.for([
     checkEmployees(TEST_EMPLOYEE, actualEmployees);
   });
   /**
-   * Checks if a specific employee can be retrieved by department and employee ID.
-   * Verifies that the returned employee exists and has the expected first name.
+   * Tests the retrieval of a employee by its ID.
+   * This test checks if the service can fetch a employee by its ID
+   * and that the returned employee has the expected ID.
    */
   it('should get a specific employee by id', async () => {
     // GIVEN
@@ -47,7 +46,7 @@ describe.for([
     checkEmployee(TEST_EMPLOYEE, actualEmployee);
   });
   /**
-   * Tests the recreation of an employee.
+   * Tests the recreation of an employee in a department.
    */
   describe('should recreate an employee', () => {
     /**
@@ -90,6 +89,16 @@ describe.for([
     expect(actualEmployee?.firstName).toBe(UPDATED_NAME);
   });
   /**
+   * Tests the failed retrieval of a employee by its ID.
+   */
+  it('should not get a employee by id', async () => {
+    // GIVEN
+    // WHEN
+    const actualEmployee = await employeeService.getEmployee(repositoryType, 0);
+    // THEN
+    expect(actualEmployee).toBeUndefined();
+  });
+  /**
    * Checks the actual employees.
    * Used for test assertions.
    * @param expectedEmployee the expected employee
@@ -113,6 +122,7 @@ describe.for([
 
     expect(actualEmployee).toBeDefined();
     expect(actualEmployee?.id).toBe(expectedEmployee.id);
+    expect(actualEmployee?.departmentId).toBe(expectedEmployee.departmentId);
     expect(actualEmployee?.firstName).toBe(expectedEmployee.firstName);
     expect(actualEmployee?.lastName).toBe(expectedEmployee.lastName);
 
@@ -126,5 +136,4 @@ describe.for([
     expect(actualEmployee?.province).toBe(expectedEmployee.province);
     expect(actualEmployee?.country).toBe(expectedEmployee.country);
   }
-});
-
+}

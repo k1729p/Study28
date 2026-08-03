@@ -1,4 +1,8 @@
 ################################################################################# TESTING
+import { RESET, RED_BRIGHT } from '../utils/colors.js';
+])('repository type ' + RED_BRIGHT + '%s' + RESET, repositoryType => {
+
+-------------------------------------------------------------
 Vitest https://vitest.dev/
 You are writing modern TypeScript and want first-class TS support,
  instant hot reloading, and clean test syntax out of the box.
@@ -24,7 +28,6 @@ You can also pass multi-variable tuples (like @CsvSource in JUnit):
                   ])('isBlank("%s") should be %s', (input, expected) => {
                     expect(isBlank(input)).toBe(expected);
                   });
-
 -------------------------------------------------------------
 Testcontainers for Node.js https://node.testcontainers.org/
 https://node.testcontainers.org/modules/postgresql/

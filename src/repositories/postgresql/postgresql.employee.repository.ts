@@ -1,6 +1,7 @@
 import { Employee } from "../../models/employee.js";
 import { poolPromise } from "./postgresql.pool.js";
 import { EmployeeRepository } from "../employee.repository.js";
+import * as helpers from "../../utils/helpers.js";
 import {
   CREATE_EMPLOYEE_SQL, SELECT_EMPLOYEES_SQL, SELECT_EMPLOYEE_SQL,
   UPDATE_EMPLOYEE_SQL, DELETE_EMPLOYEE_SQL
@@ -61,7 +62,7 @@ export class PostgreSQLEmployeeRepository implements EmployeeRepository {
     try {
       const result = await client.query(SELECT_EMPLOYEES_SQL);
       console.log("PostgreSQLEmployeeRepository.getEmployees():");
-      return result.rows.map(row => this.mapRowToEmployee(row));
+      return result.rows.map(row => helpers.mapDatabaseRowToEmployee(row, true));
     } catch (err) {
       console.error("PostgreSQLEmployeeRepository.getEmployees():", err);
       throw err;
@@ -85,7 +86,7 @@ export class PostgreSQLEmployeeRepository implements EmployeeRepository {
         return undefined;
       }
       console.log("PostgreSQLEmployeeRepository.getEmployee(): employee id[%d]", id);
-      return this.mapRowToEmployee(result.rows[0]);
+      return helpers.mapDatabaseRowToEmployee(result.rows[0], true);
     } catch (err) {
       console.error("PostgreSQLEmployeeRepository.getEmployee():", err);
       throw err;
@@ -155,27 +156,5 @@ export class PostgreSQLEmployeeRepository implements EmployeeRepository {
       client.release();
     }
     console.log("PostgreSQLEmployeeRepository.deleteEmployee(): employee id[%d]", id);
-  }
-  /**
-   * Maps a raw DB row (snake_case columns) to an Employee object (camelCase properties).
-   * @param row the raw row returned by the pg driver
-   * @returns the mapped Employee object
-   */
-  private mapRowToEmployee(row: any): Employee {
-    return {
-      id: row.id,
-      departmentId: row.department_id,
-      firstName: row.first_name,
-      lastName: row.last_name,
-      title: row.title,
-      phone: row.phone,
-      mail: row.mail,
-      streetName: row.street_name,
-      houseNumber: row.house_number,
-      postalCode: row.postal_code,
-      locality: row.locality,
-      province: row.province,
-      country: row.country
-    };
   }
 }

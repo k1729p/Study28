@@ -1,18 +1,17 @@
-import { Department } from "../models/department.js";
-import { RepositoryType } from '../repositories/repository-type.js';
-import { InitializationService } from './initialization.service.js';
-import { DepartmentService } from './department.service.js';
-import { INITIAL_DATA } from './initial-data.js';
+import { Department } from "../../models/department.js";
+import { RepositoryType } from '../../repositories/repository-type.js';
+import { InitializationService } from '../initialization.service.js';
+import { DepartmentService } from '../department.service.js';
+import { INITIAL_DATA } from '../initial-data.js';
 import { describe, beforeAll, it, expect, assert } from "vitest";
 
 /**
  * Unit tests for the {@link DepartmentService}.
  *
  * This test suite verifies that the {@link DepartmentService} functions correctly.
+ * @param repositoryType the repository type
  */
-describe.for([
-  RepositoryType.PostgreSQL,
-]) ('repository type %s', repositoryType => {
+export function departmentServiceTests(repositoryType: RepositoryType) {
   const initializationService = new InitializationService();
   const departmentService = new DepartmentService();
   const TEST_DEPARTMENT = INITIAL_DATA[0];
@@ -39,7 +38,7 @@ describe.for([
    * This test checks if the service can fetch a department by its ID
    * and that the returned department has the expected ID.
    */
-  it('should get a department by id', async () => {
+  it('should get a specific department by id', async () => {
     // GIVEN
     // WHEN
     const actualDepartment = await departmentService.getDepartment(repositoryType, TEST_DEPARTMENT.id);
@@ -99,7 +98,7 @@ describe.for([
   /**
    * Tests the failed retrieval of a department by its ID.
    */
-  it('should not get a department by wrong id', async () => {
+  it('should not get a specific department by id', async () => {
     // GIVEN
     // WHEN
     const actualDepartment = await departmentService.getDepartment(repositoryType, 0);
@@ -118,7 +117,7 @@ describe.for([
     expect(actualDepartments).toHaveLength(INITIAL_DATA.length);
     const actualDepartment = actualDepartments.find(dep => dep.id === expectedDepartment.id);
     checkDepartment(expectedDepartment, actualDepartment);
-  }  
+  }
   /**
    * Checks that the actual department matches the expected department.
    * Used for test assertions.
@@ -141,4 +140,4 @@ describe.for([
     expect(actualDepartment?.notes).toBe(expectedDepartment.notes);
     expect(actualDepartment?.keywords).toEqual(expectedDepartment.keywords);
   }
-});
+}

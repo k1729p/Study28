@@ -10,9 +10,14 @@ set POSTGRESQL_HOST=localhost
 set REDIS_HOST=localhost
 set SQL_SERVER_HOST=localhost
 set CLI_ARGS=
-set CLI_ARGS=--disableConsoleIntercept
 set CLI_ARGS=%CLI_ARGS% --reporter=tree
-::set CLI_ARGS=%CLI_ARGS% --silent=true
+
+set SHOW_LOGS=N
+if "%SHOW_LOGS%"=="Y" (
+  set CLI_ARGS=%CLI_ARGS% --disableConsoleIntercept
+) else (
+  set CLI_ARGS=%CLI_ARGS% --silent=true
+)
 ::set CLI_ARGS=%CLI_ARGS% --no-color
 cd ..
 powershell npx vitest %CLI_ARGS% run
