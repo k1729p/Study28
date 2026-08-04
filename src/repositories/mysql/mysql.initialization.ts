@@ -3,13 +3,7 @@ import { PoolConnection } from "mysql2/promise";
 import { Department } from "../../models/department.js";
 import { poolPromise } from "./mysql.pool.js";
 import { Initialization } from "../initialization.js";
-import {
-  DROP_TABLE_EMPLOYEES_SQL, DROP_TABLE_DEPARTMENTS_SQL,
-  DROP_PROCEDURE_TRANSFER_EMPLOYEES_SQL, DROP_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL,
-  CREATE_TABLE_DEPARTMENTS_SQL, CREATE_TABLE_EMPLOYEES_SQL,
-  CREATE_PROCEDURE_TRANSFER_EMPLOYEES_SQL, CREATE_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL,
-  INSERT_DEPARTMENT_SQL, INSERT_EMPLOYEE_SQL
-} from "./mysql.constants.js";
+import * as constants from "./mysql.constants.js";
 /**
  * This service class provides methods to initialize database and load data.
  */
@@ -23,14 +17,14 @@ export class MySqlInitialization implements Initialization {
     const connection: PoolConnection = await pool.getConnection();
     try {
       await connection.beginTransaction();
-      await connection.query(DROP_PROCEDURE_TRANSFER_EMPLOYEES_SQL);
-      await connection.query(DROP_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL);
-      await connection.query(DROP_TABLE_EMPLOYEES_SQL);
-      await connection.query(DROP_TABLE_DEPARTMENTS_SQL);
-      await connection.query(CREATE_TABLE_DEPARTMENTS_SQL);
-      await connection.query(CREATE_TABLE_EMPLOYEES_SQL);
-      await connection.query(CREATE_PROCEDURE_TRANSFER_EMPLOYEES_SQL);
-      await connection.query(CREATE_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL);
+      await connection.query(constants.DROP_PROCEDURE_TRANSFER_EMPLOYEES_SQL);
+      await connection.query(constants.DROP_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL);
+      await connection.query(constants.DROP_TABLE_EMPLOYEES_SQL);
+      await connection.query(constants.DROP_TABLE_DEPARTMENTS_SQL);
+      await connection.query(constants.CREATE_TABLE_DEPARTMENTS_SQL);
+      await connection.query(constants.CREATE_TABLE_EMPLOYEES_SQL);
+      await connection.query(constants.CREATE_PROCEDURE_TRANSFER_EMPLOYEES_SQL);
+      await connection.query(constants.CREATE_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL);
       console.log("MySqlInitialization.loadInitialData(): dropped and created tables & procedures");
       if (departments.length > 0) {
         await this.insertDepartments(connection, departments);
@@ -66,7 +60,7 @@ export class MySqlInitialization implements Initialization {
         dept.keywords ? dept.keywords.join(',') : null,
         dept.image || null
       ];
-      await connection.query(INSERT_DEPARTMENT_SQL, values);
+      await connection.query(constants.INSERT_DEPARTMENT_SQL, values);
     }
     console.log("MySqlInitialization.insertDepartments(): inserted [%d] departments", departments.length);
   }
@@ -88,7 +82,7 @@ export class MySqlInitialization implements Initialization {
       emp.streetName || null, emp.houseNumber || null, emp.postalCode || null,
       emp.locality || null, emp.province || null, emp.country || null
     ]);
-    await connection.query(INSERT_EMPLOYEE_SQL, [values]);
+    await connection.query(constants.INSERT_EMPLOYEES_SQL, [values]);
     console.log("MySqlInitialization.insertEmployees(): inserted [%d] employees", employees.length);
   }
 }

@@ -2,10 +2,7 @@ import { Employee } from "../../models/employee.js";
 import { poolPromise } from "./postgresql.pool.js";
 import { EmployeeRepository } from "../employee.repository.js";
 import * as helpers from "../../utils/helpers.js";
-import {
-  CREATE_EMPLOYEE_SQL, SELECT_EMPLOYEES_SQL, SELECT_EMPLOYEE_SQL,
-  UPDATE_EMPLOYEE_SQL, DELETE_EMPLOYEE_SQL
-} from "./postgresql.constants.js";
+import * as constants from "./postgresql.constants.js";
 /**
  * This service class provides methods to manage employees.
  * It includes CRUD methods to create, read, update, and delete employees.
@@ -21,7 +18,7 @@ export class PostgreSQLEmployeeRepository implements EmployeeRepository {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
-      const result = await client.query(CREATE_EMPLOYEE_SQL, [
+      const result = await client.query(constants.INSERT_EMPLOYEE_SQL, [
         employee.id,
         employee.departmentId,
         employee.firstName,
@@ -60,7 +57,7 @@ export class PostgreSQLEmployeeRepository implements EmployeeRepository {
     const pool = await poolPromise;
     const client = await pool.connect();
     try {
-      const result = await client.query(SELECT_EMPLOYEES_SQL);
+      const result = await client.query(constants.SELECT_EMPLOYEES_SQL);
       console.log("PostgreSQLEmployeeRepository.getEmployees():");
       return result.rows.map(row => helpers.mapDatabaseRowToEmployee(row, true));
     } catch (err) {
@@ -79,7 +76,7 @@ export class PostgreSQLEmployeeRepository implements EmployeeRepository {
     const pool = await poolPromise;
     const client = await pool.connect();
     try {
-      const result = await client.query(SELECT_EMPLOYEE_SQL, [id]);
+      const result = await client.query(constants.SELECT_EMPLOYEE_SQL, [id]);
       if (!result.rowCount) {
         console.log("PostgreSQLEmployeeRepository.getEmployee(): no employee found, employee id[%d]",
           id);
@@ -104,7 +101,7 @@ export class PostgreSQLEmployeeRepository implements EmployeeRepository {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
-      const result = await client.query(UPDATE_EMPLOYEE_SQL, [
+      const result = await client.query(constants.UPDATE_EMPLOYEE_SQL, [
         employee.departmentId,
         employee.firstName,
         employee.lastName,
@@ -146,7 +143,7 @@ export class PostgreSQLEmployeeRepository implements EmployeeRepository {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
-      await client.query(DELETE_EMPLOYEE_SQL, [id]);
+      await client.query(constants.DELETE_EMPLOYEE_SQL, [id]);
       await client.query('COMMIT');
     } catch (err) {
       await client.query('ROLLBACK');

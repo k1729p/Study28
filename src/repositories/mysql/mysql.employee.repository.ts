@@ -4,10 +4,7 @@ import { Employee } from "../../models/employee.js";
 import { poolPromise } from "./mysql.pool.js";
 import { EmployeeRepository } from "../employee.repository.js";
 import * as helpers from "../../utils/helpers.js";
-import {
-  CREATE_EMPLOYEE_SQL, SELECT_EMPLOYEES_SQL, SELECT_EMPLOYEE_SQL,
-  UPDATE_EMPLOYEE_SQL, DELETE_EMPLOYEE_SQL
-} from "./mysql.constants.js";
+import * as constants from "./mysql.constants.js";
 /**
  * This service class provides methods to manage employees.
  * It includes CRUD methods to create, read, update, and delete employees.
@@ -23,7 +20,7 @@ export class MySqlEmployeeRepository implements EmployeeRepository {
     const connection = await pool.getConnection();
     try {
       await connection.beginTransaction();
-      const [result] = await connection.query<ResultSetHeader>(CREATE_EMPLOYEE_SQL, [
+      const [result] = await connection.query<ResultSetHeader>(constants.INSERT_EMPLOYEE_SQL, [
         employee.id,
         employee.departmentId,
         employee.firstName,
@@ -61,7 +58,7 @@ export class MySqlEmployeeRepository implements EmployeeRepository {
   async getEmployees(): Promise<Employee[]> {
     const pool = await poolPromise;
     try {
-      const [rows] = await pool.query<RowDataPacket[]>(SELECT_EMPLOYEES_SQL);
+      const [rows] = await pool.query<RowDataPacket[]>(constants.SELECT_EMPLOYEES_SQL);
       console.log("MySqlEmployeeRepository.getEmployees():");
       return rows.map(row => helpers.mapDatabaseRowToEmployee(row, true));
     } catch (err) {
@@ -77,7 +74,7 @@ export class MySqlEmployeeRepository implements EmployeeRepository {
   async getEmployee(id: number): Promise<Employee | undefined> {
     const pool = await poolPromise;
     try {
-      const [rows] = await pool.query<RowDataPacket[]>(SELECT_EMPLOYEE_SQL, [id]);
+      const [rows] = await pool.query<RowDataPacket[]>(constants.SELECT_EMPLOYEE_SQL, [id]);
       if (!rows.length) {
         console.log("MySqlEmployeeRepository.getEmployee(): no employee found, employee id[%d]", id);
         return undefined;
@@ -99,7 +96,7 @@ export class MySqlEmployeeRepository implements EmployeeRepository {
     const connection = await pool.getConnection();
     try {
       await connection.beginTransaction();
-      const [result] = await connection.query<ResultSetHeader>(UPDATE_EMPLOYEE_SQL, [
+      const [result] = await connection.query<ResultSetHeader>(constants.UPDATE_EMPLOYEE_SQL, [
         employee.departmentId,
         employee.firstName,
         employee.lastName,
@@ -140,7 +137,7 @@ export class MySqlEmployeeRepository implements EmployeeRepository {
     const connection = await pool.getConnection();
     try {
       await connection.beginTransaction();
-      await connection.query(DELETE_EMPLOYEE_SQL, [id]);
+      await connection.query(constants.DELETE_EMPLOYEE_SQL, [id]);
       await connection.commit();
     } catch (err) {
       await connection.rollback();

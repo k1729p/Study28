@@ -15,13 +15,9 @@ export const POOL_CONFIG = {
   dateStrings: true,
   connectTimeout: 30000
 };
-
+// --- DDL: tables ------------------------------------------------------------------------------
 export const DROP_TABLE_EMPLOYEES_SQL = 'DROP TABLE IF EXISTS employees';
 export const DROP_TABLE_DEPARTMENTS_SQL = 'DROP TABLE IF EXISTS departments';
-export const DROP_PROCEDURE_TRANSFER_EMPLOYEES_SQL = 'DROP PROCEDURE IF EXISTS transfer_employees';
-export const DROP_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL =
-  'DROP PROCEDURE IF EXISTS delete_department_and_employees';
-
 export const CREATE_TABLE_DEPARTMENTS_SQL = `
   CREATE TABLE departments (
     id INT PRIMARY KEY,
@@ -51,7 +47,11 @@ export const CREATE_TABLE_EMPLOYEES_SQL = `
     FOREIGN KEY (department_id) REFERENCES departments(id)
   )
 `;
-
+// --- DDL: stored procedures ---------------------------------------------------------------------
+export const DROP_PROCEDURE_TRANSFER_EMPLOYEES_SQL =
+  'DROP PROCEDURE IF EXISTS transfer_employees';
+export const DROP_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL =
+  'DROP PROCEDURE IF EXISTS delete_department_and_employees';
 export const CREATE_PROCEDURE_TRANSFER_EMPLOYEES_SQL = `
   CREATE PROCEDURE transfer_employees (
     IN source_department_id INT,
@@ -75,26 +75,11 @@ export const CREATE_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL = `
     WHERE id = department_id_par;
   END
 `;
-
+// --- DML: departments ---------------------------------------------------------------------------
 export const INSERT_DEPARTMENT_SQL = `
   INSERT INTO departments (
     id, name, start_date, end_date, notes, keywords, image
-  ) VALUES (
-    ?, ?, ?, ?, ?, ?, ?
-  )
-`;
-export const INSERT_EMPLOYEE_SQL = `
-  INSERT INTO employees (
-    id, department_id, first_name, last_name, title, phone, mail, 
-    street_name, house_number, postal_code, locality, province, country
-  ) VALUES ?
-`;
-export const CREATE_DEPARTMENT_SQL = `
-  INSERT INTO departments (
-    id, name, start_date, end_date, notes, keywords, image
-  ) VALUES (
-    ?, ?, ?, ?, ?, ?, ?
-  )
+  ) VALUES (?, ?, ?, ?, ?, ?, ?)
 `;
 export const SELECT_DEPARTMENTS_SQL = `
   SELECT 
@@ -112,12 +97,14 @@ export const UPDATE_DEPARTMENT_SQL = `
   SET name = ?, start_date = ?, end_date = ?, notes = ?, keywords = ?, image = ?
   WHERE id = ?
 `;
-export const UPDATE_EMPLOYEE_DEPARTMENT_SQL = `
-  UPDATE employees
-  SET department_id = ?
-  WHERE id = ?
-`;
-export const CREATE_EMPLOYEE_SQL = `
+// --- DML: employees -----------------------------------------------------------------------------
+export const INSERT_EMPLOYEES_SQL = `
+  INSERT INTO employees (
+    id, department_id, first_name, last_name, title, phone, mail, 
+    street_name, house_number, postal_code, locality, province, country
+  ) VALUES ?
+`;    
+export const INSERT_EMPLOYEE_SQL = `
   INSERT INTO employees (
     id, department_id, first_name, last_name, title, phone, mail,
     street_name, house_number, postal_code, locality, province, country
@@ -137,9 +124,15 @@ export const UPDATE_EMPLOYEE_SQL = `
     house_number = ?, postal_code = ?, locality = ?, province = ?, country = ?
   WHERE id = ?
 `;
+export const UPDATE_EMPLOYEE_DEPARTMENT_SQL = `
+  UPDATE employees
+  SET department_id = ?
+  WHERE id = ?
+`;
 export const DELETE_EMPLOYEE_SQL = `
   DELETE FROM employees
   WHERE id = ?
 `;
+// --- DML: stored procedures ---------------------------------------------------------------------
 export const CALL_TRANSFER_EMPLOYEES_SQL = 'CALL transfer_employees(?, ?, ?)';
 export const CALL_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL = 'CALL delete_department_and_employees(?)';

@@ -5,11 +5,7 @@ import { Employee } from "../../models/employee.js";
 import { poolPromise } from "./mysql.pool.js";
 import { DepartmentRepository } from "../department.repository.js";
 import * as helpers from "../../utils/helpers.js";
-import {
-  CREATE_DEPARTMENT_SQL, SELECT_DEPARTMENTS_SQL, SELECT_DEPARTMENT_SQL,
-  UPDATE_DEPARTMENT_SQL, UPDATE_EMPLOYEE_DEPARTMENT_SQL,
-  CALL_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL, CALL_TRANSFER_EMPLOYEES_SQL
-} from "./mysql.constants.js";
+import * as constants from "./mysql.constants.js";
 /**
  * This service class provides methods to manage departments.
  * It includes CRUD methods to create, read, update, and delete departments.
@@ -27,7 +23,7 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
       await connection.beginTransaction();
       const startDate = department.startDate ? new Date(department.startDate).toISOString().split('T')[0] : null;
       const endDate = department.endDate ? new Date(department.endDate).toISOString().split('T')[0] : null;
-      const [result] = await connection.query<ResultSetHeader>(CREATE_DEPARTMENT_SQL, [
+      const [result] = await connection.query<ResultSetHeader>(constants.INSERT_DEPARTMENT_SQL, [
         department.id,
         department.name,
         startDate,
@@ -59,7 +55,7 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
   async getDepartments(): Promise<Department[]> {
     const pool = await poolPromise;
     try {
-      const [rows] = await pool.query<RowDataPacket[]>(SELECT_DEPARTMENTS_SQL);
+      const [rows] = await pool.query<RowDataPacket[]>(constants.SELECT_DEPARTMENTS_SQL);
       const departmentMap = new Map<number, Department>();
       for (const row of rows) {
         const departmentId = row.department_id;
@@ -86,7 +82,7 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
   async getDepartment(id: number): Promise<Department | undefined> {
     const pool = await poolPromise;
     try {
-      const [rows] = await pool.query<RowDataPacket[]>(SELECT_DEPARTMENT_SQL, [id]);
+      const [rows] = await pool.query<RowDataPacket[]>(constants.SELECT_DEPARTMENT_SQL, [id]);
       if (!rows.length) {
         console.log("MySqlDepartmentRepository.getDepartment(): no department found with id[%d]", id);
         return undefined;
@@ -116,7 +112,7 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
       await connection.beginTransaction();
       const startDate = department.startDate ? new Date(department.startDate).toISOString().split('T')[0] : null;
       const endDate = department.endDate ? new Date(department.endDate).toISOString().split('T')[0] : null;
-      const [result] = await connection.query<ResultSetHeader>(UPDATE_DEPARTMENT_SQL, [
+      const [result] = await connection.query<ResultSetHeader>(constants.UPDATE_DEPARTMENT_SQL, [
         department.name,
         startDate,
         endDate,
@@ -154,7 +150,7 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
     const connection = await pool.getConnection();
     try {
       await connection.beginTransaction();
-      const [result] = await connection.query<ResultSetHeader>(UPDATE_EMPLOYEE_DEPARTMENT_SQL, [
+      const [result] = await connection.query<ResultSetHeader>(constants.UPDATE_EMPLOYEE_DEPARTMENT_SQL, [
         employee.departmentId,
         employee.id
       ]);
@@ -183,7 +179,7 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
     const connection = await pool.getConnection();
     try {
       await connection.beginTransaction();
-      await connection.query(CALL_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL, [id]);
+      await connection.query(constants.CALL_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL, [id]);
       await connection.commit();
     } catch (err) {
       await connection.rollback();
@@ -206,7 +202,7 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
     const connection = await pool.getConnection();
     try {
       await connection.beginTransaction();
-      await connection.query(CALL_TRANSFER_EMPLOYEES_SQL,
+      await connection.query(constants.CALL_TRANSFER_EMPLOYEES_SQL,
         [sourceDepartmentId, targetDepartmentId, employeeIds.join(',')]
       );
       await connection.commit();

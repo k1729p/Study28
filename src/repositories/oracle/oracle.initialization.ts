@@ -1,13 +1,10 @@
 import oracledb from 'oracledb';
 
 import { Department } from "../../models/department.js";
+import { Employee } from "../../models/employee.js";
 import { poolPromise } from "./oracle.pool.js";
 import { Initialization } from "../initialization.js";
-import {
-  DROP_TABLE_EMPLOYEES_SQL, DROP_TABLE_DEPARTMENTS_SQL,
-  CREATE_TABLE_DEPARTMENTS_SQL, CREATE_TABLE_EMPLOYEES_SQL,
-  INSERT_DEPARTMENT_SQL, INSERT_EMPLOYEE_SQL
-} from "./oracle.constants.js";
+import * as constants from "./oracle.constants.js";
 /**
  * This service class provides methods to initialize database and load data.
  */
@@ -20,11 +17,15 @@ export class OracleInitialization implements Initialization {
     const pool = await poolPromise;
     const connection = await pool.getConnection();
     try {
-      await connection.execute(DROP_TABLE_EMPLOYEES_SQL);
-      await connection.execute(DROP_TABLE_DEPARTMENTS_SQL);
-      await connection.execute(CREATE_TABLE_DEPARTMENTS_SQL);
-      await connection.execute(CREATE_TABLE_EMPLOYEES_SQL);
-      console.log("OracleInitialization.loadInitialData(): dropped and created tables");
+      await connection.execute(constants.DROP_PROCEDURE_TRANSFER_EMPLOYEES_SQL);
+      await connection.execute(constants.DROP_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL);
+      await connection.execute(constants.DROP_TABLE_EMPLOYEES_SQL);
+      await connection.execute(constants.DROP_TABLE_DEPARTMENTS_SQL);
+      await connection.execute(constants.CREATE_TABLE_DEPARTMENTS_SQL);
+      await connection.execute(constants.CREATE_TABLE_EMPLOYEES_SQL);
+      await connection.execute(constants.CREATE_PROCEDURE_TRANSFER_EMPLOYEES_SQL);
+      await connection.execute(constants.CREATE_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL);
+      console.log("OracleInitialization.loadInitialData(): dropped and created tables & procedures");
       if (departments.length > 0) {
         await this.insertDepartments(connection, departments);
         await this.insertEmployees(connection, departments);
@@ -51,19 +52,8 @@ export class OracleInitialization implements Initialization {
    * @param departments the array of departments
    */
   private async insertDepartments(connection: oracledb.Connection, departments: Department[]) {
-    for (const dep of departments) {
-      const startDate = dep.startDate ? new Date(dep.startDate) : null;
-      const endDate = dep.endDate ? new Date(dep.endDate) : null;
-      const bindParams = {
-        id: dep.id,
-        name: dep.name,
-        startDate,
-        endDate,
-        notes: dep.notes || null,
-        keywords: dep.keywords?.join(',') || null,
-        image: dep.image || null
-      };
-      await connection.execute(INSERT_DEPARTMENT_SQL, bindParams, { autoCommit: false });
+    for (const department of departments) {
+      await connection.execute(constants.INSERT_DEPARTMENT_SQL, constants.BIND_PARAMETERS_FOR_DEPARTMENT(department), { autoCommit: false });
     }
     console.log("OracleInitialization.insertDepartments(): inserted [%d] departments", departments.length);
   }
@@ -80,23 +70,8 @@ export class OracleInitialization implements Initialization {
       console.warn("OracleInitialization.insertEmployees(): no employees to insert");
       return;
     }
-    for (const emp of employees) {
-      const bindParams = {
-        id: emp.id,
-        depId: emp.departmentId,
-        fname: emp.firstName,
-        lname: emp.lastName,
-        title: emp.title,
-        phone: emp.phone,
-        mail: emp.mail,
-        street: emp.streetName || null,
-        hnum: emp.houseNumber || null,
-        pcode: emp.postalCode || null,
-        loc: emp.locality || null,
-        prov: emp.province || null,
-        country: emp.country || null
-      };
-      await connection.execute(INSERT_EMPLOYEE_SQL, bindParams, { autoCommit: false });
+    for (const employee of employees) {
+      await connection.execute(constants.INSERT_EMPLOYEE_SQL, constants.BIND_PARAMETERS_FOR_EMPLOYEE(employee), { autoCommit: false });
     }
     console.log("OracleInitialization.insertEmployees(): inserted [%d] employees", employees.length);
   }

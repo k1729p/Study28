@@ -3,11 +3,7 @@ import { Employee } from "../../models/employee.js";
 import { poolPromise } from "./postgresql.pool.js";
 import { DepartmentRepository } from "../department.repository.js";
 import * as helpers from "../../utils/helpers.js";
-import {
-  CREATE_DEPARTMENT_SQL, SELECT_DEPARTMENTS_SQL, SELECT_DEPARTMENT_SQL,
-  UPDATE_DEPARTMENT_SQL, UPDATE_EMPLOYEE_DEPARTMENT_SQL,
-  CALL_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL, CALL_TRANSFER_EMPLOYEES_SQL
-} from "./postgresql.constants.js";
+import * as constants from "./postgresql.constants.js";
 /**
  * This service class provides methods to manage departments.
  * It includes CRUD methods to create, read, update, and delete departments.
@@ -24,7 +20,7 @@ export class PostgreSQLDepartmentRepository implements DepartmentRepository {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
-      const result = await client.query(CREATE_DEPARTMENT_SQL, [
+      const result = await client.query(constants.INSERT_DEPARTMENT_SQL, [
         department.id,
         department.name,
         department.startDate,
@@ -57,7 +53,7 @@ export class PostgreSQLDepartmentRepository implements DepartmentRepository {
     const pool = await poolPromise;
     const client = await pool.connect();
     try {
-      const result = await client.query(SELECT_DEPARTMENTS_SQL);
+      const result = await client.query(constants.SELECT_DEPARTMENTS_SQL);
       const departmentMap = new Map<number, Department>();
       for (const row of result.rows) {
         const departmentId = row.department_id;
@@ -88,7 +84,7 @@ export class PostgreSQLDepartmentRepository implements DepartmentRepository {
     const pool = await poolPromise;
     const client = await pool.connect();
     try {
-      const result = await client.query(SELECT_DEPARTMENT_SQL, [id]);
+      const result = await client.query(constants.SELECT_DEPARTMENT_SQL, [id]);
       if (!result.rowCount) {
         console.log("PostgreSQLDepartmentRepository.getDepartment(): no department found with id[%d]", id);
         return undefined;
@@ -120,7 +116,7 @@ export class PostgreSQLDepartmentRepository implements DepartmentRepository {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
-      let result = await client.query(UPDATE_DEPARTMENT_SQL, [
+      let result = await client.query(constants.UPDATE_DEPARTMENT_SQL, [
         department.name,
         department.startDate,
         department.endDate,
@@ -156,7 +152,7 @@ export class PostgreSQLDepartmentRepository implements DepartmentRepository {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
-      const result = await client.query(UPDATE_EMPLOYEE_DEPARTMENT_SQL, [
+      const result = await client.query(constants.UPDATE_EMPLOYEE_DEPARTMENT_SQL, [
         employee.departmentId,
         employee.id
       ]);
@@ -186,7 +182,7 @@ export class PostgreSQLDepartmentRepository implements DepartmentRepository {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
-      await client.query(CALL_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL, [id]);
+      await client.query(constants.CALL_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL, [id]);
       await client.query('COMMIT');
     } catch (err) {
       await client.query('ROLLBACK');
@@ -210,7 +206,7 @@ export class PostgreSQLDepartmentRepository implements DepartmentRepository {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
-      await client.query(CALL_TRANSFER_EMPLOYEES_SQL,
+      await client.query(constants.CALL_TRANSFER_EMPLOYEES_SQL,
         [sourceDepartmentId, targetDepartmentId, employeeIds]
       );
       await client.query('COMMIT');

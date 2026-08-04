@@ -10,6 +10,7 @@ import { describe } from "vitest";
 describe.for([
   RepositoryType.MongoDB,
   RepositoryType.MySQL,
+  RepositoryType.Oracle,
   RepositoryType.PostgreSQL,
 ])(colors.CYAN_BRIGHT + 'Repository type █ %s █' + colors.RESET, (repositoryType) => {
   describe(colors.YELLOW_BRIGHT + 'Department service tests' + colors.RESET,

@@ -1,4 +1,7 @@
+import oracledb from 'oracledb';
 import { config } from "./../../configuration/configuration.js";
+import { Department } from "../../models/department.js";
+import { Employee } from "../../models/employee.js";
 
 /**
  * Configuration for the connection pool.
@@ -11,6 +14,7 @@ export const POOL_CONFIG = {
   poolMax: 10,
   poolTimeout: 60
 };
+// --- DDL: tables ------------------------------------------------------------------------------
 export const DROP_TABLE_EMPLOYEES_SQL = `DROP TABLE IF EXISTS employees CASCADE CONSTRAINTS`;
 export const DROP_TABLE_DEPARTMENTS_SQL = `DROP TABLE IF EXISTS departments CASCADE CONSTRAINTS`;
 export const CREATE_TABLE_DEPARTMENTS_SQL = `
@@ -41,27 +45,56 @@ export const CREATE_TABLE_EMPLOYEES_SQL = `
     country VARCHAR2(40)
   )
 `;
+// --- DDL: stored procedures ---------------------------------------------------------------------
+export const DROP_PROCEDURE_TRANSFER_EMPLOYEES_SQL =
+  `DROP PROCEDURE IF EXISTS transfer_employees`;
+export const DROP_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL =
+  `DROP PROCEDURE IF EXISTS delete_department_and_employees`;
+export const CREATE_PROCEDURE_TRANSFER_EMPLOYEES_SQL = `
+  CREATE OR REPLACE PROCEDURE transfer_employees (
+    source_department_id_par IN NUMBER,
+    target_department_id_par IN NUMBER,
+    employee_ids_par IN SYS.ODCINUMBERLIST
+  )
+  AS
+  BEGIN
+    UPDATE employees
+    SET department_id = target_department_id_par
+    WHERE department_id = source_department_id_par AND id IN (
+      SELECT column_value FROM TABLE(employee_ids_par)
+    );
+  END transfer_employees;
+`;
+export const CREATE_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL = `
+  CREATE OR REPLACE PROCEDURE delete_department_and_employees (
+    department_id_par IN NUMBER
+  )
+  AS
+  BEGIN
+    DELETE FROM employees
+    WHERE department_id = department_id_par;
+    DELETE FROM departments
+    WHERE id = department_id_par;
+  END delete_department_and_employees;
+`;
+// --- DML: departments ---------------------------------------------------------------------------
 export const INSERT_DEPARTMENT_SQL = `
   INSERT INTO departments (
-    id, name, start_date, end_date, notes, keywords, image
+    id,
+    name,
+    start_date,
+    end_date,
+    notes,
+    keywords,
+    image
   ) VALUES (
-   :id, :name, :startDate, :endDate, :notes, :keywords, :image
-  )
-`;
-export const INSERT_EMPLOYEE_SQL = `
-  INSERT INTO employees (
-    id, department_id, first_name, last_name, title, phone, mail,
-    street_name, house_number, postal_code, locality, province, country
-  ) VALUES (
-    :id, :depId, :fname, :lname, :title, :phone, :mail, 
-    :street, :hnum, :pcode, :loc, :prov, :country
-  )
-`;
-export const CREATE_DEPARTMENT_SQL = `
-  INSERT INTO departments (
-    id, name, start_date, end_date, notes, keywords, image
-  ) VALUES (
-   :id, :name, :startDate, :endDate, :notes, :keywords, :image
+   :id,
+   :name,
+   :startDate,
+   :endDate,
+   :notes,
+   :keywords,
+   :image
   )
 `;
 export const SELECT_DEPARTMENTS_SQL = `
@@ -89,3 +122,131 @@ export const SELECT_DEPARTMENTS_SQL = `
   FROM departments d
   LEFT JOIN employees e ON d.id = e.department_id
 `;
+export const SELECT_DEPARTMENT_SQL = SELECT_DEPARTMENTS_SQL + 'WHERE d.id = :id';
+export const UPDATE_DEPARTMENT_SQL = `
+  UPDATE departments
+  SET
+    name = :name,
+    start_date = :startDate,
+    end_date = :endDate,
+    notes = :notes,
+    keywords = :keywords,
+    image = :image
+  WHERE id = :id
+`;
+// --- DML: employees -----------------------------------------------------------------------------
+export const INSERT_EMPLOYEE_SQL = `
+  INSERT INTO employees (
+    id,
+    department_id,
+    first_name,
+    last_name,
+    title,
+    phone,
+    mail,
+    street_name,
+    house_number,
+    postal_code,
+    locality,
+    province,
+    country
+  ) VALUES (
+    :id,
+    :departmentId,
+    :firstName,
+    :lastName,
+    :title,
+    :phone,
+    :mail, 
+    :streetName,
+    :houseNumber,
+    :postalCode,
+    :locality,
+    :province,
+    :country
+  )
+`;
+export const SELECT_EMPLOYEES_SQL = `
+  SELECT
+    id AS "id",
+    department_id AS "department_id",
+    first_name AS "first_name",
+    last_name AS "last_name",
+    title AS "title",
+    phone AS "phone",
+    mail AS "mail",
+    street_name AS "street_name",
+    house_number AS "house_number",
+    postal_code AS "postal_code",
+    locality AS "locality",
+    province AS "province",
+    country AS "country"
+  FROM employees
+`;
+export const SELECT_EMPLOYEE_SQL = SELECT_EMPLOYEES_SQL + 'WHERE id = :id';
+export const UPDATE_EMPLOYEE_SQL = `
+  UPDATE employees
+  SET
+    department_id = :departmentId,
+    first_name = :firstName,
+    last_name = :lastName,
+    title = :title,
+    phone = :phone,
+    mail = :mail,
+    street_name = :streetName,
+    house_number = :houseNumber,
+    postal_code = :postalCode,
+    locality = :locality,
+    province = :province,
+    country = :country
+  WHERE id = :id
+`;
+export const UPDATE_EMPLOYEE_DEPARTMENT_SQL = `
+  UPDATE employees
+  SET department_id = :departmentId
+  WHERE id = :id
+`;
+export const DELETE_EMPLOYEE_SQL = `
+  DELETE FROM employees
+  WHERE id = :id
+`;
+// --- DML: stored procedures ---------------------------------------------------------------------
+export const CALL_TRANSFER_EMPLOYEES_SQL = `
+  BEGIN
+  transfer_employees(:sourceDepartmentId, :targetDepartmentId, :employeeIds);
+  END;
+`;
+export const CALL_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL = `
+  BEGIN
+  delete_department_and_employees(:departmentId);
+  END;
+`;
+// --- mappers ------------------------------------------------------------------------------------
+export const BIND_PARAMETERS_FOR_DEPARTMENT = (department: Department) : oracledb.BindParameters => {
+    return  {
+        id: department.id,
+        name: department.name,
+        startDate: department.startDate ? new Date(department.startDate) : null,
+        endDate: department.endDate ? new Date(department.endDate) : null,
+        notes: department.notes || null,
+        keywords: department.keywords?.join(',') || null,
+        image: department.image || null
+      };
+  }
+export const BIND_PARAMETERS_FOR_EMPLOYEE = (employee: Employee) : oracledb.BindParameters => {
+    return  {
+        id: employee.id,
+        departmentId: employee.departmentId,
+        firstName: employee.firstName,
+        lastName: employee.lastName,
+        title: employee.title,
+        phone: employee.phone,
+        mail: employee.mail,
+        streetName: employee.streetName || null,
+        houseNumber: employee.houseNumber || null,
+        postalCode: employee.postalCode || null,
+        locality: employee.locality || null,
+        province: employee.province || null,
+        country: employee.country || null
+      };
+  }

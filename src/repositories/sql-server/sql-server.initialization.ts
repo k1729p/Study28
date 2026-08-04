@@ -3,14 +3,7 @@ import sql from 'mssql';
 import { Department } from "../../models/department.js";
 import { poolPromise } from "./sql-server.pool.js";
 import { Initialization } from "../initialization.js";
-import {
-  DROP_TABLE_DEPARTMENTS_SQL,
-  DROP_TABLE_EMPLOYEES_SQL,
-  CREATE_TABLE_DEPARTMENTS_SQL,
-  CREATE_TABLE_EMPLOYEES_SQL,
-  INSERT_DEPARTMENT_SQL,
-  INSERT_EMPLOYEE_SQL
-} from "./sql-server.constants.js";
+import * as constants from "./sql-server.constants.js";
 /**
  * This service class provides methods to initialize database and load data.
  */
@@ -25,10 +18,10 @@ export class SQLServerInitialization implements Initialization {
     try {
       await transaction.begin();
       const request = new sql.Request(transaction);
-      await request.query(DROP_TABLE_EMPLOYEES_SQL);
-      await request.query(DROP_TABLE_DEPARTMENTS_SQL);
-      await request.query(CREATE_TABLE_DEPARTMENTS_SQL);
-      await request.query(CREATE_TABLE_EMPLOYEES_SQL);
+      await request.query(constants.DROP_TABLE_EMPLOYEES_SQL);
+      await request.query(constants.DROP_TABLE_DEPARTMENTS_SQL);
+      await request.query(constants.CREATE_TABLE_DEPARTMENTS_SQL);
+      await request.query(constants.CREATE_TABLE_EMPLOYEES_SQL);
       console.log("SQLServerInitialization.loadInitialData(): dropped and created tables");
       if (departments.length > 0) {
         await this.insertDepartments(transaction, departments);
@@ -59,7 +52,7 @@ export class SQLServerInitialization implements Initialization {
       request.input('notes', sql.NVarChar, dep.notes);
       request.input('keywords', sql.NVarChar, dep.keywords?.join(','));
       request.input('image', sql.NVarChar, dep.image);
-      await request.query(INSERT_DEPARTMENT_SQL);
+      await request.query(constants.INSERT_DEPARTMENT_SQL);
     }
     console.log("SQLServerInitialization.insertDepartments(): inserted [%d] departments", departments.length);
   }
@@ -91,7 +84,7 @@ export class SQLServerInitialization implements Initialization {
       request.input('loc', sql.NVarChar, emp.locality);
       request.input('prov', sql.NVarChar, emp.province);
       request.input('country', sql.NVarChar, emp.country);
-      await request.query(INSERT_EMPLOYEE_SQL);
+      await request.query(constants.INSERT_EMPLOYEE_SQL);
     }
     console.log("SQLServerInitialization.insertEmployees(): inserted [%d] employees", employees.length);
   }

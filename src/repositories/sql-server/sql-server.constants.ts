@@ -19,6 +19,7 @@ export const POOL_CONFIG = {
     idleTimeoutMillis: 30000
   }
 };
+// --- DDL: tables ------------------------------------------------------------------------------
 export const DROP_TABLE_DEPARTMENTS_SQL = `
   IF OBJECT_ID('departments', 'U') IS NOT NULL 
   DROP TABLE departments
@@ -55,26 +56,14 @@ export const CREATE_TABLE_EMPLOYEES_SQL = `
       country NVARCHAR(40)
     )
 `;
+// --- DDL: stored procedures ---------------------------------------------------------------------
+// --- DML: departments ---------------------------------------------------------------------------
 export const INSERT_DEPARTMENT_SQL = `
   INSERT INTO departments (
     id, name, start_date, end_date, notes, keywords, image
   ) VALUES (
     @id, @name, @startDate, @endDate, @notes, @keywords, @image
   )
-`;
-export const INSERT_EMPLOYEE_SQL = `
-  INSERT INTO employees (
-    id, department_id, first_name, last_name, title, phone, mail,
-    street_name, house_number, postal_code, locality, province, country
-  ) VALUES (
-    @id, @depId, @fname, @lname, @title, @phone, @mail, 
-    @street, @hnum, @pcode, @loc, @prov, @country
-  )
-`;
-export const CREATE_DEPARTMENT_SQL = `
-  INSERT INTO departments (id, name, start_date, end_date, notes, keywords, image)
-  OUTPUT INSERTED.*
-  VALUES (@id, @name, @startDate, @endDate, @notes, @keywords, @image)
 `;
 export const SELECT_DEPARTMENTS_SQL = `
   SELECT 
@@ -101,3 +90,14 @@ export const SELECT_DEPARTMENTS_SQL = `
   FROM departments d
   LEFT JOIN employees e ON d.id = e.department_id
 `;
+// --- DML: employees -----------------------------------------------------------------------------
+export const INSERT_EMPLOYEE_SQL = `
+  INSERT INTO employees (
+    id, department_id, first_name, last_name, title, phone, mail,
+    street_name, house_number, postal_code, locality, province, country
+  ) VALUES (
+    @id, @depId, @fname, @lname, @title, @phone, @mail, 
+    @street, @hnum, @pcode, @loc, @prov, @country
+  )
+`;
+// --- DML: stored procedures ---------------------------------------------------------------------

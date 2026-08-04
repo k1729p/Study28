@@ -10,11 +10,9 @@ export const POOL_CONFIG = {
   user: config.postgreSqlUser,
   password: config.postgreSqlPassword,
 };
+// --- DDL: tables ------------------------------------------------------------------------------
 export const DROP_TABLE_EMPLOYEES_SQL = 'DROP TABLE IF EXISTS employees';
 export const DROP_TABLE_DEPARTMENTS_SQL = 'DROP TABLE IF EXISTS departments';
-export const DROP_PROCEDURE_TRANSFER_EMPLOYEES_SQL = 'DROP PROCEDURE IF EXISTS transfer_employees';
-export const DROP_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL =
-  'DROP PROCEDURE IF EXISTS delete_department_and_employees';
 export const CREATE_TABLE_DEPARTMENTS_SQL = `
     CREATE TABLE departments (
         id integer PRIMARY KEY,
@@ -43,6 +41,11 @@ export const CREATE_TABLE_EMPLOYEES_SQL = `
         country varchar(40)
     )
 `;
+// --- DDL: stored procedures ---------------------------------------------------------------------
+export const DROP_PROCEDURE_TRANSFER_EMPLOYEES_SQL =
+  'DROP PROCEDURE IF EXISTS transfer_employees';
+export const DROP_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL =
+  'DROP PROCEDURE IF EXISTS delete_department_and_employees';
 export const CREATE_PROCEDURE_TRANSFER_EMPLOYEES_SQL = `
     CREATE OR REPLACE PROCEDURE transfer_employees (
         source_department_id integer,
@@ -72,19 +75,13 @@ export const CREATE_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL = `
     END;
     $$;
 `;
-export const BULK_INSERT_DEPARTMENTS_SQL_PREFIX = `
+// --- DML: departments ---------------------------------------------------------------------------
+export const INSERT_DEPARTMENTS_SQL_PREFIX = `
     INSERT INTO departments (
         id, name, start_date, end_date, notes, keywords, image
     ) VALUES
 `;
-export const BULK_INSERT_EMPLOYEES_SQL_PREFIX = `
-    INSERT INTO employees (
-        id, department_id, first_name, last_name, title, phone, mail,
-        street_name, house_number, postal_code, locality, province, country
-    ) VALUES
-`;
-
-export const CREATE_DEPARTMENT_SQL = `
+export const INSERT_DEPARTMENT_SQL = `
   INSERT INTO departments (
     id, name, start_date, end_date, notes, keywords, image
   ) VALUES (
@@ -124,13 +121,14 @@ export const UPDATE_DEPARTMENT_SQL = `
   WHERE id = $7
   RETURNING *
 `;
-export const UPDATE_EMPLOYEE_DEPARTMENT_SQL = `
-  UPDATE employees
-  SET department_id = $1
-  WHERE id = $2
-  RETURNING *
+// --- DML: employees -----------------------------------------------------------------------------
+export const INSERT_EMPLOYEES_SQL_PREFIX = `
+    INSERT INTO employees (
+        id, department_id, first_name, last_name, title, phone, mail,
+        street_name, house_number, postal_code, locality, province, country
+    ) VALUES
 `;
-export const CREATE_EMPLOYEE_SQL = `
+export const INSERT_EMPLOYEE_SQL = `
     INSERT INTO employees (
     id, department_id, first_name, last_name, title, phone, mail,
     street_name, house_number, postal_code, locality, province, country
@@ -144,6 +142,12 @@ export const SELECT_EMPLOYEES_SQL = `
     FROM employees
 `;
 export const SELECT_EMPLOYEE_SQL = SELECT_EMPLOYEES_SQL + ' WHERE id = $1';
+export const UPDATE_EMPLOYEE_DEPARTMENT_SQL = `
+  UPDATE employees
+  SET department_id = $1
+  WHERE id = $2
+  RETURNING *
+`;
 export const UPDATE_EMPLOYEE_SQL = `
     UPDATE employees
     SET
@@ -156,5 +160,6 @@ export const DELETE_EMPLOYEE_SQL = `
     DELETE FROM employees
     WHERE id = $1
 `;
+// --- DML: stored procedures ---------------------------------------------------------------------
 export const CALL_TRANSFER_EMPLOYEES_SQL = 'CALL transfer_employees($1, $2, $3)';
 export const CALL_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL = 'CALL delete_department_and_employees($1)';

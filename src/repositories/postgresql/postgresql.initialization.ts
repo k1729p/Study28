@@ -3,13 +3,7 @@ import { PoolClient, types } from "pg";
 import { Department } from "../../models/department.js";
 import { poolPromise } from "./postgresql.pool.js";
 import { Initialization } from "../initialization.js";
-import {
-  DROP_TABLE_EMPLOYEES_SQL, DROP_TABLE_DEPARTMENTS_SQL,
-  DROP_PROCEDURE_TRANSFER_EMPLOYEES_SQL, DROP_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL,
-  CREATE_TABLE_DEPARTMENTS_SQL, CREATE_TABLE_EMPLOYEES_SQL,
-  CREATE_PROCEDURE_TRANSFER_EMPLOYEES_SQL, CREATE_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL,
-  BULK_INSERT_DEPARTMENTS_SQL_PREFIX, BULK_INSERT_EMPLOYEES_SQL_PREFIX
-} from "./postgresql.constants.js";
+import * as constants from "./postgresql.constants.js";
 /**
  * This service class provides methods to initialize database and load data.
  */
@@ -24,14 +18,14 @@ export class PostgreSQLInitialization implements Initialization {
     const client: PoolClient = await pool.connect();
     try {
       await client.query('BEGIN');
-      await client.query(DROP_PROCEDURE_TRANSFER_EMPLOYEES_SQL);
-      await client.query(DROP_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL);
-      await client.query(DROP_TABLE_EMPLOYEES_SQL);
-      await client.query(DROP_TABLE_DEPARTMENTS_SQL);
-      await client.query(CREATE_TABLE_DEPARTMENTS_SQL);
-      await client.query(CREATE_TABLE_EMPLOYEES_SQL);
-      await client.query(CREATE_PROCEDURE_TRANSFER_EMPLOYEES_SQL);
-      await client.query(CREATE_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL);
+      await client.query(constants.DROP_PROCEDURE_TRANSFER_EMPLOYEES_SQL);
+      await client.query(constants.DROP_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL);
+      await client.query(constants.DROP_TABLE_EMPLOYEES_SQL);
+      await client.query(constants.DROP_TABLE_DEPARTMENTS_SQL);
+      await client.query(constants.CREATE_TABLE_DEPARTMENTS_SQL);
+      await client.query(constants.CREATE_TABLE_EMPLOYEES_SQL);
+      await client.query(constants.CREATE_PROCEDURE_TRANSFER_EMPLOYEES_SQL);
+      await client.query(constants.CREATE_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL);
       console.log("PostgreSQLInitialization.loadInitialData(): dropped and created tables & procedures");
       if (departments.length > 0) {
         await this.insertDepartments(client, departments);
@@ -74,7 +68,7 @@ export class PostgreSQLInitialization implements Initialization {
         dep.image ?? null
       );
     });
-    const sql = BULK_INSERT_DEPARTMENTS_SQL_PREFIX + valuePlaceholders.join(", ");
+    const sql = constants.INSERT_DEPARTMENTS_SQL_PREFIX + valuePlaceholders.join(", ");
     try {
       await client.query(sql, values);
     } catch (err) {
@@ -121,7 +115,7 @@ export class PostgreSQLInitialization implements Initialization {
         emp.country ?? null
       );
     });
-    const sql = BULK_INSERT_EMPLOYEES_SQL_PREFIX + valuePlaceholders.join(", ");
+    const sql = constants.INSERT_EMPLOYEES_SQL_PREFIX + valuePlaceholders.join(", ");
     try {
       await client.query(sql, values);
     } catch (err) {

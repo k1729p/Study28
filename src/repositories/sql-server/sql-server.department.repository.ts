@@ -4,10 +4,8 @@ import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { poolPromise } from "./sql-server.pool.js";
 import { DepartmentRepository } from "../department.repository.js";
-import {
-  CREATE_DEPARTMENT_SQL,
-  SELECT_DEPARTMENTS_SQL
-} from "./sql-server.constants.js";
+import * as helpers from "../../utils/helpers.js";
+import * as constants from "./sql-server.constants.js";
 /**
  * This service class provides methods to manage departments.
  * It includes CRUD methods to create, read, update, and delete departments.
@@ -29,7 +27,7 @@ export class SQLServerDepartmentRepository implements DepartmentRepository {
         .input('notes', sql.NVarChar, department.notes)
         .input('keywords', sql.NVarChar, department.keywords?.join(','))
         .input('image', sql.NVarChar, department.image)
-        .query(CREATE_DEPARTMENT_SQL);
+        .query(constants.INSERT_DEPARTMENT_SQL);
     } catch (err) {
       console.error("SQLServerDepartmentRepository.createDepartment():", err);
       throw err;
@@ -43,7 +41,7 @@ export class SQLServerDepartmentRepository implements DepartmentRepository {
   async getDepartments(): Promise<Department[]> {
     try {
       const pool = await poolPromise;
-      const result = await pool.request().query(SELECT_DEPARTMENTS_SQL);
+      const result = await pool.request().query(constants.SELECT_DEPARTMENTS_SQL);
       const departmentMap = new Map<number, Department>();
 
       for (const row of result.recordset) {
@@ -51,35 +49,11 @@ export class SQLServerDepartmentRepository implements DepartmentRepository {
         let department = departmentMap.get(departmentId);
 
         if (!department) {
-          department = {
-            id: row.department_id,
-            name: row.department_name,
-            startDate: row.start_date,
-            endDate: row.end_date,
-            notes: row.notes,
-            keywords: row.keywords ? row.keywords.split(',') : [],
-            image: row.image,
-            employees: []
-          };
+          department = helpers.mapDatabaseRowToDepartment(row);
           departmentMap.set(departmentId, department);
         }
         if (row.employee_id) {
-          const employee: Employee = {
-            id: row.employee_id,
-            departmentId: row.employee_department_id,
-            firstName: row.first_name,
-            lastName: row.last_name,
-            title: row.title,
-            phone: row.phone,
-            mail: row.mail,
-            streetName: row.street_name,
-            houseNumber: row.house_number,
-            postalCode: row.postal_code,
-            locality: row.locality,
-            province: row.province,
-            country: row.country
-          };
-          department.employees.push(employee);
+          department.employees.push(helpers.mapDatabaseRowToEmployee(row, false));
         }
       }
       console.log("SQLServerDepartmentRepository.getDepartments():");
