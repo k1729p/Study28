@@ -2,7 +2,7 @@ import { ChromaClient } from "chromadb";
 
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
-import { DEPARTMENTS_COLLECTION, EMPLOYEES_COLLECTION } from "./chroma.constants.js";
+import * as constants from "./chroma.constants.js";
 import {
   toDepartmentMetadata, toEmployeeMetadata, toPlaceholderEmbedding
 } from "./chroma.helpers.js";
@@ -22,11 +22,11 @@ export class ChromaInitialization implements Initialization {
     try {
       await this.dropCollections(client);
       const departmentsCollection = await client.createCollection({
-        name: DEPARTMENTS_COLLECTION,
+        name: constants.DEPARTMENTS_COLLECTION,
         embeddingFunction: null
       });
       const employeesCollection = await client.createCollection({
-        name: EMPLOYEES_COLLECTION,
+        name: constants.EMPLOYEES_COLLECTION,
         embeddingFunction: null
       });
       console.log("ChromaInitialization.loadInitialData(): dropped and created collections");
@@ -47,7 +47,7 @@ export class ChromaInitialization implements Initialization {
    * @param client the Chroma client
    */
   private async dropCollections(client: ChromaClient) {
-    for (const name of [EMPLOYEES_COLLECTION, DEPARTMENTS_COLLECTION]) {
+    for (const name of [constants.EMPLOYEES_COLLECTION, constants.DEPARTMENTS_COLLECTION]) {
       try {
         await client.deleteCollection({ name });
       } catch {

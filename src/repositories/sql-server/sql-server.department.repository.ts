@@ -4,13 +4,14 @@ import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { poolPromise } from "./sql-server.pool.js";
 import { DepartmentRepository } from "../department.repository.js";
-import * as helpers from "../../utils/helpers.js";
+import * as helpers from "../../controllers/helpers.js";
+import * as mappers from "../mappers.js";
 import * as constants from "./sql-server.constants.js";
 /**
  * This service class provides methods to manage departments.
  * It includes CRUD methods to create, read, update, and delete departments.
  */
-export class SQLServerDepartmentRepository implements DepartmentRepository {
+export class SqlServerDepartmentRepository implements DepartmentRepository {
   /**
    * Creates a new department.
    * @param department the department to be created
@@ -29,10 +30,10 @@ export class SQLServerDepartmentRepository implements DepartmentRepository {
         .input('image', sql.NVarChar, department.image)
         .query(constants.INSERT_DEPARTMENT_SQL);
     } catch (err) {
-      console.error("SQLServerDepartmentRepository.createDepartment():", err);
+      console.error("SqlServerDepartmentRepository.createDepartment():", err);
       throw err;
     }
-    console.log("SQLServerDepartmentRepository.createDepartment(): department id[%s]", department.id);
+    console.log("SqlServerDepartmentRepository.createDepartment(): department id[%s]", department.id);
   }
   /**
    * Gets the departments.
@@ -47,19 +48,18 @@ export class SQLServerDepartmentRepository implements DepartmentRepository {
       for (const row of result.recordset) {
         const departmentId = row.department_id;
         let department = departmentMap.get(departmentId);
-
         if (!department) {
-          department = helpers.mapDatabaseRowToDepartment(row);
+          department = mappers.mapDatabaseRowToDepartment(row);
           departmentMap.set(departmentId, department);
         }
         if (row.employee_id) {
-          department.employees.push(helpers.mapDatabaseRowToEmployee(row, false));
+          department.employees.push(mappers.mapDatabaseRowToEmployee(row, false));
         }
       }
-      console.log("SQLServerDepartmentRepository.getDepartments():");
+      console.log("SqlServerDepartmentRepository.getDepartments():");
       return Array.from(departmentMap.values());
     } catch (err) {
-      console.error("SQLServerDepartmentRepository.getDepartments():", err);
+      console.error("SqlServerDepartmentRepository.getDepartments():", err);
       throw err;
     }
   }

@@ -1,9 +1,7 @@
 import { Department } from "../../models/department.js";
 import { driverPromise } from "./neo4j.pool.js";
 import { Initialization } from "../initialization.js";
-import {
-  DELETE_QUERY, CREATE_DEPARTMENTS_QUERY, CREATE_EMPLOYEES_QUERY
-} from "./neo4j.constants.js";
+import * as constants from "./neo4j.constants.js";
 /**
  * This service class provides methods to initialize database and load data.
  */
@@ -16,7 +14,7 @@ export class Neo4jInitialization implements Initialization {
     const driver = await driverPromise;
     const session = driver.session();
     try {
-      await session.executeWrite(transaction => transaction.run(DELETE_QUERY));
+      await session.executeWrite(transaction => transaction.run(constants.DELETE_QUERY));
       console.log("Neo4jInitialization.loadInitialData(): dropped existing nodes and relationships");
       if (departments.length > 0) {
         await this.insertDepartments(session, departments);
@@ -48,7 +46,7 @@ export class Neo4jInitialization implements Initialization {
       image: department.image || null
     }));
     await session.executeWrite((transaction: any) => transaction.run(
-      CREATE_DEPARTMENTS_QUERY, { departments: transformedDepartments }
+      constants.CREATE_DEPARTMENTS_QUERY, { departments: transformedDepartments }
     ));
     console.log("Neo4jInitialization.insertDepartments(): inserted [%d] departments", departmentsParam.length);
   }
@@ -81,7 +79,7 @@ export class Neo4jInitialization implements Initialization {
       country: employee.country || null
     }));
     await session.executeWrite((transaction: any) => transaction.run(
-      CREATE_EMPLOYEES_QUERY, { employees: transformedEmployees }
+      constants.CREATE_EMPLOYEES_QUERY, { employees: transformedEmployees }
     ));
     console.log("Neo4jInitialization.insertEmployees(): inserted [%d] employees", employeesFromDepartments.length);
   }

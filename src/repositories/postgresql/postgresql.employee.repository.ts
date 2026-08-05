@@ -1,13 +1,14 @@
 import { Employee } from "../../models/employee.js";
 import { poolPromise } from "./postgresql.pool.js";
 import { EmployeeRepository } from "../employee.repository.js";
-import * as helpers from "../../utils/helpers.js";
+import * as helpers from "../../controllers/helpers.js";
+import * as mappers from "../mappers.js";
 import * as constants from "./postgresql.constants.js";
 /**
  * This service class provides methods to manage employees.
  * It includes CRUD methods to create, read, update, and delete employees.
  */
-export class PostgreSQLEmployeeRepository implements EmployeeRepository {
+export class PostgreSqlEmployeeRepository implements EmployeeRepository {
   /**
    * Creates a new employee.
    * @param employee the employee to be created
@@ -35,19 +36,19 @@ export class PostgreSQLEmployeeRepository implements EmployeeRepository {
       ]);
       if (!result.rowCount) {
         await client.query('ROLLBACK');
-        console.log("PostgreSQLEmployeeRepository.createEmployee(): no employee created, employee id[%d]",
+        console.log("PostgreSqlEmployeeRepository.createEmployee(): no employee created, employee id[%d]",
           employee.id);
         return;
       }
       await client.query('COMMIT');
     } catch (err) {
       await client.query('ROLLBACK');
-      console.error("PostgreSQLEmployeeRepository.createEmployee():", err);
+      console.error("PostgreSqlEmployeeRepository.createEmployee():", err);
       throw err;
     } finally {
       client.release();
     }
-    console.log("PostgreSQLEmployeeRepository.createEmployee(): employee id[%d]", employee.id);
+    console.log("PostgreSqlEmployeeRepository.createEmployee(): employee id[%d]", employee.id);
   }
   /**
    * Gets the employees.
@@ -58,10 +59,10 @@ export class PostgreSQLEmployeeRepository implements EmployeeRepository {
     const client = await pool.connect();
     try {
       const result = await client.query(constants.SELECT_EMPLOYEES_SQL);
-      console.log("PostgreSQLEmployeeRepository.getEmployees():");
-      return result.rows.map(row => helpers.mapDatabaseRowToEmployee(row, true));
+      console.log("PostgreSqlEmployeeRepository.getEmployees():");
+      return result.rows.map(row => mappers.mapDatabaseRowToEmployee(row, true));
     } catch (err) {
-      console.error("PostgreSQLEmployeeRepository.getEmployees():", err);
+      console.error("PostgreSqlEmployeeRepository.getEmployees():", err);
       throw err;
     } finally {
       client.release();
@@ -78,14 +79,14 @@ export class PostgreSQLEmployeeRepository implements EmployeeRepository {
     try {
       const result = await client.query(constants.SELECT_EMPLOYEE_SQL, [id]);
       if (!result.rowCount) {
-        console.log("PostgreSQLEmployeeRepository.getEmployee(): no employee found, employee id[%d]",
+        console.log("PostgreSqlEmployeeRepository.getEmployee(): no employee found, employee id[%d]",
           id);
         return undefined;
       }
-      console.log("PostgreSQLEmployeeRepository.getEmployee(): employee id[%d]", id);
-      return helpers.mapDatabaseRowToEmployee(result.rows[0], true);
+      console.log("PostgreSqlEmployeeRepository.getEmployee(): employee id[%d]", id);
+      return mappers.mapDatabaseRowToEmployee(result.rows[0], true);
     } catch (err) {
-      console.error("PostgreSQLEmployeeRepository.getEmployee():", err);
+      console.error("PostgreSqlEmployeeRepository.getEmployee():", err);
       throw err;
     } finally {
       client.release();
@@ -118,19 +119,19 @@ export class PostgreSQLEmployeeRepository implements EmployeeRepository {
       ]);
       if (!result.rowCount) {
         await client.query('ROLLBACK');
-        console.log("PostgreSQLEmployeeRepository.updateEmployee(): no employee updated, employee id[%d]",
+        console.log("PostgreSqlEmployeeRepository.updateEmployee(): no employee updated, employee id[%d]",
           employee.id);
         return;
       }
       await client.query('COMMIT');
     } catch (err) {
       await client.query('ROLLBACK');
-      console.error("PostgreSQLEmployeeRepository.updateEmployee():", err);
+      console.error("PostgreSqlEmployeeRepository.updateEmployee():", err);
       throw err;
     } finally {
       client.release();
     }
-    console.log("PostgreSQLEmployeeRepository.updateEmployee(): employee id[%d]", employee.id);
+    console.log("PostgreSqlEmployeeRepository.updateEmployee(): employee id[%d]", employee.id);
   }
   /**
    * Deletes a employee by its id.
@@ -147,11 +148,11 @@ export class PostgreSQLEmployeeRepository implements EmployeeRepository {
       await client.query('COMMIT');
     } catch (err) {
       await client.query('ROLLBACK');
-      console.error("PostgreSQLEmployeeRepository.deleteEmployee():", err);
+      console.error("PostgreSqlEmployeeRepository.deleteEmployee():", err);
       throw err;
     } finally {
       client.release();
     }
-    console.log("PostgreSQLEmployeeRepository.deleteEmployee(): employee id[%d]", id);
+    console.log("PostgreSqlEmployeeRepository.deleteEmployee(): employee id[%d]", id);
   }
 }

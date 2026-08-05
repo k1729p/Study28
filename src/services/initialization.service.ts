@@ -8,8 +8,8 @@ import { MongoDbInitialization } from "../repositories/mongodb/mongodb.initializ
 import { MySqlInitialization } from "../repositories/mysql/mysql.initialization.js";
 import { Neo4jInitialization } from "../repositories/neo4j/neo4j.initialization.js";
 import { OracleInitialization } from "../repositories/oracle/oracle.initialization.js";
-import { PostgreSQLInitialization } from "../repositories/postgresql/postgresql.initialization.js";
-import { SQLServerInitialization } from "../repositories/sql-server/sql-server.initialization.js";
+import { PostgreSqlInitialization } from "../repositories/postgresql/postgresql.initialization.js";
+import { SqlServerInitialization } from "../repositories/sql-server/sql-server.initialization.js";
 import { RedisInitialization } from "../repositories/redis/redis.initialization.js";
 import { INITIAL_DATA } from './initial-data.js';
 
@@ -31,8 +31,8 @@ export class InitializationService {
       [RepositoryType.MySQL]: new MySqlInitialization(),
       [RepositoryType.Neo4j]: new Neo4jInitialization(),
       [RepositoryType.Oracle]: new OracleInitialization(),
-      [RepositoryType.PostgreSQL]: new PostgreSQLInitialization(),
-      [RepositoryType.SQLServer]: new SQLServerInitialization(),
+      [RepositoryType.PostgreSQL]: new PostgreSqlInitialization(),
+      [RepositoryType.SQLServer]: new SqlServerInitialization(),
       [RepositoryType.Redis]: new RedisInitialization(),
     };
   }

@@ -1,5 +1,6 @@
 import { Employee } from "../../models/employee.js";
 import { EmployeeRepository } from "../employee.repository.js";
+import * as constants from "./cassandra.constants.js";
 /**
  * This service class provides methods to manage employees.
  * It includes CRUD methods to create, read, update, and delete employees.

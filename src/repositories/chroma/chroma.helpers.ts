@@ -1,6 +1,6 @@
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
-import { EMBEDDING_DIMENSION } from "./chroma.constants.js";
+import * as constants from "./chroma.constants.js";
 
 /**
  * A flat, primitive-only record.
@@ -22,9 +22,9 @@ type ChromaMetadata = Record<string, string | number | boolean>;
  * @returns a fixed-length numeric vector
  */
 export function toPlaceholderEmbedding(text: string): number[] {
-  const vector = new Array(EMBEDDING_DIMENSION).fill(0);
+  const vector = new Array(constants.EMBEDDING_DIMENSION).fill(0);
   for (let i = 0; i < text.length; i++) {
-    vector[i % EMBEDDING_DIMENSION] += text.charCodeAt(i);
+    vector[i % constants.EMBEDDING_DIMENSION] += text.charCodeAt(i);
   }
   return vector.map(value => value / 1000);
 }

@@ -5,7 +5,7 @@ import * as constants from "./sql-server.constants.js";
  * This service class provides methods to manage employees.
  * It includes CRUD methods to create, read, update, and delete employees.
  */
-export class SQLServerEmployeeRepository implements EmployeeRepository {
+export class SqlServerEmployeeRepository implements EmployeeRepository {
   /**
    * Creates a new employee.
    * @param employee the employee to be created

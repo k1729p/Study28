@@ -96,8 +96,8 @@ export const INSERT_EMPLOYEE_SQL = `
     id, department_id, first_name, last_name, title, phone, mail,
     street_name, house_number, postal_code, locality, province, country
   ) VALUES (
-    @id, @depId, @fname, @lname, @title, @phone, @mail, 
-    @street, @hnum, @pcode, @loc, @prov, @country
+    @id, @departmentId, @firstName, @lastName, @title, @phone, @mail, 
+    @streetName, @houseNumber, @postalCode, @locality, @province, @country
   )
 `;
 // --- DML: stored procedures ---------------------------------------------------------------------

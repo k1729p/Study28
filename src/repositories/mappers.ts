@@ -1,17 +1,5 @@
 import { Department } from "../models/department.js";
 import { Employee } from "../models/employee.js";
-import { RepositoryType } from '../repositories/repository-type.js';
-/**
- * Maps the string to the RepositoryType enumeration member.
- * @param value the value
- * @returns repositoryType
- */
-export const getRepositoryType = (value?: any): RepositoryType => {
-  const match = Object.values(RepositoryType).find(
-    repositoryType => repositoryType.toLowerCase() === String(value).toLowerCase()
-  );
-  return match || RepositoryType.PostgreSQL;
-};
 /**
  * Maps a raw database row (snake_case columns) to a Department object (camelCase properties).
  * Handles both a MySQL-style comma-joined keywords string and a PostgreSQL-style keywords array.
@@ -37,7 +25,7 @@ export const mapDatabaseRowToDepartment = (row: any): Department => {
     department.employees.push(mapDatabaseRowToEmployee(row, false));
   }
   return department;
-}
+};
 /**
  * Maps a raw database row (snake_case columns) to an Employee object (camelCase properties).
  * @param row the raw database row
@@ -60,4 +48,4 @@ export const mapDatabaseRowToEmployee = (row: any, flag: boolean): Employee => {
     province: row.province,
     country: row.country
   };
-}
+};

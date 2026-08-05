@@ -4,7 +4,7 @@ import { StatusCodes } from 'http-status-codes';
 import { Employee } from "../models/employee.js";
 import { EmployeeService } from "../services/employee.service.js";
 import * as colors from "./../utils/colors.js";
-import * as helpers from "./../utils/helpers.js";
+import * as helpers from "./helpers.js";
 /**
  * This controller class provides methods to manage employees.
  */

@@ -8,9 +8,9 @@ import { MongoDbDepartmentRepository } from "../repositories/mongodb/mongodb.dep
 import { MySqlDepartmentRepository } from "../repositories/mysql/mysql.department.repository.js";
 import { Neo4jDepartmentRepository } from "../repositories/neo4j/neo4j.department.repository.js";
 import { OracleDepartmentRepository } from "../repositories/oracle/oracle.department.repository.js";
-import { PostgreSQLDepartmentRepository } from "../repositories/postgresql/postgresql.department.repository.js";
+import { PostgreSqlDepartmentRepository } from "../repositories/postgresql/postgresql.department.repository.js";
 import { RedisDepartmentRepository } from "../repositories/redis/redis.department.repository.js";
-import { SQLServerDepartmentRepository } from "../repositories/sql-server/sql-server.department.repository.js";
+import { SqlServerDepartmentRepository } from "../repositories/sql-server/sql-server.department.repository.js";
 
 /**
  * This service class provides methods to manage departments.
@@ -31,9 +31,9 @@ export class DepartmentService {
       [RepositoryType.MySQL]: new MySqlDepartmentRepository(),
       [RepositoryType.Neo4j]: new Neo4jDepartmentRepository(),
       [RepositoryType.Oracle]: new OracleDepartmentRepository(),
-      [RepositoryType.PostgreSQL]: new PostgreSQLDepartmentRepository(),
+      [RepositoryType.PostgreSQL]: new PostgreSqlDepartmentRepository(),
       [RepositoryType.Redis]: new RedisDepartmentRepository(),
-      [RepositoryType.SQLServer]: new SQLServerDepartmentRepository(),
+      [RepositoryType.SQLServer]: new SqlServerDepartmentRepository(),
     };
   }
   /**

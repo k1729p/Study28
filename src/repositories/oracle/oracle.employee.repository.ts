@@ -1,7 +1,8 @@
 import { Employee } from "../../models/employee.js";
 import { poolPromise } from "./oracle.pool.js";
 import { EmployeeRepository } from "../employee.repository.js";
-import * as helpers from "../../utils/helpers.js";
+import * as helpers from "../../controllers/helpers.js";
+import * as mappers from "../mappers.js";
 import * as constants from "./oracle.constants.js";
 /**
  * This service class provides methods to manage employees.
@@ -46,7 +47,7 @@ export class OracleEmployeeRepository implements EmployeeRepository {
       const result = await connection.execute(constants.SELECT_EMPLOYEES_SQL);
       const rows = result.rows as any[] || [];
       console.log("OracleEmployeeRepository.getEmployees():");
-      return rows.map(row => helpers.mapDatabaseRowToEmployee(row, true));
+      return rows.map(row => mappers.mapDatabaseRowToEmployee(row, true));
     } catch (err) {
       console.error("OracleEmployeeRepository.getEmployees():", err);
       throw err;
@@ -74,7 +75,7 @@ export class OracleEmployeeRepository implements EmployeeRepository {
         return undefined;
       }
       console.log("OracleEmployeeRepository.getEmployee(): employee id[%d]", id);
-      return helpers.mapDatabaseRowToEmployee(rows[0], true);
+      return mappers.mapDatabaseRowToEmployee(rows[0], true);
     } catch (err) {
       console.error("OracleEmployeeRepository.getEmployee():", err);
       throw err;

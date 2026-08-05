@@ -2,13 +2,14 @@ import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { poolPromise } from "./postgresql.pool.js";
 import { DepartmentRepository } from "../department.repository.js";
-import * as helpers from "../../utils/helpers.js";
+import * as helpers from "../../controllers/helpers.js";
+import * as mappers from "../mappers.js";
 import * as constants from "./postgresql.constants.js";
 /**
  * This service class provides methods to manage departments.
  * It includes CRUD methods to create, read, update, and delete departments.
  */
-export class PostgreSQLDepartmentRepository implements DepartmentRepository {
+export class PostgreSqlDepartmentRepository implements DepartmentRepository {
   /**
    * Creates a new department.
    * @param department the department to be created
@@ -31,19 +32,19 @@ export class PostgreSQLDepartmentRepository implements DepartmentRepository {
       ]);
       if (!result.rowCount) {
         await client.query('ROLLBACK');
-        console.log("PostgreSQLDepartmentRepository.createDepartment(): no department created with id[%d]",
+        console.log("PostgreSqlDepartmentRepository.createDepartment(): no department created with id[%d]",
           department.id);
         return;
       }
       await client.query('COMMIT');
     } catch (err) {
       await client.query('ROLLBACK');
-      console.error("PostgreSQLDepartmentRepository.createDepartment():", err);
+      console.error("PostgreSqlDepartmentRepository.createDepartment():", err);
       throw err;
     } finally {
       client.release();
     }
-    console.log("PostgreSQLDepartmentRepository.createDepartment(): department id[%s]", department.id);
+    console.log("PostgreSqlDepartmentRepository.createDepartment(): department id[%s]", department.id);
   }
   /**
    * Gets the departments.
@@ -59,17 +60,17 @@ export class PostgreSQLDepartmentRepository implements DepartmentRepository {
         const departmentId = row.department_id;
         let department = departmentMap.get(departmentId);
         if (!department) {
-          department = helpers.mapDatabaseRowToDepartment(row);
+          department = mappers.mapDatabaseRowToDepartment(row);
           departmentMap.set(departmentId, department);
         }
         if (row.employee_id) {
-          department.employees.push(helpers.mapDatabaseRowToEmployee(row, false));
+          department.employees.push(mappers.mapDatabaseRowToEmployee(row, false));
         }
       }
-      console.log("PostgreSQLDepartmentRepository.getDepartments():");
+      console.log("PostgreSqlDepartmentRepository.getDepartments():");
       return Array.from(departmentMap.values());
     } catch (err) {
-      console.error("PostgreSQLDepartmentRepository.getDepartments():", err);
+      console.error("PostgreSqlDepartmentRepository.getDepartments():", err);
       throw err;
     } finally {
       client.release();
@@ -86,20 +87,20 @@ export class PostgreSQLDepartmentRepository implements DepartmentRepository {
     try {
       const result = await client.query(constants.SELECT_DEPARTMENT_SQL, [id]);
       if (!result.rowCount) {
-        console.log("PostgreSQLDepartmentRepository.getDepartment(): no department found with id[%d]", id);
+        console.log("PostgreSqlDepartmentRepository.getDepartment(): no department found with id[%d]", id);
         return undefined;
       }
       const rows = result.rows;
-      const department = helpers.mapDatabaseRowToDepartment(rows[0]);
+      const department = mappers.mapDatabaseRowToDepartment(rows[0]);
       for (const row of rows) {
         if (row.employee_id) {
-          department.employees.push(helpers.mapDatabaseRowToEmployee(row, false));
+          department.employees.push(mappers.mapDatabaseRowToEmployee(row, false));
         }
       }
-      console.log("PostgreSQLDepartmentRepository.getDepartment(): id[%d]", id);
+      console.log("PostgreSqlDepartmentRepository.getDepartment(): id[%d]", id);
       return department;
     } catch (err) {
-      console.error("PostgreSQLDepartmentRepository.getDepartment():", err);
+      console.error("PostgreSqlDepartmentRepository.getDepartment():", err);
       throw err;
     } finally {
       client.release();
@@ -127,20 +128,20 @@ export class PostgreSQLDepartmentRepository implements DepartmentRepository {
       ]);
       if (!result.rowCount) {
         await client.query('ROLLBACK');
-        console.log("PostgreSQLDepartmentRepository.updateDepartment(): no department updated with id[%d]",
+        console.log("PostgreSqlDepartmentRepository.updateDepartment(): no department updated with id[%d]",
           department.id);
         return;
       }
       await client.query('COMMIT');
     } catch (err) {
       await client.query('ROLLBACK');
-      console.error("PostgreSQLDepartmentRepository.updateDepartment():", err);
+      console.error("PostgreSqlDepartmentRepository.updateDepartment():", err);
       throw err;
     } finally {
       client.release();
     }
     department.employees.forEach(employee => this.updateEmployeeDepartment(employee));
-    console.log("PostgreSQLDepartmentRepository.updateDepartment(): department id[%d]", department.id);
+    console.log("PostgreSqlDepartmentRepository.updateDepartment(): department id[%d]", department.id);
   }
   /**
    * Updates the department in the employee.
@@ -158,14 +159,14 @@ export class PostgreSQLDepartmentRepository implements DepartmentRepository {
       ]);
       if (!result.rowCount) {
         await client.query('ROLLBACK');
-        console.log("PostgreSQLDepartmentRepository.updateEmployeeDepartment(): no employee updated, employee id[%d]",
+        console.log("PostgreSqlDepartmentRepository.updateEmployeeDepartment(): no employee updated, employee id[%d]",
           employee.id);
         return;
       }
       await client.query('COMMIT');
     } catch (err) {
       await client.query('ROLLBACK');
-      console.error("PostgreSQLDepartmentRepository.updateEmployeeDepartment():", err);
+      console.error("PostgreSqlDepartmentRepository.updateEmployeeDepartment():", err);
       throw err;
     } finally {
       client.release();
@@ -186,12 +187,12 @@ export class PostgreSQLDepartmentRepository implements DepartmentRepository {
       await client.query('COMMIT');
     } catch (err) {
       await client.query('ROLLBACK');
-      console.error("PostgreSQLDepartmentRepository.deleteDepartment():", err);
+      console.error("PostgreSqlDepartmentRepository.deleteDepartment():", err);
       throw err;
     } finally {
       client.release();
     }
-    console.log("PostgreSQLDepartmentRepository.deleteDepartment(): department id[%d]", id);
+    console.log("PostgreSqlDepartmentRepository.deleteDepartment(): department id[%d]", id);
   }
   /**
    * Transfers the employees from source department to target department.
@@ -212,12 +213,12 @@ export class PostgreSQLDepartmentRepository implements DepartmentRepository {
       await client.query('COMMIT');
     } catch (err) {
       await client.query('ROLLBACK');
-      console.error("PostgreSQLDepartmentRepository.transferEmployees():", err);
+      console.error("PostgreSqlDepartmentRepository.transferEmployees():", err);
       throw err;
     } finally {
       client.release();
     }
-    console.log("PostgreSQLDepartmentRepository.transferEmployees(): " +
+    console.log("PostgreSqlDepartmentRepository.transferEmployees(): " +
       "transferred employees count[%d], source department id[%d], target department id[%d]",
       employeeIds.length, sourceDepartmentId, targetDepartmentId);
   }

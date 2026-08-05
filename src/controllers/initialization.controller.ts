@@ -4,7 +4,7 @@ import { StatusCodes } from 'http-status-codes';
 import { Department } from "../models/department.js";
 import { InitializationService } from "../services/initialization.service.js";
 import * as colors from "./../utils/colors.js";
-import * as helpers from "./../utils/helpers.js";
+import * as helpers from "./helpers.js";
 /**
  * This controller class provides methods to initialize database and load data.
  */

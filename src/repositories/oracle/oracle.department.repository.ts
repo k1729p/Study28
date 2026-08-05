@@ -2,7 +2,8 @@ import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { poolPromise } from "./oracle.pool.js";
 import { DepartmentRepository } from "../department.repository.js";
-import * as helpers from "../../utils/helpers.js";
+import * as helpers from "../../controllers/helpers.js";
+import * as mappers from "../mappers.js";
 import * as constants from "./oracle.constants.js";
 /**
  * This service class provides methods to manage departments.
@@ -47,11 +48,11 @@ export class OracleDepartmentRepository implements DepartmentRepository {
         const departmentId = row.department_id;
         let department = departmentMap.get(departmentId);
         if (!department) {
-          department = helpers.mapDatabaseRowToDepartment(row);
+          department = mappers.mapDatabaseRowToDepartment(row);
           departmentMap.set(departmentId, department);
         }
         if (row.employee_id) {
-          department.employees.push(helpers.mapDatabaseRowToEmployee(row, false));
+          department.employees.push(mappers.mapDatabaseRowToEmployee(row, false));
         }
       }
       console.log("OracleDepartmentRepository.getDepartments():");
@@ -82,10 +83,10 @@ export class OracleDepartmentRepository implements DepartmentRepository {
         console.log("OracleDepartmentRepository.getDepartment(): no department found with id[%d]", id);
         return undefined;
       }
-      const department = helpers.mapDatabaseRowToDepartment(rows[0]);
+      const department = mappers.mapDatabaseRowToDepartment(rows[0]);
       for (const row of rows) {
         if (row.employee_id) {
-          department.employees.push(helpers.mapDatabaseRowToEmployee(row, false));
+          department.employees.push(mappers.mapDatabaseRowToEmployee(row, false));
         }
       }
       console.log("OracleDepartmentRepository.getDepartment(): id[%d]", id);

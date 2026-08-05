@@ -7,7 +7,7 @@ import * as constants from "./postgresql.constants.js";
 /**
  * This service class provides methods to initialize database and load data.
  */
-export class PostgreSQLInitialization implements Initialization {
+export class PostgreSqlInitialization implements Initialization {
   /**
    * Loads the initial data into the database.
    * @param departments the array of departments
@@ -26,22 +26,22 @@ export class PostgreSQLInitialization implements Initialization {
       await client.query(constants.CREATE_TABLE_EMPLOYEES_SQL);
       await client.query(constants.CREATE_PROCEDURE_TRANSFER_EMPLOYEES_SQL);
       await client.query(constants.CREATE_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL);
-      console.log("PostgreSQLInitialization.loadInitialData(): dropped and created tables & procedures");
+      console.log("PostgreSqlInitialization.loadInitialData(): dropped and created tables & procedures");
       if (departments.length > 0) {
         await this.insertDepartments(client, departments);
         await this.insertEmployees(client, departments);
       } else {
-        console.warn("PostgreSQLInitialization.loadInitialData(): no departments to insert");
+        console.warn("PostgreSqlInitialization.loadInitialData(): no departments to insert");
       }
       await client.query('COMMIT');
     } catch (err) {
       await client.query('ROLLBACK');
-      console.error("PostgreSQLInitialization.loadInitialData():", err);
+      console.error("PostgreSqlInitialization.loadInitialData():", err);
       throw err;
     } finally {
       client.release();
     }
-    console.log("PostgreSQLInitialization.loadInitialData(): data loaded successfully");
+    console.log("PostgreSqlInitialization.loadInitialData(): data loaded successfully");
   }
   /**
    * Inserts the department data into the database.
@@ -72,10 +72,10 @@ export class PostgreSQLInitialization implements Initialization {
     try {
       await client.query(sql, values);
     } catch (err) {
-      console.error("PostgreSQLInitialization.insertDepartments():", err);
+      console.error("PostgreSqlInitialization.insertDepartments():", err);
       throw err;
     }
-    console.log("PostgreSQLInitialization.insertDepartments(): inserted [%d] departments", departments.length);
+    console.log("PostgreSqlInitialization.insertDepartments(): inserted [%d] departments", departments.length);
   }
   /**
    * Inserts the employee data into the database.
@@ -87,7 +87,7 @@ export class PostgreSQLInitialization implements Initialization {
       dep.employees.map(emp => ({ ...emp, departmentId: dep.id }))
     );
     if (employees.length === 0) {
-      console.warn("PostgreSQLInitialization.insertEmployees(): no employees to insert");
+      console.warn("PostgreSqlInitialization.insertEmployees(): no employees to insert");
       return;
     }
     const values: any[] = [];
@@ -119,10 +119,10 @@ export class PostgreSQLInitialization implements Initialization {
     try {
       await client.query(sql, values);
     } catch (err) {
-      console.error("PostgreSQLInitialization.insertEmployees():", err);
+      console.error("PostgreSqlInitialization.insertEmployees():", err);
       throw err;
     }
-    console.log("PostgreSQLInitialization.insertEmployees(): inserted [%d] employees", employees.length);
+    console.log("PostgreSqlInitialization.insertEmployees(): inserted [%d] employees", employees.length);
   }
   /**
    * Formats the date.

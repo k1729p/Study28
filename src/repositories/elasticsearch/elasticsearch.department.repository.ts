@@ -2,7 +2,7 @@ import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { clientPromise } from "./elasticsearch.pool.js";
 import { DepartmentRepository } from "../department.repository.js";
-import { INDEX_DEPARTMENTS, INDEX_EMPLOYEES } from "./elasticsearch.constants.js";
+import * as constants from "./elasticsearch.constants.js";
 
 /**
  * This service class provides methods to manage departments.
@@ -18,7 +18,7 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
     const client = await clientPromise;
     try {
       await client.index({
-        index: INDEX_DEPARTMENTS,
+        index: constants.INDEX_DEPARTMENTS,
         id: dept.id.toString(),
         document: {
           id: dept.id,
@@ -45,11 +45,11 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
     const client = await clientPromise;
     try {
       const departmentResponse = await client.search({
-        index: INDEX_DEPARTMENTS,
+        index: constants.INDEX_DEPARTMENTS,
         size: 1000
       });
       const employeeResponse = await client.search({
-        index: INDEX_EMPLOYEES,
+        index: constants.INDEX_EMPLOYEES,
         size: 1000
       });
       const departmentMap = new Map<number, Department>();

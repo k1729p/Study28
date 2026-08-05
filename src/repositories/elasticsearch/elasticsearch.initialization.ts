@@ -3,7 +3,7 @@ import { Client } from '@elastic/elasticsearch';
 import { Department } from "../../models/department.js";
 import { clientPromise } from "./elasticsearch.pool.js";
 import { Initialization } from "../initialization.js";
-import { INDEX_DEPARTMENTS, INDEX_EMPLOYEES} from "./elasticsearch.constants.js";
+import * as constants from "./elasticsearch.constants.js";
 
 /**
  * This service class provides methods to initialize database and load data.
@@ -17,11 +17,11 @@ export class ElasticsearchInitialization implements Initialization {
     const client: Client = await clientPromise;
     try {
       await client.indices.delete({
-        index: [INDEX_DEPARTMENTS, INDEX_EMPLOYEES],
+        index: [constants.INDEX_DEPARTMENTS, constants.INDEX_EMPLOYEES],
         ignore_unavailable: true
       });
-      await client.indices.create({ index: INDEX_DEPARTMENTS });
-      await client.indices.create({ index: INDEX_EMPLOYEES });
+      await client.indices.create({ index: constants.INDEX_DEPARTMENTS });
+      await client.indices.create({ index: constants.INDEX_EMPLOYEES });
       console.log("ElasticsearchInitialization.loadInitialData(): dropped and created indices");
       if (departments.length > 0) {
         await this.insertDepartments(client, departments);
@@ -44,7 +44,7 @@ export class ElasticsearchInitialization implements Initialization {
     const operations = departments.flatMap(department => [
       {
         index: {
-          _index: INDEX_DEPARTMENTS,
+          _index: constants.INDEX_DEPARTMENTS,
           _id: department.id.toString()
         }
       },
@@ -77,7 +77,7 @@ export class ElasticsearchInitialization implements Initialization {
     const operations = employees.flatMap(emp => [
       {
         index: {
-          _index: INDEX_EMPLOYEES,
+          _index: constants.INDEX_EMPLOYEES,
           _id: emp.id.toString()
         }
       },

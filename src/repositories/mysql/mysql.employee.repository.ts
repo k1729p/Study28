@@ -3,7 +3,8 @@ import { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { Employee } from "../../models/employee.js";
 import { poolPromise } from "./mysql.pool.js";
 import { EmployeeRepository } from "../employee.repository.js";
-import * as helpers from "../../utils/helpers.js";
+import * as helpers from "../../controllers/helpers.js";
+import * as mappers from "../mappers.js";
 import * as constants from "./mysql.constants.js";
 /**
  * This service class provides methods to manage employees.
@@ -60,7 +61,7 @@ export class MySqlEmployeeRepository implements EmployeeRepository {
     try {
       const [rows] = await pool.query<RowDataPacket[]>(constants.SELECT_EMPLOYEES_SQL);
       console.log("MySqlEmployeeRepository.getEmployees():");
-      return rows.map(row => helpers.mapDatabaseRowToEmployee(row, true));
+      return rows.map(row => mappers.mapDatabaseRowToEmployee(row, true));
     } catch (err) {
       console.error("MySqlEmployeeRepository.getEmployees():", err);
       throw err;
@@ -80,7 +81,7 @@ export class MySqlEmployeeRepository implements EmployeeRepository {
         return undefined;
       }
       console.log("MySqlEmployeeRepository.getEmployee(): employee id[%d]", id);
-      return helpers.mapDatabaseRowToEmployee(rows[0], true);      
+      return mappers.mapDatabaseRowToEmployee(rows[0], true);      
     } catch (err) {
       console.error("MySqlEmployeeRepository.getEmployee():", err);
       throw err;

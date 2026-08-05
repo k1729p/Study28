@@ -2,7 +2,7 @@ import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { driverPromise } from "./neo4j.pool.js";
 import { DepartmentRepository } from "../department.repository.js";
-import { CREATE_DEPARTMENT_QUERY, READ_DEPARTMENTS_QUERY } from "./neo4j.constants.js";
+import * as constants from "./neo4j.constants.js";
 /**
  * This service class provides methods to manage departments.
  * It includes CRUD methods to create, read, update, and delete departments.
@@ -28,7 +28,7 @@ export class Neo4jDepartmentRepository implements DepartmentRepository {
         keywords: department.keywords ? department.keywords.join(',') : null,
         image: department.image || null
       };
-      await session.executeWrite(transaction => transaction.run(CREATE_DEPARTMENT_QUERY, parameters));
+      await session.executeWrite(transaction => transaction.run(constants.CREATE_DEPARTMENT_QUERY, parameters));
       console.log("Neo4jDepartmentRepository.createDepartment(): id[%d]", department.id);
     } catch (err) {
       console.error("Neo4jDepartmentRepository.createDepartment():", err);
@@ -45,7 +45,7 @@ export class Neo4jDepartmentRepository implements DepartmentRepository {
     const driver = await driverPromise;
     const session = driver.session();
     try {
-      const result = await session.executeRead(transaction => transaction.run(READ_DEPARTMENTS_QUERY));
+      const result = await session.executeRead(transaction => transaction.run(constants.READ_DEPARTMENTS_QUERY));
       const departments: Department[] = result.records.map(record => {
         const departmentNode = record.get('department').properties;
         const department: Department = {

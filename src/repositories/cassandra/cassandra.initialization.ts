@@ -1,11 +1,7 @@
 import { Department } from "../../models/department.js";
 import { clientPromise } from "./cassandra.pool.js";
 import { Initialization } from "../initialization.js";
-import {
-  CREATE_KEYSPACE_CQL, DROP_TABLE_EMPLOYEES_CQL, DROP_TABLE_DEPARTMENTS_CQL,
-  CREATE_TABLE_DEPARTMENTS_CQL, CREATE_TABLE_EMPLOYEES_CQL,
-  INSERT_DEPARTMENT_CQL, INSERT_EMPLOYEE_CQL
-} from "./cassandra.constants.js"
+import * as constants from "./cassandra.constants.js";
 /**
  * This service class provides methods to initialize the database and load data.
  */
@@ -17,11 +13,11 @@ export class CassandraInitialization implements Initialization {
   async loadInitialData(departments: Department[]) {
     try {
       const client = await clientPromise;
-      await client.execute(CREATE_KEYSPACE_CQL);
-      await client.execute(DROP_TABLE_EMPLOYEES_CQL);
-      await client.execute(DROP_TABLE_DEPARTMENTS_CQL);
-      await client.execute(CREATE_TABLE_DEPARTMENTS_CQL);
-      await client.execute(CREATE_TABLE_EMPLOYEES_CQL);
+      await client.execute(constants.CREATE_KEYSPACE_CQL);
+      await client.execute(constants.DROP_TABLE_EMPLOYEES_CQL);
+      await client.execute(constants.DROP_TABLE_DEPARTMENTS_CQL);
+      await client.execute(constants.CREATE_TABLE_DEPARTMENTS_CQL);
+      await client.execute(constants.CREATE_TABLE_EMPLOYEES_CQL);
       console.log("CassandraInitialization.loadInitialData(): dropped and created tables");
       if (departments.length > 0) {
         await this.insertDepartments(client, departments);
@@ -50,7 +46,7 @@ export class CassandraInitialization implements Initialization {
         startDate, endDate,
         dept.notes || null, dept.keywords || null, dept.image || null
       ];
-      await client.execute(INSERT_DEPARTMENT_CQL, values, { prepare: true });
+      await client.execute(constants.INSERT_DEPARTMENT_CQL, values, { prepare: true });
     }
     console.log("CassandraInitialization.insertDepartments(): inserted [%d] departments", departments.length);
   }
@@ -75,7 +71,7 @@ export class CassandraInitialization implements Initialization {
         emp.streetName || null, emp.houseNumber || null, emp.postalCode || null,
         emp.locality || null, emp.province || null, emp.country || null
       ];
-      await client.execute(INSERT_EMPLOYEE_CQL, values, { prepare: true });
+      await client.execute(constants.INSERT_EMPLOYEE_CQL, values, { prepare: true });
     }
     console.log("CassandraInitialization.insertEmployees(): inserted [%d] employees", employees.length);
   }

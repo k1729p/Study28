@@ -2,9 +2,7 @@ import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { clientPromise } from "./cassandra.pool.js";
 import { DepartmentRepository } from "../department.repository.js";
-import {
-  CREATE_DEPARTMENT_CQL, SELECT_DEPARTMENTS_CQL, SELECT_EMPLOYEES_CQL
-} from "./cassandra.constants.js";
+import * as constants from "./cassandra.constants.js";
 
 /**
  * This service class provides methods to manage departments.
@@ -26,7 +24,7 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
         startDate, endDate,
         department.notes, department.keywords || null, department.image
       ];
-      await client.execute(CREATE_DEPARTMENT_CQL, values, { prepare: true });
+      await client.execute(constants.CREATE_DEPARTMENT_CQL, values, { prepare: true });
     } catch (err) {
       console.error("CassandraDepartmentRepository.createDepartment():", err);
       throw err;
@@ -41,7 +39,7 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
   async getDepartments(): Promise<Department[]> {
     try {
       const client = await clientPromise;
-      const deptResultSet = await client.execute(SELECT_DEPARTMENTS_CQL, [], { prepare: true });
+      const deptResultSet = await client.execute(constants.SELECT_DEPARTMENTS_CQL, [], { prepare: true });
       const departmentMap = new Map<number, Department>();
       for (const row of deptResultSet.rows) {
         const department: Department = {
@@ -57,7 +55,7 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
         };
         departmentMap.set(row.id, department);
       }
-      const empResultSet = await client.execute(SELECT_EMPLOYEES_CQL, [], { prepare: true });
+      const empResultSet = await client.execute(constants.SELECT_EMPLOYEES_CQL, [], { prepare: true });
       for (const row of empResultSet.rows) {
         const department = departmentMap.get(row.department_id);
         if (department) {

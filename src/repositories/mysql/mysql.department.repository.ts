@@ -4,7 +4,8 @@ import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { poolPromise } from "./mysql.pool.js";
 import { DepartmentRepository } from "../department.repository.js";
-import * as helpers from "../../utils/helpers.js";
+import * as helpers from "../../controllers/helpers.js";
+import * as mappers from "../mappers.js";
 import * as constants from "./mysql.constants.js";
 /**
  * This service class provides methods to manage departments.
@@ -61,10 +62,10 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
         const departmentId = row.department_id;
         let department = departmentMap.get(departmentId);
         if (!department) {
-          department = helpers.mapDatabaseRowToDepartment(row);
+          department = mappers.mapDatabaseRowToDepartment(row);
           departmentMap.set(departmentId, department);
         } else if (row.employee_id) {
-          department.employees.push(helpers.mapDatabaseRowToEmployee(row, false));
+          department.employees.push(mappers.mapDatabaseRowToEmployee(row, false));
         }
       }
       console.log("MySqlDepartmentRepository.getDepartments():");
@@ -87,10 +88,10 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
         console.log("MySqlDepartmentRepository.getDepartment(): no department found with id[%d]", id);
         return undefined;
       }
-      const department = helpers.mapDatabaseRowToDepartment(rows[0]);
+      const department = mappers.mapDatabaseRowToDepartment(rows[0]);
       for (const row of rows.slice(1)) {
         if (row.employee_id) {
-          department.employees.push(helpers.mapDatabaseRowToEmployee(row, false));
+          department.employees.push(mappers.mapDatabaseRowToEmployee(row, false));
         }
       }
       console.log("MySqlDepartmentRepository.getDepartment(): id[%d]", id);

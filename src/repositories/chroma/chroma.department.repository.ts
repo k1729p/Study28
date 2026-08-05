@@ -1,7 +1,7 @@
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { DepartmentRepository } from "../department.repository.js";
-import { DEPARTMENTS_COLLECTION, EMPLOYEES_COLLECTION } from "./chroma.constants.js";
+import * as constants from "./chroma.constants.js";
 import { toDepartmentMetadata, toPlaceholderEmbedding } from "./chroma.helpers.js";
 import { clientPromise } from "./chroma.pool.js";
 
@@ -25,7 +25,7 @@ export class ChromaDepartmentRepository implements DepartmentRepository {
     const client = await clientPromise;
     try {
       const collection = await client.getOrCreateCollection({
-        name: DEPARTMENTS_COLLECTION,
+        name: constants.DEPARTMENTS_COLLECTION,
         embeddingFunction: null
       });
       await collection.upsert({
@@ -49,11 +49,11 @@ export class ChromaDepartmentRepository implements DepartmentRepository {
     const client = await clientPromise;
     try {
       const departmentsCollection = await client.getOrCreateCollection({
-        name: DEPARTMENTS_COLLECTION,
+        name: constants.DEPARTMENTS_COLLECTION,
         embeddingFunction: null
       });
       const employeesCollection = await client.getOrCreateCollection({
-        name: EMPLOYEES_COLLECTION,
+        name: constants.EMPLOYEES_COLLECTION,
         embeddingFunction: null
       });
       const departmentRows: any = await departmentsCollection.get();

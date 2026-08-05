@@ -1,9 +1,9 @@
 import neo4j from 'neo4j-driver';
-import { CONNECTION_URI, AUTH_TOKEN, DRIVER_CONFIG } from "./neo4j.constants.js";
+import * as constants from "./neo4j.constants.js";
 /**
  * The driver connection.
  */
-const driver = neo4j.driver(CONNECTION_URI, AUTH_TOKEN, DRIVER_CONFIG);
+const driver = neo4j.driver(constants.CONNECTION_URI, constants.AUTH_TOKEN, constants.DRIVER_CONFIG);
 /**
  * A promise that resolves to a connected Driver object.
  * Includes a simple retry to wait for the container to open the Bolt port.

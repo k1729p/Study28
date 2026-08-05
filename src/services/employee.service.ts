@@ -7,9 +7,9 @@ import { MongoDbEmployeeRepository } from "../repositories/mongodb/mongodb.emplo
 import { MySqlEmployeeRepository } from "../repositories/mysql/mysql.employee.repository.js";
 import { Neo4jEmployeeRepository } from "../repositories/neo4j/neo4j.employee.repository.js";
 import { OracleEmployeeRepository } from "../repositories/oracle/oracle.employee.repository.js";
-import { PostgreSQLEmployeeRepository } from "../repositories/postgresql/postgresql.employee.repository.js";
+import { PostgreSqlEmployeeRepository } from "../repositories/postgresql/postgresql.employee.repository.js";
 import { RedisEmployeeRepository } from "../repositories/redis/redis.employee.repository.js";
-import { SQLServerEmployeeRepository } from "../repositories/sql-server/sql-server.employee.repository.js";
+import { SqlServerEmployeeRepository } from "../repositories/sql-server/sql-server.employee.repository.js";
 
 /**
  * This service class provides methods to manage employees.
@@ -29,9 +29,9 @@ export class EmployeeService {
       [RepositoryType.MySQL]: new MySqlEmployeeRepository(),
       [RepositoryType.Neo4j]: new Neo4jEmployeeRepository(),
       [RepositoryType.Oracle]: new OracleEmployeeRepository(),
-      [RepositoryType.PostgreSQL]: new PostgreSQLEmployeeRepository(),
+      [RepositoryType.PostgreSQL]: new PostgreSqlEmployeeRepository(),
       [RepositoryType.Redis]: new RedisEmployeeRepository(),
-      [RepositoryType.SQLServer]: new SQLServerEmployeeRepository(),
+      [RepositoryType.SQLServer]: new SqlServerEmployeeRepository(),
     };
   }
   /**
