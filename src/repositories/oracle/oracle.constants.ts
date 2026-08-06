@@ -15,8 +15,12 @@ export const POOL_CONFIG = {
   poolTimeout: 60
 };
 // --- DDL: tables ------------------------------------------------------------------------------
-export const DROP_TABLE_EMPLOYEES_SQL = `DROP TABLE IF EXISTS employees CASCADE CONSTRAINTS`;
-export const DROP_TABLE_DEPARTMENTS_SQL = `DROP TABLE IF EXISTS departments CASCADE CONSTRAINTS`;
+export const DROP_TABLE_EMPLOYEES_SQL = `
+  DROP TABLE IF EXISTS employees CASCADE CONSTRAINTS
+`;
+export const DROP_TABLE_DEPARTMENTS_SQL = `
+  DROP TABLE IF EXISTS departments CASCADE CONSTRAINTS
+`;
 export const CREATE_TABLE_DEPARTMENTS_SQL = `
   CREATE TABLE departments (
     id NUMBER PRIMARY KEY,
@@ -46,10 +50,12 @@ export const CREATE_TABLE_EMPLOYEES_SQL = `
   )
 `;
 // --- DDL: stored procedures ---------------------------------------------------------------------
-export const DROP_PROCEDURE_TRANSFER_EMPLOYEES_SQL =
-  `DROP PROCEDURE IF EXISTS transfer_employees`;
-export const DROP_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL =
-  `DROP PROCEDURE IF EXISTS delete_department_and_employees`;
+export const DROP_PROCEDURE_TRANSFER_EMPLOYEES_SQL = `
+  DROP PROCEDURE IF EXISTS transfer_employees
+`;
+export const DROP_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL = `
+  DROP PROCEDURE IF EXISTS delete_department_and_employees
+`;
 export const CREATE_PROCEDURE_TRANSFER_EMPLOYEES_SQL = `
   CREATE OR REPLACE PROCEDURE transfer_employees (
     source_department_id_par IN NUMBER,
@@ -222,31 +228,31 @@ export const CALL_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL = `
   END;
 `;
 // --- mappers ------------------------------------------------------------------------------------
-export const BIND_PARAMETERS_FOR_DEPARTMENT = (department: Department) : oracledb.BindParameters => {
-    return  {
-        id: department.id,
-        name: department.name,
-        startDate: department.startDate ? new Date(department.startDate) : null,
-        endDate: department.endDate ? new Date(department.endDate) : null,
-        notes: department.notes || null,
-        keywords: department.keywords?.join(',') || null,
-        image: department.image || null
-      };
-  }
-export const BIND_PARAMETERS_FOR_EMPLOYEE = (employee: Employee) : oracledb.BindParameters => {
-    return  {
-        id: employee.id,
-        departmentId: employee.departmentId,
-        firstName: employee.firstName,
-        lastName: employee.lastName,
-        title: employee.title,
-        phone: employee.phone,
-        mail: employee.mail,
-        streetName: employee.streetName || null,
-        houseNumber: employee.houseNumber || null,
-        postalCode: employee.postalCode || null,
-        locality: employee.locality || null,
-        province: employee.province || null,
-        country: employee.country || null
-      };
-  }
+export const BIND_PARAMETERS_FOR_DEPARTMENT = (department: Department): oracledb.BindParameters => {
+  return {
+    id: department.id,
+    name: department.name,
+    startDate: department.startDate ? new Date(department.startDate) : null,
+    endDate: department.endDate ? new Date(department.endDate) : null,
+    notes: department.notes || null,
+    keywords: department.keywords?.join(',') || null,
+    image: department.image || null
+  };
+}
+export const BIND_PARAMETERS_FOR_EMPLOYEE = (employee: Employee): oracledb.BindParameters => {
+  return {
+    id: employee.id,
+    departmentId: employee.departmentId,
+    firstName: employee.firstName,
+    lastName: employee.lastName,
+    title: employee.title,
+    phone: employee.phone,
+    mail: employee.mail,
+    streetName: employee.streetName || null,
+    houseNumber: employee.houseNumber || null,
+    postalCode: employee.postalCode || null,
+    locality: employee.locality || null,
+    province: employee.province || null,
+    country: employee.country || null
+  };
+}

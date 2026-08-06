@@ -12,6 +12,7 @@ describe.for([
   RepositoryType.MySQL,
   RepositoryType.Oracle,
   RepositoryType.PostgreSQL,
+  RepositoryType.SQLServer,
 ])(colors.CYAN_BRIGHT + 'Repository type █ %s █' + colors.RESET, (repositoryType) => {
   describe(colors.YELLOW_BRIGHT + 'Department service tests' + colors.RESET,
     () => departmentServiceTests(repositoryType));

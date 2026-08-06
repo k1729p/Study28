@@ -20,8 +20,12 @@ export const CREATE_KEYSPACE_CQL = `
     'replication_factor': 1
   }
 `;
-export const DROP_TABLE_EMPLOYEES_CQL = `DROP TABLE IF EXISTS ${KEYSPACE}.employees`;
-export const DROP_TABLE_DEPARTMENTS_CQL = `DROP TABLE IF EXISTS ${KEYSPACE}.departments`;
+export const DROP_TABLE_EMPLOYEES_CQL = `
+  DROP TABLE IF EXISTS ${KEYSPACE}.employees
+`;
+export const DROP_TABLE_DEPARTMENTS_CQL = `
+  DROP TABLE IF EXISTS ${KEYSPACE}.departments
+`;
 // https://cassandra.apache.org/doc/latest/cassandra/developing/cql/ddl.html#create-table-statement
 export const CREATE_TABLE_DEPARTMENTS_CQL = `
   CREATE TABLE ${KEYSPACE}.departments (
@@ -57,27 +61,76 @@ export const CREATE_TABLE_EMPLOYEES_CQL = `
 `;
 export const INSERT_DEPARTMENT_CQL = `
   INSERT INTO ${KEYSPACE}.departments (
-    id, name, start_date, end_date, notes, keywords, image
+    id,
+    name,
+    start_date,
+    end_date,
+    notes,
+    keywords,
+    image
   ) VALUES (
-    ?, ?, ?, ?, ?, ?, ?
+    ?,
+    ?,
+    ?,
+    ?,
+    ?,
+    ?,
+    ?
   )
 `;
 export const INSERT_EMPLOYEE_CQL = `
   INSERT INTO ${KEYSPACE}.employees (
-    id, department_id, first_name, last_name, title, phone, mail,
-    street_name, house_number, postal_code, locality, province, country
+    id,
+    department_id,
+    first_name,
+    last_name,
+    title,
+    phone,
+    mail,
+    street_name,
+    house_number,
+    postal_code,
+    locality,
+    province,
+    country
   ) VALUES (
-    ?, ?, ?, ?, ?, ?, ?,
-    ?, ?, ?, ?, ?, ?
+    ?,
+    ?,
+    ?,
+    ?,
+    ?,
+    ?,
+    ?,
+    ?,
+    ?,
+    ?,
+    ?,
+    ?,
+    ?
   )
 `;
 export const CREATE_DEPARTMENT_CQL = `
   INSERT INTO ${KEYSPACE}.departments (
-    id, name, start_date, end_date, notes, keywords, image
+    id,
+    name,
+    start_date,
+    end_date,
+    notes,
+    keywords,
+    image
   ) VALUES (
-    ?, ?, ?, ?, ?, ?, ?
+    ?,
+    ?,
+    ?,
+    ?,
+    ?,
+    ?,
+    ?
   )
 `;
-export const SELECT_DEPARTMENTS_CQL = `SELECT * FROM ${KEYSPACE}.departments`;
-export const SELECT_EMPLOYEES_CQL = `SELECT * FROM ${KEYSPACE}.employees`;
-
+export const SELECT_DEPARTMENTS_CQL = `
+  SELECT * FROM ${KEYSPACE}.departments
+`;
+export const SELECT_EMPLOYEES_CQL = `
+  SELECT * FROM ${KEYSPACE}.employees
+`;

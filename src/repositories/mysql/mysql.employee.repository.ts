@@ -3,7 +3,6 @@ import { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { Employee } from "../../models/employee.js";
 import { poolPromise } from "./mysql.pool.js";
 import { EmployeeRepository } from "../employee.repository.js";
-import * as helpers from "../../controllers/helpers.js";
 import * as mappers from "../mappers.js";
 import * as constants from "./mysql.constants.js";
 /**

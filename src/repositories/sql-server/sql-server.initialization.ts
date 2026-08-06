@@ -18,11 +18,17 @@ export class SqlServerInitialization implements Initialization {
     try {
       await transaction.begin();
       const request = new sql.Request(transaction);
+      await request.query(constants.DROP_PROCEDURE_TRANSFER_EMPLOYEES_SQL);
+      await request.query(constants.DROP_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL);
+      await request.query(constants.DROP_TYPE_ID_LIST_SQL);
       await request.query(constants.DROP_TABLE_EMPLOYEES_SQL);
       await request.query(constants.DROP_TABLE_DEPARTMENTS_SQL);
       await request.query(constants.CREATE_TABLE_DEPARTMENTS_SQL);
       await request.query(constants.CREATE_TABLE_EMPLOYEES_SQL);
-      console.log("SqlServerInitialization.loadInitialData(): dropped and created tables");
+      await request.query(constants.CREATE_TYPE_ID_LIST_SQL);
+      await request.query(constants.CREATE_PROCEDURE_TRANSFER_EMPLOYEES_SQL);
+      await request.query(constants.CREATE_PROCEDURE_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL);
+      console.log("SqlServerInitialization.loadInitialData(): dropped and created tables, type & procedures");
       if (departments.length > 0) {
         await this.insertDepartments(transaction, departments);
         await this.insertEmployees(transaction, departments);
@@ -44,15 +50,15 @@ export class SqlServerInitialization implements Initialization {
    */
   private async insertDepartments(transaction: sql.Transaction, departments: Department[]) {
     for (const department of departments) {
-      const request = new sql.Request(transaction);
-      request.input('id', sql.Int, department.id);
-      request.input('name', sql.NVarChar, department.name);
-      request.input('startDate', sql.Date, department.startDate);
-      request.input('endDate', sql.Date, department.endDate);
-      request.input('notes', sql.NVarChar, department.notes);
-      request.input('keywords', sql.NVarChar, department.keywords?.join(','));
-      request.input('image', sql.NVarChar, department.image);
-      await request.query(constants.INSERT_DEPARTMENT_SQL);
+      await new sql.Request(transaction)
+        .input('id', sql.Int, department.id)
+        .input('name', sql.NVarChar, department.name)
+        .input('startDate', sql.Date, department.startDate)
+        .input('endDate', sql.Date, department.endDate)
+        .input('notes', sql.NVarChar, department.notes)
+        .input('keywords', sql.NVarChar, department.keywords?.join(','))
+        .input('image', sql.NVarChar, department.image)
+        .query(constants.INSERT_DEPARTMENT_SQL);
     }
     console.log("SqlServerInitialization.insertDepartments(): inserted [%d] departments", departments.length);
   }
@@ -70,21 +76,21 @@ export class SqlServerInitialization implements Initialization {
       return;
     }
     for (const employee of employees) {
-      const request = new sql.Request(transaction);
-      request.input('id', sql.Int, employee.id);
-      request.input('departmentId', sql.Int, employee.departmentId);
-      request.input('firstName', sql.NVarChar, employee.firstName);
-      request.input('lastName', sql.NVarChar, employee.lastName);
-      request.input('title', sql.NVarChar, employee.title);
-      request.input('phone', sql.NVarChar, employee.phone);
-      request.input('mail', sql.NVarChar, employee.mail);
-      request.input('streetName', sql.NVarChar, employee.streetName);
-      request.input('houseNumber', sql.NVarChar, employee.houseNumber);
-      request.input('postalCode', sql.NVarChar, employee.postalCode);
-      request.input('locality', sql.NVarChar, employee.locality);
-      request.input('province', sql.NVarChar, employee.province);
-      request.input('country', sql.NVarChar, employee.country);
-      await request.query(constants.INSERT_EMPLOYEE_SQL);
+      await new sql.Request(transaction)
+        .input('id', sql.Int, employee.id)
+        .input('departmentId', sql.Int, employee.departmentId)
+        .input('firstName', sql.NVarChar, employee.firstName)
+        .input('lastName', sql.NVarChar, employee.lastName)
+        .input('title', sql.NVarChar, employee.title)
+        .input('phone', sql.NVarChar, employee.phone)
+        .input('mail', sql.NVarChar, employee.mail)
+        .input('streetName', sql.NVarChar, employee.streetName)
+        .input('houseNumber', sql.NVarChar, employee.houseNumber)
+        .input('postalCode', sql.NVarChar, employee.postalCode)
+        .input('locality', sql.NVarChar, employee.locality)
+        .input('province', sql.NVarChar, employee.province)
+        .input('country', sql.NVarChar, employee.country)
+        .query(constants.INSERT_EMPLOYEE_SQL);
     }
     console.log("SqlServerInitialization.insertEmployees(): inserted [%d] employees", employees.length);
   }

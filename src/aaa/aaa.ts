@@ -49,6 +49,8 @@ export class Aaa {
     await this.process(false);
     if (false) {
       new Bbb().researchLogging();
+    }
+    if (false) {
       new Bbb().researchAsyncLocalStorage();
     }
   }
@@ -85,7 +87,9 @@ export class Aaa {
         console.error('Aaa.process():', err);
       }
     };
-    const label = '#####=====#####';
+    const label = '▄▀█▓▒░ ░▒▓█▀▄';
+    console.log();
+    
     console.log(colors.red(label), colors.green(label), colors.yellow(label), colors.cyan(label),
       colors.red(label), colors.green(label), colors.yellow(label), colors.cyan(label));
   };

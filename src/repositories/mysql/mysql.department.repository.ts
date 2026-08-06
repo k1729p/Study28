@@ -4,7 +4,6 @@ import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { poolPromise } from "./mysql.pool.js";
 import { DepartmentRepository } from "../department.repository.js";
-import * as helpers from "../../controllers/helpers.js";
 import * as mappers from "../mappers.js";
 import * as constants from "./mysql.constants.js";
 /**

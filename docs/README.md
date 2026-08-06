@@ -271,6 +271,9 @@ Action: \
 
 | Acronym | Meaning |
 | :--- | :--- |
+| TVP | Table-Valued Parameter |
+
+The Table-Valued Parameter design pattern and programming feature allows you to pass entire tables of data as a single parameter into stored procedures or functions, rather than sending rows one by one or parsing XML/JSON strings.
 
 [Back to the top of the page](#study28-readme-contents)
 
