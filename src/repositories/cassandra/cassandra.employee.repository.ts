@@ -11,13 +11,15 @@ export class CassandraEmployeeRepository implements EmployeeRepository {
    * @param employee the employee to be created
    * @return void
    */
-  async createEmployee(employee: Employee): Promise<void>{
+  async createEmployee(employee: Employee): Promise<void> {
+    console.log("CassandraEmployeeRepository.createEmployee(): employee id[%d]", employee.id);
   }
   /**
    * Gets the employees.
    * @returns an array of Employee objects
    */
-  async getEmployees(): Promise<Employee[]>{
+  async getEmployees(): Promise<Employee[]> {
+    console.log("CassandraEmployeeRepository.getEmployees():");
     return [];
   }
   /**
@@ -25,7 +27,8 @@ export class CassandraEmployeeRepository implements EmployeeRepository {
    * @param id the id of the employee to retrieve
    * @returns the Employee object if found, otherwise undefined
    */
-  async getEmployee(id: number): Promise<Employee | undefined>{
+  async getEmployee(id: number): Promise<Employee | undefined> {
+    console.log("CassandraEmployeeRepository.getEmployee(): employee id[%d]", id);
     return undefined;
   }
   /**
@@ -33,7 +36,8 @@ export class CassandraEmployeeRepository implements EmployeeRepository {
    * @param employee the employee to be updated
    * @returns void
    */
-  async updateEmployee(employee: Employee): Promise<void>{
+  async updateEmployee(employee: Employee): Promise<void> {
+    console.log("CassandraEmployeeRepository.updateEmployee(): employee id[%d]", employee.id);
   }
   /**
    * Deletes a employee by its id.
@@ -41,6 +45,7 @@ export class CassandraEmployeeRepository implements EmployeeRepository {
    * @param id the id of the employee to be deleted
    * @returns void
    */
-  async deleteEmployee(id: number): Promise<void>{
+  async deleteEmployee(id: number): Promise<void> {
+    console.log("CassandraEmployeeRepository.deleteEmployee(): employee id[%d]", id);
   }
 }

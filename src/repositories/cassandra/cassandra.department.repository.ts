@@ -1,9 +1,7 @@
 import { Department } from "../../models/department.js";
-import { Employee } from "../../models/employee.js";
 import { clientPromise } from "./cassandra.pool.js";
 import { DepartmentRepository } from "../department.repository.js";
 import * as constants from "./cassandra.constants.js";
-
 /**
  * This service class provides methods to manage departments.
  * It includes CRUD methods to create, read, update, and delete departments.
@@ -31,7 +29,6 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
     }
     console.log("CassandraDepartmentRepository.createDepartment(): id[%d]", department.id);
   }
-
   /**
    * Gets the departments.
    * @returns an array of Department objects
@@ -83,13 +80,41 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
       throw err;
     }
   }
+  /**
+   * Gets the department by id.
+   * @param id the id of the department to retrieve
+   * @returns the Department object if found, otherwise undefined
+   */
   async getDepartment(id: number): Promise<Department | undefined> {
+    console.log("CassandraDepartmentRepository.getDepartment(): id[%d]", id);
     return undefined;
   }
+  /**
+   * Updates an existing department.
+   * @param department the department to be updated
+   * @returns void
+   */
   async updateDepartment(department: Department): Promise<void> {
+    console.log("CassandraDepartmentRepository.updateDepartment(): department id[%d]", department.id);
   }
-  async deleteDepartment(departmentId: number): Promise<void> {
+  /**
+   * Deletes a department by its id.
+   * @param id the id of the department to be deleted
+   * @returns void
+   */
+  async deleteDepartment(id: number): Promise<void> {
+    console.log("CassandraDepartmentRepository.deleteDepartment(): department id[%d]", id);
   }
+  /**
+   * Transfers the employees from source department to target department.
+   * @param sourceDepartmentId the id of the source department
+   * @param targetDepartmentId the id of the target department
+   * @param employeeIds the transferred employees array
+   * @returns void
+   */
   async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]): Promise<void> {
+    console.log("CassandraDepartmentRepository.transferEmployees(): " +
+      "transferred employees count[%d], source department id[%d], target department id[%d]",
+      employeeIds.length, sourceDepartmentId, targetDepartmentId);
   }
 }

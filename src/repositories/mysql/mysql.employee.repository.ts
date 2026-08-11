@@ -80,7 +80,7 @@ export class MySqlEmployeeRepository implements EmployeeRepository {
         return undefined;
       }
       console.log("MySqlEmployeeRepository.getEmployee(): employee id[%d]", id);
-      return mappers.mapDatabaseRowToEmployee(rows[0], true);      
+      return mappers.mapDatabaseRowToEmployee(rows[0], true);
     } catch (err) {
       console.error("MySqlEmployeeRepository.getEmployee():", err);
       throw err;
