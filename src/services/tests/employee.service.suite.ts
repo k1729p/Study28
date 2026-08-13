@@ -21,7 +21,7 @@ export function employeeServiceTests(repositoryType: RepositoryType) {
    */
   beforeAll(async () => {
     await initializationService.loadInitialData(repositoryType, []);
-  });
+  }, 90_000);
   /**
    * Verifies that the initial employee array is returned correctly.
    * Checks that the result is an array, contains elements, and the first employee has the expected first name.

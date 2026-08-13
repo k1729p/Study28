@@ -44,10 +44,10 @@ export class SqlServerDepartmentRepository implements DepartmentRepository {
       const result = await pool.request().query(constants.SELECT_DEPARTMENTS_SQL);
       const departmentMap = new Map<number, Department>();
       for (const row of result.recordset) {
-        let department = departmentMap.get(row.department_id);
+        let department = departmentMap.get(row.id);
         if (!department) {
           department = mappers.mapDatabaseRowToDepartment(row);
-          departmentMap.set(row.department_id, department);
+          departmentMap.set(row.id, department);
         }
         if (row.employee_id) {
           department.employees.push(mappers.mapDatabaseRowToEmployee(row, false));

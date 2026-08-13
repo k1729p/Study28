@@ -1,6 +1,7 @@
 import { Department } from "../../models/department.js";
 import { clientPromise } from "./cassandra.pool.js";
 import { DepartmentRepository } from "../department.repository.js";
+import * as mappers from "../mappers.js";
 import * as constants from "./cassandra.constants.js";
 /**
  * This service class provides methods to manage departments.
@@ -15,14 +16,8 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
   async createDepartment(department: Department): Promise<void> {
     try {
       const client = await clientPromise;
-      const startDate = department.startDate ? new Date(department.startDate).toISOString().split('T')[0] : null;
-      const endDate = department.endDate ? new Date(department.endDate).toISOString().split('T')[0] : null;
-      const values = [
-        department.id, department.name,
-        startDate, endDate,
-        department.notes, department.keywords || null, department.image
-      ];
-      await client.execute(constants.CREATE_DEPARTMENT_CQL, values, { prepare: true });
+      await client.execute(constants.INSERT_DEPARTMENT_CQL,
+        constants.PARAMETERS_FOR_DEPARTMENT(department), { prepare: true });
     } catch (err) {
       console.error("CassandraDepartmentRepository.createDepartment():", err);
       throw err;
@@ -36,41 +31,18 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
   async getDepartments(): Promise<Department[]> {
     try {
       const client = await clientPromise;
-      const deptResultSet = await client.execute(constants.SELECT_DEPARTMENTS_CQL, [], { prepare: true });
+      const departmentResultSet = await client.execute(constants.SELECT_DEPARTMENTS_CQL,
+        [], { prepare: true });
       const departmentMap = new Map<number, Department>();
-      for (const row of deptResultSet.rows) {
-        const department: Department = {
-          id: row.id,
-          name: row.name,
-          // Cassandra driver returns dates as standard Date objects or local dates
-          startDate: row.start_date ? new Date(row.start_date) : undefined,
-          endDate: row.end_date ? new Date(row.end_date) : undefined,
-          notes: row.notes,
-          keywords: row.keywords || [],
-          image: row.image,
-          employees: []
-        };
-        departmentMap.set(row.id, department);
+      for (const row of departmentResultSet.rows) {
+        departmentMap.set(row.id, mappers.mapDatabaseRowToDepartment(row));
       }
-      const empResultSet = await client.execute(constants.SELECT_EMPLOYEES_CQL, [], { prepare: true });
-      for (const row of empResultSet.rows) {
-        const department = departmentMap.get(row.department_id);
+      const employeeResultSet = await client.execute(constants.SELECT_EMPLOYEES_CQL,
+        [], { prepare: true });
+      for (const row of employeeResultSet.rows) {
+        const department = departmentMap.get(row.id);
         if (department) {
-          department.employees.push({
-            id: row.id,
-            departmentId: row.department_id,
-            firstName: row.first_name,
-            lastName: row.last_name,
-            title: row.title,
-            phone: row.phone,
-            mail: row.mail,
-            streetName: row.street_name,
-            houseNumber: row.house_number,
-            postalCode: row.postal_code,
-            locality: row.locality,
-            province: row.province,
-            country: row.country
-          });
+          department.employees.push(mappers.mapDatabaseRowToEmployee(row, true));
         }
       }
       console.log("CassandraDepartmentRepository.getDepartments(): departments count[%d]", departmentMap.size);
@@ -86,8 +58,25 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
    * @returns the Department object if found, otherwise undefined
    */
   async getDepartment(id: number): Promise<Department | undefined> {
-    console.log("CassandraDepartmentRepository.getDepartment(): id[%d]", id);
-    return undefined;
+    try {
+      const client = await clientPromise;
+      const departmentResultSet = await client.execute(constants.SELECT_DEPARTMENT_CQL,
+        { id: id }, { prepare: true });
+      if (departmentResultSet.rowLength === 0) {
+        console.log("CassandraDepartmentRepository.getDepartment(): no department found, department id[%d]", id);
+        return undefined;
+      }
+      const department = mappers.mapDatabaseRowToDepartment(departmentResultSet.rows[0]);
+      const employeeResultSet = await client.execute(constants.SELECT_EMPLOYEES_BY_DEPARTMENT_CQL,
+        { departmentId: id }, { prepare: true });
+      department.employees = employeeResultSet.rows.map(row => mappers.mapDatabaseRowToEmployee(row, true));
+      console.log("CassandraDepartmentRepository.getDepartment(): department id[%d], employees count[%d]",
+        id, department.employees.length);
+      return department;
+    } catch (err) {
+      console.error("CassandraDepartmentRepository.getDepartment():", err);
+      throw err;
+    }
   }
   /**
    * Updates an existing department.
@@ -95,6 +84,18 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
    * @returns void
    */
   async updateDepartment(department: Department): Promise<void> {
+    try {
+      const client = await clientPromise;
+      const resultSet = await client.execute(constants.UPDATE_DEPARTMENT_CQL,
+        constants.PARAMETERS_FOR_DEPARTMENT(department), { prepare: true });
+      if (!resultSet.wasApplied()) {
+        console.log("CassandraDepartmentRepository.updateDepartment(): no department updated, department id[%d]", department.id);
+        return;
+      }
+    } catch (err) {
+      console.error("CassandraDepartmentRepository.updateDepartment():", err);
+      throw err;
+    }
     console.log("CassandraDepartmentRepository.updateDepartment(): department id[%d]", department.id);
   }
   /**
@@ -103,6 +104,23 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
    * @returns void
    */
   async deleteDepartment(id: number): Promise<void> {
+    // Cassandra has no foreign keys and performs no cascading deletes,
+    // so the department's employees must be removed explicitly.
+    // Deleting the whole 'employees' partition ('WHERE department_id = ?' with no clustering column)
+    // removes every employee row for this department in one native, single-partition operation.
+    // Both statements are combined into a single LOGGED BATCH so they are applied atomically
+    // even though they target two different tables/partitions.
+    const queries = [
+      { query: constants.DELETE_EMPLOYEES_CQL, params: { departmentId: id } },
+      { query: constants.DELETE_DEPARTMENT_CQL, params: { id: id } }
+    ];
+    try {
+      const client = await clientPromise;
+      await client.batch(queries, { prepare: true });
+    } catch (err) {
+      console.error("CassandraDepartmentRepository.deleteDepartment():", err);
+      throw err;
+    }
     console.log("CassandraDepartmentRepository.deleteDepartment(): department id[%d]", id);
   }
   /**
@@ -113,6 +131,53 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
    * @returns void
    */
   async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]): Promise<void> {
+    if (employeeIds.length === 0) {
+      console.warn("CassandraDepartmentRepository.transferEmployees(): no employee ids provided, nothing to transfer");
+      return;
+    }
+    try {
+      const client = await clientPromise;
+      // Step 1: read the full rows to move. 'department_id' (the partition key) is restricted
+      // to a single value and 'id' (the clustering key) is restricted with IN, so this remains
+      // a single, efficient single-partition read.
+      const resultSet = await client.execute(constants.SELECT_EMPLOYEES_BY_DEPARTMENT_AND_IDS_CQL,
+        { departmentId: sourceDepartmentId, ids: employeeIds }, { prepare: true });
+      if (resultSet.rowLength === 0) {
+        console.warn("CassandraDepartmentRepository.transferEmployees(): no matching employees found, source department id[%d]",
+          sourceDepartmentId);
+        return;
+      }
+      // Deleting employee from the source partition and re-inserting it into the target partition.
+      // A LOGGED BATCH is Cassandra's closest equivalent to an atomic server-side procedure for this:
+      // the coordinator node first persists the batch to a distributed batchlog, which guarantees
+      // that either all statements are eventually applied or none are, even if the coordinator
+      // fails partway through - so an employee can never end up duplicated in, or missing from, both departments.
+      const queries = resultSet.rows.flatMap(row => {
+        const insertValues = [
+          row.id,
+          targetDepartmentId,
+          row.first_name,
+          row.last_name,
+          row.title,
+          row.phone,
+          row.mail,
+          row.street_name,
+          row.house_number,
+          row.postal_code,
+          row.locality,
+          row.province,
+          row.country
+        ];
+        return [
+          { query: constants.DELETE_EMPLOYEE_CQL, params: { departmentId: sourceDepartmentId, id: row.id } },
+          { query: constants.INSERT_EMPLOYEE_CQL, params: insertValues }
+        ];
+      });
+      await client.batch(queries, { prepare: true });
+    } catch (err) {
+      console.error("CassandraDepartmentRepository.transferEmployees():", err);
+      throw err;
+    }
     console.log("CassandraDepartmentRepository.transferEmployees(): " +
       "transferred employees count[%d], source department id[%d], target department id[%d]",
       employeeIds.length, sourceDepartmentId, targetDepartmentId);

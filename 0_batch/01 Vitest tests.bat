@@ -12,7 +12,7 @@ set SQL_SERVER_HOST=localhost
 set CLI_ARGS=
 set CLI_ARGS=%CLI_ARGS% --reporter=tree
 
-set SHOW_LOGS=N
+set SHOW_LOGS=Y
 if "%SHOW_LOGS%"=="Y" (
   set CLI_ARGS=%CLI_ARGS% --disableConsoleIntercept
 ) else (

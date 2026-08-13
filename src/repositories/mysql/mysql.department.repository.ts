@@ -58,11 +58,10 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
       const [rows] = await pool.query<RowDataPacket[]>(constants.SELECT_DEPARTMENTS_SQL);
       const departmentMap = new Map<number, Department>();
       for (const row of rows) {
-        const departmentId = row.department_id;
-        let department = departmentMap.get(departmentId);
+        let department = departmentMap.get(row.id);
         if (!department) {
           department = mappers.mapDatabaseRowToDepartment(row);
-          departmentMap.set(departmentId, department);
+          departmentMap.set(row.id, department);
         } else if (row.employee_id) {
           department.employees.push(mappers.mapDatabaseRowToEmployee(row, false));
         }

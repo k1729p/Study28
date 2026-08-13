@@ -17,18 +17,8 @@ export class Neo4jDepartmentRepository implements DepartmentRepository {
     const driver = await driverPromise;
     const session = driver.session();
     try {
-      const startDate = department.startDate ? new Date(department.startDate).toISOString().split('T')[0] : null;
-      const endDate = department.endDate ? new Date(department.endDate).toISOString().split('T')[0] : null;
-      const parameters = {
-        id: department.id,
-        name: department.name,
-        startDate: startDate,
-        endDate: endDate,
-        notes: department.notes || null,
-        keywords: department.keywords ? department.keywords.join(',') : null,
-        image: department.image || null
-      };
-      await session.executeWrite(transaction => transaction.run(constants.CREATE_DEPARTMENT_QUERY, parameters));
+      await session.executeWrite(transaction => transaction.run(constants.CREATE_DEPARTMENT_QUERY,
+        constants.PARAMETERS_FOR_DEPARTMENT(department)));
       console.log("Neo4jDepartmentRepository.createDepartment(): id[%d]", department.id);
     } catch (err) {
       console.error("Neo4jDepartmentRepository.createDepartment():", err);

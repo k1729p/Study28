@@ -1,4 +1,8 @@
+import { mapping } from 'cassandra-driver';
+
 import { config } from "../../configuration/configuration.js";
+import { Department } from "../../models/department.js";
+import { Employee } from "../../models/employee.js";
 /**
  * Configuration for the connection pool.
  */
@@ -20,6 +24,7 @@ export const CREATE_KEYSPACE_CQL = `
     'replication_factor': 1
   }
 `;
+// --- DDL: tables --------------------------------------------------------------------------------
 export const DROP_TABLE_EMPLOYEES_CQL = `
   DROP TABLE IF EXISTS ${KEYSPACE}.employees
 `;
@@ -59,6 +64,19 @@ export const CREATE_TABLE_EMPLOYEES_CQL = `
     PRIMARY KEY (department_id, id)
   )
 `;
+// --- DDL: indexes -------------------------------------------------------------------------------
+// The 'employees' table is partitioned by 'department_id', so a lookup by 'id' alone (used by
+// getEmployee/updateEmployee/deleteEmployee, which only receive an employee id) cannot use the
+// partition key and would otherwise require ALLOW FILTERING, i.e. a full cluster scan.
+// A secondary index on 'id' lets Cassandra resolve that single-column lookup efficiently.
+// Note: at large, multi-node scale a denormalized "query table" (e.g. an employees_by_id table
+// kept in sync on every write) is generally preferred over a secondary index, since indexes
+// require a scatter-gather read across the cluster. For this application's scale, a secondary
+// index keeps the schema simple while remaining correct and efficient.
+export const CREATE_INDEX_EMPLOYEES_ID_CQL = `
+  CREATE INDEX IF NOT EXISTS employees_id_idx ON ${KEYSPACE}.employees (id)
+`;
+// --- DML: departments -----------------------------------------------------------------------------
 export const INSERT_DEPARTMENT_CQL = `
   INSERT INTO ${KEYSPACE}.departments (
     id,
@@ -69,15 +87,39 @@ export const INSERT_DEPARTMENT_CQL = `
     keywords,
     image
   ) VALUES (
-    ?,
-    ?,
-    ?,
-    ?,
-    ?,
-    ?,
-    ?
+    :id,
+    :name,
+    :startDate,
+    :endDate,
+    :notes,
+    :keywords,
+    :image
   )
 `;
+export const SELECT_DEPARTMENTS_CQL = `
+  SELECT * FROM ${KEYSPACE}.departments
+`;
+export const SELECT_DEPARTMENT_CQL = SELECT_DEPARTMENTS_CQL + ' WHERE id = :id';
+// 'IF EXISTS' turns the UPDATE into a lightweight transaction (LWT, backed by a Paxos round).
+// Without it, CQL's UPDATE silently upserts, i.e. it would happily create a brand-new
+// department row if the id did not already exist.
+// 'IF EXISTS' makes the statement behave like a genuine 'update or report absence'.
+export const UPDATE_DEPARTMENT_CQL = `
+  UPDATE ${KEYSPACE}.departments
+  SET
+    name = :name,
+    start_date = :startDate,
+    end_date = :endDate,
+    notes = :notes,
+    keywords = :keywords,
+    image = :image
+  WHERE id = :id
+  IF EXISTS
+`;
+export const DELETE_DEPARTMENT_CQL = `
+  DELETE FROM ${KEYSPACE}.departments WHERE id = :id
+`;
+// --- DML: employees ---------------------------------------------------------------------------
 export const INSERT_EMPLOYEE_CQL = `
   INSERT INTO ${KEYSPACE}.employees (
     id,
@@ -94,43 +136,98 @@ export const INSERT_EMPLOYEE_CQL = `
     province,
     country
   ) VALUES (
-    ?,
-    ?,
-    ?,
-    ?,
-    ?,
-    ?,
-    ?,
-    ?,
-    ?,
-    ?,
-    ?,
-    ?,
-    ?
+    :id,
+    :departmentId,
+    :firstName,
+    :lastName,
+    :title,
+    :phone,
+    :mail,
+    :streetName,
+    :houseNumber,
+    :postalCode,
+    :locality,
+    :province,
+    :country
   )
-`;
-export const CREATE_DEPARTMENT_CQL = `
-  INSERT INTO ${KEYSPACE}.departments (
-    id,
-    name,
-    start_date,
-    end_date,
-    notes,
-    keywords,
-    image
-  ) VALUES (
-    ?,
-    ?,
-    ?,
-    ?,
-    ?,
-    ?,
-    ?
-  )
-`;
-export const SELECT_DEPARTMENTS_CQL = `
-  SELECT * FROM ${KEYSPACE}.departments
 `;
 export const SELECT_EMPLOYEES_CQL = `
   SELECT * FROM ${KEYSPACE}.employees
 `;
+export const SELECT_EMPLOYEES_BY_DEPARTMENT_CQL = SELECT_EMPLOYEES_CQL + ' WHERE department_id = :departmentId';
+export const SELECT_EMPLOYEES_BY_DEPARTMENT_AND_IDS_CQL = SELECT_EMPLOYEES_BY_DEPARTMENT_CQL + ' AND id IN :ids';
+// Uses the secondary index on 'id' to resolve the partition key ('department_id') that an employee currently belongs to.
+export const SELECT_EMPLOYEE_DEPARTMENT_ID_BY_ID_CQL = `
+  SELECT department_id FROM ${KEYSPACE}.employees WHERE id = :id
+`;
+// Uses the secondary index on 'id' to fetch the full employee row by id alone.
+export const SELECT_EMPLOYEE_BY_ID_CQL = `
+  SELECT * FROM ${KEYSPACE}.employees WHERE id = :id
+`;
+export const UPDATE_EMPLOYEE_CQL = `
+  UPDATE ${KEYSPACE}.employees
+  SET
+    first_name = :firstName,
+    last_name = :lastName,
+    title = :title,
+    phone = :phone,
+    mail = :mail,
+    street_name = :streetName,
+    house_number = :houseNumber,
+    postal_code = :postalCode,
+    locality = :locality,
+    province = :province,
+    country = :country
+  WHERE department_id = :departmentId AND id = :id
+`;
+export const DELETE_EMPLOYEES_CQL = `
+  DELETE FROM ${KEYSPACE}.employees WHERE department_id = :departmentId
+`;
+export const DELETE_EMPLOYEE_CQL = DELETE_EMPLOYEES_CQL + ' AND id = :id';
+// --- mappers ------------------------------------------------------------------------------------
+export const PARAMETERS_FOR_DEPARTMENT = (department: Department): any => {
+  return {
+    id: department.id,
+    name: department.name,
+    startDate: department.startDate ? new Date(department.startDate).toISOString().split('T')[0] : null,
+    endDate: department.endDate ? new Date(department.endDate).toISOString().split('T')[0] : null,
+    notes: department.notes || null,
+    keywords: department.keywords || null,
+    image: department.image || null
+  };
+}
+export const PARAMETERS_FOR_EMPLOYEE = (employee: Employee): any => {
+  return {
+    id: employee.id,
+    departmentId: employee.departmentId,
+    firstName: employee.firstName,
+    lastName: employee.lastName,
+    title: employee.title,
+    phone: employee.phone,
+    mail: employee.mail,
+    streetName: employee.streetName || null,
+    houseNumber: employee.houseNumber || null,
+    postalCode: employee.postalCode || null,
+    locality: employee.locality || null,
+    province: employee.province || null,
+    country: employee.country || null
+  };
+}
+export const mappingOptions: mapping.MappingOptions = {
+  models: {
+    Department: {
+      tables: ['departments'],
+      keyspace: KEYSPACE,
+      columns: {
+        // camelCase TS prop : snake_case CQL column
+        id: 'id',
+        name: 'name',
+        startDate: 'start_date',
+        endDate: 'end_date',
+        notes: 'notes',
+        keywords: 'keywords',
+        image: 'image'
+      }
+    }
+  }
+};

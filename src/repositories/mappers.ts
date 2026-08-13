@@ -10,8 +10,8 @@ import { Employee } from "../models/employee.js";
  */
 export const mapDatabaseRowToDepartment = (row: any): Department => {
   const department: Department = {
-    id: row.department_id,
-    name: row.department_name,
+    id: row.id,
+    name: row.name,
     startDate: row.start_date ? new Date(row.start_date) : undefined,
     endDate: row.end_date ? new Date(row.end_date) : undefined,
     notes: row.notes,

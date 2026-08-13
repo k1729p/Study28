@@ -2,6 +2,7 @@ import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { clientPromise } from "./elasticsearch.pool.js";
 import { DepartmentRepository } from "../department.repository.js";
+import * as mappers from "../mappers.js";
 import * as constants from "./elasticsearch.constants.js";
 
 /**
@@ -11,23 +12,23 @@ import * as constants from "./elasticsearch.constants.js";
 export class ElasticsearchDepartmentRepository implements DepartmentRepository {
   /**
    * Creates a new department.
-   * @param dept the department to be created
+   * @param department the department to be created
    * @return void
    */
-  async createDepartment(dept: Department): Promise<void> {
+  async createDepartment(department: Department): Promise<void> {
     const client = await clientPromise;
     try {
       await client.index({
         index: constants.INDEX_DEPARTMENTS,
-        id: dept.id.toString(),
+        id: department.id.toString(),
         document: {
-          id: dept.id,
-          name: dept.name,
-          startDate: dept.startDate,
-          endDate: dept.endDate,
-          notes: dept.notes,
-          keywords: dept.keywords || [],
-          image: dept.image
+          id: department.id,
+          name: department.name,
+          startDate: department.startDate,
+          endDate: department.endDate,
+          notes: department.notes,
+          keywords: department.keywords || [],
+          image: department.image
         },
         refresh: true // Ensures the data is immediately available for searching
       });
@@ -35,7 +36,7 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
       console.error("ElasticsearchDepartmentRepository.createDepartment():", err);
       throw err;
     }
-    console.log("ElasticsearchDepartmentRepository.createDepartment(): id[%d]", dept.id);
+    console.log("ElasticsearchDepartmentRepository.createDepartment(): id[%d]", department.id);
   }
   /**
    * Gets the departments.
@@ -55,38 +56,14 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
       const departmentMap = new Map<number, Department>();
       const departmentHits = departmentResponse.hits.hits as any[];
       for (const hit of departmentHits) {
-        const source = hit._source;
-        departmentMap.set(source.id, {
-          id: source.id,
-          name: source.name,
-          startDate: source.startDate ? new Date(source.startDate) : undefined,
-          endDate: source.endDate ? new Date(source.endDate) : undefined,
-          notes: source.notes,
-          keywords: source.keywords || [],
-          image: source.image,
-          employees: []
-        });
+        departmentMap.set(hit._source.id, mappers.mapDatabaseRowToDepartment(hit._source));
       }
       const employeeHits = employeeResponse.hits.hits as any[];
       for (const hit of employeeHits) {
         const source = hit._source;
         const department = departmentMap.get(source.departmentId);
         if (department) {
-          department.employees.push({
-            id: source.id,
-            departmentId: source.departmentId,
-            firstName: source.firstName,
-            lastName: source.lastName,
-            title: source.title,
-            phone: source.phone,
-            mail: source.mail,
-            streetName: source.streetName,
-            houseNumber: source.houseNumber,
-            postalCode: source.postalCode,
-            locality: source.locality,
-            province: source.province,
-            country: source.country
-          } as Employee);
+          department.employees.push(mappers.mapDatabaseRowToEmployee(hit._source, true));
         }
       }
       console.log("ElasticsearchDepartmentRepository.getDepartments():");

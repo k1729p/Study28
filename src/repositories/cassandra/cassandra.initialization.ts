@@ -1,3 +1,4 @@
+import { Client, mapping } from 'cassandra-driver';
 import { Department } from "../../models/department.js";
 import { clientPromise } from "./cassandra.pool.js";
 import { Initialization } from "../initialization.js";
@@ -18,6 +19,7 @@ export class CassandraInitialization implements Initialization {
       await client.execute(constants.DROP_TABLE_DEPARTMENTS_CQL);
       await client.execute(constants.CREATE_TABLE_DEPARTMENTS_CQL);
       await client.execute(constants.CREATE_TABLE_EMPLOYEES_CQL);
+      await client.execute(constants.CREATE_INDEX_EMPLOYEES_ID_CQL);
       console.log("CassandraInitialization.loadInitialData(): dropped and created tables");
       if (departments.length > 0) {
         await this.insertDepartments(client, departments);
@@ -38,15 +40,29 @@ export class CassandraInitialization implements Initialization {
    * @param departments the array of departments
    */
   private async insertDepartments(client: any, departments: Department[]) {
-    for (const dept of departments) {
-      const startDate = dept.startDate ? new Date(dept.startDate).toISOString().split('T')[0] : null;
-      const endDate = dept.endDate ? new Date(dept.endDate).toISOString().split('T')[0] : null;
-      const values = [
-        dept.id, dept.name,
-        startDate, endDate,
-        dept.notes || null, dept.keywords || null, dept.image || null
-      ];
-      await client.execute(constants.INSERT_DEPARTMENT_CQL, values, { prepare: true });
+    let THE_FLAG = true;
+    if(THE_FLAG) {
+      for (const department of departments) {
+        await client.execute(constants.INSERT_DEPARTMENT_CQL,
+          constants.PARAMETERS_FOR_DEPARTMENT(department), { prepare: true });
+      }
+    } else {
+    // #############################################################################################################
+      const mapper = new mapping.Mapper(client, constants.mappingOptions);
+      const departmentMapper = mapper.forModel<Department>('Department');
+      for (const department of departments) {
+        const departmentData = {
+          id: department.id,
+          name: department.name,
+          startDate: department.startDate ? new Date(department.startDate).toISOString().split('T')[0] : null,
+          endDate: department.endDate ? new Date(department.endDate).toISOString().split('T')[0] : null,
+          notes: department.notes || null,
+          keywords: department.keywords || null,
+          image: department.image || null
+        };
+        await departmentMapper.insert(departmentData);
+      }
+    // #############################################################################################################
     }
     console.log("CassandraInitialization.insertDepartments(): inserted [%d] departments", departments.length);
   }
@@ -64,14 +80,9 @@ export class CassandraInitialization implements Initialization {
       console.warn("CassandraInitialization.insertEmployees(): no employees to insert");
       return;
     }
-    for (const emp of employees) {
-      const values = [
-        emp.id, emp.departmentId, emp.firstName, emp.lastName,
-        emp.title, emp.phone, emp.mail,
-        emp.streetName || null, emp.houseNumber || null, emp.postalCode || null,
-        emp.locality || null, emp.province || null, emp.country || null
-      ];
-      await client.execute(constants.INSERT_EMPLOYEE_CQL, values, { prepare: true });
+    for (const employee of employees) {
+      await client.execute(constants.INSERT_EMPLOYEE_CQL,
+        constants.PARAMETERS_FOR_EMPLOYEE(employee), { prepare: true });
     }
     console.log("CassandraInitialization.insertEmployees(): inserted [%d] employees", employees.length);
   }

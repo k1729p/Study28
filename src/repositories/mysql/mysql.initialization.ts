@@ -48,17 +48,17 @@ export class MySqlInitialization implements Initialization {
    * @param departments the array of departments
    */
   private async insertDepartments(connection: PoolConnection, departments: Department[]) {
-    for (const dept of departments) {
-      const startDate = dept.startDate ? new Date(dept.startDate).toISOString().split('T')[0] : null;
-      const endDate = dept.endDate ? new Date(dept.endDate).toISOString().split('T')[0] : null;
+    for (const department of departments) {
+      const startDate = department.startDate ? new Date(department.startDate).toISOString().split('T')[0] : null;
+      const endDate = department.endDate ? new Date(department.endDate).toISOString().split('T')[0] : null;
       const values = [
-        dept.id,
-        dept.name,
+        department.id,
+        department.name,
         startDate,
         endDate,
-        dept.notes || null,
-        dept.keywords ? dept.keywords.join(',') : null,
-        dept.image || null
+        department.notes || null,
+        department.keywords ? department.keywords.join(',') : null,
+        department.image || null
       ];
       await connection.query(constants.INSERT_DEPARTMENT_SQL, values);
     }

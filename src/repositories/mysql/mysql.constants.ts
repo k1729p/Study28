@@ -102,16 +102,16 @@ export const INSERT_DEPARTMENT_SQL = `
   )
 `;
 export const SELECT_DEPARTMENTS_SQL = `
-  SELECT 
-    d.id AS department_id,
-    d.name AS department_name,
+  SELECT
+    d.id,
+    d.name,
     d.start_date,
     d.end_date, 
     d.notes,
     d.keywords,
     d.image,
     e.id AS employee_id,
-    e.department_id AS employee_department_id,
+    e.department_id,
     e.first_name, 
     e.last_name,
     e.title,

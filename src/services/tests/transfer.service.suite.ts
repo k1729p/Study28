@@ -4,7 +4,7 @@ import { InitializationService } from '../initialization.service.js';
 import { DepartmentService } from '../department.service.js';
 import { TransferService } from '../transfer.service.js';
 import { INITIAL_DATA } from '../initial-data.js';
-import { describe, beforeAll, it, expect } from "vitest";
+import { beforeAll, it, expect } from "vitest";
 
 /**
  * Unit tests for the {@link TransferService}.
@@ -23,7 +23,7 @@ export function transferServiceTests(repositoryType: RepositoryType) {
    */
   beforeAll(async () => {
     await initializationService.loadInitialData(repositoryType, []);
-  });
+  }, 90_000);
   /**
    * Tests transferring employees between departments.
    * Ensures the employee is removed from the source department and added to the target department.

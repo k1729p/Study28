@@ -8,16 +8,22 @@ import { describe } from "vitest";
  * Tests orchestrator.
  */
 describe.for([
+  RepositoryType.Cassandra,
   RepositoryType.MongoDB,
   RepositoryType.MySQL,
   RepositoryType.Oracle,
   RepositoryType.PostgreSQL,
   RepositoryType.SQLServer,
 ])(colors.CYAN_BRIGHT + 'Repository type █ %s █' + colors.RESET, (repositoryType) => {
-  describe(colors.YELLOW_BRIGHT + 'Department service tests' + colors.RESET,
-    () => departmentServiceTests(repositoryType));
-  describe(colors.YELLOW_BRIGHT + 'Employee service tests' + colors.RESET,
-    () => employeeServiceTests(repositoryType));
-  describe(colors.YELLOW_BRIGHT + 'Transfer service tests' + colors.RESET,
-    () => transferServiceTests(repositoryType));
+  describe(getSuiteName('Department'), () => departmentServiceTests(repositoryType));
+  describe(getSuiteName('Employee'), () => employeeServiceTests(repositoryType));
+  describe(getSuiteName('Transfer'), () => transferServiceTests(repositoryType));
 });
+/**
+ * Gets the suite name.
+ * @param label the label for test suite
+ * @returns the suite name
+ */
+const getSuiteName = (label: string): string => {
+  return colors.YELLOW_BRIGHT + label + ' service tests' + colors.RESET;
+}

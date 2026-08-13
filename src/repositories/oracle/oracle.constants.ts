@@ -105,15 +105,15 @@ export const INSERT_DEPARTMENT_SQL = `
 `;
 export const SELECT_DEPARTMENTS_SQL = `
   SELECT 
-    d.id AS "department_id", 
-    d.name AS "department_name", 
+    d.id AS "id", 
+    d.name AS "name", 
     d.start_date AS "start_date", 
     d.end_date AS "end_date", 
     d.notes AS "notes", 
     d.keywords AS "keywords", 
     d.image AS "image",
     e.id AS "employee_id",
-    e.department_id AS "employee_department_id",
+    e.department_id AS "department_id",
     e.first_name AS "first_name",
     e.last_name AS "last_name",
     e.title AS "title",

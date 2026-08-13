@@ -36,15 +36,7 @@ export class Neo4jInitialization implements Initialization {
    * @param departmentsParam the array of departments
    */
   private async insertDepartments(session: any, departmentsParam: Department[]): Promise<void> {
-    const transformedDepartments = departmentsParam.map(department => ({
-      id: department.id,
-      name: department.name,
-      startDate: department.startDate ? new Date(department.startDate).toISOString().split('T')[0] : null,
-      endDate: department.endDate ? new Date(department.endDate).toISOString().split('T')[0] : null,
-      notes: department.notes || null,
-      keywords: department.keywords ? department.keywords.join(',') : null,
-      image: department.image || null
-    }));
+    const transformedDepartments = departmentsParam.map(department => constants.PARAMETERS_FOR_DEPARTMENT(department));
     await session.executeWrite((transaction: any) => transaction.run(
       constants.CREATE_DEPARTMENTS_QUERY, { departments: transformedDepartments }
     ));
@@ -63,21 +55,7 @@ export class Neo4jInitialization implements Initialization {
       console.warn("Neo4jInitialization.insertEmployees(): no employees to insert");
       return;
     }
-    const transformedEmployees = employeesFromDepartments.map(employee => ({
-      id: employee.id,
-      departmentId: employee.departmentId,
-      firstName: employee.firstName,
-      lastName: employee.lastName,
-      title: employee.title,
-      phone: employee.phone,
-      mail: employee.mail,
-      streetName: employee.streetName || null,
-      houseNumber: employee.houseNumber || null,
-      postalCode: employee.postalCode || null,
-      locality: employee.locality || null,
-      province: employee.province || null,
-      country: employee.country || null
-    }));
+    const transformedEmployees = employeesFromDepartments.map(employee => constants.PARAMETERS_FOR_EMPLOYEE(employee));
     await session.executeWrite((transaction: any) => transaction.run(
       constants.CREATE_EMPLOYEES_QUERY, { employees: transformedEmployees }
     ));

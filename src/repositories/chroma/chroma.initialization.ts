@@ -3,9 +3,7 @@ import { ChromaClient } from "chromadb";
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import * as constants from "./chroma.constants.js";
-import {
-  toDepartmentMetadata, toEmployeeMetadata, toPlaceholderEmbedding
-} from "./chroma.helpers.js";
+import * as helpers from "./chroma.helpers.js";
 import { clientPromise } from "./chroma.pool.js";
 import { Initialization } from "../initialization.js";
 /**
@@ -64,9 +62,9 @@ export class ChromaInitialization implements Initialization {
   private async insertDepartments(collection: any, departments: Department[]) {
     await collection.add({
       ids: departments.map(department => String(department.id)),
-      embeddings: departments.map(dep => toPlaceholderEmbedding(dep.name)),
+      embeddings: departments.map(dep => helpers.toPlaceholderEmbedding(dep.name)),
       documents: departments.map(dep => dep.name),
-      metadatas: departments.map(dep => toDepartmentMetadata(dep))
+      metadatas: departments.map(dep => helpers.toDepartmentMetadata(dep))
     });
     console.log("ChromaInitialization.insertDepartments(): inserted [%d] departments", departments.length);
   }
@@ -85,9 +83,9 @@ export class ChromaInitialization implements Initialization {
     }
     await collection.add({
       ids: employees.map(emp => String(emp.id)),
-      embeddings: employees.map(emp => toPlaceholderEmbedding(`${emp.firstName} ${emp.lastName}`)),
+      embeddings: employees.map(emp => helpers.toPlaceholderEmbedding(`${emp.firstName} ${emp.lastName}`)),
       documents: employees.map(emp => `${emp.firstName} ${emp.lastName}`),
-      metadatas: employees.map(emp => toEmployeeMetadata(emp))
+      metadatas: employees.map(emp => helpers.toEmployeeMetadata(emp))
     });
     console.log("ChromaInitialization.insertEmployees(): inserted [%d] employees", employees.length);
   }

@@ -56,11 +56,10 @@ export class PostgreSqlDepartmentRepository implements DepartmentRepository {
       const result = await client.query(constants.SELECT_DEPARTMENTS_SQL);
       const departmentMap = new Map<number, Department>();
       for (const row of result.rows) {
-        const departmentId = row.department_id;
-        let department = departmentMap.get(departmentId);
+        let department = departmentMap.get(row.id);
         if (!department) {
           department = mappers.mapDatabaseRowToDepartment(row);
-          departmentMap.set(departmentId, department);
+          departmentMap.set(row.id, department);
         }
         if (row.employee_id) {
           department.employees.push(mappers.mapDatabaseRowToEmployee(row, false));

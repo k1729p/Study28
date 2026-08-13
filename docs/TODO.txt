@@ -90,8 +90,7 @@ Note: Apache Cassandra does not support ACID transactions across multiple tables
 https://en.wikipedia.org/wiki/Apache_Cassandra
 https://en.wikipedia.org/wiki/Wide-column_store
 cassandra-nodejs-driver : Datastax Nodejs driver
-      https://docs.datastax.com/en/developer/nodejs-driver/4.8/index.html
-      https://github.com/apache/cassandra-nodejs-driver
+  https://github.com/apache/cassandra-nodejs-driver
 
 Docker compose: https://github.com/kayvansol/Cassandra
 In Docker container "cassandra-1", in "Exec" tab:

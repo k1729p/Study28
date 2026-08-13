@@ -67,34 +67,34 @@ export class ElasticsearchInitialization implements Initialization {
    * @param departments the array of departments with employees
    */
   private async insertEmployees(client: Client, departments: Department[]) {
-    const employees = departments.flatMap(dep =>
-      dep.employees.map(emp => ({ ...emp, departmentId: dep.id }))
+    const employees = departments.flatMap(department =>
+      department.employees.map(emp => ({ ...emp, departmentId: department.id }))
     );
     if (employees.length === 0) {
       console.warn("ElasticsearchInitialization.insertEmployees(): no employees to insert");
       return;
     }
-    const operations = employees.flatMap(emp => [
+    const operations = employees.flatMap(employee => [
       {
         index: {
           _index: constants.INDEX_EMPLOYEES,
-          _id: emp.id.toString()
+          _id: employee.id.toString()
         }
       },
       {
-        id: emp.id,
-        departmentId: emp.departmentId,
-        firstName: emp.firstName,
-        lastName: emp.lastName,
-        title: emp.title,
-        phone: emp.phone,
-        mail: emp.mail,
-        streetName: emp.streetName,
-        houseNumber: emp.houseNumber,
-        postalCode: emp.postalCode,
-        locality: emp.locality,
-        province: emp.province,
-        country: emp.country
+        id: employee.id,
+        departmentId: employee.departmentId,
+        firstName: employee.firstName,
+        lastName: employee.lastName,
+        title: employee.title,
+        phone: employee.phone,
+        mail: employee.mail,
+        streetName: employee.streetName,
+        houseNumber: employee.houseNumber,
+        postalCode: employee.postalCode,
+        locality: employee.locality,
+        province: employee.province,
+        country: employee.country
       }
     ]);
     await client.bulk({ refresh: true, operations });

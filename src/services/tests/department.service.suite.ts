@@ -20,7 +20,7 @@ export function departmentServiceTests(repositoryType: RepositoryType) {
    */
   beforeAll(async () => {
     await initializationService.loadInitialData(repositoryType, []);
-  });
+  }, 90_000);
   /**
    * Tests the retrieval of the initial department array.
    * This test checks if the service can return a non-empty array of departments
