@@ -1,4 +1,3 @@
-import { Client, mapping } from 'cassandra-driver';
 import { Department } from "../../models/department.js";
 import { clientPromise } from "./cassandra.pool.js";
 import { Initialization } from "../initialization.js";
@@ -40,29 +39,9 @@ export class CassandraInitialization implements Initialization {
    * @param departments the array of departments
    */
   private async insertDepartments(client: any, departments: Department[]) {
-    let THE_FLAG = true;
-    if(THE_FLAG) {
-      for (const department of departments) {
-        await client.execute(constants.INSERT_DEPARTMENT_CQL,
-          constants.PARAMETERS_FOR_DEPARTMENT(department), { prepare: true });
-      }
-    } else {
-    // #############################################################################################################
-      const mapper = new mapping.Mapper(client, constants.mappingOptions);
-      const departmentMapper = mapper.forModel<Department>('Department');
-      for (const department of departments) {
-        const departmentData = {
-          id: department.id,
-          name: department.name,
-          startDate: department.startDate ? new Date(department.startDate).toISOString().split('T')[0] : null,
-          endDate: department.endDate ? new Date(department.endDate).toISOString().split('T')[0] : null,
-          notes: department.notes || null,
-          keywords: department.keywords || null,
-          image: department.image || null
-        };
-        await departmentMapper.insert(departmentData);
-      }
-    // #############################################################################################################
+    for (const department of departments) {
+      await client.execute(constants.INSERT_DEPARTMENT_CQL,
+        constants.PARAMETERS_FOR_DEPARTMENT(department), { prepare: true });
     }
     console.log("CassandraInitialization.insertDepartments(): inserted [%d] departments", departments.length);
   }

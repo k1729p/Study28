@@ -1,5 +1,3 @@
-import { mapping } from 'cassandra-driver';
-
 import { config } from "../../configuration/configuration.js";
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
@@ -213,21 +211,3 @@ export const PARAMETERS_FOR_EMPLOYEE = (employee: Employee): any => {
     country: employee.country || null
   };
 }
-export const mappingOptions: mapping.MappingOptions = {
-  models: {
-    Department: {
-      tables: ['departments'],
-      keyspace: KEYSPACE,
-      columns: {
-        // camelCase TS prop : snake_case CQL column
-        id: 'id',
-        name: 'name',
-        startDate: 'start_date',
-        endDate: 'end_date',
-        notes: 'notes',
-        keywords: 'keywords',
-        image: 'image'
-      }
-    }
-  }
-};

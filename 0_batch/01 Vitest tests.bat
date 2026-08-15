@@ -20,5 +20,8 @@ if "%SHOW_LOGS%"=="Y" (
 )
 ::set CLI_ARGS=%CLI_ARGS% --no-color
 cd ..
+
+powershell $(Get-Date)
+
 powershell npx vitest %CLI_ARGS% run
 pause
