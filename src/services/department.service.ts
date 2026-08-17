@@ -11,17 +11,15 @@ import { OracleDepartmentRepository } from "../repositories/oracle/oracle.depart
 import { PostgreSqlDepartmentRepository } from "../repositories/postgresql/postgresql.department.repository.js";
 import { RedisDepartmentRepository } from "../repositories/redis/redis.department.repository.js";
 import { SqlServerDepartmentRepository } from "../repositories/sql-server/sql-server.department.repository.js";
-
 /**
  * This service class provides methods to manage departments.
  * It includes methods to get, set, create, update, and delete departments.
  */
 export class DepartmentService {
-
   private readonly strategies: Partial<Record<RepositoryType, DepartmentRepository>>;
   /**
    * Initializes the service with available repository strategies.
-   */  
+   */
   constructor() {
     this.strategies = {
       [RepositoryType.Cassandra]: new CassandraDepartmentRepository(),

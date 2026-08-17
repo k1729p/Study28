@@ -2,10 +2,10 @@ import { ChromaClient } from "chromadb";
 
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
+import { Initialization } from "../initialization.js";
 import * as constants from "./chroma.constants.js";
 import * as helpers from "./chroma.helpers.js";
 import { clientPromise } from "./chroma.pool.js";
-import { Initialization } from "../initialization.js";
 /**
  * This service class provides methods to initialize database and load data.
  */
@@ -62,9 +62,9 @@ export class ChromaInitialization implements Initialization {
   private async insertDepartments(collection: any, departments: Department[]) {
     await collection.add({
       ids: departments.map(department => String(department.id)),
-      embeddings: departments.map(dep => helpers.toPlaceholderEmbedding(dep.name)),
-      documents: departments.map(dep => dep.name),
-      metadatas: departments.map(dep => helpers.toDepartmentMetadata(dep))
+      embeddings: departments.map(department => helpers.toPlaceholderEmbedding(department.name)),
+      documents: departments.map(department => department.name),
+      metadatas: departments.map(department => helpers.toDepartmentMetadata(department))
     });
     console.log("ChromaInitialization.insertDepartments(): inserted [%d] departments", departments.length);
   }
@@ -74,18 +74,18 @@ export class ChromaInitialization implements Initialization {
    * @param departments the array of departments with employees
    */
   private async insertEmployees(collection: any, departments: Department[]) {
-    const employees: Employee[] = departments.flatMap(dep =>
-      dep.employees.map(emp => ({ ...emp, departmentId: dep.id }))
+    const employees: Employee[] = departments.flatMap(department =>
+      department.employees.map(employee => ({ ...employee, departmentId: department.id }))
     );
     if (employees.length === 0) {
       console.warn("ChromaInitialization.insertEmployees(): no employees to insert");
       return;
     }
     await collection.add({
-      ids: employees.map(emp => String(emp.id)),
-      embeddings: employees.map(emp => helpers.toPlaceholderEmbedding(`${emp.firstName} ${emp.lastName}`)),
-      documents: employees.map(emp => `${emp.firstName} ${emp.lastName}`),
-      metadatas: employees.map(emp => helpers.toEmployeeMetadata(emp))
+      ids: employees.map(employee => String(employee.id)),
+      embeddings: employees.map(employee => helpers.toPlaceholderEmbedding(`${employee.firstName} ${employee.lastName}`)),
+      documents: employees.map(employee => `${employee.firstName} ${employee.lastName}`),
+      metadatas: employees.map(employee => helpers.toEmployeeMetadata(employee))
     });
     console.log("ChromaInitialization.insertEmployees(): inserted [%d] employees", employees.length);
   }

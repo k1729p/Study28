@@ -1,5 +1,8 @@
+import type { Metadata } from "chromadb";
+
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
+import { Title } from "../../models/title.js";
 import * as constants from "./chroma.constants.js";
 
 /**
@@ -8,7 +11,6 @@ import * as constants from "./chroma.constants.js";
  * (string | number | boolean values only - no nested objects, arrays, or Date instances).
  */
 type ChromaMetadata = Record<string, string | number | boolean>;
-
 /**
  * Builds a small, deterministic placeholder embedding for a piece of text.
  * This keeps the repository free of any embedding-provider dependency
@@ -28,7 +30,6 @@ export function toPlaceholderEmbedding(text: string): number[] {
   }
   return vector.map(value => value / 1000);
 }
-
 /**
  * Maps a Department to the metadata record stored in the "departments" collection.
  * Optional fields are omitted entirely (rather than set to null/undefined)
@@ -49,14 +50,13 @@ export function toDepartmentMetadata(department: Department): ChromaMetadata {
     metadata.notes = department.notes;
   }
   if (department.keywords && department.keywords.length > 0) {
-    metadata.keywords = department.keywords.join(',');
+    metadata.keywords = department.keywords.join(constants.KEYWORDS_SEPARATOR);
   }
   if (department.image) {
     metadata.image = department.image;
   }
   return metadata;
 }
-
 /**
  * Maps an Employee to the metadata record stored in the "employees" collection.
  * `departmentId` is always included so employees can be grouped back under their department when reading.
@@ -92,4 +92,54 @@ export function toEmployeeMetadata(employee: Employee): ChromaMetadata {
     metadata.country = employee.country;
   }
   return metadata;
+}
+/**
+ * Maps a Chroma record (id + metadata) read from the "departments" collection back into a
+ * Department object.
+ * The returned department's `employees` array is always empty - departments and employees
+ * live in two separate collections, so callers that need a populated `employees` array
+ * must attach them separately (see ChromaDepartmentRepository).
+ *
+ * @param id the Chroma record id, i.e. the department id, stored as a string
+ * @param metadata the metadata record read back from the "departments" collection
+ * @returns the reconstructed Department object
+ */
+export function toDepartment(id: string, metadata: Metadata | null | undefined): Department {
+  const meta = metadata ?? {};
+  return {
+    id: Number(id),
+    name: String(meta.name ?? ''),
+    startDate: meta.startDate ? new Date(String(meta.startDate)) : undefined,
+    endDate: meta.endDate ? new Date(String(meta.endDate)) : undefined,
+    notes: meta.notes ? String(meta.notes) : undefined,
+    keywords: meta.keywords ? String(meta.keywords).split(constants.KEYWORDS_SEPARATOR) : [],
+    image: meta.image ? String(meta.image) : undefined,
+    employees: []
+  };
+}
+/**
+ * Maps a Chroma record (id + metadata) read from the "employees" collection back into an
+ * Employee object.
+ *
+ * @param id the Chroma record id, i.e. the employee id, stored as a string
+ * @param metadata the metadata record read back from the "employees" collection
+ * @returns the reconstructed Employee object
+ */
+export function toEmployee(id: string, metadata: Metadata | null | undefined): Employee {
+  const meta = metadata ?? {};
+  return {
+    id: Number(id),
+    departmentId: Number(meta[constants.DEPARTMENT_ID_FIELD]),
+    firstName: String(meta.firstName ?? ''),
+    lastName: String(meta.lastName ?? ''),
+    title: meta.title as Title,
+    phone: String(meta.phone ?? ''),
+    mail: String(meta.mail ?? ''),
+    streetName: meta.streetName ? String(meta.streetName) : undefined,
+    houseNumber: meta.houseNumber ? String(meta.houseNumber) : undefined,
+    postalCode: meta.postalCode ? String(meta.postalCode) : undefined,
+    locality: meta.locality ? String(meta.locality) : undefined,
+    province: meta.province ? String(meta.province) : undefined,
+    country: meta.country ? String(meta.country) : undefined
+  };
 }

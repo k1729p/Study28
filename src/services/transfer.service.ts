@@ -1,6 +1,7 @@
 import { RepositoryType } from "../repositories/repository-type.js";
 import { DepartmentRepository } from "../repositories/department.repository.js";
 import { CassandraDepartmentRepository } from "../repositories/cassandra/cassandra.department.repository.js";
+import { ChromaDepartmentRepository } from "../repositories/chroma/chroma.department.repository.js";
 import { ElasticsearchDepartmentRepository } from "../repositories/elasticsearch/elasticsearch.department.repository.js";
 import { MongoDbDepartmentRepository } from "../repositories/mongodb/mongodb.department.repository.js";
 import { MySqlDepartmentRepository } from "../repositories/mysql/mysql.department.repository.js";
@@ -16,10 +17,11 @@ export class TransferService {
   private readonly strategies: Partial<Record<RepositoryType, DepartmentRepository>>;
   /**
    * Initializes the service with available repository strategies.
-   */  
+   */
   constructor() {
     this.strategies = {
       [RepositoryType.Cassandra]: new CassandraDepartmentRepository(),
+      [RepositoryType.Chroma]: new ChromaDepartmentRepository(),
       [RepositoryType.Elasticsearch]: new ElasticsearchDepartmentRepository(),
       [RepositoryType.MongoDB]: new MongoDbDepartmentRepository(),
       [RepositoryType.MySQL]: new MySqlDepartmentRepository(),
@@ -45,6 +47,6 @@ export class TransferService {
       throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
     }
     return await strategy.transferEmployees(
-          sourceDepartmentId, targetDepartmentId, employeeIds);
+      sourceDepartmentId, targetDepartmentId, employeeIds);
   }
 }

@@ -2,6 +2,7 @@ import { Employee } from "../models/employee.js";
 import { RepositoryType } from "../repositories/repository-type.js";
 import { EmployeeRepository } from "../repositories/employee.repository.js";
 import { CassandraEmployeeRepository } from "../repositories/cassandra/cassandra.employee.repository.js";
+import { ChromaEmployeeRepository } from "../repositories/chroma/chroma.employee.repository.js";
 import { ElasticsearchEmployeeRepository } from "../repositories/elasticsearch/elasticsearch.employee.repository.js";
 import { MongoDbEmployeeRepository } from "../repositories/mongodb/mongodb.employee.repository.js";
 import { MySqlEmployeeRepository } from "../repositories/mysql/mysql.employee.repository.js";
@@ -10,20 +11,19 @@ import { OracleEmployeeRepository } from "../repositories/oracle/oracle.employee
 import { PostgreSqlEmployeeRepository } from "../repositories/postgresql/postgresql.employee.repository.js";
 import { RedisEmployeeRepository } from "../repositories/redis/redis.employee.repository.js";
 import { SqlServerEmployeeRepository } from "../repositories/sql-server/sql-server.employee.repository.js";
-
 /**
  * This service class provides methods to manage employees.
  * It includes methods to get, set, create, update, and delete employees.
  */
 export class EmployeeService {
-
   private readonly strategies: Partial<Record<RepositoryType, EmployeeRepository>>;
   /**
    * Initializes the service with available repository strategies.
-   */  
+   */
   constructor() {
     this.strategies = {
       [RepositoryType.Cassandra]: new CassandraEmployeeRepository(),
+      [RepositoryType.Chroma]: new ChromaEmployeeRepository(),
       [RepositoryType.Elasticsearch]: new ElasticsearchEmployeeRepository(),
       [RepositoryType.MongoDB]: new MongoDbEmployeeRepository(),
       [RepositoryType.MySQL]: new MySqlEmployeeRepository(),
