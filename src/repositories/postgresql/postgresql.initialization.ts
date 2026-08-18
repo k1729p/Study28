@@ -5,7 +5,7 @@ import { poolPromise } from "./postgresql.pool.js";
 import { Initialization } from "../initialization.js";
 import * as constants from "./postgresql.constants.js";
 /**
- * This service class provides methods to initialize database and load data.
+ * This repository class provides methods to initialize database and load data.
  */
 export class PostgreSqlInitialization implements Initialization {
   /**

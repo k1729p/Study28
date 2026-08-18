@@ -1,6 +1,6 @@
 import { Department } from "../models/department.js";
 /**
- * This service class provides methods to manage departments.
+ * This repository class provides methods to manage departments.
  * It includes CRUD methods to create, read, update, and delete departments.
  */
 export interface DepartmentRepository {

@@ -3,8 +3,8 @@
  */
 export enum RepositoryType {
     Cassandra = 'Cassandra',
-    Elasticsearch= 'Elasticsearch',
     Chroma = 'Chroma',
+    Elasticsearch= 'Elasticsearch',
     MongoDB = 'MongoDB',
     MySQL = 'MySQL',
     Oracle = 'Oracle',

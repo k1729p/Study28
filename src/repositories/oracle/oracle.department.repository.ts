@@ -5,7 +5,7 @@ import { DepartmentRepository } from "../department.repository.js";
 import * as mappers from "../mappers.js";
 import * as constants from "./oracle.constants.js";
 /**
- * This service class provides methods to manage departments.
+ * This repository class provides methods to manage departments.
  * It includes CRUD methods to create, read, update, and delete departments.
  */
 export class OracleDepartmentRepository implements DepartmentRepository {

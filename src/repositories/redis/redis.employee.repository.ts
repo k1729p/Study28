@@ -1,7 +1,7 @@
 import { Employee } from "../../models/employee.js";
 import { EmployeeRepository } from "../employee.repository.js";
 /**
- * This service class provides methods to manage employees.
+ * This repository class provides methods to manage employees.
  * It includes CRUD methods to create, read, update, and delete employees.
  */
 export class RedisEmployeeRepository implements EmployeeRepository {

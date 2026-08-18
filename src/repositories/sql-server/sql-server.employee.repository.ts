@@ -6,7 +6,7 @@ import { EmployeeRepository } from "../employee.repository.js";
 import * as mappers from "../mappers.js";
 import * as constants from "./sql-server.constants.js";
 /**
- * This service class provides methods to manage employees.
+ * This repository class provides methods to manage employees.
  * It includes CRUD methods to create, read, update, and delete employees.
  */
 export class SqlServerEmployeeRepository implements EmployeeRepository {

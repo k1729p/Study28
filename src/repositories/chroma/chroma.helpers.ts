@@ -4,7 +4,6 @@ import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { Title } from "../../models/title.js";
 import * as constants from "./chroma.constants.js";
-
 /**
  * A flat, primitive-only record.
  * This is the shape Chroma requires for collection metadata
@@ -59,7 +58,10 @@ export function toDepartmentMetadata(department: Department): ChromaMetadata {
 }
 /**
  * Maps an Employee to the metadata record stored in the "employees" collection.
- * `departmentId` is always included so employees can be grouped back under their department when reading.
+ * Optional fields are omitted entirely (rather than set to null/undefined)
+ * since Chroma metadata values must be string, number, or boolean.
+ * The field `departmentId` is always included so employees
+ * can be grouped back under their department when reading.
  * 
  * @param employee the employee to convert
  * @returns the metadata record for the employee
@@ -94,11 +96,10 @@ export function toEmployeeMetadata(employee: Employee): ChromaMetadata {
   return metadata;
 }
 /**
- * Maps a Chroma record (id + metadata) read from the "departments" collection back into a
- * Department object.
- * The returned department's `employees` array is always empty - departments and employees
- * live in two separate collections, so callers that need a populated `employees` array
- * must attach them separately (see ChromaDepartmentRepository).
+ * Maps a Chroma record (id + metadata) read from the "departments" collection
+ * back into a Department object.
+ * The returned department's `employees` array is always empty, so callers that need
+ * a populated `employees` array must attach them separately.
  *
  * @param id the Chroma record id, i.e. the department id, stored as a string
  * @param metadata the metadata record read back from the "departments" collection
@@ -118,8 +119,8 @@ export function toDepartment(id: string, metadata: Metadata | null | undefined):
   };
 }
 /**
- * Maps a Chroma record (id + metadata) read from the "employees" collection back into an
- * Employee object.
+ * Maps a Chroma record (id + metadata) read from the "employees" collection
+ * back into an Employee object.
  *
  * @param id the Chroma record id, i.e. the employee id, stored as a string
  * @param metadata the metadata record read back from the "employees" collection

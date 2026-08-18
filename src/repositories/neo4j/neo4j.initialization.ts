@@ -3,7 +3,7 @@ import { driverPromise } from "./neo4j.pool.js";
 import { Initialization } from "../initialization.js";
 import * as constants from "./neo4j.constants.js";
 /**
- * This service class provides methods to initialize database and load data.
+ * This repository class provides methods to initialize database and load data.
  */
 export class Neo4jInitialization implements Initialization {
   /**

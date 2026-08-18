@@ -1,6 +1,6 @@
 import { Employee } from "../models/employee.js";
 /**
- * This service interface provides methods to manage employees.
+ * This repository interface provides methods to manage employees.
  * It includes CRUD methods to create, read, update, and delete employees.
  */
 export interface EmployeeRepository {

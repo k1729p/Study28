@@ -7,7 +7,11 @@ import * as constants from "./chroma.constants.js";
 import * as helpers from "./chroma.helpers.js";
 import { clientPromise } from "./chroma.pool.js";
 /**
- * This service class provides methods to initialize database and load data.
+ * This repository class provides methods to initialize database and load data.
+ * 
+ * Since this application never performs a similarity search over these records,
+ * both collections are created with `embeddingFunction: null` and
+ * a small deterministic placeholder vector is supplied on every write.
  */
 export class ChromaInitialization implements Initialization {
   /**
@@ -19,14 +23,8 @@ export class ChromaInitialization implements Initialization {
     const client = await clientPromise;
     try {
       await this.dropCollections(client);
-      const departmentsCollection = await client.createCollection({
-        name: constants.DEPARTMENTS_COLLECTION,
-        embeddingFunction: null
-      });
-      const employeesCollection = await client.createCollection({
-        name: constants.EMPLOYEES_COLLECTION,
-        embeddingFunction: null
-      });
+      const departmentsCollection = await client.createCollection(constants.DEPARTMENTS_COLLECTION_OPTIONS);
+      const employeesCollection = await client.createCollection(constants.EMPLOYEES_COLLECTION_OPTIONS);
       console.log("ChromaInitialization.loadInitialData(): dropped and created collections");
       if (departments.length > 0) {
         await this.insertDepartments(departmentsCollection, departments);

@@ -6,7 +6,7 @@ import * as mappers from "../mappers.js";
 import * as constants from "./elasticsearch.constants.js";
 
 /**
- * This service class provides methods to manage departments.
+ * This repository class provides methods to manage departments.
  * It includes CRUD methods to create, read, update, and delete departments.
  */
 export class ElasticsearchDepartmentRepository implements DepartmentRepository {
@@ -66,8 +66,9 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
           department.employees.push(mappers.mapDatabaseRowToEmployee(hit._source, true));
         }
       }
-      console.log("ElasticsearchDepartmentRepository.getDepartments():");
-      return Array.from(departmentMap.values());
+      const departments = Array.from(departmentMap.values());
+      console.log("ElasticsearchDepartmentRepository.getDepartments(): departments count[%d]", departments.length);
+      return departments;
     } catch (err) {
       console.error("ElasticsearchDepartmentRepository.getDepartments():", err);
       throw err;

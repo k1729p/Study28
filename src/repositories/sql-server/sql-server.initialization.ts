@@ -5,7 +5,7 @@ import { poolPromise } from "./sql-server.pool.js";
 import { Initialization } from "../initialization.js";
 import * as constants from "./sql-server.constants.js";
 /**
- * This service class provides methods to initialize database and load data.
+ * This repository class provides methods to initialize database and load data.
  */
 export class SqlServerInitialization implements Initialization {
   /**

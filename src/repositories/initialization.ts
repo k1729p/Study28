@@ -1,6 +1,6 @@
 import { Department } from "../models/department.js";
 /**
- * This service interface provides methods to initialize database and load data.
+ * This repository interface provides methods to initialize database and load data.
  */
 export interface Initialization {
   /**

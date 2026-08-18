@@ -3,7 +3,7 @@ import { clientPromise } from "./cassandra.pool.js";
 import { Initialization } from "../initialization.js";
 import * as constants from "./cassandra.constants.js";
 /**
- * This service class provides methods to initialize the database and load data.
+ * This repository class provides methods to initialize the database and load data.
  */
 export class CassandraInitialization implements Initialization {
   /**

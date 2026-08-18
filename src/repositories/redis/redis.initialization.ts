@@ -3,7 +3,7 @@ import { clientPromise } from "./redis.pool.js";
 import { Initialization } from "../initialization.js";
 
 /**
- * This service class provides methods to initialize the database and load data.
+ * This repository class provides methods to initialize the database and load data.
  */
 export class RedisInitialization implements Initialization {
   /**

@@ -7,7 +7,7 @@ import { poolPromise } from "./mongodb.pool.js";
 import { Initialization } from "../initialization.js";
 
 /**
- * This service class provides methods to initialize database and load data.
+ * This repository class provides methods to initialize database and load data.
  */
 export class MongoDbInitialization implements Initialization {
   /**

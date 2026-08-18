@@ -7,75 +7,79 @@
         body {
           background-color: lightyellow
         }
-        th, td {
-        }
         td.black {
-          padding: 5px;
+          padding: 10px;
           border: 3px solid black;
         }
-        td.green {
-          padding: 5px;
-          border: 3px solid green;
-        }
         td.red {
-          padding: 5px;
+          padding: 10px;
           border: 3px solid red;
         }
+        td.green {
+          padding: 10px;
+          border: 3px solid green;
+        }
+        td.blue {
+          padding: 10px;
+          border: 3px solid blue;
+        }
         td.orange {
-          padding: 5px;
+          padding: 10px;
           border: 3px solid orange;
+        }
+        label.combo {
+          font-size: 1.5em;
+        }
+        select.combo {
+          font-size: 1.5em;
+          font-weight: bold;
         }
     </style>
 </head>
 <body>
 <h1>Study 28</h1>
 
-<table>
-    <tr>
-        <td class="green">Get All Departments</td>
-        <td class="green"><a href="http://localhost:8028/api/departments/">http://localhost:8028/api/departments/</a></td>
-    </tr>
-    <tr>
-        <td class="green">Get Department By Id</td>
-        <td class="green"><a href="http://localhost:8028/api/departments/1">http://localhost:8028/api/departments/1</a></td>
-    </tr>
-    <tr>
-        <td class="green">Get All Employees</td>
-        <td class="green"><a href="http://localhost:8028/api/employees/">http://localhost:8028/api/employees/</a></td>
-    </tr>
-    <tr>
-        <td class="green">Get Employee By Id</td>
-        <td class="green"><a href="http://localhost:8028/api/employees/1">http://localhost:8028/api/employees/1</a></td>
-    </tr>
-</table>
-
+<form>
+  <label class="combo" for="repositoryType">Choose a database:</label>
+  <select class="combo" id="repositoryType" name="repositoryType">
+    <option value="cassandra">Cassandra</option>
+    <option value="chroma">Chroma</option>
+    <option value="elasticsearch">Elasticsearch</option>
+    <option value="mongodb">MongoDB</option>
+    <option value="mysql">MySQL</option>
+    <option value="oracle">Oracle</option>
+    <option value="neo4j">Neo4j</option>
+    <option value="postgresql">PostgreSQL</option>
+    <option value="redis">Redis</option>
+    <option value="sqlserver">SQLServer</option>
+  </select>
+  <table>
+    <tr><td class="red">
+      Get All Departments
+    </td><td class="red">
+      <input type="submit" formaction="http://localhost:8028/api/departments/" value="http://localhost:8028/api/departments/">
+    </td></tr>
+    <tr><td class="green">
+      Get Department By Id
+    </td><td class="green">
+      <input type="submit" formaction="http://localhost:8028/api/departments/1" value="http://localhost:8028/api/departments/1">
+    </td></tr>
+    <tr><td class="blue">
+      Get All Employees
+    </td><td class="blue">
+      <input type="submit" formaction="http://localhost:8028/api/employees/" value="http://localhost:8028/api/employees/">
+    </td></tr>
+    <tr><td class="orange">
+      Get Employee By Id
+    </td><td class="orange">
+      <input type="submit" formaction="http://localhost:8028/api/employees/1" value="http://localhost:8028/api/employees/1">
+    </td></tr>
+  </table>
+</form>
 <hr>
-
-<table>
-    <tr>
-        <td class="black">bbb</td>
-        <td class="black">bbb</td>
-    </tr>
-    <tr>
-        <td class="red">rrr</td>
-        <td class="red">rrr</td>
-    </tr>
-    <tr><td colspan="2" class="green"></td></tr>
-    <tr>
-        <td class="green">ggg</td>
-        <td class="green">ggg</td>
-    </tr>
-    <tr>
-        <td class="orange">ooo</td>
-        <td class="orange">ooo</td>
-    </tr>
-</table>
-<hr/>
 <h3>Neo4j browser: <a href="http://localhost:7474">http://localhost:7474</a></h3>
 Database user: neo4j<br>
 Password: mikimiki<br>
-<hr/>
-<h3>Chroma health: <a href="http://localhost:8000/api/v2/heartbeat">http://localhost:8000/api/v2/heartbeat</a></h3>
 <hr/>
 </body>
 </html>

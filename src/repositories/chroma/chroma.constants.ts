@@ -17,6 +17,20 @@ export const DEPARTMENTS_COLLECTION = 'departments';
  */
 export const EMPLOYEES_COLLECTION = 'employees';
 /**
+ * Departments collection options.
+ */
+export const DEPARTMENTS_COLLECTION_OPTIONS = {
+  name: DEPARTMENTS_COLLECTION,
+  embeddingFunction: null
+};
+/**
+ * Employees collection options.
+ */
+export const EMPLOYEES_COLLECTION_OPTIONS = {
+  name: EMPLOYEES_COLLECTION,
+  embeddingFunction: null
+};
+/**
  * Dimensionality of the placeholder vectors produced by {@link toPlaceholderEmbedding}.
  * Kept tiny on purpose: this application only ever fetches records by id or by
  * a metadata filter (department id), never by nearest-neighbour similarity, so

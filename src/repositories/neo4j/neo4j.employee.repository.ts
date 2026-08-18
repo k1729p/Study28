@@ -2,7 +2,7 @@ import { Employee } from "../../models/employee.js";
 import { EmployeeRepository } from "../employee.repository.js";
 import * as constants from "./neo4j.constants.js";
 /**
- * This service class provides methods to manage employees.
+ * This repository class provides methods to manage employees.
  * It includes CRUD methods to create, read, update, and delete employees.
  */
 export class Neo4jEmployeeRepository implements EmployeeRepository {
