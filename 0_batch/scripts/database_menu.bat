@@ -12,7 +12,7 @@ echo [A] All databases
 echo - - - - - - - - - - - - - - -
 echo [B] Cassandra
 echo [C] Chroma
-@REM echo [D] Elasticsearch
+echo [D] Elasticsearch
 echo - - - - - - - - - - - - - - -
 @REM echo [E] Neo4j
 echo [F] MongoDB
@@ -28,7 +28,7 @@ echo - - - - - - - - - - - - - - -
 echo Press any other key to quit
 set /P KEY="Select the key: "
 if /i "%KEY%"=="A" (
-  set REPOSITORY_TYPES=cassandra chroma mongodb mysql oracle postgresql sqlserver
+  set REPOSITORY_TYPES=cassandra chroma elasticsearch mongodb mysql oracle postgresql sqlserver
   call :RunCurl
 ) else if /i "%KEY%"=="B" (
   set REPOSITORY_TYPES=cassandra
@@ -37,8 +37,8 @@ if /i "%KEY%"=="A" (
   set REPOSITORY_TYPES=chroma
   call :RunCurl
 ) else if /i "%KEY%"=="D" (
-  @REM set REPOSITORY_TYPES=elasticsearch
-  @REM call :RunCurl
+  set REPOSITORY_TYPES=elasticsearch
+  call :RunCurl
 ) else if /i "%KEY%"=="E" (
   @REM set REPOSITORY_TYPES=neo4j
   @REM call :RunCurl

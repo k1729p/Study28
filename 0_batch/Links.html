@@ -38,9 +38,9 @@
 </head>
 <body>
 <h1>Study 28</h1>
-
+<hr>
 <form>
-  <label class="combo" for="repositoryType">Choose a database:</label>
+  <label class="combo" for="repositoryType">Express on <mark>Docker</mark>. Choose a database:</label>
   <select class="combo" id="repositoryType" name="repositoryType">
     <option value="cassandra">Cassandra</option>
     <option value="chroma">Chroma</option>
@@ -51,7 +51,7 @@
     <option value="neo4j">Neo4j</option>
     <option value="postgresql">PostgreSQL</option>
     <option value="redis">Redis</option>
-    <option value="sqlserver">SQLServer</option>
+    <option value="sqlserver">SQL Server</option>
   </select>
   <table>
     <tr><td class="red">
@@ -73,6 +73,44 @@
       Get Employee By Id
     </td><td class="orange">
       <input type="submit" formaction="http://localhost:8028/api/employees/1" value="http://localhost:8028/api/employees/1">
+    </td></tr>
+  </table>
+</form>
+<hr>
+<form>
+  <label class="combo" for="repositoryType">Express on <mark>local</mark>. Choose a database:</label>
+  <select class="combo" id="repositoryType" name="repositoryType">
+    <option value="cassandra">Cassandra</option>
+    <option value="chroma">Chroma</option>
+    <option value="elasticsearch">Elasticsearch</option>
+    <option value="mongodb">MongoDB</option>
+    <option value="mysql">MySQL</option>
+    <option value="oracle">Oracle</option>
+    <option value="neo4j">Neo4j</option>
+    <option value="postgresql">PostgreSQL</option>
+    <option value="redis">Redis</option>
+    <option value="sqlserver">SQL Server</option>
+  </select>
+  <table>
+    <tr><td class="red">
+      Get All Departments
+    </td><td class="red">
+      <input type="submit" formaction="http://localhost:8128/api/departments/" value="http://localhost:8128/api/departments/">
+    </td></tr>
+    <tr><td class="green">
+      Get Department By Id
+    </td><td class="green">
+      <input type="submit" formaction="http://localhost:8128/api/departments/1" value="http://localhost:8128/api/departments/1">
+    </td></tr>
+    <tr><td class="blue">
+      Get All Employees
+    </td><td class="blue">
+      <input type="submit" formaction="http://localhost:8128/api/employees/" value="http://localhost:8128/api/employees/">
+    </td></tr>
+    <tr><td class="orange">
+      Get Employee By Id
+    </td><td class="orange">
+      <input type="submit" formaction="http://localhost:8128/api/employees/1" value="http://localhost:8128/api/employees/1">
     </td></tr>
   </table>
 </form>

@@ -115,13 +115,12 @@ const client = new Client({
 ===  Elasticsearch DATABASE  ===
   https://www.elastic.co/docs/reference/elasticsearch/clients/javascript/installation
     npm install @elastic/elasticsearch
-  logs??? https://www.elastic.co/docs/reference/apm/agents/nodejs/logs
+From AI: added xpack.security.enabled=false. In modern Elasticsearch (8.x and 9.x), security is on by default.
+        To keep it consistent with your other repositories where you are likely connecting without
+        complex SSL/Auth setups for local study, disabling it is usually the path of least resistance.
 
-From AI: added xpack.security.enabled=false. In modern Elasticsearch (8.x and 9.x), security is on by default. To keep it consistent with your other repositories where you are likely connecting without complex SSL/Auth setups for local study, disabling it is usually the path of least resistance.
-  A few tips for Elasticsearch 9.3.0:
-  Virtual Memory: On Windows/Docker Desktop, this usually works fine. However, if the container crashes immediately with an "exit code 137" or a "max virtual memory areas" error, you might need to run wsl -d docker-desktop and execute sysctl -w vm.max_map_count=262144.
-  Healthcheck: I included a healthcheck using curl. This ensures your Node.js app doesn't try to connect before the Elasticsearch engine has fully finished its internal "bootstrap" checks.
-  Are you planning to use the official @elastic/elasticsearch client for the repository implementation in your Node.js app?
+Elastic APM is an application performance monitoring system built on the Elastic Stack.    
+  https://www.elastic.co/docs/reference/apm/observability/apm
 #################################################################################
 ===  MongoDB DATABASE  ===
 In Docker container "mongodb", in "Exec" tab:

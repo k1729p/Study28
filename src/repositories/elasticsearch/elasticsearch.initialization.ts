@@ -4,7 +4,6 @@ import { Department } from "../../models/department.js";
 import { clientPromise } from "./elasticsearch.pool.js";
 import { Initialization } from "../initialization.js";
 import * as constants from "./elasticsearch.constants.js";
-
 /**
  * This repository class provides methods to initialize database and load data.
  */
@@ -48,15 +47,7 @@ export class ElasticsearchInitialization implements Initialization {
           _id: department.id.toString()
         }
       },
-      {
-        id: department.id,
-        name: department.name,
-        startDate: department.startDate,
-        endDate: department.endDate,
-        notes: department.notes,
-        keywords: department.keywords || [],
-        image: department.image
-      }
+      constants.DEPARTMENT_TO_DOCUMENT(department)
     ]);
     await client.bulk({ refresh: true, operations });
     console.log("ElasticsearchInitialization.insertDepartments(): departments count[%d]", departments.length);
@@ -81,21 +72,7 @@ export class ElasticsearchInitialization implements Initialization {
           _id: employee.id.toString()
         }
       },
-      {
-        id: employee.id,
-        departmentId: employee.departmentId,
-        firstName: employee.firstName,
-        lastName: employee.lastName,
-        title: employee.title,
-        phone: employee.phone,
-        mail: employee.mail,
-        streetName: employee.streetName,
-        houseNumber: employee.houseNumber,
-        postalCode: employee.postalCode,
-        locality: employee.locality,
-        province: employee.province,
-        country: employee.country
-      }
+      constants.EMPLOYEE_TO_DOCUMENT(employee)
     ]);
     await client.bulk({ refresh: true, operations });
     console.log("ElasticsearchInitialization.insertEmployees(): employees count[%d]", employees.length);

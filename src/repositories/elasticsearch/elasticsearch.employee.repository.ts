@@ -1,5 +1,8 @@
+import { errors } from '@elastic/elasticsearch';
+
 import { Employee } from "../../models/employee.js";
 import { EmployeeRepository } from "../employee.repository.js";
+import { clientPromise } from "./elasticsearch.pool.js";
 import * as constants from "./elasticsearch.constants.js";
 /**
  * This repository class provides methods to manage employees.
@@ -12,13 +15,41 @@ export class ElasticsearchEmployeeRepository implements EmployeeRepository {
    * @return void
    */
   async createEmployee(employee: Employee): Promise<void> {
+    const client = await clientPromise;
+    try {
+      await client.index({
+        index: constants.INDEX_EMPLOYEES,
+        id: employee.id.toString(),
+        document: constants.EMPLOYEE_TO_DOCUMENT(employee),
+        refresh: true // Ensures the data is immediately available for searching
+      });
+    } catch (err) {
+      console.error("ElasticsearchEmployeeRepository.createEmployee():", err);
+      throw err;
+    }
+    console.log("ElasticsearchEmployeeRepository.createEmployee(): employee id[%d]", employee.id);
   }
   /**
    * Gets the employees.
    * @returns an array of Employee objects
    */
   async getEmployees(): Promise<Employee[]> {
-    return [];
+    const client = await clientPromise;
+    try {
+      const searchResponse = await client.search({
+        index: constants.INDEX_EMPLOYEES,
+        size: constants.MAX_RESULTS,
+        sort: [{ ['id']: 'asc' }]
+      });
+      const employees = searchResponse.hits.hits
+        .filter(hit => hit._source)
+        .map(hit => constants.SOURCE_TO_EMPLOYEE(hit._source));
+      console.log("ElasticsearchEmployeeRepository.getEmployees(): employees count[%d]", employees.length);
+      return employees;
+    } catch (err) {
+      console.error("ElasticsearchEmployeeRepository.getEmployees():", err);
+      throw err;
+    }
   }
   /**
    * Gets the employee by id.
@@ -26,14 +57,51 @@ export class ElasticsearchEmployeeRepository implements EmployeeRepository {
    * @returns the Employee object if found, otherwise undefined
    */
   async getEmployee(id: number): Promise<Employee | undefined> {
-    return undefined;
+    const client = await clientPromise;
+    try {
+      const employeeGetResponse = await client.get(
+        { index: constants.INDEX_EMPLOYEES, id: id.toString() },
+        { ignore: [404] }
+      );
+      if (!employeeGetResponse.found || !employeeGetResponse._source) {
+        console.log("ElasticsearchEmployeeRepository.getEmployee(): no employee found, employee id[%d]", id);
+        return undefined;
+      }
+      console.log("ElasticsearchEmployeeRepository.getEmployee(): employee id[%d]", id);
+      return constants.SOURCE_TO_EMPLOYEE(employeeGetResponse._source);
+    } catch (err) {
+      console.error("ElasticsearchEmployeeRepository.getEmployee():", err);
+      throw err;
+    }
   }
   /**
    * Updates an existing employee.
+   *
+   * This performs a partial update (Elasticsearch 'update' API), merging the given fields
+   * into the existing document rather than replacing it outright.
+   * 
    * @param employee the employee to be updated
    * @returns void
    */
   async updateEmployee(employee: Employee): Promise<void> {
+    const client = await clientPromise;
+    try {
+      await client.update({
+        index: constants.INDEX_EMPLOYEES,
+        id: employee.id.toString(),
+        doc: constants.EMPLOYEE_TO_DOCUMENT(employee),
+        refresh: true
+      });
+    } catch (err) {
+      if (err instanceof errors.ResponseError && err.statusCode === 404) {
+        console.log("ElasticsearchEmployeeRepository.updateEmployee(): " +
+          "employee not found, employee id[%d]", employee.id);
+        return;
+      }
+      console.error("ElasticsearchEmployeeRepository.updateEmployee():", err);
+      throw err;
+    }
+    console.log("ElasticsearchEmployeeRepository.updateEmployee(): employee id[%d]", employee.id);
   }
   /**
    * Deletes a employee by its id.
@@ -42,5 +110,16 @@ export class ElasticsearchEmployeeRepository implements EmployeeRepository {
    * @returns void
    */
   async deleteEmployee(id: number): Promise<void> {
+    const client = await clientPromise;
+    try {
+      await client.delete(
+        { index: constants.INDEX_EMPLOYEES, id: id.toString(), refresh: true },
+        { ignore: [404] }
+      );
+    } catch (err) {
+      console.error("ElasticsearchEmployeeRepository.deleteEmployee():", err);
+      throw err;
+    }
+    console.log("ElasticsearchEmployeeRepository.deleteEmployee(): employee id[%d]", id);
   }
 }

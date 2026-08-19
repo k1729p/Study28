@@ -10,6 +10,7 @@ import { describe } from "vitest";
 describe.for([
   RepositoryType.Cassandra,
   RepositoryType.Chroma,
+  RepositoryType.Elasticsearch,
   RepositoryType.MongoDB,
   RepositoryType.MySQL,
   RepositoryType.Oracle,

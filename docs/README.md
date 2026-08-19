@@ -56,16 +56,16 @@ Project sections:
 
 | Name | Type | Storage Abstraction | Query Language | Implementation |
 | :--- | :--- | :--- | :--- | :--- |
-| [Cassandra][ds01] | Wide-Column Store | Table | CQL (Cassandra Query Language) | 🛠️ |
-| [Chroma][ds02] | Vector Database | Collection | Chroma API (Python/JS Client) | 🛠️ |
+| [Cassandra][ds01] | Wide-Column Store | Table | CQL (Cassandra Query Language) | ✔️ |
+| [Chroma][ds02] | Vector Database | Collection | Chroma API (Python/JS Client) | ✔️ |
 | [Elasticsearch][ds03] | Search Engine / Document Store | Index / Document | Query DSL (JSON, built on Lucene) | 🛠️ |
 | [MongoDB][ds04] | Document Store | Collection | MQL (MongoDB Query Language) | ✔️ |
-| [MySQL][ds05] | Relational | Table | SQL | 🛠️ |
+| [MySQL][ds05] | Relational | Table | SQL | ✔️ |
 | [Neo4j][ds06] | Graph Database | Node / Relationship | Cypher | 🛠️ |
-| [Oracle][ds07] | Relational | Table | SQL / PL/SQL | 🛠️ |
+| [Oracle][ds07] | Relational | Table | SQL / PL/SQL | ✔️ |
 | [PostgreSQL][ds08] | Relational | Table | SQL | ✔️ |
 | [Redis][ds09] | Key-Value / Cache | Hash / String | Redis Commands | 🛠️ |
-| [SQL Server][ds10] | Relational | Table | T-SQL | 🛠️ |
+| [SQL Server][ds10] | Relational | Table | T-SQL | ✔️ |
 
 [ds01]: <https://cassandra.apache.org/_/index.html> "Apache Cassandra"
 [ds02]: <https://www.trychroma.com/> "Chroma"
@@ -261,6 +261,7 @@ Action: \
 | [Express](https://expressjs.com/) | Web framework for Node.js |
 | [Cassandra glossary](https://cassandra.apache.org/_/glossary.html) | |
 | [Chroma Data Model](https://docs.trychroma.com/reference/architecture/overview#chroma-data-model) | |
+| [Elastic glossary](https://www.elastic.co/docs/reference/glossary) | |
 | [Neo4j browser](http://localhost:7474/browser/) | |
 | [Neo4j Cypher cheat sheet](https://neo4j.com/docs/cypher-cheat-sheet/) | Cypher is Neo4j’s graph query language |
 | [Neo4j Cypher manual](https://neo4j.com/docs/cypher-manual/) | |
