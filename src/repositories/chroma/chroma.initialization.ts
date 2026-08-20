@@ -7,17 +7,18 @@ import * as constants from "./chroma.constants.js";
 import * as helpers from "./chroma.helpers.js";
 import { clientPromise } from "./chroma.pool.js";
 /**
- * This repository class provides methods to initialize database and load data.
- * 
- * Since this application never performs a similarity search over these records,
- * both collections are created with `embeddingFunction: null` and
- * a small deterministic placeholder vector is supplied on every write.
+ * Repository class providing methods to initialize the database and load seed data.
  */
 export class ChromaInitialization implements Initialization {
   /**
-   * Loads the initial data into the database.
+   * Loads initial department data into the database.
    * 
-   * @param departments the array of departments
+   * Since this application never performs a similarity search over these records,
+   * both collections are created with `embeddingFunction: null` and
+   * a small deterministic placeholder vector is supplied on every write.
+   * 
+   * @param departments - An array of Department objects to populate.
+   * @returns A promise that resolves when data loading is complete.
    */
   async loadInitialData(departments: Department[]) {
     const client = await clientPromise;

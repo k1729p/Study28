@@ -5,14 +5,15 @@ import { DepartmentRepository } from "../department.repository.js";
 import { clientPromise } from "./elasticsearch.pool.js";
 import * as constants from "./elasticsearch.constants.js";
 /**
- * This repository class provides methods to manage departments.
- * It includes CRUD methods to create, read, update, and delete departments.
+ * Repository class providing methods to manage departments.
+ * Includes CRUD operations to create, read, update, and delete departments.
  */
 export class ElasticsearchDepartmentRepository implements DepartmentRepository {
   /**
    * Creates a new department.
-   * @param department the department to be created
-   * @return void
+   * 
+   * @param department - The department to be created.
+   * @returns A promise that resolves when the department is created.
    */
   async createDepartment(department: Department): Promise<void> {
     const client = await clientPromise;
@@ -30,8 +31,9 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
     console.log("ElasticsearchDepartmentRepository.createDepartment(): department id[%d]", department.id);
   }
   /**
-   * Gets the departments.
-   * @returns an array of Department objects
+   * Retrieves all departments.
+   * 
+   * @returns A promise that resolves to an array of Department objects.
    */
   async getDepartments(): Promise<Department[]> {
     const client = await clientPromise;
@@ -65,9 +67,10 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
     }
   }
   /**
-   * Gets the department by id, together with its employees.
-   * @param id the id of the department to retrieve
-   * @returns the Department object if found, otherwise undefined
+   * Retrieves a department by its ID.
+   * 
+   * @param id - The ID of the department to retrieve.
+   * @returns A promise that resolves to the Department object if found, otherwise undefined.
    */
   async getDepartment(id: number): Promise<Department | undefined> {
     const client = await clientPromise;
@@ -77,7 +80,7 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
         { ignore: [404] }
       );
       if (!departmentGetResponse.found || !departmentGetResponse._source) {
-        console.log("ElasticsearchDepartmentRepository.getDepartment(): no department found, department id[%d]", id);
+        console.log("ElasticsearchDepartmentRepository.getDepartment(): department not found, department id[%d]", id);
         return undefined;
       }
       const department = constants.SOURCE_TO_DEPARTMENT(departmentGetResponse._source);
@@ -104,12 +107,11 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
   }
   /**
    * Updates an existing department.
-   *
    * This performs a partial update of the department's own fields only (name, dates, notes, keywords, and image).
    * The document's 'employees' association is intentionally left untouched.
    * 
-   * @param department the department to be updated
-   * @returns void
+   * @param department - The department object containing updated values.
+   * @returns A promise that resolves when the update is complete.
    */
   async updateDepartment(department: Department): Promise<void> {
     const client = await clientPromise;
@@ -132,33 +134,33 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
     console.log("ElasticsearchDepartmentRepository.updateDepartment(): department id[%d]", department.id);
   }
   /**
-   * Deletes a department together with all of its employees.
-   * @param departmentId the id of the department to be deleted
-   * @returns void
+   * Deletes a department by its ID.
+   * 
+   * @param id - The ID of the department to be deleted.
+   * @returns A promise that resolves when the department is deleted.
    */
-  async deleteDepartment(departmentId: number): Promise<void> {
+  async deleteDepartment(id: number): Promise<void> {
     const client = await clientPromise;
     try {
       await client.deleteByQuery({
         index: constants.INDEX_EMPLOYEES,
         query: {
-          term: { ['departmentId']: departmentId }
+          term: { ['departmentId']: id }
         },
         refresh: true
       });
       await client.delete(
-        { index: constants.INDEX_DEPARTMENTS, id: departmentId.toString(), refresh: true },
+        { index: constants.INDEX_DEPARTMENTS, id: id.toString(), refresh: true },
         { ignore: [404] }
       );
-      console.log("ElasticsearchDepartmentRepository.deleteDepartment(): department id[%d]", departmentId);
+      console.log("ElasticsearchDepartmentRepository.deleteDepartment(): department id[%d]", id);
     } catch (err) {
       console.error("ElasticsearchDepartmentRepository.deleteDepartment():", err);
       throw err;
     }
   }
   /**
-   * Transfers the employees from source department to target department.
-   *
+   * Transfers employees from a source department to a target department.
    * The 'update_by_query' API accepts a query to select the matching documents and
    * a Painless script to mutate each one in place. A single request therefore finds every employee
    * that belongs to the source department AND is listed in 'employeeIds', and reassigns their 'departmentId'
@@ -166,12 +168,16 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
    * The 'ctx' is the per-document update context that Elasticsearch exposes to the script.
    * The 'ctx._source' is the document being updated. The 'params' are the values passed in from the request.
    * 
-   * @param sourceDepartmentId the id of the source department
-   * @param targetDepartmentId the id of the target department
-   * @param employeeIds the transferred employees array
-   * @returns void
+   * @param sourceDepartmentId - The ID of the source department.
+   * @param targetDepartmentId - The ID of the target department.
+   * @param employeeIds - An array of IDs representing the employees to be transferred.
+   * @returns A promise that resolves when the transfer is complete.
    */
   async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]): Promise<void> {
+    if (employeeIds.length === 0) {
+      console.warn("ElasticsearchDepartmentRepository.transferEmployees(): no employee ids provided, nothing to transfer");
+      return;
+    }
     const client = await clientPromise;
     try {
       const updateByQueryResponse = await client.updateByQuery({

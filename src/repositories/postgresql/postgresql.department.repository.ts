@@ -5,22 +5,22 @@ import { DepartmentRepository } from "../department.repository.js";
 import * as mappers from "../mappers.js";
 import * as constants from "./postgresql.constants.js";
 /**
- * This repository class provides methods to manage departments.
- * It includes CRUD methods to create, read, update, and delete departments.
+ * Repository class providing methods to manage departments.
+ * Includes CRUD operations to create, read, update, and delete departments.
  */
 export class PostgreSqlDepartmentRepository implements DepartmentRepository {
   /**
    * Creates a new department.
-   * @param department the department to be created
-   * @return void
+   * 
+   * @param department - The department to be created.
+   * @returns A promise that resolves when the department is created.
    */
   async createDepartment(department: Department) {
-
     const pool = await poolPromise;
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
-      const result = await client.query(constants.INSERT_DEPARTMENT_SQL, [
+      const queryResult = await client.query(constants.INSERT_DEPARTMENT_SQL, [
         department.id,
         department.name,
         department.startDate,
@@ -29,9 +29,10 @@ export class PostgreSqlDepartmentRepository implements DepartmentRepository {
         department.keywords,
         department.image
       ]);
-      if (!result.rowCount) {
+      if (!queryResult.rowCount) {
         await client.query('ROLLBACK');
-        console.log("PostgreSqlDepartmentRepository.createDepartment(): no department created with id[%d]",
+        console.log("PostgreSqlDepartmentRepository.createDepartment(): " +
+          "department not created, department id[%d]",
           department.id);
         return;
       }
@@ -46,16 +47,17 @@ export class PostgreSqlDepartmentRepository implements DepartmentRepository {
     console.log("PostgreSqlDepartmentRepository.createDepartment(): department id[%s]", department.id);
   }
   /**
-   * Gets the departments.
-   * @returns an array of Department objects
+   * Retrieves all departments.
+   * 
+   * @returns A promise that resolves to an array of Department objects.
    */
   async getDepartments(): Promise<Department[]> {
     const pool = await poolPromise;
     const client = await pool.connect();
     try {
-      const result = await client.query(constants.SELECT_DEPARTMENTS_SQL);
+      const queryResult = await client.query(constants.SELECT_DEPARTMENTS_SQL);
       const departmentMap = new Map<number, Department>();
-      for (const row of result.rows) {
+      for (const row of queryResult.rows) {
         let department = departmentMap.get(row.id);
         if (!department) {
           department = mappers.mapDatabaseRowToDepartment(row);
@@ -65,8 +67,9 @@ export class PostgreSqlDepartmentRepository implements DepartmentRepository {
           department.employees.push(mappers.mapDatabaseRowToEmployee(row, false));
         }
       }
-      console.log("PostgreSqlDepartmentRepository.getDepartments():");
-      return Array.from(departmentMap.values());
+      const departments = Array.from(departmentMap.values());
+      console.log("PostgreSqlDepartmentRepository.getDepartments(): departments count[%d]", departments.length);
+      return departments;
     } catch (err) {
       console.error("PostgreSqlDepartmentRepository.getDepartments():", err);
       throw err;
@@ -75,9 +78,10 @@ export class PostgreSqlDepartmentRepository implements DepartmentRepository {
     }
   }
   /**
-   * Gets the department by id.
-   * @param id the id of the department to retrieve
-   * @returns the Department object if found, otherwise undefined
+   * Retrieves a department by its ID.
+   * 
+   * @param id - The ID of the department to retrieve.
+   * @returns A promise that resolves to the Department object if found, otherwise undefined.
    */
   async getDepartment(id: number): Promise<Department | undefined> {
     const pool = await poolPromise;
@@ -85,7 +89,8 @@ export class PostgreSqlDepartmentRepository implements DepartmentRepository {
     try {
       const result = await client.query(constants.SELECT_DEPARTMENT_SQL, [id]);
       if (!result.rowCount) {
-        console.log("PostgreSqlDepartmentRepository.getDepartment(): no department found with id[%d]", id);
+        console.log("PostgreSqlDepartmentRepository.getDepartment(): " +
+          "department not found, department id[%d]", id);
         return undefined;
       }
       const rows = result.rows;
@@ -95,7 +100,7 @@ export class PostgreSqlDepartmentRepository implements DepartmentRepository {
           department.employees.push(mappers.mapDatabaseRowToEmployee(row, false));
         }
       }
-      console.log("PostgreSqlDepartmentRepository.getDepartment(): id[%d]", id);
+      console.log("PostgreSqlDepartmentRepository.getDepartment(): department id[%d]", id);
       return department;
     } catch (err) {
       console.error("PostgreSqlDepartmentRepository.getDepartment():", err);
@@ -106,8 +111,9 @@ export class PostgreSqlDepartmentRepository implements DepartmentRepository {
   }
   /**
    * Updates an existing department.
-   * @param department the department to be updated
-   * @returns void
+   * 
+   * @param department - The department object containing updated values.
+   * @returns A promise that resolves when the update is complete.
    */
   async updateDepartment(department: Department) {
     const pool = await poolPromise;
@@ -125,8 +131,8 @@ export class PostgreSqlDepartmentRepository implements DepartmentRepository {
       ]);
       if (!result.rowCount) {
         await client.query('ROLLBACK');
-        console.log("PostgreSqlDepartmentRepository.updateDepartment(): no department updated with id[%d]",
-          department.id);
+        console.log("PostgreSqlDepartmentRepository.updateDepartment(): " +
+          "department not updated, department id[%d]", department.id);
         return;
       }
       await client.query('COMMIT');
@@ -137,15 +143,16 @@ export class PostgreSqlDepartmentRepository implements DepartmentRepository {
     } finally {
       client.release();
     }
-    department.employees.forEach(employee => this.updateEmployeeDepartment(employee));
+    department.employees.forEach(employee => this.updateEmployeeInDepartment(employee));
     console.log("PostgreSqlDepartmentRepository.updateDepartment(): department id[%d]", department.id);
   }
   /**
-   * Updates the department in the employee.
+   * Updates an employee in the department.
+   * 
    * @param employee the employee
    * @returns void
    */
-  private async updateEmployeeDepartment(employee: Employee) {
+  private async updateEmployeeInDepartment(employee: Employee) {
     const pool = await poolPromise;
     const client = await pool.connect();
     try {
@@ -156,24 +163,24 @@ export class PostgreSqlDepartmentRepository implements DepartmentRepository {
       ]);
       if (!result.rowCount) {
         await client.query('ROLLBACK');
-        console.log("PostgreSqlDepartmentRepository.updateEmployeeDepartment(): no employee updated, employee id[%d]",
-          employee.id);
+        console.log("PostgreSqlDepartmentRepository.updateEmployeeInDepartment(): " +
+          "employee not updated, employee id[%d], departmentId[%d]", employee.id, employee.departmentId);
         return;
       }
       await client.query('COMMIT');
     } catch (err) {
       await client.query('ROLLBACK');
-      console.error("PostgreSqlDepartmentRepository.updateEmployeeDepartment():", err);
+      console.error("PostgreSqlDepartmentRepository.updateEmployeeInDepartment():", err);
       throw err;
     } finally {
       client.release();
     }
   }
   /**
-   * Deletes a department by its id.
-   *
-   * @param id the id of the department to be deleted
-   * @returns void
+   * Deletes a department by its ID.
+   * 
+   * @param id - The ID of the department to be deleted.
+   * @returns A promise that resolves when the department is deleted.
    */
   async deleteDepartment(id: number) {
     const pool = await poolPromise;
@@ -192,14 +199,18 @@ export class PostgreSqlDepartmentRepository implements DepartmentRepository {
     console.log("PostgreSqlDepartmentRepository.deleteDepartment(): department id[%d]", id);
   }
   /**
-   * Transfers the employees from source department to target department.
+   * Transfers employees from a source department to a target department.
    * 
-   * @param sourceDepartmentId the id of the source department
-   * @param targetDepartmentId the id of the target department
-   * @param employeeIds the transferred employees array
-   * @returns void
+   * @param sourceDepartmentId - The ID of the source department.
+   * @param targetDepartmentId - The ID of the target department.
+   * @param employeeIds - An array of IDs representing the employees to be transferred.
+   * @returns A promise that resolves when the transfer is complete.
    */
   async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]) {
+    if (employeeIds.length === 0) {
+      console.warn("PostgreSqlDepartmentRepository.transferEmployees(): no employee ids provided, nothing to transfer");
+      return;
+    }
     const pool = await poolPromise;
     const client = await pool.connect();
     try {
@@ -216,7 +227,7 @@ export class PostgreSqlDepartmentRepository implements DepartmentRepository {
       client.release();
     }
     console.log("PostgreSqlDepartmentRepository.transferEmployees(): " +
-      "transferred employees count[%d], source department id[%d], target department id[%d]",
-      employeeIds.length, sourceDepartmentId, targetDepartmentId);
+      "source department id[%d], target department id[%d], transferred employees count[%d]",
+      sourceDepartmentId, targetDepartmentId, employeeIds.length);
   }
 }

@@ -4,14 +4,15 @@ import { EmployeeRepository } from "../employee.repository.js";
 import * as mappers from "../mappers.js";
 import * as constants from "./postgresql.constants.js";
 /**
- * This repository class provides methods to manage employees.
- * It includes CRUD methods to create, read, update, and delete employees.
+ * Repository interface providing methods to manage employees.
+ * Includes CRUD operations to create, read, update, and delete employees.
  */
 export class PostgreSqlEmployeeRepository implements EmployeeRepository {
   /**
    * Creates a new employee.
-   * @param employee the employee to be created
-   * @return void
+   * 
+   * @param employee - The employee to be created.
+   * @returns A promise that resolves when the employee is created.
    */
   async createEmployee(employee: Employee) {
     const pool = await poolPromise;
@@ -35,8 +36,8 @@ export class PostgreSqlEmployeeRepository implements EmployeeRepository {
       ]);
       if (!result.rowCount) {
         await client.query('ROLLBACK');
-        console.log("PostgreSqlEmployeeRepository.createEmployee(): no employee created, employee id[%d]",
-          employee.id);
+        console.log("PostgreSqlEmployeeRepository.createEmployee(): " +
+          "employee not created, employee id[%d]", employee.id);
         return;
       }
       await client.query('COMMIT');
@@ -50,16 +51,18 @@ export class PostgreSqlEmployeeRepository implements EmployeeRepository {
     console.log("PostgreSqlEmployeeRepository.createEmployee(): employee id[%d]", employee.id);
   }
   /**
-   * Gets the employees.
-   * @returns an array of Employee objects
+   * Retrieves all employees.
+   * 
+   * @returns A promise that resolves to an array of Employee objects.
    */
   async getEmployees(): Promise<Employee[]> {
     const pool = await poolPromise;
     const client = await pool.connect();
     try {
-      const result = await client.query(constants.SELECT_EMPLOYEES_SQL);
-      console.log("PostgreSqlEmployeeRepository.getEmployees():");
-      return result.rows.map(row => mappers.mapDatabaseRowToEmployee(row, true));
+      const queryResult = await client.query(constants.SELECT_EMPLOYEES_SQL);
+      const employees = queryResult.rows.map(row => mappers.mapDatabaseRowToEmployee(row, true));
+      console.log("PostgreSqlDepartmentRepository.getEmployees(): employees count[%d]", employees.length);
+      return employees;
     } catch (err) {
       console.error("PostgreSqlEmployeeRepository.getEmployees():", err);
       throw err;
@@ -68,22 +71,22 @@ export class PostgreSqlEmployeeRepository implements EmployeeRepository {
     }
   }
   /**
-   * Gets the employee by id.
-   * @param id the id of the employee to retrieve
-   * @returns the Employee object if found, otherwise undefined
+   * Retrieves an employee by their ID.
+   * 
+   * @param id - The ID of the employee to retrieve.
+   * @returns A promise that resolves to the Employee object if found, otherwise undefined.
    */
   async getEmployee(id: number): Promise<Employee | undefined> {
     const pool = await poolPromise;
     const client = await pool.connect();
     try {
-      const result = await client.query(constants.SELECT_EMPLOYEE_SQL, [id]);
-      if (!result.rowCount) {
-        console.log("PostgreSqlEmployeeRepository.getEmployee(): no employee found, employee id[%d]",
-          id);
+      const queryResult = await client.query(constants.SELECT_EMPLOYEE_SQL, [id]);
+      if (!queryResult.rowCount) {
+        console.log("PostgreSqlEmployeeRepository.getEmployee(): employee not found, employee id[%d]", id);
         return undefined;
       }
       console.log("PostgreSqlEmployeeRepository.getEmployee(): employee id[%d]", id);
-      return mappers.mapDatabaseRowToEmployee(result.rows[0], true);
+      return mappers.mapDatabaseRowToEmployee(queryResult.rows[0], true);
     } catch (err) {
       console.error("PostgreSqlEmployeeRepository.getEmployee():", err);
       throw err;
@@ -93,15 +96,16 @@ export class PostgreSqlEmployeeRepository implements EmployeeRepository {
   }
   /**
    * Updates an existing employee.
-   * @param employee the employee to be updated
-   * @returns void
+   * 
+   * @param employee - The employee object containing updated values.
+   * @returns A promise that resolves when the update is complete.
    */
   async updateEmployee(employee: Employee) {
     const pool = await poolPromise;
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
-      const result = await client.query(constants.UPDATE_EMPLOYEE_SQL, [
+      const queryResult = await client.query(constants.UPDATE_EMPLOYEE_SQL, [
         employee.departmentId,
         employee.firstName,
         employee.lastName,
@@ -116,10 +120,10 @@ export class PostgreSqlEmployeeRepository implements EmployeeRepository {
         employee.country,
         employee.id
       ]);
-      if (!result.rowCount) {
+      if (!queryResult.rowCount) {
         await client.query('ROLLBACK');
-        console.log("PostgreSqlEmployeeRepository.updateEmployee(): no employee updated, employee id[%d]",
-          employee.id);
+        console.log("PostgreSqlEmployeeRepository.updateEmployee(): " +
+          "employee not updated, employee id[%d]", employee.id);
         return;
       }
       await client.query('COMMIT');
@@ -133,10 +137,10 @@ export class PostgreSqlEmployeeRepository implements EmployeeRepository {
     console.log("PostgreSqlEmployeeRepository.updateEmployee(): employee id[%d]", employee.id);
   }
   /**
-   * Deletes a employee by its id.
-   *
-   * @param id the id of the employee to be deleted
-   * @returns void
+   * Deletes an employee by their ID.
+   * 
+   * @param id - The ID of the employee to be deleted.
+   * @returns A promise that resolves when the employee is deleted.
    */
   async deleteEmployee(id: number) {
     const pool = await poolPromise;

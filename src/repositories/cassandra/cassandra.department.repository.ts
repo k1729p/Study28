@@ -4,14 +4,15 @@ import { DepartmentRepository } from "../department.repository.js";
 import * as mappers from "../mappers.js";
 import * as constants from "./cassandra.constants.js";
 /**
- * This repository class provides methods to manage departments.
- * It includes CRUD methods to create, read, update, and delete departments.
+ * Repository class providing methods to manage departments.
+ * Includes CRUD operations to create, read, update, and delete departments.
  */
 export class CassandraDepartmentRepository implements DepartmentRepository {
   /**
    * Creates a new department.
-   * @param department the department to be created
-   * @return void
+   * 
+   * @param department - The department to be created.
+   * @returns A promise that resolves when the department is created.
    */
   async createDepartment(department: Department): Promise<void> {
     try {
@@ -22,11 +23,12 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
       console.error("CassandraDepartmentRepository.createDepartment():", err);
       throw err;
     }
-    console.log("CassandraDepartmentRepository.createDepartment(): id[%d]", department.id);
+    console.log("CassandraDepartmentRepository.createDepartment(): department id[%d]", department.id);
   }
   /**
-   * Gets the departments.
-   * @returns an array of Department objects
+   * Retrieves all departments.
+   * 
+   * @returns A promise that resolves to an array of Department objects.
    */
   async getDepartments(): Promise<Department[]> {
     try {
@@ -53,9 +55,10 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
     }
   }
   /**
-   * Gets the department by id.
-   * @param id the id of the department to retrieve
-   * @returns the Department object if found, otherwise undefined
+   * Retrieves a department by its ID.
+   * 
+   * @param id - The ID of the department to retrieve.
+   * @returns A promise that resolves to the Department object if found, otherwise undefined.
    */
   async getDepartment(id: number): Promise<Department | undefined> {
     try {
@@ -63,15 +66,14 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
       const departmentResultSet = await client.execute(constants.SELECT_DEPARTMENT_CQL,
         { id: id }, { prepare: true });
       if (departmentResultSet.rowLength === 0) {
-        console.log("CassandraDepartmentRepository.getDepartment(): no department found, department id[%d]", id);
+        console.log("CassandraDepartmentRepository.getDepartment(): department not found, department id[%d]", id);
         return undefined;
       }
       const department = mappers.mapDatabaseRowToDepartment(departmentResultSet.rows[0]);
       const employeeResultSet = await client.execute(constants.SELECT_EMPLOYEES_BY_DEPARTMENT_CQL,
         { departmentId: id }, { prepare: true });
       department.employees = employeeResultSet.rows.map(row => mappers.mapDatabaseRowToEmployee(row, true));
-      console.log("CassandraDepartmentRepository.getDepartment(): department id[%d], employees count[%d]",
-        id, department.employees.length);
+      console.log("CassandraDepartmentRepository.getDepartment(): department id[%d]", id);
       return department;
     } catch (err) {
       console.error("CassandraDepartmentRepository.getDepartment():", err);
@@ -80,8 +82,9 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
   }
   /**
    * Updates an existing department.
-   * @param department the department to be updated
-   * @returns void
+   * 
+   * @param department - The department object containing updated values.
+   * @returns A promise that resolves when the update is complete.
    */
   async updateDepartment(department: Department): Promise<void> {
     try {
@@ -89,7 +92,8 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
       const resultSet = await client.execute(constants.UPDATE_DEPARTMENT_CQL,
         constants.PARAMETERS_FOR_DEPARTMENT(department), { prepare: true });
       if (!resultSet.wasApplied()) {
-        console.log("CassandraDepartmentRepository.updateDepartment(): no department updated, department id[%d]", department.id);
+        console.log("CassandraDepartmentRepository.updateDepartment(): " +
+          "department not updated, department id[%d]", department.id);
         return;
       }
     } catch (err) {
@@ -99,9 +103,10 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
     console.log("CassandraDepartmentRepository.updateDepartment(): department id[%d]", department.id);
   }
   /**
-   * Deletes a department by its id.
-   * @param id the id of the department to be deleted
-   * @returns void
+   * Deletes a department by its ID.
+   * 
+   * @param id - The ID of the department to be deleted.
+   * @returns A promise that resolves when the department is deleted.
    */
   async deleteDepartment(id: number): Promise<void> {
     // Cassandra has no foreign keys and performs no cascading deletes,
@@ -124,11 +129,12 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
     console.log("CassandraDepartmentRepository.deleteDepartment(): department id[%d]", id);
   }
   /**
-   * Transfers the employees from source department to target department.
-   * @param sourceDepartmentId the id of the source department
-   * @param targetDepartmentId the id of the target department
-   * @param employeeIds the transferred employees array
-   * @returns void
+   * Transfers employees from a source department to a target department.
+   * 
+   * @param sourceDepartmentId - The ID of the source department.
+   * @param targetDepartmentId - The ID of the target department.
+   * @param employeeIds - An array of IDs representing the employees to be transferred.
+   * @returns A promise that resolves when the transfer is complete.
    */
   async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]): Promise<void> {
     if (employeeIds.length === 0) {
@@ -143,8 +149,8 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
       const resultSet = await client.execute(constants.SELECT_EMPLOYEES_BY_DEPARTMENT_AND_IDS_CQL,
         { departmentId: sourceDepartmentId, ids: employeeIds }, { prepare: true });
       if (resultSet.rowLength === 0) {
-        console.warn("CassandraDepartmentRepository.transferEmployees(): no matching employees found, source department id[%d]",
-          sourceDepartmentId);
+        console.warn("CassandraDepartmentRepository.transferEmployees(): " +
+          "no matching employees found, source department id[%d]", sourceDepartmentId);
         return;
       }
       // Deleting employee from the source partition and re-inserting it into the target partition.
@@ -179,7 +185,7 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
       throw err;
     }
     console.log("CassandraDepartmentRepository.transferEmployees(): " +
-      "transferred employees count[%d], source department id[%d], target department id[%d]",
-      employeeIds.length, sourceDepartmentId, targetDepartmentId);
+      "source department id[%d], target department id[%d], transferred employees count[%d]",
+      sourceDepartmentId, targetDepartmentId, employeeIds.length);
   }
 }

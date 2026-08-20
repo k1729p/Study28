@@ -4,15 +4,16 @@ import * as constants from "./chroma.constants.js";
 import * as helpers from "./chroma.helpers.js";
 import { clientPromise } from "./chroma.pool.js";
 /**
- * This repository class provides methods to manage employees.
- * It includes CRUD methods to create, read, update, and delete employees.
+ * Repository interface providing methods to manage employees.
+ * Includes CRUD operations to create, read, update, and delete employees.
  * Employees are kept in their own Chroma collection, separate from departments.
  */
 export class ChromaEmployeeRepository implements EmployeeRepository {
   /**
    * Creates a new employee.
-   * @param employee the employee to be created
-   * @return void
+   * 
+   * @param employee - The employee to be created.
+   * @returns A promise that resolves when the employee is created.
    */
   async createEmployee(employee: Employee): Promise<void> {
     const client = await clientPromise;
@@ -31,8 +32,9 @@ export class ChromaEmployeeRepository implements EmployeeRepository {
     console.log("ChromaEmployeeRepository.createEmployee(): employee id[%d]", employee.id);
   }
   /**
-   * Gets the employees.
-   * @returns an array of Employee objects
+   * Retrieves all employees.
+   * 
+   * @returns A promise that resolves to an array of Employee objects.
    */
   async getEmployees(): Promise<Employee[]> {
     const client = await clientPromise;
@@ -50,9 +52,10 @@ export class ChromaEmployeeRepository implements EmployeeRepository {
     }
   }
   /**
-   * Gets the employee by id.
-   * @param id the id of the employee to retrieve
-   * @returns the Employee object if found, otherwise undefined
+   * Retrieves an employee by their ID.
+   * 
+   * @param id - The ID of the employee to retrieve.
+   * @returns A promise that resolves to the Employee object if found, otherwise undefined.
    */
   async getEmployee(id: number): Promise<Employee | undefined> {
     const client = await clientPromise;
@@ -60,7 +63,7 @@ export class ChromaEmployeeRepository implements EmployeeRepository {
       const employeesCollection = await client.getOrCreateCollection(constants.EMPLOYEES_COLLECTION_OPTIONS);
       const employeeRow = await employeesCollection.get({ ids: [String(id)] });
       if (employeeRow.ids.length === 0) {
-        console.log("ChromaEmployeeRepository.getEmployee(): no employee found, employee id[%d]", id);
+        console.log("ChromaEmployeeRepository.getEmployee(): employee not found, employee id[%d]", id);
         return undefined;
       }
       const employee = helpers.toEmployee(employeeRow.ids[0], employeeRow.metadatas[0]);
@@ -73,8 +76,9 @@ export class ChromaEmployeeRepository implements EmployeeRepository {
   }
   /**
    * Updates an existing employee.
-   * @param employee the employee to be updated
-   * @returns void
+   * 
+   * @param employee - The employee object containing updated values.
+   * @returns A promise that resolves when the update is complete.
    */
   async updateEmployee(employee: Employee): Promise<void> {
     const client = await clientPromise;
@@ -98,9 +102,10 @@ export class ChromaEmployeeRepository implements EmployeeRepository {
     console.log("ChromaEmployeeRepository.updateEmployee(): employee id[%d]", employee.id);
   }
   /**
-   * Deletes a employee by its id.
-   * @param id the id of the employee to be deleted
-   * @returns void
+   * Deletes an employee by their ID.
+   * 
+   * @param id - The ID of the employee to be deleted.
+   * @returns A promise that resolves when the employee is deleted.
    */
   async deleteEmployee(id: number): Promise<void> {
     const client = await clientPromise;

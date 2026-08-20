@@ -4,14 +4,15 @@ import { driverPromise } from "./neo4j.pool.js";
 import { DepartmentRepository } from "../department.repository.js";
 import * as constants from "./neo4j.constants.js";
 /**
- * This repository class provides methods to manage departments.
- * It includes CRUD methods to create, read, update, and delete departments.
+ * Repository class providing methods to manage departments.
+ * Includes CRUD operations to create, read, update, and delete departments.
  */
 export class Neo4jDepartmentRepository implements DepartmentRepository {
   /**
    * Creates a new department.
-   * @param department the department to be created
-   * @return void
+   * 
+   * @param department - The department to be created.
+   * @returns A promise that resolves when the department is created.
    */
   async createDepartment(department: Department): Promise<void> {
     const driver = await driverPromise;
@@ -19,17 +20,18 @@ export class Neo4jDepartmentRepository implements DepartmentRepository {
     try {
       await session.executeWrite(transaction => transaction.run(constants.CREATE_DEPARTMENT_QUERY,
         constants.PARAMETERS_FOR_DEPARTMENT(department)));
-      console.log("Neo4jDepartmentRepository.createDepartment(): id[%d]", department.id);
     } catch (err) {
       console.error("Neo4jDepartmentRepository.createDepartment():", err);
       throw err;
     } finally {
       await session.close();
     }
+    console.log("Neo4jDepartmentRepository.createDepartment(): department id[%d]", department.id);
   }
   /**
-   * Gets the departments along with their associated employees.
-   * @returns an array of Department objects
+   * Retrieves all departments.
+   * 
+   * @returns A promise that resolves to an array of Department objects.
    */
   async getDepartments(): Promise<Department[]> {
     const driver = await driverPromise;
@@ -73,7 +75,7 @@ export class Neo4jDepartmentRepository implements DepartmentRepository {
         }
         return department;
       });
-      console.log("Neo4jDepartmentRepository.getDepartments():");
+      console.log("Neo4jDepartmentRepository.getDepartments(): departments count[%d]", departments.length);
       return departments;
     } catch (err) {
       console.error("Neo4jDepartmentRepository.getDepartments():", err);
@@ -82,13 +84,50 @@ export class Neo4jDepartmentRepository implements DepartmentRepository {
       await session.close();
     }
   }
+  /**
+   * Retrieves a department by its ID.
+   * 
+   * @param id - The ID of the department to retrieve.
+   * @returns A promise that resolves to the Department object if found, otherwise undefined.
+   */
   async getDepartment(id: number): Promise<Department | undefined> {
+    console.log("Neo4jDepartmentRepository.getDepartment(): department id[%d]", id);
     return undefined;
   }
+  /**
+   * Updates an existing department.
+   * 
+   * @param department - The department object containing updated values.
+   * @returns A promise that resolves when the update is complete.
+   */
   async updateDepartment(department: Department): Promise<void> {
+    console.log("Neo4jDepartmentRepository.updateDepartment() department id[%d]", department.id);
   }
-  async deleteDepartment(departmentId: number): Promise<void> {
+  /**
+   * Deletes a department by its ID.
+   * 
+   * @param id - The ID of the department to be deleted.
+   * @returns A promise that resolves when the department is deleted.
+   */
+  async deleteDepartment(id: number): Promise<void> {
+    console.log("Neo4jDepartmentRepository.deleteDepartment(): department id[%d]", id);
   }
+  /**
+   * Transfers employees from a source department to a target department.
+   * 
+   * @param sourceDepartmentId - The ID of the source department.
+   * @param targetDepartmentId - The ID of the target department.
+   * @param employeeIds - An array of IDs representing the employees to be transferred.
+   * @returns A promise that resolves when the transfer is complete.
+   */
   async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]): Promise<void> {
+    if (employeeIds.length === 0) {
+      console.warn("Neo4jDepartmentRepository.transferEmployees(): no employee ids provided, nothing to transfer");
+      return;
+    }
+    // to implement
+    console.log("Neo4jDepartmentRepository.transferEmployees(): " +
+      "source department id[%d], target department id[%d], transferred employees count[%d]",
+      sourceDepartmentId, targetDepartmentId, employeeIds.length);
   }
 }

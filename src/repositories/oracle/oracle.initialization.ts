@@ -1,17 +1,18 @@
 import oracledb from 'oracledb';
 
 import { Department } from "../../models/department.js";
-import { Employee } from "../../models/employee.js";
 import { poolPromise } from "./oracle.pool.js";
 import { Initialization } from "../initialization.js";
 import * as constants from "./oracle.constants.js";
 /**
- * This repository class provides methods to initialize database and load data.
+ * Repository class providing methods to initialize the database and load seed data.
  */
 export class OracleInitialization implements Initialization {
   /**
-   * Loads the initial data into the database.
-   * @param departments the array of departments
+   * Loads initial department data into the database.
+   * 
+   * @param departments - An array of Department objects to populate.
+   * @returns A promise that resolves when data loading is complete.
    */
   async loadInitialData(departments: Department[]) {
     const pool = await poolPromise;

@@ -6,15 +6,16 @@ import * as constants from "./chroma.constants.js";
 import * as helpers from "./chroma.helpers.js";
 import { clientPromise } from "./chroma.pool.js";
 /**
- * This repository class provides methods to manage departments.
- * It includes CRUD methods to create, read, update, and delete departments.
+ * Repository class providing methods to manage departments.
+ * Includes CRUD operations to create, read, update, and delete departments.
  * Departments are kept in their own Chroma collection, separate from employees.
  */
 export class ChromaDepartmentRepository implements DepartmentRepository {
   /**
    * Creates a new department.
-   * @param department the department to be created
-   * @return void
+   * 
+   * @param department - The department to be created.
+   * @returns A promise that resolves when the department is created.
    */
   async createDepartment(department: Department): Promise<void> {
     const client = await clientPromise;
@@ -33,8 +34,9 @@ export class ChromaDepartmentRepository implements DepartmentRepository {
     console.log("ChromaDepartmentRepository.createDepartment(): department id[%d]", department.id);
   }
   /**
-   * Gets the departments, each populated with its employees.
-   * @returns an array of Department objects
+   * Retrieves all departments.
+   * 
+   * @returns A promise that resolves to an array of Department objects.
    */
   async getDepartments(): Promise<Department[]> {
     const client = await clientPromise;
@@ -63,9 +65,10 @@ export class ChromaDepartmentRepository implements DepartmentRepository {
     }
   }
   /**
-   * Gets the department by id, populated with its employees.
-   * @param id the id of the department to retrieve
-   * @returns the Department object if found, otherwise undefined
+   * Retrieves a department by its ID.
+   * 
+   * @param id - The ID of the department to retrieve.
+   * @returns A promise that resolves to the Department object if found, otherwise undefined.
    */
   async getDepartment(id: number): Promise<Department | undefined> {
     const client = await clientPromise;
@@ -73,7 +76,7 @@ export class ChromaDepartmentRepository implements DepartmentRepository {
       const departmentsCollection = await client.getOrCreateCollection(constants.DEPARTMENTS_COLLECTION_OPTIONS);
       const departmentRow = await departmentsCollection.get({ ids: [String(id)] });
       if (departmentRow.ids.length === 0) {
-        console.log("ChromaDepartmentRepository.getDepartment(): no department found, department id[%d]", id);
+        console.log("ChromaDepartmentRepository.getDepartment(): department not found, department id[%d]", id);
         return undefined;
       }
       const department = helpers.toDepartment(departmentRow.ids[0], departmentRow.metadatas[0]);
@@ -96,8 +99,8 @@ export class ChromaDepartmentRepository implements DepartmentRepository {
    * Only the department's own fields are written here. The employees collection is left untouched.
    * To move an employee to a different department use {@link ChromaEmployeeRepository#updateEmployee} or {@link transferEmployees}.
    *
-   * @param department the department to be updated
-   * @returns void
+   * @param department - The department object containing updated values.
+   * @returns A promise that resolves when the update is complete.
    */
   async updateDepartment(department: Department): Promise<void> {
     const client = await clientPromise;
@@ -105,7 +108,8 @@ export class ChromaDepartmentRepository implements DepartmentRepository {
       const departmentsCollection = await client.getOrCreateCollection(constants.DEPARTMENTS_COLLECTION_OPTIONS);
       const departmentRows = await departmentsCollection.get({ ids: [String(department.id)] });
       if (departmentRows.ids.length === 0) {
-        console.log("ChromaDepartmentRepository.updateDepartment(): no department updated, department id[%d]", department.id);
+        console.log("ChromaDepartmentRepository.updateDepartment(): " +
+           "department not updated, department id[%d]", department.id);
         return;
       }
       await departmentsCollection.update({
@@ -121,9 +125,10 @@ export class ChromaDepartmentRepository implements DepartmentRepository {
     console.log("ChromaDepartmentRepository.updateDepartment(): department id[%d]", department.id);
   }
   /**
-   * Deletes a department by its id, together with every employee that belongs to it.
-   * @param id the id of the department to be deleted
-   * @returns void
+   * Deletes a department by its ID.
+   * 
+   * @param id - The ID of the department to be deleted.
+   * @returns A promise that resolves when the department is deleted.
    */
   async deleteDepartment(id: number): Promise<void> {
     const client = await clientPromise;
@@ -141,16 +146,16 @@ export class ChromaDepartmentRepository implements DepartmentRepository {
     console.log("ChromaDepartmentRepository.deleteDepartment(): department id[%d]", id);
   }
   /**
-   * Transfers the given employees from the source department to the target department.
-   * @param sourceDepartmentId the id of the source department
-   * @param targetDepartmentId the id of the target department
-   * @param employeeIds the ids of the employees to transfer
-   * @returns void
+   * Transfers employees from a source department to a target department.
+   * 
+   * @param sourceDepartmentId - The ID of the source department.
+   * @param targetDepartmentId - The ID of the target department.
+   * @param employeeIds - An array of IDs representing the employees to be transferred.
+   * @returns A promise that resolves when the transfer is complete.
    */
   async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]): Promise<void> {
     if (employeeIds.length === 0) {
-      console.log("ChromaDepartmentRepository.transferEmployees(): " +
-        "source department id[%d], target department id[%d], no employee ids supplied", sourceDepartmentId, targetDepartmentId);
+      console.warn("ChromaDepartmentRepository.transferEmployees(): no employee ids provided, nothing to transfer");
       return;
     }
     const client = await clientPromise;
@@ -163,8 +168,8 @@ export class ChromaDepartmentRepository implements DepartmentRepository {
         where: { [constants.DEPARTMENT_ID_FIELD]: sourceDepartmentId }
       });
       if (employeeRows.ids.length === 0) {
-        console.log("ChromaDepartmentRepository.transferEmployees(): " +
-          "source department id[%d], target department id[%d], no employees transferred", sourceDepartmentId, targetDepartmentId);
+        console.warn("ChromaDepartmentRepository.transferEmployees(): " +
+          "no matching employees found, source department id[%d]", sourceDepartmentId);
         return;
       }
       // With a batched `update()` call to the 'employeesCollection' reassign found employees to the target department

@@ -7,14 +7,15 @@ import { DepartmentRepository } from "../department.repository.js";
 import * as mappers from "../mappers.js";
 import * as constants from "./mysql.constants.js";
 /**
- * This repository class provides methods to manage departments.
- * It includes CRUD methods to create, read, update, and delete departments.
+ * Repository class providing methods to manage departments.
+ * Includes CRUD operations to create, read, update, and delete departments.
  */
 export class MySqlDepartmentRepository implements DepartmentRepository {
   /**
    * Creates a new department.
-   * @param department the department to be created
-   * @return void
+   * 
+   * @param department - The department to be created.
+   * @returns A promise that resolves when the department is created.
    */
   async createDepartment(department: Department): Promise<void> {
     const pool = await poolPromise;
@@ -34,8 +35,8 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
       ]);
       if (!result.affectedRows) {
         await connection.rollback();
-        console.log("MySqlDepartmentRepository.createDepartment(): no department created with id[%d]",
-          department.id);
+        console.log("MySqlDepartmentRepository.createDepartment(): " +
+          "department not created, department id[%d]", department.id);
         return;
       }
       await connection.commit();
@@ -49,8 +50,9 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
     console.log("MySqlDepartmentRepository.createDepartment(): department id[%d]", department.id);
   }
   /**
-   * Gets the departments.
-   * @returns an array of Department objects
+   * Retrieves all departments.
+   * 
+   * @returns A promise that resolves to an array of Department objects.
    */
   async getDepartments(): Promise<Department[]> {
     const pool = await poolPromise;
@@ -66,24 +68,26 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
           department.employees.push(mappers.mapDatabaseRowToEmployee(row, false));
         }
       }
-      console.log("MySqlDepartmentRepository.getDepartments():");
-      return Array.from(departmentMap.values());
+      const departments = Array.from(departmentMap.values());
+      console.log("MySqlDepartmentRepository.getDepartments(): departments count[%d]", departments.length);
+      return departments;
     } catch (err) {
       console.error("MySqlDepartmentRepository.getDepartments():", err);
       throw err;
     }
   }
   /**
-   * Gets the department by id.
-   * @param id the id of the department to retrieve
-   * @returns the Department object if found, otherwise undefined
+   * Retrieves a department by its ID.
+   * 
+   * @param id - The ID of the department to retrieve.
+   * @returns A promise that resolves to the Department object if found, otherwise undefined.
    */
   async getDepartment(id: number): Promise<Department | undefined> {
     const pool = await poolPromise;
     try {
       const [rows] = await pool.query<RowDataPacket[]>(constants.SELECT_DEPARTMENT_SQL, [id]);
       if (!rows.length) {
-        console.log("MySqlDepartmentRepository.getDepartment(): no department found with id[%d]", id);
+        console.log("MySqlDepartmentRepository.getDepartment(): department not found, department id[%d]", id);
         return undefined;
       }
       const department = mappers.mapDatabaseRowToDepartment(rows[0]);
@@ -101,8 +105,9 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
   }
   /**
    * Updates an existing department.
-   * @param department the department to be updated
-   * @returns void
+   * 
+   * @param department - The department object containing updated values.
+   * @returns A promise that resolves when the update is complete.
    */
   async updateDepartment(department: Department): Promise<void> {
     const pool = await poolPromise;
@@ -122,8 +127,8 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
       ]);
       if (!result.affectedRows) {
         await connection.rollback();
-        console.log("MySqlDepartmentRepository.updateDepartment(): no department updated with id[%d]",
-          department.id);
+        console.log("MySqlDepartmentRepository.updateDepartment(): " +
+          "department not updated, department id[%d]", department.id);
         return;
       }
       await connection.commit();
@@ -135,16 +140,17 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
       connection.release();
     }
     for (const employee of department.employees) {
-      await this.updateEmployeeDepartment(employee);
+      await this.updateEmployeeInDepartment(employee);
     }
     console.log("MySqlDepartmentRepository.updateDepartment(): department id[%d]", department.id);
   }
   /**
-   * Updates the department in the employee.
+   * Updates an employee in the department.
+   * 
    * @param employee the employee
    * @returns void
    */
-  private async updateEmployeeDepartment(employee: Employee): Promise<void> {
+  private async updateEmployeeInDepartment(employee: Employee): Promise<void> {
     const pool = await poolPromise;
     const connection = await pool.getConnection();
     try {
@@ -155,23 +161,24 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
       ]);
       if (!result.affectedRows) {
         await connection.rollback();
-        console.log("MySqlDepartmentRepository.updateEmployeeDepartment(): no employee updated, employee id[%d]",
-          employee.id);
+        console.log("MySqlDepartmentRepository.updateEmployeeInDepartment(): " +
+          "employee not updated, employee id[%d], departmentId[%d]", employee.id, employee.departmentId);
         return;
       }
       await connection.commit();
     } catch (err) {
       await connection.rollback();
-      console.error("MySqlDepartmentRepository.updateEmployeeDepartment():", err);
+      console.error("MySqlDepartmentRepository.updateEmployeeInDepartment():", err);
       throw err;
     } finally {
       connection.release();
     }
   }
   /**
-   * Deletes a department by its id.
-   * @param id the id of the department to be deleted
-   * @returns void
+   * Deletes a department by its ID.
+   * 
+   * @param id - The ID of the department to be deleted.
+   * @returns A promise that resolves when the department is deleted.
    */
   async deleteDepartment(id: number): Promise<void> {
     const pool = await poolPromise;
@@ -190,13 +197,18 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
     console.log("MySqlDepartmentRepository.deleteDepartment(): department id[%d]", id);
   }
   /**
-   * Transfers the employees from source department to target department.
-   * @param sourceDepartmentId the id of the source department
-   * @param targetDepartmentId the id of the target department
-   * @param employeeIds the transferred employees array
-   * @returns void
+   * Transfers employees from a source department to a target department.
+   * 
+   * @param sourceDepartmentId - The ID of the source department.
+   * @param targetDepartmentId - The ID of the target department.
+   * @param employeeIds - An array of IDs representing the employees to be transferred.
+   * @returns A promise that resolves when the transfer is complete.
    */
   async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]): Promise<void> {
+    if (employeeIds.length === 0) {
+      console.warn("MySqlDepartmentRepository.transferEmployees(): no employee ids provided, nothing to transfer");
+      return;
+    }
     const pool = await poolPromise;
     const connection = await pool.getConnection();
     try {
@@ -213,7 +225,7 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
       connection.release();
     }
     console.log("MySqlDepartmentRepository.transferEmployees(): " +
-      "transferred employees count[%d], source department id[%d], target department id[%d]",
-      employeeIds.length, sourceDepartmentId, targetDepartmentId);
+      "source department id[%d], target department id[%d], transferred employees count[%d]",
+      sourceDepartmentId, targetDepartmentId, employeeIds.length);
   }
 }

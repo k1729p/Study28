@@ -6,14 +6,15 @@ import { EmployeeRepository } from "../employee.repository.js";
 import * as mappers from "../mappers.js";
 import * as constants from "./sql-server.constants.js";
 /**
- * This repository class provides methods to manage employees.
- * It includes CRUD methods to create, read, update, and delete employees.
+ * Repository interface providing methods to manage employees.
+ * Includes CRUD operations to create, read, update, and delete employees.
  */
 export class SqlServerEmployeeRepository implements EmployeeRepository {
   /**
    * Creates a new employee.
-   * @param employee the employee to be created
-   * @return void
+   * 
+   * @param employee - The employee to be created.
+   * @returns A promise that resolves when the employee is created.
    */
   async createEmployee(employee: Employee): Promise<void> {
     try {
@@ -40,24 +41,27 @@ export class SqlServerEmployeeRepository implements EmployeeRepository {
     console.log("SqlServerEmployeeRepository.createEmployee(): employee id[%d]", employee.id);
   }
   /**
-   * Gets the employees.
-   * @returns an array of Employee objects
+   * Retrieves all employees.
+   * 
+   * @returns A promise that resolves to an array of Employee objects.
    */
   async getEmployees(): Promise<Employee[]> {
     try {
       const pool = await poolPromise;
       const result = await pool.request().query(constants.SELECT_EMPLOYEES_SQL);
-      console.log("SqlServerEmployeeRepository.getEmployees():");
-      return result.recordset.map((row: any) => mappers.mapDatabaseRowToEmployee(row, true));
+      const employees = result.recordset.map((row: any) => mappers.mapDatabaseRowToEmployee(row, true));
+      console.log("SqlServerEmployeeRepository.getEmployees(): employees count[%d]", employees.length);
+      return employees;
     } catch (err) {
       console.error("SqlServerEmployeeRepository.getEmployees():", err);
       throw err;
     }
   }
   /**
-   * Gets an employee by id.
-   * @param id the id of the employee to retrieve
-   * @returns the Employee object if found, otherwise undefined
+   * Retrieves an employee by their ID.
+   * 
+   * @param id - The ID of the employee to retrieve.
+   * @returns A promise that resolves to the Employee object if found, otherwise undefined.
    */
   async getEmployee(id: number): Promise<Employee | undefined> {
     try {
@@ -78,8 +82,9 @@ export class SqlServerEmployeeRepository implements EmployeeRepository {
   }
   /**
    * Updates an existing employee.
-   * @param employee the employee to be updated
-   * @returns void
+   * 
+   * @param employee - The employee object containing updated values.
+   * @returns A promise that resolves when the update is complete.
    */
   async updateEmployee(employee: Employee): Promise<void> {
     try {
@@ -100,8 +105,8 @@ export class SqlServerEmployeeRepository implements EmployeeRepository {
         .input('country', sql.NVarChar, employee.country)
         .query(constants.UPDATE_EMPLOYEE_SQL);
       if (!result.rowsAffected[0]) {
-        console.log("SqlServerEmployeeRepository.updateEmployee(): no employee updated, employee id[%d]",
-          employee.id);
+        console.log("SqlServerEmployeeRepository.updateEmployee(): " +
+          "no employee updated, employee id[%d]", employee.id);
         return;
       }
     } catch (err) {
@@ -111,9 +116,10 @@ export class SqlServerEmployeeRepository implements EmployeeRepository {
     console.log("SqlServerEmployeeRepository.updateEmployee(): employee id[%d]", employee.id);
   }
   /**
-   * Deletes an employee by its id.
-   * @param id the id of the employee to be deleted
-   * @returns void
+   * Deletes an employee by their ID.
+   * 
+   * @param id - The ID of the employee to be deleted.
+   * @returns A promise that resolves when the employee is deleted.
    */
   async deleteEmployee(id: number): Promise<void> {
     try {

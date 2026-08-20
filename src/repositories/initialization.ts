@@ -1,11 +1,14 @@
 import { Department } from "../models/department.js";
+
 /**
- * This repository interface provides methods to initialize database and load data.
+ * Interface providing methods to initialize the database and load seed data.
  */
 export interface Initialization {
   /**
-   * Loads the initial data into the database.
-   * @param departments the array of departments
+   * Loads initial department data into the database.
+   * 
+   * @param departments - An array of Department objects to populate.
+   * @returns A promise that resolves when data loading is complete.
    */
-  loadInitialData(departmentArray: Department[]): Promise<void>;
+  loadInitialData(departments: Department[]): Promise<void>;
 }

@@ -4,14 +4,15 @@ import { EmployeeRepository } from "../employee.repository.js";
 import * as mappers from "../mappers.js";
 import * as constants from "./cassandra.constants.js";
 /**
- * This repository class provides methods to manage employees.
- * It includes CRUD methods to create, read, update, and delete employees.
+ * Repository interface providing methods to manage employees.
+ * Includes CRUD operations to create, read, update, and delete employees.
  */
 export class CassandraEmployeeRepository implements EmployeeRepository {
   /**
    * Creates a new employee.
-   * @param employee the employee to be created
-   * @return void
+   * 
+   * @param employee - The employee to be created.
+   * @returns A promise that resolves when the employee is created.
    */
   async createEmployee(employee: Employee): Promise<void> {
     try {
@@ -25,8 +26,9 @@ export class CassandraEmployeeRepository implements EmployeeRepository {
     console.log("CassandraEmployeeRepository.createEmployee(): employee id[%d]", employee.id);
   }
   /**
-   * Gets the employees.
-   * @returns an array of Employee objects
+   * Retrieves all employees.
+   * 
+   * @returns A promise that resolves to an array of Employee objects.
    */
   async getEmployees(): Promise<Employee[]> {
     try {
@@ -42,9 +44,10 @@ export class CassandraEmployeeRepository implements EmployeeRepository {
     }
   }
   /**
-   * Gets the employee by id.
-   * @param id the id of the employee to retrieve
-   * @returns the Employee object if found, otherwise undefined
+   * Retrieves an employee by their ID.
+   * 
+   * @param id - The ID of the employee to retrieve.
+   * @returns A promise that resolves to the Employee object if found, otherwise undefined.
    */
   async getEmployee(id: number): Promise<Employee | undefined> {
     try {
@@ -52,7 +55,7 @@ export class CassandraEmployeeRepository implements EmployeeRepository {
       const resultSet = await client.execute(constants.SELECT_EMPLOYEE_BY_ID_CQL,
         { id: id }, { prepare: true });
       if (resultSet.rowLength === 0) {
-        console.log("CassandraEmployeeRepository.getEmployee(): no employee found, employee id[%d]", id);
+        console.log("CassandraEmployeeRepository.getEmployee(): employee not found, employee id[%d]", id);
         return undefined;
       }
       console.log("CassandraEmployeeRepository.getEmployee(): employee id[%d]", id);
@@ -64,8 +67,9 @@ export class CassandraEmployeeRepository implements EmployeeRepository {
   }
   /**
    * Updates an existing employee.
-   * @param employee the employee to be updated
-   * @returns void
+   * 
+   * @param employee - The employee object containing updated values.
+   * @returns A promise that resolves when the update is complete.
    */
   async updateEmployee(employee: Employee): Promise<void> {
     try {
@@ -76,7 +80,7 @@ export class CassandraEmployeeRepository implements EmployeeRepository {
       const resultSet = await client.execute(constants.SELECT_EMPLOYEE_DEPARTMENT_ID_BY_ID_CQL,
         { id: employee.id }, { prepare: true });
       if (resultSet.rowLength === 0) {
-        console.log("CassandraEmployeeRepository.updateEmployee(): no employee found, employee id[%d]", employee.id);
+        console.log("CassandraEmployeeRepository.updateEmployee(): employee not found, employee id[%d]", employee.id);
         return;
       }
       const departmentId = resultSet.rows[0].department_id;
@@ -102,10 +106,10 @@ export class CassandraEmployeeRepository implements EmployeeRepository {
     console.log("CassandraEmployeeRepository.updateEmployee(): employee id[%d]", employee.id);
   }
   /**
-   * Deletes a employee by its id.
-   *
-   * @param id the id of the employee to be deleted
-   * @returns void
+   * Deletes an employee by their ID.
+   * 
+   * @param id - The ID of the employee to be deleted.
+   * @returns A promise that resolves when the employee is deleted.
    */
   async deleteEmployee(id: number): Promise<void> {
     try {
@@ -115,7 +119,7 @@ export class CassandraEmployeeRepository implements EmployeeRepository {
       const lookup = await client.execute(constants.SELECT_EMPLOYEE_DEPARTMENT_ID_BY_ID_CQL,
         { id: id }, { prepare: true });
       if (lookup.rowLength === 0) {
-        console.log("CassandraEmployeeRepository.deleteEmployee(): no employee found, employee id[%d]", id);
+        console.log("CassandraEmployeeRepository.deleteEmployee(): employee not found, employee id[%d]", id);
         return;
       }
       const departmentId = lookup.rows[0].department_id;

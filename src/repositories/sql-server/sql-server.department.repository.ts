@@ -7,14 +7,15 @@ import { DepartmentRepository } from "../department.repository.js";
 import * as mappers from "../mappers.js";
 import * as constants from "./sql-server.constants.js";
 /**
- * This repository class provides methods to manage departments.
- * It includes CRUD methods to create, read, update, and delete departments.
+ * Repository class providing methods to manage departments.
+ * Includes CRUD operations to create, read, update, and delete departments.
  */
 export class SqlServerDepartmentRepository implements DepartmentRepository {
   /**
    * Creates a new department.
-   * @param department the department to be created
-   * @return void
+   * 
+   * @param department - The department to be created.
+   * @returns A promise that resolves when the department is created.
    */
   async createDepartment(department: Department): Promise<void> {
     try {
@@ -35,8 +36,9 @@ export class SqlServerDepartmentRepository implements DepartmentRepository {
     console.log("SqlServerDepartmentRepository.createDepartment(): department id[%s]", department.id);
   }
   /**
-   * Gets the departments.
-   * @returns an array of Department objects
+   * Retrieves all departments.
+   * 
+   * @returns A promise that resolves to an array of Department objects.
    */
   async getDepartments(): Promise<Department[]> {
     try {
@@ -53,17 +55,19 @@ export class SqlServerDepartmentRepository implements DepartmentRepository {
           department.employees.push(mappers.mapDatabaseRowToEmployee(row, false));
         }
       }
-      console.log("SqlServerDepartmentRepository.getDepartments():");
-      return Array.from(departmentMap.values());
+      const departments = Array.from(departmentMap.values());
+      console.log("SqlServerDepartmentRepository.getDepartments(): departments count[%d]", departments.length);
+      return departments;
     } catch (err) {
       console.error("SqlServerDepartmentRepository.getDepartments():", err);
       throw err;
     }
   }
   /**
-   * Gets the department by id.
-   * @param id the id of the department to retrieve
-   * @returns the Department object if found, otherwise undefined
+   * Retrieves a department by its ID.
+   * 
+   * @param id - The ID of the department to retrieve.
+   * @returns A promise that resolves to the Department object if found, otherwise undefined.
    */
   async getDepartment(id: number): Promise<Department | undefined> {
     try {
@@ -72,7 +76,8 @@ export class SqlServerDepartmentRepository implements DepartmentRepository {
         .input('id', sql.Int, id)
         .query(constants.SELECT_DEPARTMENT_SQL);
       if (!result.recordset.length) {
-        console.log("SqlServerDepartmentRepository.getDepartment(): no department found with id[%d]", id);
+        console.log("SqlServerDepartmentRepository.getDepartment(): " +
+          "department not found, department id[%d]", id);
         return undefined;
       }
       const rows = result.recordset;
@@ -82,7 +87,7 @@ export class SqlServerDepartmentRepository implements DepartmentRepository {
           department.employees.push(mappers.mapDatabaseRowToEmployee(row, false));
         }
       }
-      console.log("SqlServerDepartmentRepository.getDepartment(): id[%d]", id);
+      console.log("SqlServerDepartmentRepository.getDepartment(): department id[%d]", id);
       return department;
     } catch (err) {
       console.error("SqlServerDepartmentRepository.getDepartment():", err);
@@ -91,8 +96,9 @@ export class SqlServerDepartmentRepository implements DepartmentRepository {
   }
   /**
    * Updates an existing department.
-   * @param department the department to be updated
-   * @returns void
+   * 
+   * @param department - The department object containing updated values.
+   * @returns A promise that resolves when the update is complete.
    */
   async updateDepartment(department: Department): Promise<void> {
     try {
@@ -107,23 +113,24 @@ export class SqlServerDepartmentRepository implements DepartmentRepository {
         .input('image', sql.NVarChar, department.image)
         .query(constants.UPDATE_DEPARTMENT_SQL);
       if (!result.rowsAffected[0]) {
-        console.log("SqlServerDepartmentRepository.updateDepartment(): no department updated with id[%d]",
-          department.id);
+        console.log("SqlServerDepartmentRepository.updateDepartment(): " +
+          "department not updated, department id[%d]", department.id);
         return;
       }
     } catch (err) {
       console.error("SqlServerDepartmentRepository.updateDepartment():", err);
       throw err;
     }
-    department.employees.forEach(employee => this.updateEmployeeDepartment(employee));
+    department.employees.forEach(employee => this.updateEmployeeInDepartment(employee));
     console.log("SqlServerDepartmentRepository.updateDepartment(): department id[%d]", department.id);
   }
   /**
-   * Updates the department in the employee.
+   * Updates an employee in the department.
+   * 
    * @param employee the employee
    * @returns void
    */
-  private async updateEmployeeDepartment(employee: Employee) {
+  private async updateEmployeeInDepartment(employee: Employee) {
     try {
       const pool = await poolPromise;
       const result = await pool.request()
@@ -131,19 +138,20 @@ export class SqlServerDepartmentRepository implements DepartmentRepository {
         .input('id', sql.Int, employee.id)
         .query(constants.UPDATE_EMPLOYEE_DEPARTMENT_SQL);
       if (!result.rowsAffected[0]) {
-        console.log("SqlServerDepartmentRepository.updateEmployeeDepartment(): no employee updated, employee id[%d]",
-          employee.id);
+        console.log("SqlServerDepartmentRepository.updateEmployeeInDepartment(): " +
+           "employee not updated, employee id[%d], departmentId[%d]", employee.id, employee.departmentId);
         return;
       }
     } catch (err) {
-      console.error("SqlServerDepartmentRepository.updateEmployeeDepartment():", err);
+      console.error("SqlServerDepartmentRepository.updateEmployeeInDepartment():", err);
       throw err;
     }
   }
   /**
-   * Deletes a department by its id.
-   * @param id the id of the department to be deleted
-   * @returns void
+   * Deletes a department by its ID.
+   * 
+   * @param id - The ID of the department to be deleted.
+   * @returns A promise that resolves when the department is deleted.
    */
   async deleteDepartment(id: number): Promise<void> {
     try {
@@ -158,8 +166,7 @@ export class SqlServerDepartmentRepository implements DepartmentRepository {
     console.log("SqlServerDepartmentRepository.deleteDepartment(): department id[%d]", id);
   }
   /**
-   * Transfers the given employees from source department to target department.
-   *
+   * Transfers employees from a source department to a target department.
    * Delegates to the dbo.transfer_employees stored procedure.
    * The employee ids are sent as a Table-Valued Parameter (dbo.id_list_type) rather
    * than a delimited string or repeated round trips,
@@ -168,13 +175,17 @@ export class SqlServerDepartmentRepository implements DepartmentRepository {
    * In stored procedure the whole operation runs inside an explicit transaction
    * with TRY/CATCH error handling so that either all rows are moved, or none are (atomicity),
    * and any failure is reported back to the caller after the transaction has been safely rolled back.
-   *
-   * @param sourceDepartmentId the id of the source department
-   * @param targetDepartmentId the id of the target department
-   * @param employeeIds the transferred employees array
-   * @returns void
+   * 
+   * @param sourceDepartmentId - The ID of the source department.
+   * @param targetDepartmentId - The ID of the target department.
+   * @param employeeIds - An array of IDs representing the employees to be transferred.
+   * @returns A promise that resolves when the transfer is complete.
    */
   async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]): Promise<void> {
+    if (employeeIds.length === 0) {
+      console.warn("SqlServerDepartmentRepository.transferEmployees(): no employee ids provided, nothing to transfer");
+      return;
+    }
     const idListTable = new sql.Table('dbo.id_list_type');
     idListTable.columns.add('id', sql.Int, { nullable: false });
     employeeIds.forEach(employeeId => idListTable.rows.add(employeeId));
@@ -190,7 +201,7 @@ export class SqlServerDepartmentRepository implements DepartmentRepository {
       throw err;
     }
     console.log("SqlServerDepartmentRepository.transferEmployees(): " +
-      "transferred employees count[%d], source department id[%d], target department id[%d]",
-      employeeIds.length, sourceDepartmentId, targetDepartmentId);
+      "source department id[%d], target department id[%d], transferred employees count[%d]",
+      sourceDepartmentId, targetDepartmentId, employeeIds.length);
   }
 }

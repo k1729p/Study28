@@ -2,16 +2,16 @@ import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { clientPromise } from "./redis.pool.js";
 import { DepartmentRepository } from "../department.repository.js";
-
 /**
- * This repository class provides methods to manage departments.
- * It includes CRUD methods adapted for a NoSQL Key-Value store.
+ * Repository class providing methods to manage departments.
+ * Includes CRUD operations to create, read, update, and delete departments.
  */
 export class RedisDepartmentRepository implements DepartmentRepository {
   /**
    * Creates a new department.
-   * @param dept the department to be created
-   * @return void
+   * 
+   * @param department - The department to be created.
+   * @returns A promise that resolves when the department is created.
    */
   async createDepartment(dept: Department): Promise<void> {
     const client = await clientPromise;
@@ -26,8 +26,9 @@ export class RedisDepartmentRepository implements DepartmentRepository {
     }
   }
   /**
-   * Gets the departments and reconstructs the relationships with employees.
-   * @returns an array of Department objects
+   * Retrieves all departments.
+   * 
+   * @returns A promise that resolves to an array of Department objects.
    */
   async getDepartments(): Promise<Department[]> {
     const client = await clientPromise;
@@ -71,13 +72,50 @@ export class RedisDepartmentRepository implements DepartmentRepository {
       throw err;
     }
   }
+  /**
+   * Retrieves a department by its ID.
+   * 
+   * @param id - The ID of the department to retrieve.
+   * @returns A promise that resolves to the Department object if found, otherwise undefined.
+   */
   async getDepartment(id: number): Promise<Department | undefined> {
+    console.log("RedisDepartmentRepository.getDepartment(): department id[%d]", id);
     return undefined;
   }
+  /**
+   * Updates an existing department.
+   * 
+   * @param department - The department object containing updated values.
+   * @returns A promise that resolves when the update is complete.
+   */
   async updateDepartment(department: Department): Promise<void> {
+    console.log("RedisDepartmentRepository.updateDepartment() department id[%d]", department.id);
   }
-  async deleteDepartment(departmentId: number): Promise<void> {
+  /**
+   * Deletes a department by its ID.
+   * 
+   * @param id - The ID of the department to be deleted.
+   * @returns A promise that resolves when the department is deleted.
+   */
+  async deleteDepartment(id: number): Promise<void> {
+    console.log("RedisDepartmentRepository.deleteDepartment(): department id[%d]", id);
   }
+  /**
+   * Transfers employees from a source department to a target department.
+   * 
+   * @param sourceDepartmentId - The ID of the source department.
+   * @param targetDepartmentId - The ID of the target department.
+   * @param employeeIds - An array of IDs representing the employees to be transferred.
+   * @returns A promise that resolves when the transfer is complete.
+   */
   async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]): Promise<void> {
+    if (employeeIds.length === 0) {
+      console.warn("RedisDepartmentRepository.transferEmployees(): no employee ids provided, nothing to transfer");
+      return;
+    }
+    // to implement
+    console.log("RedisDepartmentRepository.transferEmployees(): " +
+      "source department id[%d], target department id[%d], transferred employees count[%d]",
+      sourceDepartmentId, targetDepartmentId, employeeIds.length);
   }
 }

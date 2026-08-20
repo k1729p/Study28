@@ -5,12 +5,14 @@ import { poolPromise } from "./sql-server.pool.js";
 import { Initialization } from "../initialization.js";
 import * as constants from "./sql-server.constants.js";
 /**
- * This repository class provides methods to initialize database and load data.
+ * Repository class providing methods to initialize the database and load seed data.
  */
 export class SqlServerInitialization implements Initialization {
   /**
-   * Loads the initial data into database.
-   * @param departments the array of departments
+   * Loads initial department data into the database.
+   * 
+   * @param departments - An array of Department objects to populate.
+   * @returns A promise that resolves when data loading is complete.
    */
   async loadInitialData(departments: Department[]) {
     const pool = await poolPromise;

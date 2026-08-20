@@ -4,14 +4,15 @@ import { EmployeeRepository } from "../employee.repository.js";
 import * as mappers from "../mappers.js";
 import * as constants from "./oracle.constants.js";
 /**
- * This repository class provides methods to manage employees.
- * It includes CRUD methods to create, read, update, and delete employees.
+ * Repository interface providing methods to manage employees.
+ * Includes CRUD operations to create, read, update, and delete employees.
  */
 export class OracleEmployeeRepository implements EmployeeRepository {
   /**
    * Creates a new employee.
-   * @param employee the employee to be created
-   * @return void
+   * 
+   * @param employee - The employee to be created.
+   * @returns A promise that resolves when the employee is created.
    */
   async createEmployee(employee: Employee): Promise<void> {
     const pool = await poolPromise;
@@ -36,8 +37,9 @@ export class OracleEmployeeRepository implements EmployeeRepository {
     console.log("OracleEmployeeRepository.createEmployee(): employee id[%d]", employee.id);
   }
   /**
-   * Gets the employees.
-   * @returns an array of Employee objects
+   * Retrieves all employees.
+   * 
+   * @returns A promise that resolves to an array of Employee objects.
    */
   async getEmployees(): Promise<Employee[]> {
     const pool = await poolPromise;
@@ -45,8 +47,10 @@ export class OracleEmployeeRepository implements EmployeeRepository {
     try {
       const result = await connection.execute(constants.SELECT_EMPLOYEES_SQL);
       const rows = result.rows as any[] || [];
-      console.log("OracleEmployeeRepository.getEmployees():");
-      return rows.map(row => mappers.mapDatabaseRowToEmployee(row, true));
+      console.log("OracleEmployeeRepository.():");
+      const employees = rows.map(row => mappers.mapDatabaseRowToEmployee(row, true));
+      console.log("OracleDepartmentRepository.getEmployees(): employees count[%d]", employees.length);
+      return employees;
     } catch (err) {
       console.error("OracleEmployeeRepository.getEmployees():", err);
       throw err;
@@ -59,9 +63,10 @@ export class OracleEmployeeRepository implements EmployeeRepository {
     }
   }
   /**
-   * Gets the employee by id.
-   * @param id the id of the employee to retrieve
-   * @returns the Employee object if found, otherwise undefined
+   * Retrieves an employee by their ID.
+   * 
+   * @param id - The ID of the employee to retrieve.
+   * @returns A promise that resolves to the Employee object if found, otherwise undefined.
    */
   async getEmployee(id: number): Promise<Employee | undefined> {
     const pool = await poolPromise;
@@ -70,7 +75,7 @@ export class OracleEmployeeRepository implements EmployeeRepository {
       const result = await connection.execute(constants.SELECT_EMPLOYEE_SQL, { id });
       const rows = result.rows as any[] || [];
       if (!rows.length) {
-        console.log("OracleEmployeeRepository.getEmployee(): no employee found, employee id[%d]", id);
+        console.log("OracleEmployeeRepository.getEmployee(): employee not found, employee id[%d]", id);
         return undefined;
       }
       console.log("OracleEmployeeRepository.getEmployee(): employee id[%d]", id);
@@ -88,8 +93,9 @@ export class OracleEmployeeRepository implements EmployeeRepository {
   }
   /**
    * Updates an existing employee.
-   * @param employee the employee to be updated
-   * @returns void
+   * 
+   * @param employee - The employee object containing updated values.
+   * @returns A promise that resolves when the update is complete.
    */
   async updateEmployee(employee: Employee): Promise<void> {
     const pool = await poolPromise;
@@ -98,7 +104,7 @@ export class OracleEmployeeRepository implements EmployeeRepository {
       const result = await connection.execute(constants.UPDATE_EMPLOYEE_SQL, constants.BIND_PARAMETERS_FOR_EMPLOYEE(employee));
       if (!result.rowsAffected) {
         await connection.rollback();
-        console.log("OracleEmployeeRepository.updateEmployee(): no employee updated, employee id[%d]",
+        console.log("OracleEmployeeRepository.updateEmployee(): employee not updated, employee id[%d]",
           employee.id);
         return;
       }
@@ -117,10 +123,10 @@ export class OracleEmployeeRepository implements EmployeeRepository {
     console.log("OracleEmployeeRepository.updateEmployee(): employee id[%d]", employee.id);
   }
   /**
-   * Deletes a employee by its id.
-   *
-   * @param id the id of the employee to be deleted
-   * @returns void
+   * Deletes an employee by their ID.
+   * 
+   * @param id - The ID of the employee to be deleted.
+   * @returns A promise that resolves when the employee is deleted.
    */
   async deleteEmployee(id: number): Promise<void> {
     const pool = await poolPromise;

@@ -5,14 +5,15 @@ import { Employee } from "../../models/employee.js";
 import { config } from "./../../configuration/configuration.js";
 import { poolPromise } from "./mongodb.pool.js";
 import { Initialization } from "../initialization.js";
-
 /**
- * This repository class provides methods to initialize database and load data.
+ * Repository class providing methods to initialize the database and load seed data.
  */
 export class MongoDbInitialization implements Initialization {
   /**
-   * Loads the initial data into the database.
-   * @param departments the array of departments
+   * Loads initial department data into the database.
+   * 
+   * @param departments - An array of Department objects to populate.
+   * @returns A promise that resolves when data loading is complete.
    */
   async loadInitialData(departments: Department[]) {
     const localDepartments: Department[] = structuredClone(departments);
