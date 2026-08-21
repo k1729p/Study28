@@ -13,8 +13,10 @@ describe.for([
   RepositoryType.Elasticsearch,
   RepositoryType.MongoDB,
   RepositoryType.MySQL,
+  RepositoryType.Neo4j,
   RepositoryType.Oracle,
   RepositoryType.PostgreSQL,
+//  RepositoryType.Redis,
   RepositoryType.SQLServer,
 ])(colors.CYAN_BRIGHT + 'Repository type █ %s █' + colors.RESET, (repositoryType) => {
   describe(getSuiteName('Department'), () => departmentServiceTests(repositoryType));

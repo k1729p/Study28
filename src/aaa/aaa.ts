@@ -13,10 +13,10 @@ import { Bbb } from "./bbb.js";
 const REPOSITORY_TYPES = [
   // RepositoryType.Cassandra,
   // RepositoryType.Chroma,
-  RepositoryType.Elasticsearch,
+  // RepositoryType.Elasticsearch,
   // RepositoryType.MongoDB,
   // RepositoryType.MySQL,
-  // RepositoryType.Neo4j,
+  RepositoryType.Neo4j,
   // RepositoryType.Oracle,
   // RepositoryType.PostgreSQL,
   // RepositoryType.Redis,

@@ -1,5 +1,4 @@
 import { Department } from "../../models/department.js";
-import { Employee } from "../../models/employee.js";
 import { driverPromise } from "./neo4j.pool.js";
 import { DepartmentRepository } from "../department.repository.js";
 import * as constants from "./neo4j.constants.js";
@@ -18,8 +17,8 @@ export class Neo4jDepartmentRepository implements DepartmentRepository {
     const driver = await driverPromise;
     const session = driver.session();
     try {
-      await session.executeWrite(transaction => transaction.run(constants.CREATE_DEPARTMENT_QUERY,
-        constants.PARAMETERS_FOR_DEPARTMENT(department)));
+      await session.executeWrite(transaction => transaction.run(
+        constants.CREATE_DEPARTMENT_QUERY, constants.PARAMETERS_FOR_DEPARTMENT(department)));
     } catch (err) {
       console.error("Neo4jDepartmentRepository.createDepartment():", err);
       throw err;
@@ -38,43 +37,7 @@ export class Neo4jDepartmentRepository implements DepartmentRepository {
     const session = driver.session();
     try {
       const result = await session.executeRead(transaction => transaction.run(constants.READ_DEPARTMENTS_QUERY));
-      const departments: Department[] = result.records.map(record => {
-        const departmentNode = record.get('department').properties;
-        const department: Department = {
-          id: departmentNode.id.toNumber ? departmentNode.id.toNumber() : Number(departmentNode.id),
-          name: departmentNode.name,
-          startDate: departmentNode.startDate ? new Date(departmentNode.startDate) : undefined,
-          endDate: departmentNode.endDate ? new Date(departmentNode.endDate) : undefined,
-          notes: departmentNode.notes,
-          keywords: departmentNode.keywords ? departmentNode.keywords.split(',') : [],
-          image: departmentNode.image,
-          employees: []
-        };
-        const employeesNodes = record.get('employees');
-        if (employeesNodes && employeesNodes.length > 0) {
-          department.employees = employeesNodes
-            .filter((node: any) => node !== null) // Filter out nulls from empty OPTIONAL MATCH collections
-            .map((node: any) => {
-              const employeeProperties = node.properties;
-              return {
-                id: employeeProperties.id.toNumber ? employeeProperties.id.toNumber() : Number(employeeProperties.id),
-                departmentId: department.id,
-                firstName: employeeProperties.firstName,
-                lastName: employeeProperties.lastName,
-                title: employeeProperties.title,
-                phone: employeeProperties.phone,
-                mail: employeeProperties.mail,
-                streetName: employeeProperties.streetName,
-                houseNumber: employeeProperties.houseNumber,
-                postalCode: employeeProperties.postalCode,
-                locality: employeeProperties.locality,
-                province: employeeProperties.province,
-                country: employeeProperties.country
-              } as Employee;
-            });
-        }
-        return department;
-      });
+      const departments = result.records.map(record => constants.RECORD_TO_DEPARTMENT(record));
       console.log("Neo4jDepartmentRepository.getDepartments(): departments count[%d]", departments.length);
       return departments;
     } catch (err) {
@@ -91,30 +54,76 @@ export class Neo4jDepartmentRepository implements DepartmentRepository {
    * @returns A promise that resolves to the Department object if found, otherwise undefined.
    */
   async getDepartment(id: number): Promise<Department | undefined> {
-    console.log("Neo4jDepartmentRepository.getDepartment(): department id[%d]", id);
-    return undefined;
+    const driver = await driverPromise;
+    const session = driver.session();
+    try {
+      const result = await session.executeRead(transaction => transaction.run(constants.READ_DEPARTMENT_QUERY, { id }));
+      if (result.records.length === 0) {
+        console.log("Neo4jDepartmentRepository.getDepartment(): department not found, department id[%d]", id);
+        return undefined;
+      }
+      const department = constants.RECORD_TO_DEPARTMENT(result.records[0]);
+      console.log("Neo4jDepartmentRepository.getDepartment(): department id[%d]", id);
+      return department;
+    } catch (err) {
+      console.error("Neo4jDepartmentRepository.getDepartment():", err);
+      throw err;
+    } finally {
+      await session.close();
+    }
   }
   /**
    * Updates an existing department.
+   * Only the Department node's own properties (name, dates, notes, keywords, image) are updated.
    * 
    * @param department - The department object containing updated values.
    * @returns A promise that resolves when the update is complete.
    */
   async updateDepartment(department: Department): Promise<void> {
+    const driver = await driverPromise;
+    const session = driver.session();
+    try {
+      const result = await session.executeWrite(transaction => transaction.run(
+        constants.UPDATE_DEPARTMENT_QUERY, constants.PARAMETERS_FOR_DEPARTMENT(department)));
+      if (result.records.length === 0) {
+        console.log("Neo4jDepartmentRepository.updateDepartment(): " +
+          "department not updated, department id[%d]", department.id);
+        return;
+      }
+    } catch (err) {
+      console.error("Neo4jDepartmentRepository.updateDepartment():", err);
+      throw err;
+    } finally {
+      await session.close();
+    }
     console.log("Neo4jDepartmentRepository.updateDepartment() department id[%d]", department.id);
   }
   /**
-   * Deletes a department by its ID.
+   * Deletes a department by its ID, together with every employee that works in it (cascading delete).
    * 
    * @param id - The ID of the department to be deleted.
    * @returns A promise that resolves when the department is deleted.
    */
   async deleteDepartment(id: number): Promise<void> {
+    const driver = await driverPromise;
+    const session = driver.session();
+    try {
+      const result = await session.executeWrite(transaction => transaction.run(constants.DELETE_DEPARTMENT_QUERY, { id }));
+      if (result.summary.counters.updates().nodesDeleted === 0) {
+        console.log("Neo4jDepartmentRepository.deleteDepartment(): department not found, department id[%d]", id);
+        return;
+      }
+    } catch (err) {
+      console.error("Neo4jDepartmentRepository.deleteDepartment():", err);
+      throw err;
+    } finally {
+      await session.close();
+    }
     console.log("Neo4jDepartmentRepository.deleteDepartment(): department id[%d]", id);
   }
   /**
    * Transfers employees from a source department to a target department.
-   * 
+   *
    * @param sourceDepartmentId - The ID of the source department.
    * @param targetDepartmentId - The ID of the target department.
    * @param employeeIds - An array of IDs representing the employees to be transferred.
@@ -125,9 +134,23 @@ export class Neo4jDepartmentRepository implements DepartmentRepository {
       console.warn("Neo4jDepartmentRepository.transferEmployees(): no employee ids provided, nothing to transfer");
       return;
     }
-    // to implement
+    const driver = await driverPromise;
+    const session = driver.session();
+    let transferredCount = 0;
+    try {
+      const result = await session.executeWrite(transaction => transaction.run(
+        constants.TRANSFER_EMPLOYEES_QUERY,
+        { sourceDepartmentId, targetDepartmentId, employeeIds }
+      ));
+      transferredCount = result.records.length;
+    } catch (err) {
+      console.error("Neo4jDepartmentRepository.transferEmployees():", err);
+      throw err;
+    } finally {
+      await session.close();
+    }
     console.log("Neo4jDepartmentRepository.transferEmployees(): " +
       "source department id[%d], target department id[%d], transferred employees count[%d]",
-      sourceDepartmentId, targetDepartmentId, employeeIds.length);
+      sourceDepartmentId, targetDepartmentId, transferredCount);
   }
 }

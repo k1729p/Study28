@@ -17,7 +17,7 @@ export class Neo4jInitialization implements Initialization {
     const session = driver.session();
     try {
       await session.executeWrite(transaction => transaction.run(constants.DELETE_QUERY));
-      console.log("Neo4jInitialization.loadInitialData(): dropped existing nodes and relationships");
+      console.log("Neo4jInitialization.loadInitialData(): dropped nodes and relationships");
       if (departments.length > 0) {
         await this.insertDepartments(session, departments);
         await this.insertEmployees(session, departments);
@@ -34,18 +34,20 @@ export class Neo4jInitialization implements Initialization {
   }
   /**
    * Inserts the department nodes into the database.
+   * 
    * @param session the Neo4j session
-   * @param departmentsParam the array of departments
+   * @param departments the array of departments
    */
-  private async insertDepartments(session: any, departmentsParam: Department[]): Promise<void> {
-    const transformedDepartments = departmentsParam.map(department => constants.PARAMETERS_FOR_DEPARTMENT(department));
+  private async insertDepartments(session: any, departments: Department[]): Promise<void> {
+    const transformedDepartments = departments.map(department => constants.PARAMETERS_FOR_DEPARTMENT(department));
     await session.executeWrite((transaction: any) => transaction.run(
       constants.CREATE_DEPARTMENTS_QUERY, { departments: transformedDepartments }
     ));
-    console.log("Neo4jInitialization.insertDepartments(): inserted [%d] departments", departmentsParam.length);
+    console.log("Neo4jInitialization.insertDepartments(): inserted [%d] departments", departments.length);
   }
   /**
    * Inserts the employee nodes and their relationships into the database.
+   * 
    * @param session the Neo4j session
    * @param departments the array of departments with employees
    */

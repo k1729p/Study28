@@ -13,13 +13,13 @@ export class RedisDepartmentRepository implements DepartmentRepository {
    * @param department - The department to be created.
    * @returns A promise that resolves when the department is created.
    */
-  async createDepartment(dept: Department): Promise<void> {
+  async createDepartment(department: Department): Promise<void> {
     const client = await clientPromise;
     try {
-      const key = `${'department:'}${dept.id}`;
-      const { employees, ...deptData } = dept; // Exclude employees if storing separately
+      const key = `${'department:'}${department.id}`;
+      const { employees, ...deptData } = department; // Exclude employees if storing separately
       await client.set(key, JSON.stringify(deptData));
-      console.log("RedisDepartmentRepository.createDepartment(): ID [%d]", dept.id);
+      console.log("RedisDepartmentRepository.createDepartment(): department id[%d]", department.id);
     } catch (err) {
       console.error("RedisDepartmentRepository.createDepartment():", err);
       throw err;
@@ -65,7 +65,7 @@ export class RedisDepartmentRepository implements DepartmentRepository {
           }
         }
       }
-      console.log("RedisDepartmentRepository.getDepartments(): Retrieved [%d] departments", departments.length);
+      console.log("RedisDepartmentRepository.getDepartments(): departments count[%d]", departments.length);
       return departments;
     } catch (err) {
       console.error("RedisDepartmentRepository.getDepartments():", err);
