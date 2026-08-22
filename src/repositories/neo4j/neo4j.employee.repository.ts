@@ -1,6 +1,7 @@
 import { Employee } from "../../models/employee.js";
-import { driverPromise } from "./neo4j.pool.js";
 import { EmployeeRepository } from "../employee.repository.js";
+import { driverPromise } from "./neo4j.pool.js";
+import { nodeToEmployee, parametersForEmployee } from "./neo4j.mappers.js";
 import * as constants from "./neo4j.constants.js";
 /**
  * Repository interface providing methods to manage employees.
@@ -20,7 +21,7 @@ export class Neo4jEmployeeRepository implements EmployeeRepository {
     const session = driver.session();
     try {
       const result = await session.executeWrite(transaction => transaction.run(
-        constants.CREATE_EMPLOYEE_QUERY, constants.PARAMETERS_FOR_EMPLOYEE(employee)));
+        constants.CREATE_EMPLOYEE_QUERY, parametersForEmployee(employee)));
       if (result.records.length === 0) {
         console.log("Neo4jEmployeeRepository.createEmployee(): " +
           "employee not created, department not found, employee id[%d], department id[%d]",
@@ -45,7 +46,7 @@ export class Neo4jEmployeeRepository implements EmployeeRepository {
     const session = driver.session();
     try {
       const result = await session.executeRead(transaction => transaction.run(constants.READ_EMPLOYEES_QUERY));
-      const employees = result.records.map(record => constants.NODE_TO_EMPLOYEE(record.get('employee')));
+      const employees = result.records.map(record => nodeToEmployee(record.get('employee')));
       console.log("Neo4jEmployeeRepository.getEmployees(): employees count[%d]", employees.length);
       return employees;
     } catch (err) {
@@ -70,7 +71,7 @@ export class Neo4jEmployeeRepository implements EmployeeRepository {
         console.log("Neo4jEmployeeRepository.getEmployee(): employee not found, employee id[%d]", id);
         return undefined;
       }
-      const employee = constants.NODE_TO_EMPLOYEE(result.records[0].get('employee'));
+      const employee = nodeToEmployee(result.records[0].get('employee'));
       console.log("Neo4jEmployeeRepository.getEmployee() employee id[%d]", id);
       return employee;
     } catch (err) {
@@ -95,7 +96,7 @@ export class Neo4jEmployeeRepository implements EmployeeRepository {
     const session = driver.session();
     try {
       const result = await session.executeWrite(transaction => transaction.run(
-        constants.UPDATE_EMPLOYEE_QUERY, constants.PARAMETERS_FOR_EMPLOYEE(employee)));
+        constants.UPDATE_EMPLOYEE_QUERY, parametersForEmployee(employee)));
       if (result.records.length === 0) {
         console.log("Neo4jEmployeeRepository.updateEmployee(): " +
           "employee not updated, employee id[%d]", employee.id);

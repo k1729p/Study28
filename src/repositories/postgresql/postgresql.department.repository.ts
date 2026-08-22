@@ -1,7 +1,7 @@
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
-import { poolPromise } from "./postgresql.pool.js";
 import { DepartmentRepository } from "../department.repository.js";
+import { poolPromise } from "./postgresql.pool.js";
 import * as mappers from "../mappers.js";
 import * as constants from "./postgresql.constants.js";
 /**
@@ -227,7 +227,7 @@ export class PostgreSqlDepartmentRepository implements DepartmentRepository {
       client.release();
     }
     console.log("PostgreSqlDepartmentRepository.transferEmployees(): " +
-      "source department id[%d], target department id[%d], transferred employees count[%d]",
+      "source department id[%d], target department id[%d], employees count[%d]",
       sourceDepartmentId, targetDepartmentId, employeeIds.length);
   }
 }

@@ -1,8 +1,8 @@
 import { PoolClient, types } from "pg";
 
 import { Department } from "../../models/department.js";
-import { poolPromise } from "./postgresql.pool.js";
 import { Initialization } from "../initialization.js";
+import { poolPromise } from "./postgresql.pool.js";
 import * as constants from "./postgresql.constants.js";
 /**
  * Repository class providing methods to initialize the database and load seed data.

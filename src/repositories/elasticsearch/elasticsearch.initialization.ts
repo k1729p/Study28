@@ -1,8 +1,9 @@
 import { Client } from '@elastic/elasticsearch';
 
 import { Department } from "../../models/department.js";
-import { clientPromise } from "./elasticsearch.pool.js";
 import { Initialization } from "../initialization.js";
+import { clientPromise } from "./elasticsearch.pool.js";
+import { departmentToDocument, employeeToDocument } from "./elasticsearch.mappers.js";
 import * as constants from "./elasticsearch.constants.js";
 /**
  * Repository class providing methods to initialize the database and load seed data.
@@ -49,7 +50,7 @@ export class ElasticsearchInitialization implements Initialization {
           _id: department.id.toString()
         }
       },
-      constants.DEPARTMENT_TO_DOCUMENT(department)
+      departmentToDocument(department)
     ]);
     await client.bulk({ refresh: true, operations });
     console.log("ElasticsearchInitialization.insertDepartments(): departments count[%d]", departments.length);
@@ -74,7 +75,7 @@ export class ElasticsearchInitialization implements Initialization {
           _id: employee.id.toString()
         }
       },
-      constants.EMPLOYEE_TO_DOCUMENT(employee)
+      employeeToDocument(employee)
     ]);
     await client.bulk({ refresh: true, operations });
     console.log("ElasticsearchInitialization.insertEmployees(): employees count[%d]", employees.length);

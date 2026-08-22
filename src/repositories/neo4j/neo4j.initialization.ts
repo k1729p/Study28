@@ -1,6 +1,7 @@
 import { Department } from "../../models/department.js";
 import { driverPromise } from "./neo4j.pool.js";
 import { Initialization } from "../initialization.js";
+import { parametersForDepartment, parametersForEmployee } from "./neo4j.mappers.js";
 import * as constants from "./neo4j.constants.js";
 /**
  * Repository class providing methods to initialize the database and load seed data.
@@ -39,7 +40,7 @@ export class Neo4jInitialization implements Initialization {
    * @param departments the array of departments
    */
   private async insertDepartments(session: any, departments: Department[]): Promise<void> {
-    const transformedDepartments = departments.map(department => constants.PARAMETERS_FOR_DEPARTMENT(department));
+    const transformedDepartments = departments.map(department => parametersForDepartment(department));
     await session.executeWrite((transaction: any) => transaction.run(
       constants.CREATE_DEPARTMENTS_QUERY, { departments: transformedDepartments }
     ));
@@ -59,7 +60,7 @@ export class Neo4jInitialization implements Initialization {
       console.warn("Neo4jInitialization.insertEmployees(): no employees to insert");
       return;
     }
-    const transformedEmployees = employeesFromDepartments.map(employee => constants.PARAMETERS_FOR_EMPLOYEE(employee));
+    const transformedEmployees = employeesFromDepartments.map(employee => parametersForEmployee(employee));
     await session.executeWrite((transaction: any) => transaction.run(
       constants.CREATE_EMPLOYEES_QUERY, { employees: transformedEmployees }
     ));

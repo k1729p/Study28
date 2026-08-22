@@ -1,8 +1,4 @@
-import oracledb from 'oracledb';
 import { config } from "./../../configuration/configuration.js";
-import { Department } from "../../models/department.js";
-import { Employee } from "../../models/employee.js";
-
 /**
  * Configuration for the connection pool.
  */
@@ -227,32 +223,3 @@ export const CALL_DELETE_DEPARTMENT_AND_EMPLOYEES_SQL = `
   delete_department_and_employees(:departmentId);
   END;
 `;
-// --- mappers ------------------------------------------------------------------------------------
-export const BIND_PARAMETERS_FOR_DEPARTMENT = (department: Department): oracledb.BindParameters => {
-  return {
-    id: department.id,
-    name: department.name,
-    startDate: department.startDate ? new Date(department.startDate) : null,
-    endDate: department.endDate ? new Date(department.endDate) : null,
-    notes: department.notes || null,
-    keywords: department.keywords?.join(',') || null,
-    image: department.image || null
-  };
-}
-export const BIND_PARAMETERS_FOR_EMPLOYEE = (employee: Employee): oracledb.BindParameters => {
-  return {
-    id: employee.id,
-    departmentId: employee.departmentId,
-    firstName: employee.firstName,
-    lastName: employee.lastName,
-    title: employee.title,
-    phone: employee.phone,
-    mail: employee.mail,
-    streetName: employee.streetName || null,
-    houseNumber: employee.houseNumber || null,
-    postalCode: employee.postalCode || null,
-    locality: employee.locality || null,
-    province: employee.province || null,
-    country: employee.country || null
-  };
-}

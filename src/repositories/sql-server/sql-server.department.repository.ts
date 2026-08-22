@@ -2,8 +2,8 @@ import sql from 'mssql';
 
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
-import { poolPromise } from "./sql-server.pool.js";
 import { DepartmentRepository } from "../department.repository.js";
+import { poolPromise } from "./sql-server.pool.js";
 import * as mappers from "../mappers.js";
 import * as constants from "./sql-server.constants.js";
 /**
@@ -201,7 +201,7 @@ export class SqlServerDepartmentRepository implements DepartmentRepository {
       throw err;
     }
     console.log("SqlServerDepartmentRepository.transferEmployees(): " +
-      "source department id[%d], target department id[%d], transferred employees count[%d]",
+      "source department id[%d], target department id[%d], employees count[%d]",
       sourceDepartmentId, targetDepartmentId, employeeIds.length);
   }
 }

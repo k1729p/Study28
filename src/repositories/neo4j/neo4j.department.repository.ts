@@ -1,6 +1,7 @@
 import { Department } from "../../models/department.js";
-import { driverPromise } from "./neo4j.pool.js";
 import { DepartmentRepository } from "../department.repository.js";
+import { driverPromise } from "./neo4j.pool.js";
+import { parametersForDepartment, recordToDepartment } from "./neo4j.mappers.js";
 import * as constants from "./neo4j.constants.js";
 /**
  * Repository class providing methods to manage departments.
@@ -18,7 +19,7 @@ export class Neo4jDepartmentRepository implements DepartmentRepository {
     const session = driver.session();
     try {
       await session.executeWrite(transaction => transaction.run(
-        constants.CREATE_DEPARTMENT_QUERY, constants.PARAMETERS_FOR_DEPARTMENT(department)));
+        constants.CREATE_DEPARTMENT_QUERY, parametersForDepartment(department)));
     } catch (err) {
       console.error("Neo4jDepartmentRepository.createDepartment():", err);
       throw err;
@@ -37,7 +38,7 @@ export class Neo4jDepartmentRepository implements DepartmentRepository {
     const session = driver.session();
     try {
       const result = await session.executeRead(transaction => transaction.run(constants.READ_DEPARTMENTS_QUERY));
-      const departments = result.records.map(record => constants.RECORD_TO_DEPARTMENT(record));
+      const departments = result.records.map(record => recordToDepartment(record));
       console.log("Neo4jDepartmentRepository.getDepartments(): departments count[%d]", departments.length);
       return departments;
     } catch (err) {
@@ -62,7 +63,7 @@ export class Neo4jDepartmentRepository implements DepartmentRepository {
         console.log("Neo4jDepartmentRepository.getDepartment(): department not found, department id[%d]", id);
         return undefined;
       }
-      const department = constants.RECORD_TO_DEPARTMENT(result.records[0]);
+      const department = recordToDepartment(result.records[0]);
       console.log("Neo4jDepartmentRepository.getDepartment(): department id[%d]", id);
       return department;
     } catch (err) {
@@ -84,7 +85,7 @@ export class Neo4jDepartmentRepository implements DepartmentRepository {
     const session = driver.session();
     try {
       const result = await session.executeWrite(transaction => transaction.run(
-        constants.UPDATE_DEPARTMENT_QUERY, constants.PARAMETERS_FOR_DEPARTMENT(department)));
+        constants.UPDATE_DEPARTMENT_QUERY, parametersForDepartment(department)));
       if (result.records.length === 0) {
         console.log("Neo4jDepartmentRepository.updateDepartment(): " +
           "department not updated, department id[%d]", department.id);
@@ -136,13 +137,11 @@ export class Neo4jDepartmentRepository implements DepartmentRepository {
     }
     const driver = await driverPromise;
     const session = driver.session();
-    let transferredCount = 0;
     try {
-      const result = await session.executeWrite(transaction => transaction.run(
+      await session.executeWrite(transaction => transaction.run(
         constants.TRANSFER_EMPLOYEES_QUERY,
         { sourceDepartmentId, targetDepartmentId, employeeIds }
       ));
-      transferredCount = result.records.length;
     } catch (err) {
       console.error("Neo4jDepartmentRepository.transferEmployees():", err);
       throw err;
@@ -150,7 +149,7 @@ export class Neo4jDepartmentRepository implements DepartmentRepository {
       await session.close();
     }
     console.log("Neo4jDepartmentRepository.transferEmployees(): " +
-      "source department id[%d], target department id[%d], transferred employees count[%d]",
-      sourceDepartmentId, targetDepartmentId, transferredCount);
+      "source department id[%d], target department id[%d], employees count[%d]",
+      sourceDepartmentId, targetDepartmentId, employeeIds.length);
   }
 }

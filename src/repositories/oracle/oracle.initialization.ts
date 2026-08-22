@@ -1,8 +1,9 @@
 import oracledb from 'oracledb';
 
 import { Department } from "../../models/department.js";
-import { poolPromise } from "./oracle.pool.js";
 import { Initialization } from "../initialization.js";
+import { poolPromise } from "./oracle.pool.js";
+import { parametersForDepartment, parametersForEmployee } from "./oracle.mappers.js";
 import * as constants from "./oracle.constants.js";
 /**
  * Repository class providing methods to initialize the database and load seed data.
@@ -54,7 +55,7 @@ export class OracleInitialization implements Initialization {
    */
   private async insertDepartments(connection: oracledb.Connection, departments: Department[]) {
     for (const department of departments) {
-      await connection.execute(constants.INSERT_DEPARTMENT_SQL, constants.BIND_PARAMETERS_FOR_DEPARTMENT(department), { autoCommit: false });
+      await connection.execute(constants.INSERT_DEPARTMENT_SQL, parametersForDepartment(department), { autoCommit: false });
     }
     console.log("OracleInitialization.insertDepartments(): inserted [%d] departments", departments.length);
   }
@@ -72,7 +73,7 @@ export class OracleInitialization implements Initialization {
       return;
     }
     for (const employee of employees) {
-      await connection.execute(constants.INSERT_EMPLOYEE_SQL, constants.BIND_PARAMETERS_FOR_EMPLOYEE(employee), { autoCommit: false });
+      await connection.execute(constants.INSERT_EMPLOYEE_SQL, parametersForEmployee(employee), { autoCommit: false });
     }
     console.log("OracleInitialization.insertEmployees(): inserted [%d] employees", employees.length);
   }

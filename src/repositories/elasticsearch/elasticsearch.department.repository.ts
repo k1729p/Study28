@@ -3,6 +3,7 @@ import { errors } from '@elastic/elasticsearch';
 import { Department } from "../../models/department.js";
 import { DepartmentRepository } from "../department.repository.js";
 import { clientPromise } from "./elasticsearch.pool.js";
+import { departmentToDocument, sourceToDepartment, sourceToEmployee } from "./elasticsearch.mappers.js";
 import * as constants from "./elasticsearch.constants.js";
 /**
  * Repository class providing methods to manage departments.
@@ -21,7 +22,7 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
       await client.index({
         index: constants.INDEX_DEPARTMENTS,
         id: department.id.toString(),
-        document: constants.DEPARTMENT_TO_DOCUMENT(department),
+        document: departmentToDocument(department),
         refresh: true // Ensures the data is immediately available for searching
       });
     } catch (err) {
@@ -45,7 +46,7 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
       const departmentHits = departmentSearchResponse.hits.hits as any[];
       const departmentMap = new Map<number, Department>();
       for (const hit of departmentHits) {
-        departmentMap.set(hit._source.id, constants.SOURCE_TO_DEPARTMENT(hit._source));
+        departmentMap.set(hit._source.id, sourceToDepartment(hit._source));
       }
       const employeeSearchResponse = await client.search({
         index: constants.INDEX_EMPLOYEES,
@@ -55,7 +56,7 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
       for (const hit of employeeHits) {
         const department = departmentMap.get(hit._source.departmentId);
         if (department) {
-          department.employees.push(constants.SOURCE_TO_EMPLOYEE(hit._source));
+          department.employees.push(sourceToEmployee(hit._source));
         }
       }
       const departments = Array.from(departmentMap.values());
@@ -83,7 +84,7 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
         console.log("ElasticsearchDepartmentRepository.getDepartment(): department not found, department id[%d]", id);
         return undefined;
       }
-      const department = constants.SOURCE_TO_DEPARTMENT(departmentGetResponse._source);
+      const department = sourceToDepartment(departmentGetResponse._source);
       const employeeSearchResponse = await client.search({
         index: constants.INDEX_EMPLOYEES,
         size: constants.MAX_RESULTS,
@@ -95,7 +96,7 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
       const employeeHits = employeeSearchResponse.hits.hits as any[];
       for (const hit of employeeHits) {
         if (hit._source) {
-          department.employees.push(constants.SOURCE_TO_EMPLOYEE(hit._source));
+          department.employees.push(sourceToEmployee(hit._source));
         }
       }
       console.log("ElasticsearchDepartmentRepository.getDepartment(): department id[%d]", id);
@@ -119,7 +120,7 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
       await client.update({
         index: constants.INDEX_DEPARTMENTS,
         id: department.id.toString(),
-        doc: constants.DEPARTMENT_TO_DOCUMENT(department),
+        doc: departmentToDocument(department),
         refresh: true
       });
     } catch (err) {
@@ -180,7 +181,7 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
     }
     const client = await clientPromise;
     try {
-      const updateByQueryResponse = await client.updateByQuery({
+      await client.updateByQuery({
         index: constants.INDEX_EMPLOYEES,
         refresh: true,
         conflicts: 'proceed',
@@ -199,8 +200,8 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
         }
       });
       console.log("ElasticsearchDepartmentRepository.transferEmployees(): " +
-        "source department id[%d], target department id[%d], transferred employees count[%d]",
-        sourceDepartmentId, targetDepartmentId, updateByQueryResponse.updated ?? 0);
+        "source department id[%d], target department id[%d], employees count[%d]",
+        sourceDepartmentId, targetDepartmentId, employeeIds.length);
     } catch (err) {
       console.error("ElasticsearchDepartmentRepository.transferEmployees():", err);
       throw err;

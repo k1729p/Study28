@@ -1,5 +1,6 @@
 import { Department } from "../../models/department.js";
 import { clientPromise } from "./cassandra.pool.js";
+import { parametersForDepartment, parametersForEmployee } from "./cassandra.mappers.js";
 import { Initialization } from "../initialization.js";
 import * as constants from "./cassandra.constants.js";
 /**
@@ -43,7 +44,7 @@ export class CassandraInitialization implements Initialization {
   private async insertDepartments(client: any, departments: Department[]) {
     for (const department of departments) {
       await client.execute(constants.INSERT_DEPARTMENT_CQL,
-        constants.PARAMETERS_FOR_DEPARTMENT(department), { prepare: true });
+        parametersForDepartment(department), { prepare: true });
     }
     console.log("CassandraInitialization.insertDepartments(): inserted [%d] departments", departments.length);
   }
@@ -63,7 +64,7 @@ export class CassandraInitialization implements Initialization {
     }
     for (const employee of employees) {
       await client.execute(constants.INSERT_EMPLOYEE_CQL,
-        constants.PARAMETERS_FOR_EMPLOYEE(employee), { prepare: true });
+        parametersForEmployee(employee), { prepare: true });
     }
     console.log("CassandraInitialization.insertEmployees(): inserted [%d] employees", employees.length);
   }

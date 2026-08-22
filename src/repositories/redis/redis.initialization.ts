@@ -1,8 +1,14 @@
 import { Department } from "../../models/department.js";
-import { clientPromise } from "./redis.pool.js";
 import { Initialization } from "../initialization.js";
+import { clientPromise } from "./redis.pool.js";
 /**
  * Repository class providing methods to initialize the database and load seed data.
+ * 
+ * Storage model:
+ * 1. A department is stored as a JSON string under key `department:{id}`,
+ *    without its `employees`, which are stored separately and re-attached on read.
+ * 2. An employee is stored as a JSON string under key `employee:{id}`,
+ *    carrying a `departmentId` back-reference to its owning department.
  */
 export class RedisInitialization implements Initialization {
   /**

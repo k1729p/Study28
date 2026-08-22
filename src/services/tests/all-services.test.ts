@@ -16,7 +16,7 @@ describe.for([
   RepositoryType.Neo4j,
   RepositoryType.Oracle,
   RepositoryType.PostgreSQL,
-//  RepositoryType.Redis,
+  RepositoryType.Redis,
   RepositoryType.SQLServer,
 ])(colors.CYAN_BRIGHT + 'Repository type █ %s █' + colors.RESET, (repositoryType) => {
   describe(getSuiteName('Department'), () => departmentServiceTests(repositoryType));

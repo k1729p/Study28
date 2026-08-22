@@ -1,7 +1,8 @@
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
-import { poolPromise } from "./oracle.pool.js";
 import { DepartmentRepository } from "../department.repository.js";
+import { poolPromise } from "./oracle.pool.js";
+import { parametersForDepartment } from "./oracle.mappers.js";
 import * as mappers from "../mappers.js";
 import * as constants from "./oracle.constants.js";
 /**
@@ -19,7 +20,7 @@ export class OracleDepartmentRepository implements DepartmentRepository {
     const pool = await poolPromise;
     const connection = await pool.getConnection();
     try {
-      await connection.execute(constants.INSERT_DEPARTMENT_SQL, constants.BIND_PARAMETERS_FOR_DEPARTMENT(department), { autoCommit: true });
+      await connection.execute(constants.INSERT_DEPARTMENT_SQL, parametersForDepartment(department), { autoCommit: true });
     } catch (err) {
       console.error("OracleDepartmentRepository.createDepartment():", err);
       throw err;
@@ -114,7 +115,7 @@ export class OracleDepartmentRepository implements DepartmentRepository {
     const pool = await poolPromise;
     const connection = await pool.getConnection();
     try {
-      const result = await connection.execute(constants.UPDATE_DEPARTMENT_SQL, constants.BIND_PARAMETERS_FOR_DEPARTMENT(department));
+      const result = await connection.execute(constants.UPDATE_DEPARTMENT_SQL, parametersForDepartment(department));
       if (!result.rowsAffected) {
         await connection.rollback();
         console.log("OracleDepartmentRepository.updateDepartment(): department not updated, department id[%d]",
@@ -236,7 +237,7 @@ export class OracleDepartmentRepository implements DepartmentRepository {
       }
     }
     console.log("OracleDepartmentRepository.transferEmployees(): " +
-      "source department id[%d], target department id[%d], transferred employees count[%d]",
+      "source department id[%d], target department id[%d], employees count[%d]",
       sourceDepartmentId, targetDepartmentId, employeeIds.length);
   }
 }

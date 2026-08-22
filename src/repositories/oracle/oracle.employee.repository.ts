@@ -1,6 +1,7 @@
 import { Employee } from "../../models/employee.js";
-import { poolPromise } from "./oracle.pool.js";
 import { EmployeeRepository } from "../employee.repository.js";
+import { poolPromise } from "./oracle.pool.js";
+import { parametersForEmployee } from "./oracle.mappers.js";
 import * as mappers from "../mappers.js";
 import * as constants from "./oracle.constants.js";
 /**
@@ -18,7 +19,7 @@ export class OracleEmployeeRepository implements EmployeeRepository {
     const pool = await poolPromise;
     const connection = await pool.getConnection();
     try {
-      const result = await connection.execute(constants.INSERT_EMPLOYEE_SQL, constants.BIND_PARAMETERS_FOR_EMPLOYEE(employee), { autoCommit: true });
+      const result = await connection.execute(constants.INSERT_EMPLOYEE_SQL, parametersForEmployee(employee), { autoCommit: true });
       if (!result.rowsAffected) {
         console.log("OracleEmployeeRepository.createEmployee(): no employee created, employee id[%d]",
           employee.id);
@@ -101,7 +102,7 @@ export class OracleEmployeeRepository implements EmployeeRepository {
     const pool = await poolPromise;
     const connection = await pool.getConnection();
     try {
-      const result = await connection.execute(constants.UPDATE_EMPLOYEE_SQL, constants.BIND_PARAMETERS_FOR_EMPLOYEE(employee));
+      const result = await connection.execute(constants.UPDATE_EMPLOYEE_SQL, parametersForEmployee(employee));
       if (!result.rowsAffected) {
         await connection.rollback();
         console.log("OracleEmployeeRepository.updateEmployee(): employee not updated, employee id[%d]",

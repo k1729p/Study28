@@ -190,7 +190,7 @@ export class MongoDbDepartmentRepository implements DepartmentRepository {
       throw err;
     }
     console.log("MongoDbEmployeeRepository.transferEmployees(): " +
-      "source department id[%d], target department id[%d], transferred employees count[%d]",
+      "source department id[%d], target department id[%d], employees count[%d]",
       sourceDepartmentId, targetDepartmentId, employeeIds.length);
   }
 }

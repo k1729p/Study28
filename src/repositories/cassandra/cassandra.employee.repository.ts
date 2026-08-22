@@ -1,5 +1,6 @@
 import { Employee } from "../../models/employee.js";
 import { clientPromise } from "./cassandra.pool.js";
+import { parametersForEmployee } from "./cassandra.mappers.js";
 import { EmployeeRepository } from "../employee.repository.js";
 import * as mappers from "../mappers.js";
 import * as constants from "./cassandra.constants.js";
@@ -18,7 +19,7 @@ export class CassandraEmployeeRepository implements EmployeeRepository {
     try {
       const client = await clientPromise;
       await client.execute(constants.INSERT_EMPLOYEE_CQL,
-        constants.PARAMETERS_FOR_EMPLOYEE(employee), { prepare: true });
+        parametersForEmployee(employee), { prepare: true });
     } catch (err) {
       console.error("CassandraEmployeeRepository.createEmployee():", err);
       throw err;
@@ -87,7 +88,7 @@ export class CassandraEmployeeRepository implements EmployeeRepository {
       if (departmentId === employee.departmentId) {
         // The partition is unchanged: a plain, single-partition UPDATE is sufficient and the most efficient option.
         await client.execute(constants.UPDATE_EMPLOYEE_CQL,
-          constants.PARAMETERS_FOR_EMPLOYEE(employee), { prepare: true });
+          parametersForEmployee(employee), { prepare: true });
       } else {
         // Moving an employee to a different department is handled as a delete-then-insert across partitions.
         // Both statements are wrapped in a LOGGED BATCH for atomicity, so the employee is never
@@ -95,7 +96,7 @@ export class CassandraEmployeeRepository implements EmployeeRepository {
         // A batch is Cassandra's substitute for a stored procedure.
         const queries = [
           { query: constants.DELETE_EMPLOYEE_CQL, params: { departmentId: departmentId, id: employee.id } },
-          { query: constants.INSERT_EMPLOYEE_CQL, params: constants.PARAMETERS_FOR_EMPLOYEE(employee) }
+          { query: constants.INSERT_EMPLOYEE_CQL, params: parametersForEmployee(employee) }
         ];
         await client.batch(queries, { prepare: true });
       }

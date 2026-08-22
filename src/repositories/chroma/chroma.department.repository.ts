@@ -183,8 +183,8 @@ export class ChromaDepartmentRepository implements DepartmentRepository {
         metadatas: metadatas
       });
       console.log("ChromaDepartmentRepository.transferEmployees(): " +
-        "source department id[%d], target department id[%d], transferred employees count[%d]",
-        sourceDepartmentId, targetDepartmentId, employeeRows.ids.length);
+        "source department id[%d], target department id[%d], employees count[%d]",
+        sourceDepartmentId, targetDepartmentId, employeeIds.length);
     } catch (err) {
       console.error("ChromaDepartmentRepository.transferEmployees():", err);
       throw err;

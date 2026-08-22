@@ -4,7 +4,7 @@ import { RepositoryType } from '../repositories/repository-type.js';
  * @param value the value
  * @returns repositoryType
  */
-export const getRepositoryType = (value?: any): RepositoryType => {
+export const toRepositoryType = (value?: any): RepositoryType => {
   const match = Object.values(RepositoryType).find(
     repositoryType => repositoryType.toLowerCase() === String(value).toLowerCase()
   );

@@ -1,5 +1,6 @@
 import { Department } from "../../models/department.js";
 import { clientPromise } from "./cassandra.pool.js";
+import { parametersForDepartment } from "./cassandra.mappers.js";
 import { DepartmentRepository } from "../department.repository.js";
 import * as mappers from "../mappers.js";
 import * as constants from "./cassandra.constants.js";
@@ -18,7 +19,7 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
     try {
       const client = await clientPromise;
       await client.execute(constants.INSERT_DEPARTMENT_CQL,
-        constants.PARAMETERS_FOR_DEPARTMENT(department), { prepare: true });
+        parametersForDepartment(department), { prepare: true });
     } catch (err) {
       console.error("CassandraDepartmentRepository.createDepartment():", err);
       throw err;
@@ -90,7 +91,7 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
     try {
       const client = await clientPromise;
       const resultSet = await client.execute(constants.UPDATE_DEPARTMENT_CQL,
-        constants.PARAMETERS_FOR_DEPARTMENT(department), { prepare: true });
+        parametersForDepartment(department), { prepare: true });
       if (!resultSet.wasApplied()) {
         console.log("CassandraDepartmentRepository.updateDepartment(): " +
           "department not updated, department id[%d]", department.id);
@@ -185,7 +186,7 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
       throw err;
     }
     console.log("CassandraDepartmentRepository.transferEmployees(): " +
-      "source department id[%d], target department id[%d], transferred employees count[%d]",
+      "source department id[%d], target department id[%d], employees count[%d]",
       sourceDepartmentId, targetDepartmentId, employeeIds.length);
   }
 }

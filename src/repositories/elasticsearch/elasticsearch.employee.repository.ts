@@ -3,6 +3,7 @@ import { errors } from '@elastic/elasticsearch';
 import { Employee } from "../../models/employee.js";
 import { EmployeeRepository } from "../employee.repository.js";
 import { clientPromise } from "./elasticsearch.pool.js";
+import { employeeToDocument, sourceToEmployee } from "./elasticsearch.mappers.js";
 import * as constants from "./elasticsearch.constants.js";
 /**
  * Repository interface providing methods to manage employees.
@@ -21,7 +22,7 @@ export class ElasticsearchEmployeeRepository implements EmployeeRepository {
       await client.index({
         index: constants.INDEX_EMPLOYEES,
         id: employee.id.toString(),
-        document: constants.EMPLOYEE_TO_DOCUMENT(employee),
+        document: employeeToDocument(employee),
         refresh: true // Ensures the data is immediately available for searching
       });
     } catch (err) {
@@ -45,7 +46,7 @@ export class ElasticsearchEmployeeRepository implements EmployeeRepository {
       });
       const employees = searchResponse.hits.hits
         .filter(hit => hit._source)
-        .map(hit => constants.SOURCE_TO_EMPLOYEE(hit._source));
+        .map(hit => sourceToEmployee(hit._source));
       console.log("ElasticsearchEmployeeRepository.getEmployees(): employees count[%d]", employees.length);
       return employees;
     } catch (err) {
@@ -71,7 +72,7 @@ export class ElasticsearchEmployeeRepository implements EmployeeRepository {
         return undefined;
       }
       console.log("ElasticsearchEmployeeRepository.getEmployee(): employee id[%d]", id);
-      return constants.SOURCE_TO_EMPLOYEE(employeeGetResponse._source);
+      return sourceToEmployee(employeeGetResponse._source);
     } catch (err) {
       console.error("ElasticsearchEmployeeRepository.getEmployee():", err);
       throw err;
@@ -91,7 +92,7 @@ export class ElasticsearchEmployeeRepository implements EmployeeRepository {
       await client.update({
         index: constants.INDEX_EMPLOYEES,
         id: employee.id.toString(),
-        doc: constants.EMPLOYEE_TO_DOCUMENT(employee),
+        doc: employeeToDocument(employee),
         refresh: true
       });
     } catch (err) {

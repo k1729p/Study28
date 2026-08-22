@@ -14,11 +14,11 @@ client.on('error', (err) => console.error('Redis pool: runtime error', err));
  * A promise that resolves to a connected client object.
  */
 export const clientPromise = client.connect()
-    .then(() => {
-        console.log('Redis pool: connected to database');
-        return client;
-    })
-    .catch(err => {
-        console.error('Redis pool: initial connection error', err);
-        throw err;
-    });
+  .then(() => {
+    console.log('Redis pool: connected to database');
+    return client;
+  })
+  .catch(err => {
+    console.error('Redis pool: initial connection error', err);
+    throw err;
+  });
