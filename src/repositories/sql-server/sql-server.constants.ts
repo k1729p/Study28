@@ -32,8 +32,8 @@ export const CREATE_TABLE_DEPARTMENTS_SQL = `
   CREATE TABLE departments (
     id INT PRIMARY KEY,
     name NVARCHAR(40) NOT NULL CHECK (name <> ''),
-    start_date DATE,
-    end_date DATE,
+    start_date DATETIMEOFFSET,
+    end_date DATETIMEOFFSET,
     notes NVARCHAR(MAX),
     keywords NVARCHAR(450),
     image NVARCHAR(255)

@@ -26,8 +26,8 @@ export const CREATE_TABLE_DEPARTMENTS_SQL = `
   CREATE TABLE departments (
     id INT PRIMARY KEY,
     name VARCHAR(40) NOT NULL,
-    start_date DATE,
-    end_date DATE,
+    start_date DATETIME,
+    end_date DATETIME,
     notes TEXT,
     keywords TEXT,
     image VARCHAR(255)

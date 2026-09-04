@@ -23,8 +23,8 @@ export class SqlServerDepartmentRepository implements DepartmentRepository {
       await pool.request()
         .input('id', sql.Int, department.id)
         .input('name', sql.NVarChar, department.name)
-        .input('startDate', sql.Date, department.startDate)
-        .input('endDate', sql.Date, department.endDate)
+        .input('startDate', sql.DateTimeOffset, department.startDate)
+        .input('endDate', sql.DateTimeOffset, department.endDate)
         .input('notes', sql.NVarChar, department.notes)
         .input('keywords', sql.NVarChar, department.keywords?.join(','))
         .input('image', sql.NVarChar, department.image)
@@ -72,12 +72,9 @@ export class SqlServerDepartmentRepository implements DepartmentRepository {
   async getDepartment(id: number): Promise<Department | undefined> {
     try {
       const pool = await poolPromise;
-      const result = await pool.request()
-        .input('id', sql.Int, id)
-        .query(constants.SELECT_DEPARTMENT_SQL);
+      const result = await pool.request().input('id', sql.Int, id).query(constants.SELECT_DEPARTMENT_SQL);
       if (!result.recordset.length) {
-        console.log("SqlServerDepartmentRepository.getDepartment(): " +
-          "department not found, department id[%d]", id);
+        console.log("SqlServerDepartmentRepository.getDepartment(): department not found, department id[%d]", id);
         return undefined;
       }
       const rows = result.recordset;
@@ -106,8 +103,8 @@ export class SqlServerDepartmentRepository implements DepartmentRepository {
       const result = await pool.request()
         .input('id', sql.Int, department.id)
         .input('name', sql.NVarChar, department.name)
-        .input('startDate', sql.Date, department.startDate)
-        .input('endDate', sql.Date, department.endDate)
+        .input('startDate', sql.DateTimeOffset, department.startDate)
+        .input('endDate', sql.DateTimeOffset, department.endDate)
         .input('notes', sql.NVarChar, department.notes)
         .input('keywords', sql.NVarChar, department.keywords?.join(','))
         .input('image', sql.NVarChar, department.image)
@@ -139,7 +136,7 @@ export class SqlServerDepartmentRepository implements DepartmentRepository {
         .query(constants.UPDATE_EMPLOYEE_DEPARTMENT_SQL);
       if (!result.rowsAffected[0]) {
         console.log("SqlServerDepartmentRepository.updateEmployeeInDepartment(): " +
-           "employee not updated, employee id[%d], departmentId[%d]", employee.id, employee.departmentId);
+          "employee not updated, employee id[%d], departmentId[%d]", employee.id, employee.departmentId);
         return;
       }
     } catch (err) {

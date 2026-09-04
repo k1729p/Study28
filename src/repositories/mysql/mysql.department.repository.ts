@@ -22,13 +22,11 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
     const connection = await pool.getConnection();
     try {
       await connection.beginTransaction();
-      const startDate = department.startDate ? new Date(department.startDate).toISOString().split('T')[0] : null;
-      const endDate = department.endDate ? new Date(department.endDate).toISOString().split('T')[0] : null;
       const [result] = await connection.query<ResultSetHeader>(constants.INSERT_DEPARTMENT_SQL, [
         department.id,
         department.name,
-        startDate,
-        endDate,
+        department.startDate,
+        department.endDate,
         department.notes,
         department.keywords ? department.keywords.join(',') : null,
         department.image
@@ -64,7 +62,8 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
         if (!department) {
           department = mappers.mapDatabaseRowToDepartment(row);
           departmentMap.set(row.id, department);
-        } else if (row.employee_id) {
+        }
+        if (row.employee_id) {
           department.employees.push(mappers.mapDatabaseRowToEmployee(row, false));
         }
       }
@@ -91,7 +90,7 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
         return undefined;
       }
       const department = mappers.mapDatabaseRowToDepartment(rows[0]);
-      for (const row of rows.slice(1)) {
+      for (const row of rows) {
         if (row.employee_id) {
           department.employees.push(mappers.mapDatabaseRowToEmployee(row, false));
         }
@@ -114,12 +113,10 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
     const connection = await pool.getConnection();
     try {
       await connection.beginTransaction();
-      const startDate = department.startDate ? new Date(department.startDate).toISOString().split('T')[0] : null;
-      const endDate = department.endDate ? new Date(department.endDate).toISOString().split('T')[0] : null;
       const [result] = await connection.query<ResultSetHeader>(constants.UPDATE_DEPARTMENT_SQL, [
         department.name,
-        startDate,
-        endDate,
+        department.startDate,
+        department.endDate,
         department.notes,
         department.keywords ? department.keywords.join(',') : null,
         department.image,

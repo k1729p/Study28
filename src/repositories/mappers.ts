@@ -3,8 +3,7 @@ import { Employee } from "../models/employee.js";
 /**
  * Maps a raw database row (snake_case columns) to a Department object (camelCase properties).
  * Handles both a MySQL-style comma-joined keywords string and a PostgreSQL-style keywords array.
- * If the row also contains employee columns (employee_id present), the first employee is
- * included in the returned department's employees array.
+ * The employees array is set to empty array.
  * @param row the raw database row
  * @returns the mapped Department object
  */
@@ -21,9 +20,6 @@ export const mapDatabaseRowToDepartment = (row: any): Department => {
     image: row.image,
     employees: []
   };
-  if (row.employee_id) {
-    department.employees.push(mapDatabaseRowToEmployee(row, false));
-  }
   return department;
 };
 /**

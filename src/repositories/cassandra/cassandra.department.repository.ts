@@ -43,7 +43,7 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
       const employeeResultSet = await client.execute(constants.SELECT_EMPLOYEES_CQL,
         [], { prepare: true });
       for (const row of employeeResultSet.rows) {
-        const department = departmentMap.get(row.id);
+        const department = departmentMap.get(row.department_id);
         if (department) {
           department.employees.push(mappers.mapDatabaseRowToEmployee(row, true));
         }

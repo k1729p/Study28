@@ -32,8 +32,8 @@ export const CREATE_TABLE_DEPARTMENTS_CQL = `
   CREATE TABLE ${KEYSPACE}.departments (
     id int PRIMARY KEY,
     name text,
-    start_date date,
-    end_date date,
+    start_date timestamp,
+    end_date timestamp,
     notes text,
     keywords list<text>,
     image text

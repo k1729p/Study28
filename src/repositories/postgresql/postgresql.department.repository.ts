@@ -89,8 +89,7 @@ export class PostgreSqlDepartmentRepository implements DepartmentRepository {
     try {
       const result = await client.query(constants.SELECT_DEPARTMENT_SQL, [id]);
       if (!result.rowCount) {
-        console.log("PostgreSqlDepartmentRepository.getDepartment(): " +
-          "department not found, department id[%d]", id);
+        console.log("PostgreSqlDepartmentRepository.getDepartment(): department not found, department id[%d]", id);
         return undefined;
       }
       const rows = result.rows;

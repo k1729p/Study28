@@ -5,8 +5,8 @@ export const parametersForDepartment = (department: Department): any => {
   return {
     id: department.id,
     name: department.name,
-    startDate: department.startDate ? new Date(department.startDate).toISOString().split('T')[0] : null,
-    endDate: department.endDate ? new Date(department.endDate).toISOString().split('T')[0] : null,
+    startDate: department.startDate || null,
+    endDate: department.endDate || null,
     notes: department.notes || null,
     keywords: department.keywords || null,
     image: department.image || null

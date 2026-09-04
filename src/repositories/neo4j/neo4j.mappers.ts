@@ -5,8 +5,8 @@ export const parametersForDepartment = (department: Department): any => {
   return {
     id: department.id,
     name: department.name,
-    startDate: department.startDate ? new Date(department.startDate).toISOString().split('T')[0] : null,
-    endDate: department.endDate ? new Date(department.endDate).toISOString().split('T')[0] : null,
+    startDate: department.startDate?.toISOString() || null,
+    endDate: department.endDate?.toISOString() || null,
     notes: department.notes || null,
     keywords: department.keywords ? department.keywords.join(',') : null,
     image: department.image || null
@@ -41,6 +41,34 @@ const toJsNumber = (value: any): number => {
   return value && typeof value.toNumber === 'function' ? value.toNumber() : Number(value);
 }
 /**
+ * Maps a query record produced by READ_DEPARTMENTS_QUERY / READ_DEPARTMENT_QUERY
+ * (columns 'department' and 'employees') to a Department object, including its
+ * associated Employees.
+ * @param record the Neo4j query record
+ * @returns the mapped Department object
+ */
+export const recordToDepartment = (record: any): Department => {
+  const departmentNode = record.get('department');
+  const properties = departmentNode.properties;
+  const department: Department = {
+    id: toJsNumber(properties.id),
+    name: properties.name,
+    startDate: properties.startDate,
+    endDate: properties.endDate,
+    notes: properties.notes,
+    keywords: properties.keywords ? properties.keywords.split(',') : [],
+    image: properties.image,
+    employees: []
+  };
+  const employeeNodes = record.get('employees');
+  if (employeeNodes && employeeNodes.length > 0) {
+    department.employees = employeeNodes
+      .filter((node: any) => node !== null) // filters out nulls from an empty OPTIONAL MATCH collection
+      .map((node: any) => nodeToEmployee(node));
+  }
+  return department;
+}
+/**
  * Maps a plain Employee node (as returned by 'RETURN employee') to an Employee object.
  * @param employeeNode the Neo4j node for the Employee
  * @returns the mapped Employee object
@@ -62,32 +90,4 @@ export const nodeToEmployee = (employeeNode: any): Employee => {
     province: properties.province,
     country: properties.country
   };
-}
-/**
- * Maps a query record produced by READ_DEPARTMENTS_QUERY / READ_DEPARTMENT_QUERY
- * (columns 'department' and 'employees') to a Department object, including its
- * associated Employees.
- * @param record the Neo4j query record
- * @returns the mapped Department object
- */
-export const recordToDepartment = (record: any): Department => {
-  const departmentNode = record.get('department');
-  const properties = departmentNode.properties;
-  const department: Department = {
-    id: toJsNumber(properties.id),
-    name: properties.name,
-    startDate: properties.startDate ? new Date(properties.startDate) : undefined,
-    endDate: properties.endDate ? new Date(properties.endDate) : undefined,
-    notes: properties.notes,
-    keywords: properties.keywords ? properties.keywords.split(',') : [],
-    image: properties.image,
-    employees: []
-  };
-  const employeeNodes = record.get('employees');
-  if (employeeNodes && employeeNodes.length > 0) {
-    department.employees = employeeNodes
-      .filter((node: any) => node !== null) // filters out nulls from an empty OPTIONAL MATCH collection
-      .map((node: any) => nodeToEmployee(node));
-  }
-  return department;
 }

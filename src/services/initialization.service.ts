@@ -11,7 +11,7 @@ import { OracleInitialization } from "../repositories/oracle/oracle.initializati
 import { PostgreSqlInitialization } from "../repositories/postgresql/postgresql.initialization.js";
 import { SqlServerInitialization } from "../repositories/sql-server/sql-server.initialization.js";
 import { RedisInitialization } from "../repositories/redis/redis.initialization.js";
-import { INITIAL_DATA } from './initial-data.js';
+import { INITIAL_DATA } from './services.constants.js';
 
 /**
  * This service class provides methods to initialize the database and load initial data.

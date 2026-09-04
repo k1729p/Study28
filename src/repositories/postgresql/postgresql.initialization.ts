@@ -63,8 +63,8 @@ export class PostgreSqlInitialization implements Initialization {
       values.push(
         dep.id,
         dep.name,
-        this.formatDate(startDate),
-        this.formatDate(endDate),
+        startDate,
+        endDate,
         dep.notes ?? null,
         dep.keywords ?? null,
         dep.image ?? null
@@ -126,21 +126,4 @@ export class PostgreSqlInitialization implements Initialization {
     }
     console.log("PostgreSqlInitialization.insertEmployees(): inserted [%d] employees", employees.length);
   }
-  /**
-   * Formats the date.
-   * @param date the date
-   * @returns the date
-   */
-  private formatDate(date: Date | string | null | undefined): string | null {
-    if (!date) {
-      return null;
-    }
-    if (typeof date === 'string') {
-      return date.split('T')[0];
-    }
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
 }

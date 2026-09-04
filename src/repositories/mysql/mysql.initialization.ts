@@ -51,13 +51,11 @@ export class MySqlInitialization implements Initialization {
    */
   private async insertDepartments(connection: PoolConnection, departments: Department[]) {
     for (const department of departments) {
-      const startDate = department.startDate ? new Date(department.startDate).toISOString().split('T')[0] : null;
-      const endDate = department.endDate ? new Date(department.endDate).toISOString().split('T')[0] : null;
       const values = [
         department.id,
         department.name,
-        startDate,
-        endDate,
+        department.startDate || null,
+        department.endDate || null,
         department.notes || null,
         department.keywords ? department.keywords.join(',') : null,
         department.image || null

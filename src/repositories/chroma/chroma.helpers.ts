@@ -40,10 +40,10 @@ export function toPlaceholderEmbedding(text: string): number[] {
 export function toDepartmentMetadata(department: Department): ChromaMetadata {
   const metadata: ChromaMetadata = { name: department.name };
   if (department.startDate) {
-    metadata.startDate = new Date(department.startDate).toISOString().split('T')[0];
+    metadata.startDate = department.startDate.toISOString();
   }
   if (department.endDate) {
-    metadata.endDate = new Date(department.endDate).toISOString().split('T')[0];
+    metadata.endDate = department.endDate.toISOString();
   }
   if (department.notes) {
     metadata.notes = department.notes;
@@ -112,9 +112,9 @@ export function toDepartment(id: string, metadata: Metadata | null | undefined):
     name: String(meta.name ?? ''),
     startDate: meta.startDate ? new Date(String(meta.startDate)) : undefined,
     endDate: meta.endDate ? new Date(String(meta.endDate)) : undefined,
-    notes: meta.notes ? String(meta.notes) : undefined,
+    notes: String(meta.notes ?? ''),
     keywords: meta.keywords ? String(meta.keywords).split(constants.KEYWORDS_SEPARATOR) : [],
-    image: meta.image ? String(meta.image) : undefined,
+    image: String(meta.image ?? ''),
     employees: []
   };
 }
@@ -136,11 +136,11 @@ export function toEmployee(id: string, metadata: Metadata | null | undefined): E
     title: meta.title as Title,
     phone: String(meta.phone ?? ''),
     mail: String(meta.mail ?? ''),
-    streetName: meta.streetName ? String(meta.streetName) : undefined,
-    houseNumber: meta.houseNumber ? String(meta.houseNumber) : undefined,
-    postalCode: meta.postalCode ? String(meta.postalCode) : undefined,
-    locality: meta.locality ? String(meta.locality) : undefined,
-    province: meta.province ? String(meta.province) : undefined,
-    country: meta.country ? String(meta.country) : undefined
+    streetName: String(meta.streetName ?? ''),
+    houseNumber: String(meta.houseNumber ?? ''),
+    postalCode: String(meta.postalCode ?? ''),
+    locality: String(meta.locality ?? ''),
+    province: String(meta.province ?? ''),
+    country: String(meta.country ?? ''),
   };
 }

@@ -11,6 +11,7 @@ import { OracleDepartmentRepository } from "../repositories/oracle/oracle.depart
 import { PostgreSqlDepartmentRepository } from "../repositories/postgresql/postgresql.department.repository.js";
 import { RedisDepartmentRepository } from "../repositories/redis/redis.department.repository.js";
 import { SqlServerDepartmentRepository } from "../repositories/sql-server/sql-server.department.repository.js";
+import { MAX_INT_32 } from './services.constants.js';
 /**
  * This service class provides methods to manage departments.
  * It includes methods to get, set, create, update, and delete departments.
@@ -73,6 +74,10 @@ export class DepartmentService {
       console.warn("DepartmentService.getDepartment(): not implemented strategy for [%s]", repositoryType);
       throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
     }
+    if (!Number.isInteger(id) || id < 1 || id > MAX_INT_32) {
+      console.warn("DepartmentService.getDepartment(): invalid id[%s]", id);
+      throw new RangeError(`ID must be an integer between 1 and ${MAX_INT_32}, inclusive. Received ${id}`);
+    }
     return strategy.getDepartment(id);
   }
   /**
@@ -101,6 +106,10 @@ export class DepartmentService {
     if (strategy == undefined) {
       console.warn("DepartmentService.deleteDepartment(): not implemented strategy for [%s]", repositoryType);
       throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
+    }
+    if (!Number.isInteger(id) || id < 1 || id > MAX_INT_32) {
+      console.warn("DepartmentService.deleteDepartment(): invalid id[%s]", id);
+      throw new RangeError(`ID must be an integer between 1 and ${MAX_INT_32}, inclusive. Received ${id}`);
     }
     await strategy.deleteDepartment(id);
   }

@@ -1,6 +1,7 @@
 import { Department } from '../models/department.js';
 import { Title } from '../models/title.js';
 
+export const MAX_INT_32 = 0x7FFF_FFFF;
 /**
  * Initial data for backend repositories.
  */
@@ -12,8 +13,8 @@ export const INITIAL_DATA: Department[] = [
       'Banking'
     ],
     notes: 'This office includes:\n - corporate finance\n - sales personnel',
-    startDate: new Date('2020-01-20T00:00:00.000Z'),
-    endDate: new Date('2020-02-14T00:00:00.000Z'),
+    startDate: new Date('2011-01-23T01:23:45.000Z'),
+    endDate: new Date('2031-12-31T23:59:59.000Z'),
     image: 'images/CommercialBuilding01.jpg',
     employees: [
       {
@@ -100,8 +101,8 @@ export const INITIAL_DATA: Department[] = [
       'Insurance'
     ],
     notes: 'This office includes:\n - corporate finance\n - sales personnel',
-    startDate: new Date('2020-01-20T00:00:00.000Z'),
-    endDate: new Date('2020-02-14T00:00:00.000Z'),
+    startDate: new Date('2012-01-23T01:23:45.000Z'),
+    endDate: new Date('2032-12-31T23:59:59.000Z'),
     image: 'images/CommercialBuilding02.jpg',
     employees: [
       {
@@ -188,8 +189,8 @@ export const INITIAL_DATA: Department[] = [
       'Banking'
     ],
     notes: 'This office includes:\n - risk management\n - information technology',
-    startDate: new Date('2020-01-20T00:00:00.000Z'),
-    endDate: new Date('2020-02-14T00:00:00.000Z'),
+    startDate: new Date('2013-01-23T01:23:45.000Z'),
+    endDate: new Date('2033-12-31T23:59:59.000Z'),
     image: 'images/CommercialBuilding03.jpg',
     employees: [
       {
@@ -276,8 +277,8 @@ export const INITIAL_DATA: Department[] = [
       'Insurance'
     ],
     notes: 'This office includes:\n - risk management\n - information technology',
-    startDate: new Date('2020-01-20T00:00:00.000Z'),
-    endDate: new Date('2020-02-14T00:00:00.000Z'),
+    startDate: new Date('2014-01-23T01:23:45.000Z'),
+    endDate: new Date('2034-12-31T23:59:59.000Z'),
     image: 'images/CommercialBuilding04.jpg',
     employees: [
       {
@@ -364,8 +365,8 @@ export const INITIAL_DATA: Department[] = [
       'Banking'
     ],
     notes: 'This office includes:\n - administrative services\n - support services',
-    startDate: new Date('2020-01-20T00:00:00.000Z'),
-    endDate: new Date('2020-02-14T00:00:00.000Z'),
+    startDate: new Date('2015-01-23T01:23:45.000Z'),
+    endDate: new Date('2035-12-31T23:59:59.000Z'),
     image: 'images/CommercialBuilding05.jpg',
     employees: [
       {
@@ -452,8 +453,8 @@ export const INITIAL_DATA: Department[] = [
       'Insurance'
     ],
     notes: 'This office includes:\n - administrative services\n - support services',
-    startDate: new Date('2020-01-20T00:00:00.000Z'),
-    endDate: new Date('2020-02-14T00:00:00.000Z'),
+    startDate: new Date('2016-01-23T01:23:45.000Z'),
+    endDate: new Date('2036-12-31T23:59:59.000Z'),
     image: 'images/CommercialBuilding06.jpg',
     employees: [
       {

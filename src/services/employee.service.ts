@@ -11,6 +11,7 @@ import { OracleEmployeeRepository } from "../repositories/oracle/oracle.employee
 import { PostgreSqlEmployeeRepository } from "../repositories/postgresql/postgresql.employee.repository.js";
 import { RedisEmployeeRepository } from "../repositories/redis/redis.employee.repository.js";
 import { SqlServerEmployeeRepository } from "../repositories/sql-server/sql-server.employee.repository.js";
+import { MAX_INT_32 } from './services.constants.js';
 /**
  * This service class provides methods to manage employees.
  * It includes methods to get, set, create, update, and delete employees.
@@ -74,6 +75,10 @@ export class EmployeeService {
       console.warn("EmployeeService.getEmployee(): not implemented strategy for [%s]", repositoryType);
       throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
     }
+    if (!Number.isInteger(id) || id < 1 || id > MAX_INT_32) {
+      console.warn("EmployeeService.getEmployee(): invalid id [%s]", id);
+      throw new RangeError(`ID must be an integer between 1 and ${MAX_INT_32}, inclusive. Received ${id}`);
+    }
     return strategy.getEmployee(id);
   }
   /**
@@ -100,6 +105,10 @@ export class EmployeeService {
     if (strategy == undefined) {
       console.warn("EmployeeService.deleteEmployee(): not implemented strategy for [%s]", repositoryType);
       throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
+    }
+    if (!Number.isInteger(id) || id < 1 || id > MAX_INT_32) {
+      console.warn("EmployeeService.deleteEmployee(): invalid id[%s]", id);
+      throw new RangeError(`ID must be an integer between 1 and ${MAX_INT_32}, inclusive. Received ${id}`);
     }
     await strategy.deleteEmployee(id);
   }

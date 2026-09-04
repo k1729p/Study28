@@ -43,9 +43,8 @@ export class OracleDepartmentRepository implements DepartmentRepository {
     const connection = await pool.getConnection();
     try {
       const result = await connection.execute(constants.SELECT_DEPARTMENTS_SQL);
-      const departmentMap = new Map<number, Department>();
       const rows = result.rows as any[] || [];
-
+      const departmentMap = new Map<number, Department>();
       for (const row of rows) {
         let department = departmentMap.get(row.id);
         if (!department) {

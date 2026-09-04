@@ -1,7 +1,7 @@
 services:
   elasticsearch:
     container_name: elasticsearch
-    image: elasticsearch:9.5.1
+    image: elasticsearch:9.5.2
     ports:
       - "9200:9200"
       - "9300:9300"
