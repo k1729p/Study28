@@ -2,6 +2,7 @@ import { PoolClient, types } from "pg";
 
 import { Department } from "../../models/department.js";
 import { Initialization } from "../initialization.js";
+import { RepositoryException } from "../repository-exception.js";
 import { poolPromise } from "./postgresql.pool.js";
 import * as constants from "./postgresql.constants.js";
 /**
@@ -39,7 +40,10 @@ export class PostgreSqlInitialization implements Initialization {
     } catch (err) {
       await client.query('ROLLBACK');
       console.error("PostgreSqlInitialization.loadInitialData():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to load initial data, departments count[${departments.length}]`,
+        { cause: err, operation: 'loadInitialData' }
+      );
     } finally {
       client.release();
     }
@@ -75,7 +79,10 @@ export class PostgreSqlInitialization implements Initialization {
       await client.query(sql, values);
     } catch (err) {
       console.error("PostgreSqlInitialization.insertDepartments():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to insert departments, departments count[${departments.length}]`,
+        { cause: err, operation: 'insertDepartments' }
+      );
     }
     console.log("PostgreSqlInitialization.insertDepartments(): inserted [%d] departments", departments.length);
   }
@@ -122,7 +129,10 @@ export class PostgreSqlInitialization implements Initialization {
       await client.query(sql, values);
     } catch (err) {
       console.error("PostgreSqlInitialization.insertEmployees():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to insert employees, employees count[${employees.length}]`,
+        { cause: err, operation: 'insertEmployees' }
+      );
     }
     console.log("PostgreSqlInitialization.insertEmployees(): inserted [%d] employees", employees.length);
   }

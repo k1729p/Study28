@@ -2,6 +2,7 @@ import { Employee } from "../../models/employee.js";
 import { EmployeeRepository } from "../employee.repository.js";
 import { driverPromise } from "./neo4j.pool.js";
 import { nodeToEmployee, parametersForEmployee } from "./neo4j.mappers.js";
+import { RepositoryException } from "../repository-exception.js";
 import * as constants from "./neo4j.constants.js";
 /**
  * Repository interface providing methods to manage employees.
@@ -30,7 +31,10 @@ export class Neo4jEmployeeRepository implements EmployeeRepository {
       }
     } catch (err) {
       console.error("Neo4jEmployeeRepository.createEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to create employee, employee id[${employee.id}]`,
+        { cause: err, operation: 'createEmployee' }
+      );
     } finally {
       await session.close();
     }
@@ -51,7 +55,10 @@ export class Neo4jEmployeeRepository implements EmployeeRepository {
       return employees;
     } catch (err) {
       console.error("Neo4jEmployeeRepository.getEmployees():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get employees`,
+        { cause: err, operation: 'getEmployees' }
+      );
     } finally {
       await session.close();
     }
@@ -76,7 +83,10 @@ export class Neo4jEmployeeRepository implements EmployeeRepository {
       return employee;
     } catch (err) {
       console.error("Neo4jEmployeeRepository.getEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get employee, employee id[${id}]`,
+        { cause: err, operation: 'getEmployee' }
+      );
     } finally {
       await session.close();
     }
@@ -104,7 +114,10 @@ export class Neo4jEmployeeRepository implements EmployeeRepository {
       }
     } catch (err) {
       console.error("Neo4jEmployeeRepository.updateEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to update employee, employee id[${employee.id}]`,
+        { cause: err, operation: 'updateEmployee' }
+      );
     } finally {
       await session.close();
     }
@@ -127,7 +140,10 @@ export class Neo4jEmployeeRepository implements EmployeeRepository {
       }
     } catch (err) {
       console.error("Neo4jEmployeeRepository.deleteEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to delete employee, employee id[${id}]`,
+        { cause: err, operation: 'deleteEmployee' }
+      );
     } finally {
       await session.close();
     }

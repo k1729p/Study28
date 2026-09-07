@@ -1,5 +1,6 @@
 import mysql from 'mysql2/promise';
 
+import { RepositoryException } from "../repository-exception.js";
 import { POOL_CONFIG } from "./mysql.constants.js";
 /**
  * Connection pool instance.
@@ -17,5 +18,8 @@ export const poolPromise = pool.getConnection()
   })
   .catch(err => {
     console.error('MySQL pool: database connection error', err);
-    throw err;
+    throw new RepositoryException(
+      `Failed to connect to MySQL pool`,
+      { cause: err, operation: 'poolConnect' }
+    );
   });

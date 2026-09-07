@@ -138,10 +138,6 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
    * @returns A promise that resolves when the transfer is complete.
    */
   async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]): Promise<void> {
-    if (employeeIds.length === 0) {
-      console.warn("CassandraDepartmentRepository.transferEmployees(): no employee ids provided, nothing to transfer");
-      return;
-    }
     try {
       const client = await clientPromise;
       // Step 1: read the full rows to move. 'department_id' (the partition key) is restricted

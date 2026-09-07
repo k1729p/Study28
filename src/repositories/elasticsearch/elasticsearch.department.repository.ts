@@ -175,10 +175,6 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
    * @returns A promise that resolves when the transfer is complete.
    */
   async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]): Promise<void> {
-    if (employeeIds.length === 0) {
-      console.warn("ElasticsearchDepartmentRepository.transferEmployees(): no employee ids provided, nothing to transfer");
-      return;
-    }
     const client = await clientPromise;
     try {
       await client.updateByQuery({

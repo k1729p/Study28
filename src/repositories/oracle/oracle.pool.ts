@@ -1,5 +1,6 @@
 import oracledb from 'oracledb';
 
+import { RepositoryException } from "../repository-exception.js";
 import { POOL_CONFIG } from "./oracle.constants.js";
 // Ensure Oracle returns rows as JSON objects (like Postgres and SQL Server) instead of arrays
 oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
@@ -17,5 +18,8 @@ export const poolPromise = oracledb.createPool(POOL_CONFIG)
   })
   .catch(err => {
     console.error('Oracle pool: database connection error', err);
-    throw err;
+    throw new RepositoryException(
+      `Failed to connect to Oracle pool`,
+      { cause: err, operation: 'poolConnect' }
+    );
   });

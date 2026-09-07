@@ -55,6 +55,14 @@ export class TransferService {
       console.warn("TransferService.transferEmployees(): invalid targetDepartmentId[%s]", targetDepartmentId);
       throw new RangeError(`ID must be an integer between 1 and ${MAX_INT_32}, inclusive.`);
     }
+    if (employeeIds.length === 0) {
+      console.warn("TransferService.transferEmployees(): No employee IDs provided. Nothing to transfer.");
+      return;
+    }
+    if (sourceDepartmentId === targetDepartmentId) {
+      console.warn("TransferService.transferEmployees(): source and target departments are the same. Nothing to transfer.");
+      return;
+    }
     return await strategy.transferEmployees(
       sourceDepartmentId, targetDepartmentId, employeeIds);
   }

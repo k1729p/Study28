@@ -3,6 +3,7 @@ import { PoolConnection } from "mysql2/promise";
 import { Department } from "../../models/department.js";
 import { poolPromise } from "./mysql.pool.js";
 import { Initialization } from "../initialization.js";
+import { RepositoryException } from "../repository-exception.js";
 import * as constants from "./mysql.constants.js";
 /**
  * Repository class providing methods to initialize the database and load seed data.
@@ -38,7 +39,10 @@ export class MySqlInitialization implements Initialization {
     } catch (err) {
       await connection.rollback();
       console.error("MySqlInitialization.loadInitialData():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to load initial data, departments count[${departments.length}]`,
+        { cause: err, operation: 'loadInitialData' }
+      );
     } finally {
       connection.release();
     }

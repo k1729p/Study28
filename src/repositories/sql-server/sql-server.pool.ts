@@ -1,5 +1,6 @@
 import sql from 'mssql';
 
+import { RepositoryException } from "../repository-exception.js";
 import { POOL_CONFIG } from './sql-server.constants.js';
 /**
  * A promise that resolves to a connected Pool object.
@@ -15,5 +16,8 @@ export const poolPromise = new sql.ConnectionPool(POOL_CONFIG)
   })
   .catch(err => {
     console.error('SQL Server pool: database connection error', err);
-    throw err;
+    throw new RepositoryException(
+      `Failed to connect to SQL Server pool`,
+      { cause: err, operation: 'poolConnect' }
+    );
   });

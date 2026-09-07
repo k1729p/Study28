@@ -273,6 +273,7 @@ export function employeeServiceTests(repositoryType: RepositoryType) {
      * with an unimplemented repository type.
      */
     it('createEmployee() should throw ReferenceError', async () => {
+      // GIVEN / WHEN / THEN
       await expect(
         employeeService.createEmployee(unknownRepositoryType, TEST_EMPLOYEE)
       ).rejects.toThrow(ReferenceError);
@@ -283,6 +284,7 @@ export function employeeServiceTests(repositoryType: RepositoryType) {
      * with an unimplemented repository type.
      */
     it('getEmployees() should throw ReferenceError', async () => {
+      // GIVEN / WHEN / THEN
       await expect(
         employeeService.getEmployees(unknownRepositoryType)
       ).rejects.toThrow(ReferenceError);
@@ -293,6 +295,7 @@ export function employeeServiceTests(repositoryType: RepositoryType) {
      * with an unimplemented repository type.
      */
     it('getEmployee() should throw ReferenceError', async () => {
+      // GIVEN / WHEN / THEN
       await expect(
         employeeService.getEmployee(unknownRepositoryType, TEST_EMPLOYEE.id)
       ).rejects.toThrow(ReferenceError);
@@ -303,6 +306,7 @@ export function employeeServiceTests(repositoryType: RepositoryType) {
      * with an unimplemented repository type.
      */
     it('updateEmployee() should throw ReferenceError', async () => {
+      // GIVEN / WHEN / THEN
       await expect(
         employeeService.updateEmployee(unknownRepositoryType, TEST_EMPLOYEE)
       ).rejects.toThrow(ReferenceError);
@@ -313,6 +317,7 @@ export function employeeServiceTests(repositoryType: RepositoryType) {
      * with an unimplemented repository type.
      */
     it('deleteEmployee() should throw ReferenceError', async () => {
+      // GIVEN / WHEN / THEN
       await expect(
         employeeService.deleteEmployee(unknownRepositoryType, TEST_EMPLOYEE.id)
       ).rejects.toThrow(ReferenceError);

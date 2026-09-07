@@ -1,6 +1,7 @@
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { DepartmentRepository } from "../department.repository.js";
+import { RepositoryException } from "../repository-exception.js";
 import { clientPromise } from "./redis.pool.js";
 import { buildDepartmentKey, buildEmployeeKey, recordToDepartment } from "./redis.mappers.js";
 import * as constants from "./redis.constants.js";
@@ -23,7 +24,10 @@ export class RedisDepartmentRepository implements DepartmentRepository {
       console.log("RedisDepartmentRepository.createDepartment(): department id[%d]", department.id);
     } catch (err) {
       console.error("RedisDepartmentRepository.createDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to create department, department id[${department.id}]`,
+        { cause: err, operation: 'createDepartment' }
+      );
     }
   }
   /**
@@ -66,7 +70,10 @@ export class RedisDepartmentRepository implements DepartmentRepository {
       return departments;
     } catch (err) {
       console.error("RedisDepartmentRepository.getDepartments():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get departments`,
+        { cause: err, operation: 'getDepartments' }
+      );
     }
   }
   /**
@@ -93,7 +100,10 @@ export class RedisDepartmentRepository implements DepartmentRepository {
       return department;
     } catch (err) {
       console.error("RedisDepartmentRepository.getDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get department, department id[${id}]`,
+        { cause: err, operation: 'getDepartment' }
+      );
     }
   }
   /**
@@ -119,7 +129,10 @@ export class RedisDepartmentRepository implements DepartmentRepository {
       await client.set(departmentKey, JSON.stringify(departmentData));
     } catch (err) {
       console.error("RedisDepartmentRepository.updateDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to update department, department id[${department.id}]`,
+        { cause: err, operation: 'updateDepartment' }
+      );
     }
     console.log("RedisDepartmentRepository.updateDepartment() department id[%d]", department.id);
   }
@@ -138,7 +151,10 @@ export class RedisDepartmentRepository implements DepartmentRepository {
       await client.del(keysToDelete);
     } catch (err) {
       console.error("RedisDepartmentRepository.deleteDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to delete department, department id[${id}]`,
+        { cause: err, operation: 'deleteDepartment' }
+      );
     }
     console.log("RedisDepartmentRepository.deleteDepartment(): department id[%d]", id);
   }
@@ -151,10 +167,6 @@ export class RedisDepartmentRepository implements DepartmentRepository {
    * @returns A promise that resolves when the transfer is complete.
    */
   async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]): Promise<void> {
-    if (employeeIds.length === 0) {
-      console.warn("RedisDepartmentRepository.transferEmployees(): no employee ids provided, nothing to transfer");
-      return;
-    }
     const client = await clientPromise;
     try {
       const employeeKeys = employeeIds.map(buildEmployeeKey);
@@ -167,7 +179,10 @@ export class RedisDepartmentRepository implements DepartmentRepository {
         sourceDepartmentId, targetDepartmentId, employeeIds.length);
     } catch (err) {
       console.error("RedisDepartmentRepository.transferEmployees():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to transfer employees, sourceDepartmentId[${sourceDepartmentId}] targetDepartmentId[${targetDepartmentId}]`,
+        { cause: err, operation: 'transferEmployees' }
+      );
     }
   }
   /**

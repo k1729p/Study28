@@ -2,6 +2,7 @@ import { Department } from "../../models/department.js";
 import { DepartmentRepository } from "../department.repository.js";
 import { driverPromise } from "./neo4j.pool.js";
 import { parametersForDepartment, recordToDepartment } from "./neo4j.mappers.js";
+import { RepositoryException } from "../repository-exception.js";
 import * as constants from "./neo4j.constants.js";
 /**
  * Repository class providing methods to manage departments.
@@ -22,7 +23,10 @@ export class Neo4jDepartmentRepository implements DepartmentRepository {
         constants.CREATE_DEPARTMENT_QUERY, parametersForDepartment(department)));
     } catch (err) {
       console.error("Neo4jDepartmentRepository.createDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to create department, department id[${department.id}]`,
+        { cause: err, operation: 'createDepartment' }
+      );
     } finally {
       await session.close();
     }
@@ -43,7 +47,10 @@ export class Neo4jDepartmentRepository implements DepartmentRepository {
       return departments;
     } catch (err) {
       console.error("Neo4jDepartmentRepository.getDepartments():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get departments`,
+        { cause: err, operation: 'getDepartments' }
+      );
     } finally {
       await session.close();
     }
@@ -68,7 +75,10 @@ export class Neo4jDepartmentRepository implements DepartmentRepository {
       return department;
     } catch (err) {
       console.error("Neo4jDepartmentRepository.getDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get department, department id[${id}]`,
+        { cause: err, operation: 'getDepartment' }
+      );
     } finally {
       await session.close();
     }
@@ -93,7 +103,10 @@ export class Neo4jDepartmentRepository implements DepartmentRepository {
       }
     } catch (err) {
       console.error("Neo4jDepartmentRepository.updateDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to update department, department id[${department.id}]`,
+        { cause: err, operation: 'updateDepartment' }
+      );
     } finally {
       await session.close();
     }
@@ -116,7 +129,10 @@ export class Neo4jDepartmentRepository implements DepartmentRepository {
       }
     } catch (err) {
       console.error("Neo4jDepartmentRepository.deleteDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to delete department, department id[${id}]`,
+        { cause: err, operation: 'deleteDepartment' }
+      );
     } finally {
       await session.close();
     }
@@ -131,10 +147,6 @@ export class Neo4jDepartmentRepository implements DepartmentRepository {
    * @returns A promise that resolves when the transfer is complete.
    */
   async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]): Promise<void> {
-    if (employeeIds.length === 0) {
-      console.warn("Neo4jDepartmentRepository.transferEmployees(): no employee ids provided, nothing to transfer");
-      return;
-    }
     const driver = await driverPromise;
     const session = driver.session();
     try {
@@ -144,7 +156,10 @@ export class Neo4jDepartmentRepository implements DepartmentRepository {
       ));
     } catch (err) {
       console.error("Neo4jDepartmentRepository.transferEmployees():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to transfer employees, sourceDepartmentId[${sourceDepartmentId}] targetDepartmentId[${targetDepartmentId}]`,
+        { cause: err, operation: 'transferEmployees' }
+      );
     } finally {
       await session.close();
     }

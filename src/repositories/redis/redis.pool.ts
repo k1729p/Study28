@@ -1,5 +1,6 @@
 import { createClient } from 'redis';
 
+import { RepositoryException } from "../repository-exception.js";
 import { POOL_CONFIG } from './redis.constants.js';
 /**
  * Client instance.
@@ -20,5 +21,8 @@ export const clientPromise = client.connect()
   })
   .catch(err => {
     console.error('Redis pool: initial connection error', err);
-    throw err;
+    throw new RepositoryException(
+      `Failed to connect to Redis pool`,
+      { cause: err, operation: 'poolConnect' }
+    );
   });

@@ -2,6 +2,7 @@ import sql from 'mssql';
 
 import { Employee } from "../../models/employee.js";
 import { EmployeeRepository } from "../employee.repository.js";
+import { RepositoryException } from "../repository-exception.js";
 import { poolPromise } from "./sql-server.pool.js";
 import * as mappers from "../mappers.js";
 import * as constants from "./sql-server.constants.js";
@@ -36,7 +37,10 @@ export class SqlServerEmployeeRepository implements EmployeeRepository {
         .query(constants.INSERT_EMPLOYEE_SQL);
     } catch (err) {
       console.error("SqlServerEmployeeRepository.createEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to create employee, employee id[${employee.id}]`,
+        { cause: err, operation: 'createEmployee' }
+      );
     }
     console.log("SqlServerEmployeeRepository.createEmployee(): employee id[%d]", employee.id);
   }
@@ -54,7 +58,10 @@ export class SqlServerEmployeeRepository implements EmployeeRepository {
       return employees;
     } catch (err) {
       console.error("SqlServerEmployeeRepository.getEmployees():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get employees`,
+        { cause: err, operation: 'getEmployees' }
+      );
     }
   }
   /**
@@ -77,7 +84,10 @@ export class SqlServerEmployeeRepository implements EmployeeRepository {
       return mappers.mapDatabaseRowToEmployee(result.recordset[0], true);
     } catch (err) {
       console.error("SqlServerEmployeeRepository.getEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get employee, employee id[${id}]`,
+        { cause: err, operation: 'getEmployee' }
+      );
     }
   }
   /**
@@ -111,7 +121,10 @@ export class SqlServerEmployeeRepository implements EmployeeRepository {
       }
     } catch (err) {
       console.error("SqlServerEmployeeRepository.updateEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to update employee, employee id[${employee.id}]`,
+        { cause: err, operation: 'updateEmployee' }
+      );
     }
     console.log("SqlServerEmployeeRepository.updateEmployee(): employee id[%d]", employee.id);
   }
@@ -129,7 +142,10 @@ export class SqlServerEmployeeRepository implements EmployeeRepository {
         .query(constants.DELETE_EMPLOYEE_SQL);
     } catch (err) {
       console.error("SqlServerEmployeeRepository.deleteEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to delete employee, employee id[${id}]`,
+        { cause: err, operation: 'deleteEmployee' }
+      );
     }
     console.log("SqlServerEmployeeRepository.deleteEmployee(): employee id[%d]", id);
   }

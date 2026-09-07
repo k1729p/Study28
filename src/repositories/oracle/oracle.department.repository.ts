@@ -1,6 +1,7 @@
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { DepartmentRepository } from "../department.repository.js";
+import { RepositoryException } from "../repository-exception.js";
 import { poolPromise } from "./oracle.pool.js";
 import { parametersForDepartment } from "./oracle.mappers.js";
 import * as mappers from "../mappers.js";
@@ -23,7 +24,10 @@ export class OracleDepartmentRepository implements DepartmentRepository {
       await connection.execute(constants.INSERT_DEPARTMENT_SQL, parametersForDepartment(department), { autoCommit: true });
     } catch (err) {
       console.error("OracleDepartmentRepository.createDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to create department, department id[${department.id}]`,
+        { cause: err, operation: 'createDepartment' }
+      );
     } finally {
       try {
         await connection.close();
@@ -60,7 +64,10 @@ export class OracleDepartmentRepository implements DepartmentRepository {
       return departments;
     } catch (err) {
       console.error("OracleDepartmentRepository.getDepartments():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get departments`,
+        { cause: err, operation: 'getDepartments' }
+      );
     } finally {
       try {
         await connection.close();
@@ -95,7 +102,10 @@ export class OracleDepartmentRepository implements DepartmentRepository {
       return department;
     } catch (err) {
       console.error("OracleDepartmentRepository.getDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get department, department id[${id}]`,
+        { cause: err, operation: 'getDepartment' }
+      );
     } finally {
       try {
         await connection.close();
@@ -125,7 +135,10 @@ export class OracleDepartmentRepository implements DepartmentRepository {
     } catch (err) {
       await connection.rollback();
       console.error("OracleDepartmentRepository.updateDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to update department, department id[${department.id}]`,
+        { cause: err, operation: 'updateDepartment' }
+      );
     } finally {
       try {
         await connection.close();
@@ -162,7 +175,10 @@ export class OracleDepartmentRepository implements DepartmentRepository {
     } catch (err) {
       await connection.rollback();
       console.error("OracleDepartmentRepository.updateEmployeeInDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to update employee in department, employee id[${employee.id}] departmentId[${employee.departmentId}]`,
+        { cause: err, operation: 'updateEmployeeInDepartment' }
+      );
     } finally {
       try {
         await connection.close();
@@ -188,7 +204,10 @@ export class OracleDepartmentRepository implements DepartmentRepository {
         { autoCommit: true });
     } catch (err) {
       console.error("OracleDepartmentRepository.deleteDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to delete department, department id[${id}]`,
+        { cause: err, operation: 'deleteDepartment' }
+      );
     } finally {
       try {
         await connection.close();
@@ -212,10 +231,6 @@ export class OracleDepartmentRepository implements DepartmentRepository {
    */
   async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]):
     Promise<void> {
-    if (employeeIds.length === 0) {
-      console.warn("OracleDepartmentRepository.transferEmployees(): no employee ids provided, nothing to transfer");
-      return;
-    }
     const pool = await poolPromise;
     const connection = await pool.getConnection();
     try {
@@ -227,7 +242,10 @@ export class OracleDepartmentRepository implements DepartmentRepository {
       await connection.execute(constants.CALL_TRANSFER_EMPLOYEES_SQL, bindParams, { autoCommit: true });
     } catch (err) {
       console.error("OracleDepartmentRepository.transferEmployees():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to transfer employees, sourceDepartmentId[${sourceDepartmentId}] targetDepartmentId[${targetDepartmentId}]`,
+        { cause: err, operation: 'transferEmployees' }
+      );
     } finally {
       try {
         await connection.close();

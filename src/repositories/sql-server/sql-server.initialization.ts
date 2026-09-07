@@ -2,6 +2,7 @@ import sql from 'mssql';
 
 import { Department } from "../../models/department.js";
 import { Initialization } from "../initialization.js";
+import { RepositoryException } from "../repository-exception.js";
 import { poolPromise } from "./sql-server.pool.js";
 import * as constants from "./sql-server.constants.js";
 /**
@@ -41,7 +42,10 @@ export class SqlServerInitialization implements Initialization {
     } catch (err) {
       await transaction.rollback();
       console.error("SqlServerInitialization.loadInitialData():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to load initial data, departments count[${departments.length}]`,
+        { cause: err, operation: 'loadInitialData' }
+      );
     }
     console.log("SqlServerInitialization.loadInitialData(): data loaded successfully");
   }

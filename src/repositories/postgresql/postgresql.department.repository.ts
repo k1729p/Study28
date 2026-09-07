@@ -1,6 +1,7 @@
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { DepartmentRepository } from "../department.repository.js";
+import { RepositoryException } from "../repository-exception.js";
 import { poolPromise } from "./postgresql.pool.js";
 import * as mappers from "../mappers.js";
 import * as constants from "./postgresql.constants.js";
@@ -40,7 +41,10 @@ export class PostgreSqlDepartmentRepository implements DepartmentRepository {
     } catch (err) {
       await client.query('ROLLBACK');
       console.error("PostgreSqlDepartmentRepository.createDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to create department, department id[${department.id}]`,
+        { cause: err, operation: 'createDepartment' }
+      );
     } finally {
       client.release();
     }
@@ -72,7 +76,10 @@ export class PostgreSqlDepartmentRepository implements DepartmentRepository {
       return departments;
     } catch (err) {
       console.error("PostgreSqlDepartmentRepository.getDepartments():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get departments`,
+        { cause: err, operation: 'getDepartments' }
+      );
     } finally {
       client.release();
     }
@@ -103,7 +110,10 @@ export class PostgreSqlDepartmentRepository implements DepartmentRepository {
       return department;
     } catch (err) {
       console.error("PostgreSqlDepartmentRepository.getDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get department, department id[${id}]`,
+        { cause: err, operation: 'getDepartment' }
+      );
     } finally {
       client.release();
     }
@@ -138,7 +148,10 @@ export class PostgreSqlDepartmentRepository implements DepartmentRepository {
     } catch (err) {
       await client.query('ROLLBACK');
       console.error("PostgreSqlDepartmentRepository.updateDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to update department, department id[${department.id}]`,
+        { cause: err, operation: 'updateDepartment' }
+      );
     } finally {
       client.release();
     }
@@ -170,7 +183,10 @@ export class PostgreSqlDepartmentRepository implements DepartmentRepository {
     } catch (err) {
       await client.query('ROLLBACK');
       console.error("PostgreSqlDepartmentRepository.updateEmployeeInDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to update employee in department, employee id[${employee.id}] departmentId[${employee.departmentId}]`,
+        { cause: err, operation: 'updateEmployeeInDepartment' }
+      );
     } finally {
       client.release();
     }
@@ -191,7 +207,10 @@ export class PostgreSqlDepartmentRepository implements DepartmentRepository {
     } catch (err) {
       await client.query('ROLLBACK');
       console.error("PostgreSqlDepartmentRepository.deleteDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to delete department, department id[${id}]`,
+        { cause: err, operation: 'deleteDepartment' }
+      );
     } finally {
       client.release();
     }
@@ -206,10 +225,6 @@ export class PostgreSqlDepartmentRepository implements DepartmentRepository {
    * @returns A promise that resolves when the transfer is complete.
    */
   async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]) {
-    if (employeeIds.length === 0) {
-      console.warn("PostgreSqlDepartmentRepository.transferEmployees(): no employee ids provided, nothing to transfer");
-      return;
-    }
     const pool = await poolPromise;
     const client = await pool.connect();
     try {
@@ -221,7 +236,10 @@ export class PostgreSqlDepartmentRepository implements DepartmentRepository {
     } catch (err) {
       await client.query('ROLLBACK');
       console.error("PostgreSqlDepartmentRepository.transferEmployees():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to transfer employees, sourceDepartmentId[${sourceDepartmentId}] targetDepartmentId[${targetDepartmentId}]`,
+        { cause: err, operation: 'transferEmployees' }
+      );      
     } finally {
       client.release();
     }

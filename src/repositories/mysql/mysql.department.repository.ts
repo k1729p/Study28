@@ -4,6 +4,7 @@ import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { poolPromise } from "./mysql.pool.js";
 import { DepartmentRepository } from "../department.repository.js";
+import { RepositoryException } from "../repository-exception.js";
 import * as mappers from "../mappers.js";
 import * as constants from "./mysql.constants.js";
 /**
@@ -41,7 +42,10 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
     } catch (err) {
       await connection.rollback();
       console.error("MySqlDepartmentRepository.createDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to create department, department id[${department.id}]`,
+        { cause: err, operation: 'createDepartment' }
+      );
     } finally {
       connection.release();
     }
@@ -72,7 +76,10 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
       return departments;
     } catch (err) {
       console.error("MySqlDepartmentRepository.getDepartments():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get departments`,
+        { cause: err, operation: 'getDepartments' }
+      );
     }
   }
   /**
@@ -99,7 +106,10 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
       return department;
     } catch (err) {
       console.error("MySqlDepartmentRepository.getDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get department, department id[${id}]`,
+        { cause: err, operation: 'getDepartment' }
+      );
     }
   }
   /**
@@ -132,7 +142,10 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
     } catch (err) {
       await connection.rollback();
       console.error("MySqlDepartmentRepository.updateDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to update department, department id[${department.id}]`,
+        { cause: err, operation: 'updateDepartment' }
+      );
     } finally {
       connection.release();
     }
@@ -166,7 +179,10 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
     } catch (err) {
       await connection.rollback();
       console.error("MySqlDepartmentRepository.updateEmployeeInDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to update employee in department, employee id[${employee.id}] departmentId[${employee.departmentId}]`,
+        { cause: err, operation: 'updateEmployeeInDepartment' }
+      );
     } finally {
       connection.release();
     }
@@ -187,7 +203,10 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
     } catch (err) {
       await connection.rollback();
       console.error("MySqlDepartmentRepository.deleteDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to delete department, department id[${id}]`,
+        { cause: err, operation: 'deleteDepartment' }
+      );
     } finally {
       connection.release();
     }
@@ -202,10 +221,6 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
    * @returns A promise that resolves when the transfer is complete.
    */
   async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]): Promise<void> {
-    if (employeeIds.length === 0) {
-      console.warn("MySqlDepartmentRepository.transferEmployees(): no employee ids provided, nothing to transfer");
-      return;
-    }
     const pool = await poolPromise;
     const connection = await pool.getConnection();
     try {
@@ -217,7 +232,10 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
     } catch (err) {
       await connection.rollback();
       console.error("MySqlDepartmentRepository.transferEmployees():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to transfer employees, sourceDepartmentId[${sourceDepartmentId}] targetDepartmentId[${targetDepartmentId}]`,
+        { cause: err, operation: 'transferEmployees' }
+      );
     } finally {
       connection.release();
     }

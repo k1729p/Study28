@@ -174,10 +174,6 @@ export class MongoDbDepartmentRepository implements DepartmentRepository {
    * @returns A promise that resolves when the transfer is complete.
    */
   async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]): Promise<void> {
-    if (employeeIds.length === 0) {
-      console.warn("MongoDbEmployeeRepository.transferEmployees(): no employee ids provided, nothing to transfer");
-      return;
-    }
     const filter = { departmentId: sourceDepartmentId };
     const update = { $set: { departmentId: targetDepartmentId } };
     const client = await poolPromise;

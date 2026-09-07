@@ -15,19 +15,19 @@ import { aaaaaTests } from './aaaaa.js';
  * Tests orchestrator.
  */
 describe.for([
-  // RepositoryType.Cassandra,
-  // RepositoryType.Chroma,// OK OK OK OK OK OK OK OK OK OK OK OK OK
-  // RepositoryType.Elasticsearch,// OK OK OK OK OK OK OK OK OK OK OK OK OK
-  // RepositoryType.MongoDB,
-  // RepositoryType.MySQL,
+  //RepositoryType.Cassandra,
+  //RepositoryType.Chroma,
+  //RepositoryType.Elasticsearch,
+  //RepositoryType.MongoDB,
+  // RepositoryType.MySQL,// OK OK OK OK OK OK OK OK OK OK OK OK OK
   // RepositoryType.Neo4j,// OK OK OK OK OK OK OK OK OK OK OK OK OK
-  // RepositoryType.Oracle,
-  RepositoryType.PostgreSQL,
+  // RepositoryType.Oracle,// OK OK OK OK OK OK OK OK OK OK OK OK OK
+  RepositoryType.PostgreSQL,// OK OK OK OK OK OK OK OK OK OK OK OK OK
   // RepositoryType.Redis,// OK OK OK OK OK OK OK OK OK OK OK OK OK
-  // RepositoryType.SQLServer,
+  // RepositoryType.SQLServer,// OK OK OK OK OK OK OK OK OK OK OK OK OK
 ])(colors.CYAN_BRIGHT + 'Repository type █ %s █' + colors.RESET, (repositoryType) => {
 
-//  describe(getSuiteName('Aaaaa'), () => aaaaaTests(repositoryType));
+  // describe(getSuiteName('Aaaaa'), () => aaaaaTests(repositoryType));
 
   // describe(getSuiteName('Initialization'), () => initializationServiceTests(repositoryType));
   // describe(getSuiteName('Department'), () => departmentServiceTests(repositoryType));

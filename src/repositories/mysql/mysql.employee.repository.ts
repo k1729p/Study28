@@ -3,6 +3,7 @@ import { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { Employee } from "../../models/employee.js";
 import { poolPromise } from "./mysql.pool.js";
 import { EmployeeRepository } from "../employee.repository.js";
+import { RepositoryException } from "../repository-exception.js";
 import * as mappers from "../mappers.js";
 import * as constants from "./mysql.constants.js";
 /**
@@ -46,7 +47,10 @@ export class MySqlEmployeeRepository implements EmployeeRepository {
     } catch (err) {
       await connection.rollback();
       console.error("MySqlEmployeeRepository.createEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to create employee, employee id[${employee.id}]`,
+        { cause: err, operation: 'createEmployee' }
+      );
     } finally {
       connection.release();
     }
@@ -66,7 +70,10 @@ export class MySqlEmployeeRepository implements EmployeeRepository {
       return employees;
     } catch (err) {
       console.error("MySqlEmployeeRepository.getEmployees():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get employees`,
+        { cause: err, operation: 'getEmployees' }
+      );
     }
   }
   /**
@@ -87,7 +94,10 @@ export class MySqlEmployeeRepository implements EmployeeRepository {
       return mappers.mapDatabaseRowToEmployee(rows[0], true);
     } catch (err) {
       console.error("MySqlEmployeeRepository.getEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get employee, employee id[${id}]`,
+        { cause: err, operation: 'getEmployee' }
+      );
     }
   }
   /**
@@ -126,7 +136,10 @@ export class MySqlEmployeeRepository implements EmployeeRepository {
     } catch (err) {
       await connection.rollback();
       console.error("MySqlEmployeeRepository.updateEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to update employee, employee id[${employee.id}]`,
+        { cause: err, operation: 'updateEmployee' }
+      );
     } finally {
       connection.release();
     }
@@ -148,7 +161,10 @@ export class MySqlEmployeeRepository implements EmployeeRepository {
     } catch (err) {
       await connection.rollback();
       console.error("MySqlEmployeeRepository.deleteEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to delete employee, employee id[${id}]`,
+        { cause: err, operation: 'deleteEmployee' }
+      );
     } finally {
       connection.release();
     }

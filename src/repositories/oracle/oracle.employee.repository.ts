@@ -1,5 +1,6 @@
 import { Employee } from "../../models/employee.js";
 import { EmployeeRepository } from "../employee.repository.js";
+import { RepositoryException } from "../repository-exception.js";
 import { poolPromise } from "./oracle.pool.js";
 import { parametersForEmployee } from "./oracle.mappers.js";
 import * as mappers from "../mappers.js";
@@ -27,7 +28,10 @@ export class OracleEmployeeRepository implements EmployeeRepository {
       }
     } catch (err) {
       console.error("OracleEmployeeRepository.createEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to create employee, employee id[${employee.id}]`,
+        { cause: err, operation: 'createEmployee' }
+      );
     } finally {
       try {
         await connection.close();
@@ -54,7 +58,10 @@ export class OracleEmployeeRepository implements EmployeeRepository {
       return employees;
     } catch (err) {
       console.error("OracleEmployeeRepository.getEmployees():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get employees`,
+        { cause: err, operation: 'getEmployees' }
+      );
     } finally {
       try {
         await connection.close();
@@ -83,7 +90,10 @@ export class OracleEmployeeRepository implements EmployeeRepository {
       return mappers.mapDatabaseRowToEmployee(rows[0], true);
     } catch (err) {
       console.error("OracleEmployeeRepository.getEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get employee, employee id[${id}]`,
+        { cause: err, operation: 'getEmployee' }
+      );
     } finally {
       try {
         await connection.close();
@@ -113,7 +123,10 @@ export class OracleEmployeeRepository implements EmployeeRepository {
     } catch (err) {
       await connection.rollback();
       console.error("OracleEmployeeRepository.updateEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to update employee, employee id[${employee.id}]`,
+        { cause: err, operation: 'updateEmployee' }
+      );
     } finally {
       try {
         await connection.close();
@@ -136,7 +149,10 @@ export class OracleEmployeeRepository implements EmployeeRepository {
       await connection.execute(constants.DELETE_EMPLOYEE_SQL, { id }, { autoCommit: true });
     } catch (err) {
       console.error("OracleEmployeeRepository.deleteEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to delete employee, employee id[${id}]`,
+        { cause: err, operation: 'deleteEmployee' }
+      );
     } finally {
       try {
         await connection.close();

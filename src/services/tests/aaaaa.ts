@@ -5,8 +5,9 @@ import { RepositoryType } from '../../repositories/repository-type.js';
 import { InitializationService } from '../initialization.service.js';
 import { DepartmentService } from '../department.service.js';
 import { EmployeeService } from '../employee.service.js';
+import { TransferService } from '../transfer.service.js';
 import { INITIAL_DATA, MAX_INT_32 } from '../services.constants.js';
-import { describe, beforeAll, it, expect, assert } from "vitest";
+import { describe, beforeAll, beforeEach, assert, it, expect } from "vitest";
 
 /**
  * Unit tests for the {@link DepartmentService}.
@@ -18,34 +19,13 @@ export function aaaaaTests(repositoryType: RepositoryType) {
   const initializationService = new InitializationService();
   const departmentService = new DepartmentService();
   const employeeService = new EmployeeService();
+  const transferService = new TransferService();
+  const TEST_SRC_DEPARTMENT = INITIAL_DATA[0];
+  const TEST_TRG_DEPARTMENT = INITIAL_DATA[1];
+  const TEST_LAST_DEPARTMENT = INITIAL_DATA[INITIAL_DATA.length - 1];
 
   const TEST_DEPARTMENT = INITIAL_DATA[0];
   const TEST_EMPLOYEE = INITIAL_DATA[5].employees[4];
-
-  it('should create and retrieve a department with only mandatory fields', async () => {
-    // GIVEN
-    const expectedDepartment: Department = {
-      id: 5432101,
-      name: 'D',
-      employees: [],
-    };
-    // WHEN
-    await departmentService.createDepartment(repositoryType, expectedDepartment);
-    const actualDepartment = await departmentService.getDepartment(repositoryType, expectedDepartment.id);
-    // THEN
-    // expect(actualDepartment).toBeDefined();
-    // expect(actualDepartment?.id).toBe(expectedDepartment.id);
-    // expect(actualDepartment?.name).toBe(expectedDepartment.name);
-    // expect(actualDepartment?.startDate).toBeFalsy();
-    // expect(actualDepartment?.endDate).toBeFalsy();
-    // expect(actualDepartment?.notes).toBeFalsy();
-//    expect(actualDepartment?.keywords).toEqual([]);
-    // expect(actualDepartment?.image).toBeFalsy();
-    expect(actualDepartment?.employees).toEqual([]);
-    // Cleanup
-    await departmentService.deleteDepartment(repositoryType, expectedDepartment.id);
-  });
-
 
   function checkDepartments(expectedDepartment: Department, actualDepartments: Department[]) {
     assert.isArray(actualDepartments);
@@ -80,5 +60,22 @@ export function aaaaaTests(repositoryType: RepositoryType) {
     expect(actualEmployee?.locality).toBe(expectedEmployee.locality);
     expect(actualEmployee?.province).toBe(expectedEmployee.province);
     expect(actualEmployee?.country).toBe(expectedEmployee.country);
+  }
+  function checkTransfer(transferredEmployeeIds: number[],
+    actualSourceDepartment: Department | undefined, actualTargetDepartment: Department | undefined,
+    targetFlag: boolean) {
+
+    expect(actualSourceDepartment).toBeDefined();
+    transferredEmployeeIds.forEach(employeeId => {
+      expect(actualSourceDepartment?.employees.find(emp => emp.id === employeeId)).toBeUndefined();
+    });
+    expect(actualTargetDepartment).toBeDefined();
+    transferredEmployeeIds.forEach(employeeId => {
+      if (targetFlag) {
+        expect(actualTargetDepartment?.employees.find(emp => emp.id === employeeId)).toBeDefined();
+      } else {
+        expect(actualTargetDepartment?.employees.find(emp => emp.id === employeeId)).toBeUndefined();
+      }
+    });
   }
 }

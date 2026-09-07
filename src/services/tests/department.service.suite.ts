@@ -244,6 +244,7 @@ export function departmentServiceTests(repositoryType: RepositoryType) {
      * with an unimplemented repository type.
      */
     it('createDepartment() should throw ReferenceError', async () => {
+      // GIVEN / WHEN / THEN
       await expect(
         departmentService.createDepartment(unknownRepositoryType, TEST_DEPARTMENT)
       ).rejects.toThrow(ReferenceError);
@@ -254,6 +255,7 @@ export function departmentServiceTests(repositoryType: RepositoryType) {
      * with an unimplemented repository type.
      */
     it('getDepartments() should throw ReferenceError', async () => {
+      // GIVEN / WHEN / THEN
       await expect(
         departmentService.getDepartments(unknownRepositoryType)
       ).rejects.toThrow(ReferenceError);
@@ -264,6 +266,7 @@ export function departmentServiceTests(repositoryType: RepositoryType) {
      * with an unimplemented repository type.
      */
     it('getDepartment() should throw ReferenceError', async () => {
+      // GIVEN / WHEN / THEN
       await expect(
         departmentService.getDepartment(unknownRepositoryType, TEST_DEPARTMENT.id)
       ).rejects.toThrow(ReferenceError);
@@ -274,6 +277,7 @@ export function departmentServiceTests(repositoryType: RepositoryType) {
      * with an unimplemented repository type.
      */
     it('updateDepartment() should throw ReferenceError', async () => {
+      // GIVEN / WHEN / THEN
       await expect(
         departmentService.updateDepartment(unknownRepositoryType, TEST_DEPARTMENT)
       ).rejects.toThrow(ReferenceError);
@@ -284,6 +288,7 @@ export function departmentServiceTests(repositoryType: RepositoryType) {
      * with an unimplemented repository type.
      */
     it('deleteDepartment() should throw ReferenceError', async () => {
+      // GIVEN / WHEN / THEN
       await expect(
         departmentService.deleteDepartment(unknownRepositoryType, TEST_DEPARTMENT.id)
       ).rejects.toThrow(ReferenceError);

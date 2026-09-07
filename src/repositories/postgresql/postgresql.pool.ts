@@ -1,4 +1,5 @@
 import { Pool } from "pg";
+import { RepositoryException } from "../repository-exception.js";
 import { POOL_CONFIG } from "./postgresql.constants.js";
 /**
  * Connection pool instance.
@@ -16,5 +17,8 @@ export const poolPromise = pool.connect()
     })
     .catch(err => {
         console.error('PostgreSQL pool: database connection error', err);
-        throw err;
+        throw new RepositoryException(
+            `Failed to connect to PostgreSQL pool`,
+            { cause: err, operation: 'poolConnect' }
+        );
     });

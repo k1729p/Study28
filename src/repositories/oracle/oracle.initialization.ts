@@ -2,6 +2,7 @@ import oracledb from 'oracledb';
 
 import { Department } from "../../models/department.js";
 import { Initialization } from "../initialization.js";
+import { RepositoryException } from "../repository-exception.js";
 import { poolPromise } from "./oracle.pool.js";
 import { parametersForDepartment, parametersForEmployee } from "./oracle.mappers.js";
 import * as constants from "./oracle.constants.js";
@@ -38,7 +39,10 @@ export class OracleInitialization implements Initialization {
     } catch (err) {
       await connection.rollback();
       console.error("OracleInitialization.loadInitialData():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to load initial data, departments count[${departments.length}]`,
+        { cause: err, operation: 'loadInitialData' }
+      );
     } finally {
       try {
         await connection.close();

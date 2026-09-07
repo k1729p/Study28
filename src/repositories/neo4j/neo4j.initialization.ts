@@ -1,6 +1,7 @@
 import { Department } from "../../models/department.js";
 import { driverPromise } from "./neo4j.pool.js";
 import { Initialization } from "../initialization.js";
+import { RepositoryException } from "../repository-exception.js";
 import { parametersForDepartment, parametersForEmployee } from "./neo4j.mappers.js";
 import * as constants from "./neo4j.constants.js";
 /**
@@ -27,7 +28,10 @@ export class Neo4jInitialization implements Initialization {
       }
     } catch (err) {
       console.error("Neo4jInitialization.loadInitialData():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to load initial data, departments count[${departments.length}]`,
+        { cause: err, operation: 'loadInitialData' }
+      );
     } finally {
       await session.close();
     }

@@ -1,5 +1,6 @@
 import { Employee } from "../../models/employee.js";
 import { EmployeeRepository } from "../employee.repository.js";
+import { RepositoryException } from "../repository-exception.js";
 import { poolPromise } from "./postgresql.pool.js";
 import * as mappers from "../mappers.js";
 import * as constants from "./postgresql.constants.js";
@@ -44,7 +45,10 @@ export class PostgreSqlEmployeeRepository implements EmployeeRepository {
     } catch (err) {
       await client.query('ROLLBACK');
       console.error("PostgreSqlEmployeeRepository.createEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to create employee, employee id[${employee.id}]`,
+        { cause: err, operation: 'createEmployee' }
+      );
     } finally {
       client.release();
     }
@@ -65,7 +69,10 @@ export class PostgreSqlEmployeeRepository implements EmployeeRepository {
       return employees;
     } catch (err) {
       console.error("PostgreSqlEmployeeRepository.getEmployees():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get employees`,
+        { cause: err, operation: 'getEmployees' }
+      );
     } finally {
       client.release();
     }
@@ -89,7 +96,10 @@ export class PostgreSqlEmployeeRepository implements EmployeeRepository {
       return mappers.mapDatabaseRowToEmployee(queryResult.rows[0], true);
     } catch (err) {
       console.error("PostgreSqlEmployeeRepository.getEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get employee, employee id[${id}]`,
+        { cause: err, operation: 'getEmployee' }
+      );
     } finally {
       client.release();
     }
@@ -130,7 +140,10 @@ export class PostgreSqlEmployeeRepository implements EmployeeRepository {
     } catch (err) {
       await client.query('ROLLBACK');
       console.error("PostgreSqlEmployeeRepository.updateEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to update employee, employee id[${employee.id}]`,
+        { cause: err, operation: 'updateEmployee' }
+      );
     } finally {
       client.release();
     }
@@ -152,7 +165,10 @@ export class PostgreSqlEmployeeRepository implements EmployeeRepository {
     } catch (err) {
       await client.query('ROLLBACK');
       console.error("PostgreSqlEmployeeRepository.deleteEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to delete employee, employee id[${id}]`,
+        { cause: err, operation: 'deleteEmployee' }
+      );
     } finally {
       client.release();
     }

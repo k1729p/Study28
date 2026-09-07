@@ -1,5 +1,6 @@
 import { Department } from "../../models/department.js";
 import { Initialization } from "../initialization.js";
+import { RepositoryException } from "../repository-exception.js";
 import { clientPromise } from "./redis.pool.js";
 /**
  * Repository class providing methods to initialize the database and load seed data.
@@ -38,7 +39,10 @@ export class RedisInitialization implements Initialization {
       }
     } catch (err) {
       console.error("RedisInitialization.loadInitialData():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to load initial data, departments count[${departments.length}]`,
+        { cause: err, operation: 'loadInitialData' }
+      );
     }
     console.log("RedisInitialization.loadInitialData(): data loaded successfully");
   }

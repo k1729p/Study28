@@ -1,6 +1,7 @@
 import { Employee } from "../../models/employee.js";
 import { clientPromise } from "./redis.pool.js";
 import { EmployeeRepository } from "../employee.repository.js";
+import { RepositoryException } from "../repository-exception.js";
 import { buildEmployeeKey } from "./redis.mappers.js";
 import * as constants from "./redis.constants.js";
 /**
@@ -21,7 +22,10 @@ export class RedisEmployeeRepository implements EmployeeRepository {
       console.log("RedisEmployeeRepository.createEmployee(): employee id[%d]", employee.id);
     } catch (err) {
       console.error("RedisEmployeeRepository.createEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to create employee, employee id[${employee.id}]`,
+        { cause: err, operation: 'createEmployee' }
+      );
     }
   }
   /**
@@ -46,7 +50,10 @@ export class RedisEmployeeRepository implements EmployeeRepository {
       return employees;
     } catch (err) {
       console.error("RedisEmployeeRepository.getEmployees():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get employees`,
+        { cause: err, operation: 'getEmployees' }
+      );
     }
   }
   /**
@@ -67,7 +74,10 @@ export class RedisEmployeeRepository implements EmployeeRepository {
       return JSON.parse(employeeJson) as Employee;
     } catch (err) {
       console.error("RedisEmployeeRepository.getEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get employee, employee id[${id}]`,
+        { cause: err, operation: 'getEmployee' }
+      );
     }
   }
   /**
@@ -89,7 +99,10 @@ export class RedisEmployeeRepository implements EmployeeRepository {
       await client.set(employeeKey, JSON.stringify(employee));
     } catch (err) {
       console.error("RedisEmployeeRepository.updateEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to update employee, employee id[${employee.id}]`,
+        { cause: err, operation: 'updateEmployee' }
+      );
     }
     console.log("RedisEmployeeRepository.updateEmployee() employee id[%d]", employee.id);
   }
@@ -105,7 +118,10 @@ export class RedisEmployeeRepository implements EmployeeRepository {
       await client.del(buildEmployeeKey(id));
     } catch (err) {
       console.error("RedisEmployeeRepository.deleteEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to delete employee, employee id[${id}]`,
+        { cause: err, operation: 'deleteEmployee' }
+      );
     }
     console.log("RedisEmployeeRepository.deleteEmployee() employee id[%d]", id);
   }

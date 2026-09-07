@@ -3,6 +3,7 @@ import sql from 'mssql';
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { DepartmentRepository } from "../department.repository.js";
+import { RepositoryException } from "../repository-exception.js";
 import { poolPromise } from "./sql-server.pool.js";
 import * as mappers from "../mappers.js";
 import * as constants from "./sql-server.constants.js";
@@ -31,7 +32,10 @@ export class SqlServerDepartmentRepository implements DepartmentRepository {
         .query(constants.INSERT_DEPARTMENT_SQL);
     } catch (err) {
       console.error("SqlServerDepartmentRepository.createDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to create department, department id[${department.id}]`,
+        { cause: err, operation: 'createDepartment' }
+      );
     }
     console.log("SqlServerDepartmentRepository.createDepartment(): department id[%s]", department.id);
   }
@@ -60,7 +64,10 @@ export class SqlServerDepartmentRepository implements DepartmentRepository {
       return departments;
     } catch (err) {
       console.error("SqlServerDepartmentRepository.getDepartments():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get departments`,
+        { cause: err, operation: 'getDepartments' }
+      );
     }
   }
   /**
@@ -88,7 +95,10 @@ export class SqlServerDepartmentRepository implements DepartmentRepository {
       return department;
     } catch (err) {
       console.error("SqlServerDepartmentRepository.getDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get department, department id[${id}]`,
+        { cause: err, operation: 'getDepartment' }
+      );
     }
   }
   /**
@@ -116,7 +126,10 @@ export class SqlServerDepartmentRepository implements DepartmentRepository {
       }
     } catch (err) {
       console.error("SqlServerDepartmentRepository.updateDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to update department, department id[${department.id}]`,
+        { cause: err, operation: 'updateDepartment' }
+      );
     }
     department.employees.forEach(employee => this.updateEmployeeInDepartment(employee));
     console.log("SqlServerDepartmentRepository.updateDepartment(): department id[%d]", department.id);
@@ -141,7 +154,10 @@ export class SqlServerDepartmentRepository implements DepartmentRepository {
       }
     } catch (err) {
       console.error("SqlServerDepartmentRepository.updateEmployeeInDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to update employee in department, employee id[${employee.id}] departmentId[${employee.departmentId}]`,
+        { cause: err, operation: 'updateEmployeeInDepartment' }
+      );
     }
   }
   /**
@@ -158,7 +174,10 @@ export class SqlServerDepartmentRepository implements DepartmentRepository {
         .execute(constants.EXECUTE_DELETE_DEPARTMENT_AND_EMPLOYEES_PROCEDURE);
     } catch (err) {
       console.error("SqlServerDepartmentRepository.deleteDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to delete department, department id[${id}]`,
+        { cause: err, operation: 'deleteDepartment' }
+      );
     }
     console.log("SqlServerDepartmentRepository.deleteDepartment(): department id[%d]", id);
   }
@@ -179,10 +198,6 @@ export class SqlServerDepartmentRepository implements DepartmentRepository {
    * @returns A promise that resolves when the transfer is complete.
    */
   async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]): Promise<void> {
-    if (employeeIds.length === 0) {
-      console.warn("SqlServerDepartmentRepository.transferEmployees(): no employee ids provided, nothing to transfer");
-      return;
-    }
     const idListTable = new sql.Table('dbo.id_list_type');
     idListTable.columns.add('id', sql.Int, { nullable: false });
     employeeIds.forEach(employeeId => idListTable.rows.add(employeeId));
@@ -195,7 +210,10 @@ export class SqlServerDepartmentRepository implements DepartmentRepository {
         .execute(constants.EXECUTE_TRANSFER_EMPLOYEES_PROCEDURE);
     } catch (err) {
       console.error("SqlServerDepartmentRepository.transferEmployees():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to transfer employees, sourceDepartmentId[${sourceDepartmentId}] targetDepartmentId[${targetDepartmentId}]`,
+        { cause: err, operation: 'transferEmployees' }
+      );
     }
     console.log("SqlServerDepartmentRepository.transferEmployees(): " +
       "source department id[%d], target department id[%d], employees count[%d]",

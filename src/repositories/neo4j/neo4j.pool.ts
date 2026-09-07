@@ -1,4 +1,5 @@
 import neo4j from 'neo4j-driver';
+import { RepositoryException } from "../repository-exception.js";
 import * as constants from "./neo4j.constants.js";
 /**
  * The driver connection.
@@ -19,7 +20,10 @@ export const driverPromise = (async () => {
       retries--;
       if (retries === 0) {
         console.error('Neo4j pool: database connection error after retries', err);
-        throw err;
+        throw new RepositoryException(
+          `Failed to connect to Neo4j pool`,
+          { cause: err, operation: 'poolConnect' }
+        );
       }
       console.log(`Neo4j pool: waiting for database... (${retries} retries left)`);
       await new Promise(resolve => setTimeout(resolve, 3000));
