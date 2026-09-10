@@ -2,6 +2,7 @@ import { Department } from "../../models/department.js";
 import { clientPromise } from "./cassandra.pool.js";
 import { parametersForDepartment } from "./cassandra.mappers.js";
 import { DepartmentRepository } from "../department.repository.js";
+import { RepositoryException } from "../repository-exception.js";
 import * as mappers from "../mappers.js";
 import * as constants from "./cassandra.constants.js";
 /**
@@ -22,7 +23,10 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
         parametersForDepartment(department), { prepare: true });
     } catch (err) {
       console.error("CassandraDepartmentRepository.createDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to create department, department id[${department.id}]`,
+        { cause: err, operation: 'createDepartment' }
+      );
     }
     console.log("CassandraDepartmentRepository.createDepartment(): department id[%d]", department.id);
   }
@@ -52,7 +56,10 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
       return Array.from(departmentMap.values());
     } catch (err) {
       console.error("CassandraDepartmentRepository.getDepartments():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get departments`,
+        { cause: err, operation: 'getDepartments' }
+      );
     }
   }
   /**
@@ -78,7 +85,10 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
       return department;
     } catch (err) {
       console.error("CassandraDepartmentRepository.getDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get department, department id[${id}]`,
+        { cause: err, operation: 'getDepartment' }
+      );
     }
   }
   /**
@@ -99,7 +109,10 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
       }
     } catch (err) {
       console.error("CassandraDepartmentRepository.updateDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to update department, department id[${department.id}]`,
+        { cause: err, operation: 'updateDepartment' }
+      );
     }
     console.log("CassandraDepartmentRepository.updateDepartment(): department id[%d]", department.id);
   }
@@ -125,7 +138,10 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
       await client.batch(queries, { prepare: true });
     } catch (err) {
       console.error("CassandraDepartmentRepository.deleteDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to delete department, department id[${id}]`,
+        { cause: err, operation: 'deleteDepartment' }
+      );
     }
     console.log("CassandraDepartmentRepository.deleteDepartment(): department id[%d]", id);
   }
@@ -179,7 +195,10 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
       await client.batch(queries, { prepare: true });
     } catch (err) {
       console.error("CassandraDepartmentRepository.transferEmployees():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to transfer employees, sourceDepartmentId[${sourceDepartmentId}] targetDepartmentId[${targetDepartmentId}]`,
+        { cause: err, operation: 'transferEmployees' }
+      );
     }
     console.log("CassandraDepartmentRepository.transferEmployees(): " +
       "source department id[%d], target department id[%d], employees count[%d]",

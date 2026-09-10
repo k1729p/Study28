@@ -3,6 +3,7 @@ import { ChromaClient } from "chromadb";
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { Initialization } from "../initialization.js";
+import { RepositoryException } from "../repository-exception.js";
 import * as constants from "./chroma.constants.js";
 import * as helpers from "./chroma.helpers.js";
 import { clientPromise } from "./chroma.pool.js";
@@ -35,7 +36,10 @@ export class ChromaInitialization implements Initialization {
       }
     } catch (err) {
       console.error("ChromaInitialization.loadInitialData():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to load initial data, departments count[${departments.length}]`,
+        { cause: err, operation: 'loadInitialData' }
+      );
     }
     console.log("ChromaInitialization.loadInitialData(): data loaded successfully");
   }

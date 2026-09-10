@@ -1,14 +1,15 @@
+import { describe, beforeAll, it, expect } from "vitest";
+
 import { Employee } from "../../models/employee.js";
 import { Title } from "../../models/title.js";
 import { RepositoryType } from '../../repositories/repository-type.js';
 import { InitializationService } from '../initialization.service.js';
 import { EmployeeService } from '../employee.service.js';
 import { INITIAL_DATA, MAX_INT_32 } from '../services.constants.js';
-import { describe, beforeAll, it, expect, assert } from "vitest";
+import { checkEmployees, checkEmployee } from './checkers.js';
 
 /**
  * Unit tests for the {@link EmployeeService}.
- *
  * This test suite verifies that the {@link EmployeeService} functions correctly.
  * @param repositoryType the repository type
  */
@@ -33,7 +34,7 @@ export function employeeServiceTests(repositoryType: RepositoryType) {
   describe.for([
     [0, 0],
     [INITIAL_DATA.length - 1, INITIAL_DATA[INITIAL_DATA.length - 1].employees.length - 1]
-  ])('retrieval tests use initial data department index[%d] and employee index[%d]',
+  ])('tests use initial data department index[%d] and employee index[%d]',
     ([departmentIndex, employeeIndex]) => {
 
       const expectedEmployee = INITIAL_DATA[departmentIndex].employees[employeeIndex];
@@ -65,7 +66,7 @@ export function employeeServiceTests(repositoryType: RepositoryType) {
   /**
    * Suite of tests for the recreation of an employee in a department.
    */
-  describe('should recreate an employee', () => {
+  describe('tests for recreating an employee', () => {
     /**
      * Tests updating an employee's information.
      * Verifies that the employee's data is updated.
@@ -140,7 +141,7 @@ export function employeeServiceTests(repositoryType: RepositoryType) {
    */
   describe.for([
     Math.max(...INITIAL_DATA.flatMap(dept => dept.employees.map(emp => emp.id))) + 1
-  ])('test uses not existing employee id[%d]', (id) => {
+  ])('tests use not existing employee id[%d]', (id) => {
     /**
      * Tests the failed retrieval of an employee by its ID.
      */
@@ -156,8 +157,7 @@ export function employeeServiceTests(repositoryType: RepositoryType) {
      * Tests the failed deletion of an employee by its ID.
      */
     it('should not delete an employee that does not exist', async () => {
-      // GIVEN
-      // WHEN / THEN
+      // GIVEN / WHEN / THEN
       // Documents current contract: deleting an absent id must not throw.
       await expect(
         employeeService.deleteEmployee(repositoryType, id)
@@ -166,39 +166,9 @@ export function employeeServiceTests(repositoryType: RepositoryType) {
   });
 
   /**
-   * Suite of tests for the retrieval and deletion of an employee when ID is out of range.
-   */
-  describe.for([
-    0,
-    MAX_INT_32 + 1
-  ])('test uses out of range employee id[%d]', (id) => {
-    /**
-     * Tests the failed retrieval of an employee when ID is out of range.
-     */
-    it('should not get an employee when id is out of range', async () => {
-      // GIVEN
-      // WHEN / THEN
-      await expect(
-        employeeService.getEmployee(repositoryType, id)
-      ).rejects.toThrow(RangeError);
-    });
-
-    /**
-     * Tests the failed deletion of an employee when ID is out of range.
-     */
-    it('should not delete an employee when id is out of range', async () => {
-      // GIVEN
-      // WHEN / THEN
-      await expect(
-        employeeService.deleteEmployee(repositoryType, id)
-      ).rejects.toThrow(RangeError);
-    });
-  });
-
-  /**
    * Suite of tests for the minimal and maximal employee data.
    */
-  describe('minimal and maximal employee data', () => {
+  describe('tests use minimal and maximal employee data', () => {
     /**
      * Tests the creation of an employee with only mandatory fields.
      */
@@ -263,16 +233,44 @@ export function employeeServiceTests(repositoryType: RepositoryType) {
   });
 
   /**
+   * Suite of tests for the retrieval and deletion of an employee when ID is out of range.
+   */
+  describe.for([
+    0,
+    MAX_INT_32 + 1
+  ])('tests uses out of range employee id[%d]', (id) => {
+    /**
+     * Tests the failed retrieval of an employee when ID is out of range.
+     */
+    it('should throw RangeError and not get an employee', async () => {
+      // GIVEN / WHEN / THEN
+      await expect(
+        employeeService.getEmployee(repositoryType, id)
+      ).rejects.toThrow(RangeError);
+    });
+
+    /**
+     * Tests the failed deletion of an employee when ID is out of range.
+     */
+    it('should throw RangeError and not delete an employee', async () => {
+      // GIVEN / WHEN / THEN
+      await expect(
+        employeeService.deleteEmployee(repositoryType, id)
+      ).rejects.toThrow(RangeError);
+    });
+  });
+
+  /**
    * Suite of tests for an unregistered repository strategy.
    */
   describe.for([
     'UnknownRepositoryType' as RepositoryType
-  ])('should throw for an unimplemented repository type', (unknownRepositoryType) => {
+  ])('tests use an unknown repository type', (unknownRepositoryType) => {
     /**
      * Tests the failed creation of an employee
      * with an unimplemented repository type.
      */
-    it('createEmployee() should throw ReferenceError', async () => {
+    it('should throw ReferenceError and not create an employee', async () => {
       // GIVEN / WHEN / THEN
       await expect(
         employeeService.createEmployee(unknownRepositoryType, TEST_EMPLOYEE)
@@ -283,7 +281,7 @@ export function employeeServiceTests(repositoryType: RepositoryType) {
      * Tests the failed retrieval of employees
      * with an unimplemented repository type.
      */
-    it('getEmployees() should throw ReferenceError', async () => {
+    it('should throw ReferenceError and not get employees', async () => {
       // GIVEN / WHEN / THEN
       await expect(
         employeeService.getEmployees(unknownRepositoryType)
@@ -294,7 +292,7 @@ export function employeeServiceTests(repositoryType: RepositoryType) {
      * Tests the failed retrieval of an employee by its ID
      * with an unimplemented repository type.
      */
-    it('getEmployee() should throw ReferenceError', async () => {
+    it('should throw ReferenceError and not get an employee', async () => {
       // GIVEN / WHEN / THEN
       await expect(
         employeeService.getEmployee(unknownRepositoryType, TEST_EMPLOYEE.id)
@@ -305,7 +303,7 @@ export function employeeServiceTests(repositoryType: RepositoryType) {
      * Tests the failed update of an employee
      * with an unimplemented repository type.
      */
-    it('updateEmployee() should throw ReferenceError', async () => {
+    it('should throw ReferenceError and not update an employee', async () => {
       // GIVEN / WHEN / THEN
       await expect(
         employeeService.updateEmployee(unknownRepositoryType, TEST_EMPLOYEE)
@@ -316,70 +314,11 @@ export function employeeServiceTests(repositoryType: RepositoryType) {
      * Tests the failed deletion of an employee by its ID
      * with an unimplemented repository type.
      */
-    it('deleteEmployee() should throw ReferenceError', async () => {
+    it('should throw ReferenceError and not delete an employee', async () => {
       // GIVEN / WHEN / THEN
       await expect(
         employeeService.deleteEmployee(unknownRepositoryType, TEST_EMPLOYEE.id)
       ).rejects.toThrow(ReferenceError);
     });
   });
-
-  /**
-   * Checks the actual employees.
-   * Used for test assertions.
-   * @param expectedEmployee the expected employee
-   * @param actualEmployees the actual employees
-   * @returns void
-   */
-  function checkEmployees(expectedEmployee: Employee, actualEmployees: Employee[]) {
-    assert.isArray(actualEmployees);
-    expect(actualEmployees).toHaveLength(INITIAL_DATA.length * INITIAL_DATA[0].employees.length);
-    const actualEmployee = actualEmployees.find(emp => emp.id === expectedEmployee.id);
-    checkEmployee(expectedEmployee, actualEmployee);
-  }
-
-  /**
-   * Checks that the actual employee matches the expected employee.
-   * Used for test assertions.
-   * @param expectedEmployee the expected employee
-   * @param actualEmployee the actual employee
-   * @returns void
-   */
-  function checkEmployee(expectedEmployee: Employee, actualEmployee: Employee | undefined) {
-
-    expect(actualEmployee).toBeDefined();
-    expect(actualEmployee?.id).toBe(expectedEmployee.id);
-    expect(actualEmployee?.departmentId).toBe(expectedEmployee.departmentId);
-    expectedEmployee.firstName ?
-      expect(actualEmployee?.firstName).toBe(expectedEmployee.firstName) :
-      expect(actualEmployee?.firstName).toBeFalsy();
-    expectedEmployee.lastName ?
-      expect(actualEmployee?.lastName).toBe(expectedEmployee.lastName) :
-      expect(actualEmployee?.lastName).toBeFalsy();
-    expect(actualEmployee?.title).toBe(expectedEmployee.title);
-    expectedEmployee.phone ?
-      expect(actualEmployee?.phone).toBe(expectedEmployee.phone) :
-      expect(actualEmployee?.phone).toBeFalsy();
-    expectedEmployee.mail ?
-      expect(actualEmployee?.mail).toBe(expectedEmployee.mail) :
-      expect(actualEmployee?.mail).toBeFalsy();
-    expectedEmployee.streetName ?
-      expect(actualEmployee?.streetName).toBe(expectedEmployee.streetName) :
-      expect(actualEmployee?.streetName).toBeFalsy();
-    expectedEmployee.houseNumber ?
-      expect(actualEmployee?.houseNumber).toBe(expectedEmployee.houseNumber) :
-      expect(actualEmployee?.houseNumber).toBeFalsy();
-    expectedEmployee.postalCode ?
-      expect(actualEmployee?.postalCode).toBe(expectedEmployee.postalCode) :
-      expect(actualEmployee?.postalCode).toBeFalsy();
-    expectedEmployee.locality ?
-      expect(actualEmployee?.locality).toBe(expectedEmployee.locality) :
-      expect(actualEmployee?.locality).toBeFalsy();
-    expectedEmployee.province ?
-      expect(actualEmployee?.province).toBe(expectedEmployee.province) :
-      expect(actualEmployee?.province).toBeFalsy();
-    expectedEmployee.country ?
-      expect(actualEmployee?.country).toBe(expectedEmployee.country) :
-      expect(actualEmployee?.country).toBeFalsy();
-  }
 }

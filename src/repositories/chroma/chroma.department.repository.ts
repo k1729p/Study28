@@ -2,6 +2,7 @@ import type { Metadata } from "chromadb";
 
 import { Department } from "../../models/department.js";
 import { DepartmentRepository } from "../department.repository.js";
+import { RepositoryException } from "../repository-exception.js";
 import * as constants from "./chroma.constants.js";
 import * as helpers from "./chroma.helpers.js";
 import { clientPromise } from "./chroma.pool.js";
@@ -29,7 +30,10 @@ export class ChromaDepartmentRepository implements DepartmentRepository {
       });
     } catch (err) {
       console.error("ChromaDepartmentRepository.createDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to create department, department id[${department.id}]`,
+        { cause: err, operation: 'createDepartment' }
+      );
     }
     console.log("ChromaDepartmentRepository.createDepartment(): department id[%d]", department.id);
   }
@@ -61,7 +65,10 @@ export class ChromaDepartmentRepository implements DepartmentRepository {
       return departments;
     } catch (err) {
       console.error("ChromaDepartmentRepository.getDepartments():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get departments`,
+        { cause: err, operation: 'getDepartments' }
+      );
     }
   }
   /**
@@ -91,7 +98,10 @@ export class ChromaDepartmentRepository implements DepartmentRepository {
       return department;
     } catch (err) {
       console.error("ChromaDepartmentRepository.getDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get department, department id[${id}]`,
+        { cause: err, operation: 'getDepartment' }
+      );
     }
   }
   /**
@@ -120,7 +130,10 @@ export class ChromaDepartmentRepository implements DepartmentRepository {
       });
     } catch (err) {
       console.error("ChromaDepartmentRepository.updateDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to update department, department id[${department.id}]`,
+        { cause: err, operation: 'updateDepartment' }
+      );
     }
     console.log("ChromaDepartmentRepository.updateDepartment(): department id[%d]", department.id);
   }
@@ -141,7 +154,10 @@ export class ChromaDepartmentRepository implements DepartmentRepository {
       await departmentsCollection.delete({ ids: [String(id)] });
     } catch (err) {
       console.error("ChromaDepartmentRepository.deleteDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to delete department, department id[${id}]`,
+        { cause: err, operation: 'deleteDepartment' }
+      );
     }
     console.log("ChromaDepartmentRepository.deleteDepartment(): department id[%d]", id);
   }
@@ -183,7 +199,10 @@ export class ChromaDepartmentRepository implements DepartmentRepository {
         sourceDepartmentId, targetDepartmentId, employeeIds.length);
     } catch (err) {
       console.error("ChromaDepartmentRepository.transferEmployees():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to transfer employees, sourceDepartmentId[${sourceDepartmentId}] targetDepartmentId[${targetDepartmentId}]`,
+        { cause: err, operation: 'transferEmployees' }
+      );
     }
   }
 }

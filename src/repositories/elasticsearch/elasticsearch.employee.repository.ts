@@ -4,6 +4,7 @@ import { Employee } from "../../models/employee.js";
 import { EmployeeRepository } from "../employee.repository.js";
 import { clientPromise } from "./elasticsearch.pool.js";
 import { employeeToDocument, sourceToEmployee } from "./elasticsearch.mappers.js";
+import { RepositoryException } from "../repository-exception.js";
 import * as constants from "./elasticsearch.constants.js";
 /**
  * Repository interface providing methods to manage employees.
@@ -27,7 +28,10 @@ export class ElasticsearchEmployeeRepository implements EmployeeRepository {
       });
     } catch (err) {
       console.error("ElasticsearchEmployeeRepository.createEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to create employee, employee id[${employee.id}]`,
+        { cause: err, operation: 'createEmployee' }
+      );
     }
     console.log("ElasticsearchEmployeeRepository.createEmployee(): employee id[%d]", employee.id);
   }
@@ -51,7 +55,10 @@ export class ElasticsearchEmployeeRepository implements EmployeeRepository {
       return employees;
     } catch (err) {
       console.error("ElasticsearchEmployeeRepository.getEmployees():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get employees`,
+        { cause: err, operation: 'getEmployees' }
+      );
     }
   }
   /**
@@ -75,7 +82,10 @@ export class ElasticsearchEmployeeRepository implements EmployeeRepository {
       return sourceToEmployee(employeeGetResponse._source);
     } catch (err) {
       console.error("ElasticsearchEmployeeRepository.getEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get employee, employee id[${id}]`,
+        { cause: err, operation: 'getEmployee' }
+      );
     }
   }
   /**
@@ -102,7 +112,10 @@ export class ElasticsearchEmployeeRepository implements EmployeeRepository {
         return;
       }
       console.error("ElasticsearchEmployeeRepository.updateEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to update employee, employee id[${employee.id}]`,
+        { cause: err, operation: 'updateEmployee' }
+      );
     }
     console.log("ElasticsearchEmployeeRepository.updateEmployee(): employee id[%d]", employee.id);
   }
@@ -121,7 +134,10 @@ export class ElasticsearchEmployeeRepository implements EmployeeRepository {
       );
     } catch (err) {
       console.error("ElasticsearchEmployeeRepository.deleteEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to delete employee, employee id[${id}]`,
+        { cause: err, operation: 'deleteEmployee' }
+      );
     }
     console.log("ElasticsearchEmployeeRepository.deleteEmployee(): employee id[%d]", id);
   }

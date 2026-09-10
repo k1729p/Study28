@@ -5,22 +5,23 @@ import { RepositoryType } from '../repositories/repository-type.js';
 import { Department } from "../models/department.js";
 import { InitializationService } from "../services/initialization.service.js";
 import { DepartmentService } from "../services/department.service.js";
+import { bodyToDepartment } from "../controllers/mappers.js";
 import * as colors from "../utils/styledColors.js";
 import { config as config } from "../configuration/configuration.js";
 
 import { Bbb } from "./bbb.js";
 
 const REPOSITORY_TYPES = [
-  // RepositoryType.Cassandra,
-  // RepositoryType.Chroma,
-  // RepositoryType.Elasticsearch,
-  // RepositoryType.MongoDB,
-  // RepositoryType.MySQL,
+  RepositoryType.Cassandra,
+  RepositoryType.Chroma,
+  RepositoryType.Elasticsearch,
+  RepositoryType.MongoDB,
+  RepositoryType.MySQL,
   RepositoryType.Neo4j,
-  // RepositoryType.Oracle,
-  // RepositoryType.PostgreSQL,
-  // RepositoryType.Redis,
-  // RepositoryType.SQLServer,
+  RepositoryType.Oracle,
+  RepositoryType.PostgreSQL,
+  RepositoryType.Redis,
+  RepositoryType.SQLServer,
 ];
 /**
  * 
@@ -62,8 +63,8 @@ export class Aaa {
    * @returns 
    */
   async process(initializeFlag: boolean) {
-    const initializeDepartmentsInput: Department[] = [JSON.parse(INITIALIZE_DEPARTMENT_DATA)];
-    const createDepartmentInput: Department = JSON.parse(CREATE_DEPARTMENT_DATA);
+    const initializeDepartmentsInput: Department[] = [bodyToDepartment(JSON.parse(INITIALIZE_DEPARTMENT_DATA))];
+    const createDepartmentInput: Department = bodyToDepartment(JSON.parse(CREATE_DEPARTMENT_DATA));
     for (const repositoryType of REPOSITORY_TYPES) {
       console.time(repositoryType);
       try {

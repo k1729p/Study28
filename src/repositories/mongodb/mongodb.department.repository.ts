@@ -5,6 +5,7 @@ import { Employee } from "../../models/employee.js";
 import { config } from "./../../configuration/configuration.js";
 import { poolPromise } from "./mongodb.pool.js";
 import { DepartmentRepository } from "../department.repository.js";
+import { RepositoryException } from "../repository-exception.js";
 /**
  * Repository class providing methods to manage departments.
  * Includes CRUD operations to create, read, update, and delete departments.
@@ -26,7 +27,10 @@ export class MongoDbDepartmentRepository implements DepartmentRepository {
       await departmentCollection.insertOne(localDepartment);
     } catch (err) {
       console.error("MongoDbDepartmentRepository.createDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to create department, department id[${department.id}]`,
+        { cause: err, operation: 'createDepartment' }
+      );
     }
     console.log("MongoDbDepartmentRepository.createDepartment(): department id[%s]", department.id);
   }
@@ -71,7 +75,10 @@ export class MongoDbDepartmentRepository implements DepartmentRepository {
       return departments;
     } catch (err) {
       console.error("MongoDbDepartmentRepository.getDepartments():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get departments`,
+        { cause: err, operation: 'getDepartments' }
+      );
     }
   }
   /**
@@ -121,7 +128,10 @@ export class MongoDbDepartmentRepository implements DepartmentRepository {
       return department;
     } catch (err) {
       console.error("MongoDbDepartmentRepository.getDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get department, department id[${id}]`,
+        { cause: err, operation: 'getDepartment' }
+      );
     }
   }
   /**
@@ -134,14 +144,17 @@ export class MongoDbDepartmentRepository implements DepartmentRepository {
     const filter = { id: department.id };
     const client = await poolPromise;
     try {
-      const database: Db = client.db(config.mongoDbDatabase);
-      const departmentCollection: Collection<Department> = database.collection<Department>('departments');
+      const database = client.db(config.mongoDbDatabase);
+      const departmentCollection = database.collection<Department>('departments');
       const localDepartment = structuredClone(department);
       localDepartment.employees = [];
       await departmentCollection.replaceOne(filter, localDepartment);
     } catch (err) {
       console.error("MongoDbDepartmentRepository.updateDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to update department, department id[${department.id}]`,
+        { cause: err, operation: 'updateDepartment' }
+      );
     }
     console.log("MongoDbDepartmentRepository.updateDepartment() department id[%d]", department.id);
   }
@@ -154,14 +167,17 @@ export class MongoDbDepartmentRepository implements DepartmentRepository {
   async deleteDepartment(id: number): Promise<void> {
     const client = await poolPromise;
     try {
-      const database: Db = client.db(config.mongoDbDatabase);
-      const employeeCollection: Collection<Employee> = database.collection<Employee>('employees');
+      const database = client.db(config.mongoDbDatabase);
+      const employeeCollection = database.collection<Employee>('employees');
       await employeeCollection.deleteMany({ departmentId: id });
-      const departmentCollection: Collection<Department> = database.collection<Department>('departments');
+      const departmentCollection = database.collection<Department>('departments');
       await departmentCollection.deleteOne({ id: id });
     } catch (err) {
       console.error("MongoDbDepartmentRepository.deleteDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to delete department, department id[${id}]`,
+        { cause: err, operation: 'deleteDepartment' }
+      );
     }
     console.log("MongoDbDepartmentRepository.deleteDepartment(): department id[%d]", id);
   }
@@ -174,16 +190,19 @@ export class MongoDbDepartmentRepository implements DepartmentRepository {
    * @returns A promise that resolves when the transfer is complete.
    */
   async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]): Promise<void> {
-    const filter = { departmentId: sourceDepartmentId };
+    const filter = { departmentId: sourceDepartmentId, id: { $in: employeeIds } };
     const update = { $set: { departmentId: targetDepartmentId } };
     const client = await poolPromise;
     try {
-      const database: Db = client.db(config.mongoDbDatabase);
-      const employeeCollection: Collection<Employee> = database.collection<Employee>('employees');
+      const database = client.db(config.mongoDbDatabase);
+      const employeeCollection = database.collection<Employee>('employees');
       await employeeCollection.updateMany(filter, update);
     } catch (err) {
       console.error("MongoDbEmployeeRepository.transferEmployees():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to transfer employees, sourceDepartmentId[${sourceDepartmentId}] targetDepartmentId[${targetDepartmentId}]`,
+        { cause: err, operation: 'transferEmployees' }
+      );
     }
     console.log("MongoDbEmployeeRepository.transferEmployees(): " +
       "source department id[%d], target department id[%d], employees count[%d]",

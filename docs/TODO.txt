@@ -1,4 +1,23 @@
 ################################################################################# TESTING
+!!! USE MOCK FOR CONTROLLER TESTS src\aaa\Samples_From_Node_Test.ts !!!!
+
+NOT IMPLEMENTED AI PROPOSITION FOR REPOSITORY TESTS
+it('wraps and rethrows on query failure', async () => {
+  await expect(
+    repository.transferEmployees(1, 2, [10, 20])
+  ).rejects.toThrow(RepositoryException);
+});
+it('preserves the original error as cause', async () => {
+  const originalError = new Error('connection terminated');
+  mockClient.query.mockRejectedValueOnce(originalError);
+
+  await expect(repository.transferEmployees(1, 2, [10, 20])).rejects.toMatchObject({
+    name: 'RepositoryException',
+    cause: originalError,
+  });
+});
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 import { RESET, RED_BRIGHT } from '../utils/colors.js';
 ])('repository type ' + RED_BRIGHT + '%s' + RESET, repositoryType => {
 

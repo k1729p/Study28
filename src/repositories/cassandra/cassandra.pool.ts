@@ -1,4 +1,5 @@
 import { Client } from 'cassandra-driver';
+import { RepositoryException } from "../repository-exception.js";
 import { POOL_CONFIG } from "./cassandra.constants.js"
 /**
  * Client instance.
@@ -16,5 +17,8 @@ export const clientPromise = client.connect()
   })
   .catch(err => {
     console.error('Cassandra pool: database connection error', err);
-    throw err;
+    throw new RepositoryException(
+      `Failed to connect to Cassandra pool`,
+      { cause: err, operation: 'poolConnect' }
+    );
   });

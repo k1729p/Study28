@@ -4,6 +4,7 @@ import { Department } from "../../models/department.js";
 import { DepartmentRepository } from "../department.repository.js";
 import { clientPromise } from "./elasticsearch.pool.js";
 import { departmentToDocument, sourceToDepartment, sourceToEmployee } from "./elasticsearch.mappers.js";
+import { RepositoryException } from "../repository-exception.js";
 import * as constants from "./elasticsearch.constants.js";
 /**
  * Repository class providing methods to manage departments.
@@ -27,7 +28,10 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
       });
     } catch (err) {
       console.error("ElasticsearchDepartmentRepository.createDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to create department, department id[${department.id}]`,
+        { cause: err, operation: 'createDepartment' }
+      );
     }
     console.log("ElasticsearchDepartmentRepository.createDepartment(): department id[%d]", department.id);
   }
@@ -64,7 +68,10 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
       return departments;
     } catch (err) {
       console.error("ElasticsearchDepartmentRepository.getDepartments():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get departments`,
+        { cause: err, operation: 'getDepartments' }
+      );
     }
   }
   /**
@@ -103,7 +110,10 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
       return department;
     } catch (err) {
       console.error("ElasticsearchDepartmentRepository.getDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get department, department id[${id}]`,
+        { cause: err, operation: 'getDepartment' }
+      );
     }
   }
   /**
@@ -130,7 +140,10 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
         return;
       }
       console.error("ElasticsearchDepartmentRepository.updateDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to update department, department id[${department.id}]`,
+        { cause: err, operation: 'updateDepartment' }
+      );
     }
     console.log("ElasticsearchDepartmentRepository.updateDepartment(): department id[%d]", department.id);
   }
@@ -157,7 +170,10 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
       console.log("ElasticsearchDepartmentRepository.deleteDepartment(): department id[%d]", id);
     } catch (err) {
       console.error("ElasticsearchDepartmentRepository.deleteDepartment():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to delete department, department id[${id}]`,
+        { cause: err, operation: 'deleteDepartment' }
+      );
     }
   }
   /**
@@ -200,7 +216,10 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
         sourceDepartmentId, targetDepartmentId, employeeIds.length);
     } catch (err) {
       console.error("ElasticsearchDepartmentRepository.transferEmployees():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to transfer employees, sourceDepartmentId[${sourceDepartmentId}] targetDepartmentId[${targetDepartmentId}]`,
+        { cause: err, operation: 'transferEmployees' }
+      );
     }
   }
 }

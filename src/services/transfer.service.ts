@@ -10,7 +10,7 @@ import { OracleDepartmentRepository } from "../repositories/oracle/oracle.depart
 import { PostgreSqlDepartmentRepository } from "../repositories/postgresql/postgresql.department.repository.js";
 import { RedisDepartmentRepository } from "../repositories/redis/redis.department.repository.js";
 import { SqlServerDepartmentRepository } from "../repositories/sql-server/sql-server.department.repository.js";
-import { MAX_INT_32 } from './services.constants.js';
+import { MAX_INT_32, MAX_BATCH_EMPLOYEE_IDS } from './services.constants.js';
 /**
  * This service class provides methods to transfer employees.
  */
@@ -54,6 +54,10 @@ export class TransferService {
     if (!Number.isInteger(targetDepartmentId) || targetDepartmentId < 1 || targetDepartmentId > MAX_INT_32) {
       console.warn("TransferService.transferEmployees(): invalid targetDepartmentId[%s]", targetDepartmentId);
       throw new RangeError(`ID must be an integer between 1 and ${MAX_INT_32}, inclusive.`);
+    }
+    if (!Array.isArray(employeeIds) || employeeIds.length > MAX_BATCH_EMPLOYEE_IDS) {
+      console.warn(`TransferService.transferEmployees(): invalid employee IDs array size.`);
+      throw new RangeError(`Employee IDs count must not exceed ${MAX_BATCH_EMPLOYEE_IDS}.`);
     }
     if (employeeIds.length === 0) {
       console.warn("TransferService.transferEmployees(): No employee IDs provided. Nothing to transfer.");

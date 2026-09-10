@@ -5,6 +5,7 @@ import { Employee } from "../../models/employee.js";
 import { config } from "./../../configuration/configuration.js";
 import { poolPromise } from "./mongodb.pool.js";
 import { Initialization } from "../initialization.js";
+import { RepositoryException } from "../repository-exception.js";
 /**
  * Repository class providing methods to initialize the database and load seed data.
  */
@@ -34,7 +35,10 @@ export class MongoDbInitialization implements Initialization {
       await employeeCollection.insertMany(allEmployees);
     } catch (err) {
       console.error("MongoDbInitialization.loadInitialData():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to load initial data, departments count[${departments.length}]`,
+        { cause: err, operation: 'loadInitialData' }
+      );
     }
     console.log("MongoDbInitialization.loadInitialData(): data loaded successfully");
   }

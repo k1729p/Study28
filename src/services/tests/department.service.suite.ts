@@ -1,13 +1,14 @@
+import { describe, it, beforeAll, expect } from "vitest";
+
 import { Department } from "../../models/department.js";
 import { RepositoryType } from '../../repositories/repository-type.js';
 import { InitializationService } from '../initialization.service.js';
 import { DepartmentService } from '../department.service.js';
 import { INITIAL_DATA, MAX_INT_32 } from '../services.constants.js';
-import { describe, beforeAll, it, expect, assert } from "vitest";
+import { checkDefaultDepartments, checkDepartment } from './checkers.js';
 
 /**
  * Unit tests for the {@link DepartmentService}.
- *
  * This test suite verifies that the {@link DepartmentService} functions correctly.
  * @param repositoryType the repository type
  */
@@ -24,26 +25,25 @@ export function departmentServiceTests(repositoryType: RepositoryType) {
   }, 90_000);
 
   /**
+   * Tests the retrieval of the initial department array.
+   * This test checks if the service can fetch an array of departments.
+   */
+  it('should get departments', async () => {
+    // GIVEN
+    // WHEN
+    const actualDepartments = await departmentService.getDepartments(repositoryType);
+    // THEN
+    checkDefaultDepartments(actualDepartments);
+  });
+
+  /**
    * Suite of tests for the retrieval of departments.
    * Tests the retrieval of the first and the last department in the initial dataset.
    */
   describe.for([
     0,
     INITIAL_DATA.length - 1
-  ])('retrieval tests use initial data array index[%d]', (index) => {
-    /**
-     * Tests the retrieval of the initial department array.
-     * This test checks if the service can fetch an array of departments.
-     */
-    it('should get departments', async () => {
-      // GIVEN
-      const expectedDepartment = INITIAL_DATA[index];
-      // WHEN
-      const actualDepartments = await departmentService.getDepartments(repositoryType);
-      // THEN
-      checkDepartments(expectedDepartment, actualDepartments);
-    });
-
+  ])('tests use initial data array index[%d]', (index) => {
     /**
      * Tests the retrieval of a department by its ID.
      * This test checks if the service can fetch a department by its ID.
@@ -62,7 +62,7 @@ export function departmentServiceTests(repositoryType: RepositoryType) {
    * Suite of tests for the recreation of a department.
    * Department's actions sequence: Update -> Delete -> Create
    */
-  describe('should recreate a department', () => {
+  describe('tests for recreating a department', () => {
     /**
      * Tests the update functionality of an existing department.
      * This test checks if the service can update an existing department's details,
@@ -118,7 +118,7 @@ export function departmentServiceTests(repositoryType: RepositoryType) {
    */
   describe.for([
     Math.max(...INITIAL_DATA.map(dept => dept.id)) + 1
-  ])('test uses not existing department id[%d]', (id) => {
+  ])('tests use not existing department id[%d]', (id) => {
     /**
      * Tests the failed retrieval of a department by its ID.
      */
@@ -134,8 +134,7 @@ export function departmentServiceTests(repositoryType: RepositoryType) {
      * Tests the failed deletion of a department by its ID.
      */
     it('should not delete a department that does not exist', async () => {
-      // GIVEN
-      // WHEN / THEN
+      // GIVEN / WHEN / THEN
       // Documents current contract: deleting an absent id must not throw.
       await expect(
         departmentService.deleteDepartment(repositoryType, id)
@@ -144,39 +143,9 @@ export function departmentServiceTests(repositoryType: RepositoryType) {
   });
 
   /**
-   * Suite of tests for the retrieval and deletion of a department when ID is out of range.
-   */
-  describe.for([
-    0,
-    MAX_INT_32 + 1
-  ])('test uses out of range department id[%d]', (id) => {
-    /**
-     * Tests the failed retrieval of a department when ID is out of range.
-     */
-    it('should not get a department when id is out of range', async () => {
-      // GIVEN
-      // WHEN / THEN
-      await expect(
-        departmentService.getDepartment(repositoryType, id)
-      ).rejects.toThrow(RangeError);
-    });
-
-    /**
-     * Tests the failed deletion of a department when ID is out of range.
-     */
-    it('should not delete a department when id is out of range', async () => {
-      // GIVEN
-      // WHEN / THEN
-      await expect(
-        departmentService.deleteDepartment(repositoryType, id)
-      ).rejects.toThrow(RangeError);
-    });
-  });
-
-  /**
    * Suite of tests for the minimal and maximal department data.
    */
-  describe('minimal and maximal department data', () => {
+  describe('tests use minimal and maximal department data', () => {
     /**
      * Tests the creation of a department with only mandatory fields.
      */
@@ -197,7 +166,7 @@ export function departmentServiceTests(repositoryType: RepositoryType) {
       expect(actualDepartment?.startDate).toBeFalsy();
       expect(actualDepartment?.endDate).toBeFalsy();
       expect(actualDepartment?.notes).toBeFalsy();
-      if(actualDepartment?.keywords) {
+      if (actualDepartment?.keywords) {
         expect(actualDepartment?.keywords).toEqual([]);
       } else {
         expect(actualDepartment?.keywords).toBeFalsy();
@@ -234,16 +203,44 @@ export function departmentServiceTests(repositoryType: RepositoryType) {
   });
 
   /**
+   * Suite of tests for the retrieval and deletion of a department when ID is out of range.
+   */
+  describe.for([
+    0,
+    MAX_INT_32 + 1
+  ])('tests use out of range department id[%d]', (id) => {
+    /**
+     * Tests the failed retrieval of a department when ID is out of range.
+     */
+    it('should throw RangeError and not get a department', async () => {
+      // GIVEN / WHEN / THEN
+      await expect(
+        departmentService.getDepartment(repositoryType, id)
+      ).rejects.toThrow(RangeError);
+    });
+
+    /**
+     * Tests the failed deletion of a department when ID is out of range.
+     */
+    it('should throw RangeError and not delete a department', async () => {
+      // GIVEN / WHEN / THEN
+      await expect(
+        departmentService.deleteDepartment(repositoryType, id)
+      ).rejects.toThrow(RangeError);
+    });
+  });
+
+  /**
    * Suite of tests for an unregistered repository strategy.
    */
   describe.for([
     'UnknownRepositoryType' as RepositoryType
-  ])('should throw for an unimplemented repository type', (unknownRepositoryType) => {
+  ])('tests use an unknown repository type', (unknownRepositoryType) => {
     /**
      * Tests the failed creation of a department
      * with an unimplemented repository type.
      */
-    it('createDepartment() should throw ReferenceError', async () => {
+    it('should throw ReferenceError and not create a department', async () => {
       // GIVEN / WHEN / THEN
       await expect(
         departmentService.createDepartment(unknownRepositoryType, TEST_DEPARTMENT)
@@ -254,7 +251,7 @@ export function departmentServiceTests(repositoryType: RepositoryType) {
      * Tests the failed retrieval of departments
      * with an unimplemented repository type.
      */
-    it('getDepartments() should throw ReferenceError', async () => {
+    it('should throw ReferenceError and not get departments', async () => {
       // GIVEN / WHEN / THEN
       await expect(
         departmentService.getDepartments(unknownRepositoryType)
@@ -265,7 +262,7 @@ export function departmentServiceTests(repositoryType: RepositoryType) {
      * Tests the failed retrieval of a department by its ID
      * with an unimplemented repository type.
      */
-    it('getDepartment() should throw ReferenceError', async () => {
+    it('should throw ReferenceError and not get a department', async () => {
       // GIVEN / WHEN / THEN
       await expect(
         departmentService.getDepartment(unknownRepositoryType, TEST_DEPARTMENT.id)
@@ -276,7 +273,7 @@ export function departmentServiceTests(repositoryType: RepositoryType) {
      * Tests the failed update of a department
      * with an unimplemented repository type.
      */
-    it('updateDepartment() should throw ReferenceError', async () => {
+    it('should throw ReferenceError and not update a department', async () => {
       // GIVEN / WHEN / THEN
       await expect(
         departmentService.updateDepartment(unknownRepositoryType, TEST_DEPARTMENT)
@@ -287,58 +284,11 @@ export function departmentServiceTests(repositoryType: RepositoryType) {
      * Tests the failed deletion of a department by its ID
      * with an unimplemented repository type.
      */
-    it('deleteDepartment() should throw ReferenceError', async () => {
+    it('should throw ReferenceError and not delete a department', async () => {
       // GIVEN / WHEN / THEN
       await expect(
         departmentService.deleteDepartment(unknownRepositoryType, TEST_DEPARTMENT.id)
       ).rejects.toThrow(ReferenceError);
     });
   });
-
-  /**
-   * Checks the actual departments.
-   * Used for test assertions.
-   * @param expectedDepartment the expected department
-   * @param actualDepartments the actual departments
-   * @returns void
-   */
-  function checkDepartments(expectedDepartment: Department, actualDepartments: Department[]) {
-    assert.isArray(actualDepartments);
-    expect(actualDepartments).toHaveLength(INITIAL_DATA.length);
-    const actualDepartment = actualDepartments.find(dep => dep.id === expectedDepartment.id);
-    checkDepartment(expectedDepartment, actualDepartment);
-  }
-
-  /**
-   * Checks that the actual department matches the expected department.
-   * Used for test assertions.
-   * @param expectedDepartment the expected department
-   * @param actualDepartment the actual department
-   * @returns void
-   */
-  function checkDepartment(expectedDepartment: Department, actualDepartment: Department | undefined) {
-    expect(actualDepartment).toBeDefined();
-    expect(actualDepartment?.id).toBe(expectedDepartment.id);
-    expect(actualDepartment?.name).toBe(expectedDepartment.name);
-
-    const actualStartDate = new Date(actualDepartment?.startDate ?? Date.now());
-    const expectedStartDate = new Date(expectedDepartment.startDate ?? Date.now());
-    expect(actualStartDate.getTime()).toEqual(expectedStartDate.getTime());
-    const actualEndDate = new Date(actualDepartment?.endDate ?? Date.now());
-    const expectedEndDate = new Date(expectedDepartment.endDate ?? Date.now());
-    expect(actualEndDate.getTime()).toEqual(expectedEndDate.getTime());
-
-    expectedDepartment.notes ?
-      expect(actualDepartment?.notes).toBe(expectedDepartment.notes) :
-      expect(actualDepartment?.notes).toBeFalsy;
-    if(expectedDepartment.keywords) {
-      expect(actualDepartment?.keywords).toHaveLength(expectedDepartment.keywords.length);
-    } else {
-        expect(actualDepartment?.keywords).toBeFalsy();
-    }
-    expectedDepartment.image ?
-      expect(actualDepartment?.image).toBe(expectedDepartment.image) :
-      expect(actualDepartment?.image).toBeFalsy();
-    expect(actualDepartment?.employees).toHaveLength(expectedDepartment.employees.length);
-  }
 }

@@ -1,5 +1,6 @@
 import { Employee } from "../../models/employee.js";
 import { EmployeeRepository } from "../employee.repository.js";
+import { RepositoryException } from "../repository-exception.js";
 import * as constants from "./chroma.constants.js";
 import * as helpers from "./chroma.helpers.js";
 import { clientPromise } from "./chroma.pool.js";
@@ -27,7 +28,10 @@ export class ChromaEmployeeRepository implements EmployeeRepository {
       });
     } catch (err) {
       console.error("ChromaEmployeeRepository.createEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to create employee, employee id[${employee.id}]`,
+        { cause: err, operation: 'createEmployee' }
+      );
     }
     console.log("ChromaEmployeeRepository.createEmployee(): employee id[%d]", employee.id);
   }
@@ -48,7 +52,10 @@ export class ChromaEmployeeRepository implements EmployeeRepository {
       return employees;
     } catch (err) {
       console.error("ChromaEmployeeRepository.getEmployees():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get employees`,
+        { cause: err, operation: 'getEmployees' }
+      );
     }
   }
   /**
@@ -71,7 +78,10 @@ export class ChromaEmployeeRepository implements EmployeeRepository {
       return employee;
     } catch (err) {
       console.error("ChromaEmployeeRepository.getEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get employee, employee id[${id}]`,
+        { cause: err, operation: 'getEmployee' }
+      );
     }
   }
   /**
@@ -97,7 +107,10 @@ export class ChromaEmployeeRepository implements EmployeeRepository {
       });
     } catch (err) {
       console.error("ChromaEmployeeRepository.updateEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to update employee, employee id[${employee.id}]`,
+        { cause: err, operation: 'updateEmployee' }
+      );
     }
     console.log("ChromaEmployeeRepository.updateEmployee(): employee id[%d]", employee.id);
   }
@@ -114,7 +127,10 @@ export class ChromaEmployeeRepository implements EmployeeRepository {
       await employeesCollection.delete({ ids: [String(id)] });
     } catch (err) {
       console.error("ChromaEmployeeRepository.deleteEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to delete employee, employee id[${id}]`,
+        { cause: err, operation: 'deleteEmployee' }
+      );
     }
     console.log("ChromaEmployeeRepository.deleteEmployee(): employee id[%d]");
   }

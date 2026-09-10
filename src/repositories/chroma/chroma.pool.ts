@@ -1,5 +1,6 @@
 import { ChromaClient } from 'chromadb';
 
+import { RepositoryException } from "../repository-exception.js";
 import { CHROMA_CLIENT_CONFIG } from "./chroma.constants.js";
 /**
  * Client instance.
@@ -15,5 +16,8 @@ export const clientPromise = client.heartbeat()
   })
   .catch(err => {
     console.error('Chroma client: database connection error', err);
-    throw err;
+    throw new RepositoryException(
+      `Failed to connect to Chroma client`,
+      { cause: err, operation: 'poolConnect' }
+    );
   });

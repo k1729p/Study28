@@ -4,6 +4,7 @@ import { Employee } from "../../models/employee.js";
 import { config } from "./../../configuration/configuration.js";
 import { poolPromise } from "./mongodb.pool.js";
 import { EmployeeRepository } from "../employee.repository.js";
+import { RepositoryException } from "../repository-exception.js";
 /**
  * Repository interface providing methods to manage employees.
  * Includes CRUD operations to create, read, update, and delete employees.
@@ -23,7 +24,10 @@ export class MongoDbEmployeeRepository implements EmployeeRepository {
       await employeeCollection.insertOne(employee);
     } catch (err) {
       console.error("MongoDbEmployeeRepository.createEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to create employee, employee id[${employee.id}]`,
+        { cause: err, operation: 'createEmployee' }
+      );
     }
     console.log("MongoDbEmployeeRepository.createEmployee() employee id[%s]", employee.id);
   }
@@ -42,7 +46,10 @@ export class MongoDbEmployeeRepository implements EmployeeRepository {
       return employees;
     } catch (err) {
       console.error("MongoDbEmployeeRepository.getEmployees():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get employees`,
+        { cause: err, operation: 'getEmployees' }
+      );
     }
   }
   /**
@@ -65,7 +72,10 @@ export class MongoDbEmployeeRepository implements EmployeeRepository {
       return employee;
     } catch (err) {
       console.error("MongoDbEmployeeRepository.getEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get employee, employee id[${id}]`,
+        { cause: err, operation: 'getEmployee' }
+      );
     }
   }
   /**
@@ -83,7 +93,10 @@ export class MongoDbEmployeeRepository implements EmployeeRepository {
       await employeeCollection.replaceOne(filter, employee);
     } catch (err) {
       console.error("MongoDbEmployeeRepository.updateEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to update employee, employee id[${employee.id}]`,
+        { cause: err, operation: 'updateEmployee' }
+      );
     }
     console.log("MongoDbEmployeeRepository.updateEmployee() employee id[%d]", employee.id);
   }
@@ -102,7 +115,10 @@ export class MongoDbEmployeeRepository implements EmployeeRepository {
       await employeeCollection.deleteOne(filter);
     } catch (err) {
       console.error("MongoDbEmployeeRepository.deleteEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to delete employee, employee id[${id}]`,
+        { cause: err, operation: 'deleteEmployee' }
+      );
     }
     console.log("MongoDbEmployeeRepository.deleteEmployee(): employee id[%d]", id);
   }

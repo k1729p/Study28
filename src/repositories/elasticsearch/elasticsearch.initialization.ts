@@ -4,6 +4,7 @@ import { Department } from "../../models/department.js";
 import { Initialization } from "../initialization.js";
 import { clientPromise } from "./elasticsearch.pool.js";
 import { departmentToDocument, employeeToDocument } from "./elasticsearch.mappers.js";
+import { RepositoryException } from "../repository-exception.js";
 import * as constants from "./elasticsearch.constants.js";
 /**
  * Repository class providing methods to initialize the database and load seed data.
@@ -33,7 +34,10 @@ export class ElasticsearchInitialization implements Initialization {
       }
     } catch (err) {
       console.error("ElasticsearchInitialization.loadInitialData():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to load initial data, departments count[${departments.length}]`,
+        { cause: err, operation: 'loadInitialData' }
+      );
     }
     console.log("ElasticsearchInitialization.loadInitialData(): data loaded successfully");
   }

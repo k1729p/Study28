@@ -1,5 +1,6 @@
 import { MongoClient } from 'mongodb';
 
+import { RepositoryException } from "../repository-exception.js";
 import { MONGODB_URI } from "./mongodb.constants.js";
 /**
  * Client instance.
@@ -15,5 +16,8 @@ export const poolPromise = client.connect()
   })
   .catch(err => {
     console.error('MongoDB pool: database connection error', err);
-    throw err;
+    throw new RepositoryException(
+      `Failed to connect to MongoDB pool`,
+      { cause: err, operation: 'poolConnect' }
+    );
   });

@@ -2,6 +2,7 @@ import { Department } from '../models/department.js';
 import { Title } from '../models/title.js';
 
 export const MAX_INT_32 = 0x7FFF_FFFF;
+export const MAX_BATCH_EMPLOYEE_IDS = 10000;
 /**
  * Initial data for backend repositories.
  */

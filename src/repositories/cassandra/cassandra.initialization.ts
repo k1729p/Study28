@@ -2,6 +2,7 @@ import { Department } from "../../models/department.js";
 import { clientPromise } from "./cassandra.pool.js";
 import { parametersForDepartment, parametersForEmployee } from "./cassandra.mappers.js";
 import { Initialization } from "../initialization.js";
+import { RepositoryException } from "../repository-exception.js";
 import * as constants from "./cassandra.constants.js";
 /**
  * Repository class providing methods to initialize the database and load seed data.
@@ -31,7 +32,10 @@ export class CassandraInitialization implements Initialization {
       }
     } catch (err) {
       console.error("CassandraInitialization.loadInitialData():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to load initial data, departments count[${departments.length}]`,
+        { cause: err, operation: 'loadInitialData' }
+      );
     }
     console.log("CassandraInitialization.loadInitialData(): data loaded successfully");
   }

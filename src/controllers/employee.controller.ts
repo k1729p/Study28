@@ -1,9 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
-import { Employee } from "../models/employee.js";
 import { EmployeeService } from "../services/employee.service.js";
-import { toRepositoryType} from "./mappers.js";
+import { toRepositoryType, bodyToEmployee } from "./mappers.js";
 import * as colors from "./../utils/colors.js";
 /**
  * This controller class provides methods to manage employees.
@@ -18,7 +17,7 @@ export class EmployeeController {
    */
   createEmployee = async (req: Request, res: Response, next: NextFunction) => {
     const repositoryType = toRepositoryType(req.query.repositoryType);
-    const employee: Employee = req.body;
+    const employee = bodyToEmployee(req.body);
     if (!employee || !employee.id) {
       res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid employee id' });
       console.error("EmployeeController.createEmployee(): invalid employee id");
@@ -26,12 +25,12 @@ export class EmployeeController {
     }
     try {
       await this.employeeService.createEmployee(repositoryType, employee);
+      res.status(StatusCodes.CREATED).json();
     } catch (error) {
       next(error);
       console.error("EmployeeController.createEmployee():", error);
       return;
     }
-    res.status(StatusCodes.CREATED).json();
     console.log("%sEmployeeController.createEmployee():%s repositoryType[%s], id[%s]",
       colors.RED_BRIGHT, colors.RESET, repositoryType, employee.id);
   };
@@ -92,7 +91,7 @@ export class EmployeeController {
    */
   updateEmployee = async (req: Request, res: Response, next: NextFunction) => {
     const repositoryType = toRepositoryType(req.query.repositoryType);
-    const employee: Employee = req.body;
+    const employee = bodyToEmployee(req.body);
     if (!employee || !employee.id) {
       res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid employee id' });
       console.error("EmployeeController.updateEmployee(): invalid employee id");
@@ -100,12 +99,12 @@ export class EmployeeController {
     }
     try {
       await this.employeeService.updateEmployee(repositoryType, employee);
+      res.status(StatusCodes.NO_CONTENT).json();
     } catch (error) {
       next(error);
       console.error("EmployeeController.updateEmployee():", error);
       return;
     }
-    res.status(StatusCodes.NO_CONTENT).json();
     console.log("%sEmployeeController.updateEmployee():%s repositoryType[%s], id[%s]",
       colors.MAGENTA_BRIGHT, colors.RESET, repositoryType, employee.id);
   };
@@ -126,11 +125,11 @@ export class EmployeeController {
     }
     try {
       await this.employeeService.deleteEmployee(repositoryType, id);
+      res.status(StatusCodes.NO_CONTENT).json();
     } catch (error) {
       next(error);
       console.error("EmployeeController.deleteEmployee():", error);
     }
-    res.status(StatusCodes.NO_CONTENT).json();
     console.log("%sEmployeeController.deleteEmployee():%s repositoryType[%s], id[%s]",
       colors.CYAN_BRIGHT, colors.RESET, repositoryType, id);
   };

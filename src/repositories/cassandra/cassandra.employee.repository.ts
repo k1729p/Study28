@@ -2,6 +2,7 @@ import { Employee } from "../../models/employee.js";
 import { clientPromise } from "./cassandra.pool.js";
 import { parametersForEmployee } from "./cassandra.mappers.js";
 import { EmployeeRepository } from "../employee.repository.js";
+import { RepositoryException } from "../repository-exception.js";
 import * as mappers from "../mappers.js";
 import * as constants from "./cassandra.constants.js";
 /**
@@ -22,7 +23,10 @@ export class CassandraEmployeeRepository implements EmployeeRepository {
         parametersForEmployee(employee), { prepare: true });
     } catch (err) {
       console.error("CassandraEmployeeRepository.createEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to create employee, employee id[${employee.id}]`,
+        { cause: err, operation: 'createEmployee' }
+      );
     }
     console.log("CassandraEmployeeRepository.createEmployee(): employee id[%d]", employee.id);
   }
@@ -41,7 +45,10 @@ export class CassandraEmployeeRepository implements EmployeeRepository {
       return employees;
     } catch (err) {
       console.error("CassandraEmployeeRepository.getEmployees():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get employees`,
+        { cause: err, operation: 'getEmployees' }
+      );
     }
   }
   /**
@@ -63,7 +70,10 @@ export class CassandraEmployeeRepository implements EmployeeRepository {
       return mappers.mapDatabaseRowToEmployee(resultSet.rows[0], true);
     } catch (err) {
       console.error("CassandraEmployeeRepository.getEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to get employee, employee id[${id}]`,
+        { cause: err, operation: 'getEmployee' }
+      );
     }
   }
   /**
@@ -102,7 +112,10 @@ export class CassandraEmployeeRepository implements EmployeeRepository {
       }
     } catch (err) {
       console.error("CassandraEmployeeRepository.updateEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to update employee, employee id[${employee.id}]`,
+        { cause: err, operation: 'updateEmployee' }
+      );
     }
     console.log("CassandraEmployeeRepository.updateEmployee(): employee id[%d]", employee.id);
   }
@@ -128,7 +141,10 @@ export class CassandraEmployeeRepository implements EmployeeRepository {
         { departmentId: departmentId, id: id }, { prepare: true });
     } catch (err) {
       console.error("CassandraEmployeeRepository.deleteEmployee():", err);
-      throw err;
+      throw new RepositoryException(
+        `Failed to delete employee, employee id[${id}]`,
+        { cause: err, operation: 'deleteEmployee' }
+      );
     }
     console.log("CassandraEmployeeRepository.deleteEmployee(): employee id[%d]", id);
   }

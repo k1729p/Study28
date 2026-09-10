@@ -1,5 +1,6 @@
 import { Client } from '@elastic/elasticsearch';
 
+import { RepositoryException } from "../repository-exception.js";
 import { POOL_CONFIG } from "./elasticsearch.constants.js";
 /**
  * Client instance.
@@ -19,5 +20,8 @@ export const clientPromise = client.ping()
   })
   .catch(err => {
     console.error('Elasticsearch pool: database connection error', err);
-    throw err;
+    throw new RepositoryException(
+      `Failed to connect to Elasticsearch pool`,
+      { cause: err, operation: 'poolConnect' }
+    );
   });

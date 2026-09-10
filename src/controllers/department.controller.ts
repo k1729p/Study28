@@ -1,9 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
-import { Department } from "../models/department.js";
 import { DepartmentService } from "../services/department.service.js";
-import { toRepositoryType} from "./mappers.js";
+import { toRepositoryType, bodyToDepartment } from "./mappers.js";
 import * as colors from "./../utils/colors.js";
 /**
  * This controller class provides methods to manage departments.
@@ -18,7 +17,7 @@ export class DepartmentController {
    */
   createDepartment = async (req: Request, res: Response, next: NextFunction) => {
     const repositoryType = toRepositoryType(req.query.repositoryType);
-    const department: Department = req.body;
+    const department = bodyToDepartment(req.body);
     if (!department || !department.id) {
       res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid department id' });
       console.error("DepartmentController.createDepartment(): invalid department id");
@@ -26,15 +25,16 @@ export class DepartmentController {
     }
     try {
       await this.departmentService.createDepartment(repositoryType, department);
+      res.status(StatusCodes.CREATED).json();
     } catch (error) {
       next(error);
       console.error("DepartmentController.createDepartment():", error);
       return;
     }
-    res.status(StatusCodes.CREATED).json();
     console.log("%sDepartmentController.createDepartment():%s repositoryType[%s], id[%s]",
       colors.RED_BRIGHT, colors.RESET, repositoryType, department.id);
   };
+
   /**
    * Get all departments.
    * @param req - The request object.
@@ -93,7 +93,7 @@ export class DepartmentController {
    */
   updateDepartment = async (req: Request, res: Response, next: NextFunction) => {
     const repositoryType = toRepositoryType(req.query.repositoryType);
-    const department: Department = req.body;
+    const department = bodyToDepartment(req.body);
     if (!department || !department.id) {
       res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid department id' });
       console.error("DepartmentController.updateDepartment(): invalid department id");
@@ -101,12 +101,12 @@ export class DepartmentController {
     }
     try {
       await this.departmentService.updateDepartment(repositoryType, department);
+      res.status(StatusCodes.NO_CONTENT).json();
     } catch (error) {
       next(error);
       console.error("DepartmentController.updateDepartment():", error);
       return;
     }
-    res.status(StatusCodes.NO_CONTENT).json();
     console.log("%sDepartmentController.updateDepartment():%s repositoryType[%s], id[%s]",
       colors.MAGENTA_BRIGHT, colors.RESET, repositoryType, department.id);
   };
@@ -127,11 +127,11 @@ export class DepartmentController {
     }
     try {
       await this.departmentService.deleteDepartment(repositoryType, id);
+      res.status(StatusCodes.NO_CONTENT).json();
     } catch (error) {
       next(error);
       console.error("DepartmentController.deleteDepartment():", error);
     }
-    res.status(StatusCodes.NO_CONTENT).json();
     console.log("%sDepartmentController.deleteDepartment():%s repositoryType[%s], id[%s]",
       colors.CYAN_BRIGHT, colors.RESET, repositoryType, id);
   };
