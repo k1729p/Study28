@@ -37,6 +37,7 @@ export class OracleDepartmentRepository implements DepartmentRepository {
     }
     console.log("OracleDepartmentRepository.createDepartment(): department id[%s]", department.id);
   }
+  
   /**
    * Retrieves all departments.
    * 
@@ -76,6 +77,7 @@ export class OracleDepartmentRepository implements DepartmentRepository {
       }
     }
   }
+
   /**
    * Retrieves a department by its ID.
    * 
@@ -114,6 +116,7 @@ export class OracleDepartmentRepository implements DepartmentRepository {
       }
     }
   }
+
   /**
    * Updates an existing department.
    * 
@@ -151,6 +154,7 @@ export class OracleDepartmentRepository implements DepartmentRepository {
     }
     console.log("OracleDepartmentRepository.updateDepartment(): department id[%d]", department.id);
   }
+
   /**
    * Updates an employee in the department.
    * 
@@ -187,6 +191,7 @@ export class OracleDepartmentRepository implements DepartmentRepository {
       }
     }
   }
+
   /**
    * Deletes a department by its ID.
    * The removal of the department together with all its employees is delegated to the
@@ -216,45 +221,5 @@ export class OracleDepartmentRepository implements DepartmentRepository {
       }
     }
     console.log("OracleDepartmentRepository.deleteDepartment(): department id[%d]", id);
-  }
-  /**
-   * Transfers employees from a source department to a target department.
-   * The transfer is delegated to the 'transfer_employees' PL/SQL stored procedure. The list of
-   * employee ids is bound using the built-in Oracle collection type SYS.ODCINUMBERLIST, which lets
-   * the procedure perform a single, set-based UPDATE (via the TABLE() collection operator) instead
-   * of one round-trip per employee, while keeping the operation atomic.
-   * 
-   * @param sourceDepartmentId - The ID of the source department.
-   * @param targetDepartmentId - The ID of the target department.
-   * @param employeeIds - An array of IDs representing the employees to be transferred.
-   * @returns A promise that resolves when the transfer is complete.
-   */
-  async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]):
-    Promise<void> {
-    const pool = await poolPromise;
-    const connection = await pool.getConnection();
-    try {
-      const bindParams = {
-        sourceDepartmentId,
-        targetDepartmentId,
-        employeeIds: { type: "SYS.ODCINUMBERLIST", val: employeeIds }
-      };
-      await connection.execute(constants.CALL_TRANSFER_EMPLOYEES_SQL, bindParams, { autoCommit: true });
-    } catch (err) {
-      console.error("OracleDepartmentRepository.transferEmployees():", err);
-      throw new RepositoryException(
-        `Failed to transfer employees, sourceDepartmentId[${sourceDepartmentId}] targetDepartmentId[${targetDepartmentId}]`,
-        { cause: err, operation: 'transferEmployees' }
-      );
-    } finally {
-      try {
-        await connection.close();
-      } catch (err) {
-        console.error("OracleDepartmentRepository.transferEmployees(): error closing connection", err);
-      }
-    }
-    console.log("OracleDepartmentRepository.transferEmployees(): " +
-      "source department id[%d], target department id[%d], employees count[%d]",
-      sourceDepartmentId, targetDepartmentId, employeeIds.length);
   }
 }

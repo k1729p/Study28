@@ -8,7 +8,11 @@ import * as colors from "./../utils/colors.js";
  * This controller class provides methods to manage departments.
  */
 export class DepartmentController {
-  departmentService = new DepartmentService();
+  /**
+   * Constructor.
+   * @param departmentService the department service
+   */
+  constructor(private departmentService: DepartmentService) { }
   /**
    * Create a new department.
    * @param req - The request object.

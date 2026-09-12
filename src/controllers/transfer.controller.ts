@@ -8,7 +8,11 @@ import * as colors from "../utils/colors.js";
  * This controller class provides methods to manage transfers.
  */
 export class TransferController {
-  transferService = new TransferService();
+  /**
+   * Constructor.
+   * @param transferService the transfer service
+   */
+  constructor(private transferService: TransferService) { }
   /**
    * Transfers the employees from the source department to the target department.
    * @param req - The request object.

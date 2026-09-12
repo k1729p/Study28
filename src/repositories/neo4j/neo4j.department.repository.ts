@@ -32,6 +32,7 @@ export class Neo4jDepartmentRepository implements DepartmentRepository {
     }
     console.log("Neo4jDepartmentRepository.createDepartment(): department id[%d]", department.id);
   }
+  
   /**
    * Retrieves all departments.
    * 
@@ -55,6 +56,7 @@ export class Neo4jDepartmentRepository implements DepartmentRepository {
       await session.close();
     }
   }
+
   /**
    * Retrieves a department by its ID.
    * 
@@ -83,6 +85,7 @@ export class Neo4jDepartmentRepository implements DepartmentRepository {
       await session.close();
     }
   }
+
   /**
    * Updates an existing department.
    * Only the Department node's own properties (name, dates, notes, keywords, image) are updated.
@@ -112,6 +115,7 @@ export class Neo4jDepartmentRepository implements DepartmentRepository {
     }
     console.log("Neo4jDepartmentRepository.updateDepartment() department id[%d]", department.id);
   }
+
   /**
    * Deletes a department by its ID, together with every employee that works in it (cascading delete).
    * 
@@ -137,34 +141,5 @@ export class Neo4jDepartmentRepository implements DepartmentRepository {
       await session.close();
     }
     console.log("Neo4jDepartmentRepository.deleteDepartment(): department id[%d]", id);
-  }
-  /**
-   * Transfers employees from a source department to a target department.
-   *
-   * @param sourceDepartmentId - The ID of the source department.
-   * @param targetDepartmentId - The ID of the target department.
-   * @param employeeIds - An array of IDs representing the employees to be transferred.
-   * @returns A promise that resolves when the transfer is complete.
-   */
-  async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]): Promise<void> {
-    const driver = await driverPromise;
-    const session = driver.session();
-    try {
-      await session.executeWrite(transaction => transaction.run(
-        constants.TRANSFER_EMPLOYEES_QUERY,
-        { sourceDepartmentId, targetDepartmentId, employeeIds }
-      ));
-    } catch (err) {
-      console.error("Neo4jDepartmentRepository.transferEmployees():", err);
-      throw new RepositoryException(
-        `Failed to transfer employees, sourceDepartmentId[${sourceDepartmentId}] targetDepartmentId[${targetDepartmentId}]`,
-        { cause: err, operation: 'transferEmployees' }
-      );
-    } finally {
-      await session.close();
-    }
-    console.log("Neo4jDepartmentRepository.transferEmployees(): " +
-      "source department id[%d], target department id[%d], employees count[%d]",
-      sourceDepartmentId, targetDepartmentId, employeeIds.length);
   }
 }

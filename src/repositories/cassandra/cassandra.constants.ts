@@ -6,7 +6,7 @@ export const POOL_CONFIG = {
   contactPoints: [config.cassandraHost],
   localDataCenter: config.cassandraLocalDataCenter,
   socketOptions: {
-    readTimeout: 30000,
+    readTimeout: 60000,
     connectTimeout: 10000
   }
 };

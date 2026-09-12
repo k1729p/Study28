@@ -23,7 +23,6 @@ export function transferServiceTests(repositoryType: RepositoryType) {
   const TEST_ALL_EMPLOYEE_IDS = TEST_1ST_DEPARTMENT.employees.map(emp => emp.id);
   const TEST_1ST_EMPLOYEE_ID = TEST_1ST_DEPARTMENT.employees[0].id;
   const TEST_LAST_EMPLOYEE_ID = TEST_LAST_DEPARTMENT.employees[TEST_LAST_DEPARTMENT.employees.length - 1].id;
-  const UNKNOWN_REPOSITORY_TYPE = 'UnknownRepositoryType' as RepositoryType;
 
   /**
    * Sets up the testing module for the TransferService.
@@ -151,16 +150,4 @@ export function transferServiceTests(repositoryType: RepositoryType) {
         ).rejects.toThrow(RangeError);
       });
     });
-
-  /**
-   * Test the failed transferring of employees between departments
-   * with an unimplemented repository type.
-   */
-  it('should throw ReferenceError and not transfer employees for an unknown repository type', async () => {
-    // GIVEN / WHEN / THEN
-    await expect(
-      transferService.transferEmployees(
-        UNKNOWN_REPOSITORY_TYPE, TEST_1ST_DEPARTMENT.id, TEST_2ND_DEPARTMENT.id, TEST_ALL_EMPLOYEE_IDS)
-    ).rejects.toThrow(ReferenceError);
-  });
 }

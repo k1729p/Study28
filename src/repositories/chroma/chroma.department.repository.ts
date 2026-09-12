@@ -1,5 +1,3 @@
-import type { Metadata } from "chromadb";
-
 import { Department } from "../../models/department.js";
 import { DepartmentRepository } from "../department.repository.js";
 import { RepositoryException } from "../repository-exception.js";
@@ -37,6 +35,7 @@ export class ChromaDepartmentRepository implements DepartmentRepository {
     }
     console.log("ChromaDepartmentRepository.createDepartment(): department id[%d]", department.id);
   }
+
   /**
    * Retrieves all departments.
    * 
@@ -71,6 +70,7 @@ export class ChromaDepartmentRepository implements DepartmentRepository {
       );
     }
   }
+
   /**
    * Retrieves a department by its ID.
    * 
@@ -104,6 +104,7 @@ export class ChromaDepartmentRepository implements DepartmentRepository {
       );
     }
   }
+
   /**
    * Updates an existing department.
    * Only the department's own fields are written here. The employees collection is left untouched.
@@ -119,7 +120,7 @@ export class ChromaDepartmentRepository implements DepartmentRepository {
       const departmentRows = await departmentsCollection.get({ ids: [String(department.id)] });
       if (departmentRows.ids.length === 0) {
         console.log("ChromaDepartmentRepository.updateDepartment(): " +
-           "department not updated, department id[%d]", department.id);
+          "department not updated, department id[%d]", department.id);
         return;
       }
       await departmentsCollection.update({
@@ -137,6 +138,7 @@ export class ChromaDepartmentRepository implements DepartmentRepository {
     }
     console.log("ChromaDepartmentRepository.updateDepartment(): department id[%d]", department.id);
   }
+
   /**
    * Deletes a department by its ID.
    * 
@@ -160,49 +162,5 @@ export class ChromaDepartmentRepository implements DepartmentRepository {
       );
     }
     console.log("ChromaDepartmentRepository.deleteDepartment(): department id[%d]", id);
-  }
-  /**
-   * Transfers employees from a source department to a target department.
-   * 
-   * @param sourceDepartmentId - The ID of the source department.
-   * @param targetDepartmentId - The ID of the target department.
-   * @param employeeIds - An array of IDs representing the employees to be transferred.
-   * @returns A promise that resolves when the transfer is complete.
-   */
-  async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]): Promise<void> {
-    const client = await clientPromise;
-    // This is a single batched request.
-    try {
-      const employeesCollection = await client.getOrCreateCollection(constants.EMPLOYEES_COLLECTION_OPTIONS);
-      // With a `get()` call find the employees that both belong to the source department and appear in `employeeIds`.
-      const employeeRows = await employeesCollection.get({
-        ids: employeeIds.map(String),
-        where: { [constants.DEPARTMENT_ID_FIELD]: sourceDepartmentId }
-      });
-      if (employeeRows.ids.length === 0) {
-        console.warn("ChromaDepartmentRepository.transferEmployees(): " +
-          "no matching employees found, source department id[%d]", sourceDepartmentId);
-        return;
-      }
-      // With a batched `update()` call to the 'employeesCollection' reassign found employees to the target department
-      // changing only the `departmentId` metadata field.
-      const metadatas: Metadata[] = employeeRows.metadatas.map(metadata => ({
-        ...(metadata ?? {}),
-        [constants.DEPARTMENT_ID_FIELD]: targetDepartmentId
-      }));
-      await employeesCollection.update({
-        ids: employeeRows.ids,
-        metadatas: metadatas
-      });
-      console.log("ChromaDepartmentRepository.transferEmployees(): " +
-        "source department id[%d], target department id[%d], employees count[%d]",
-        sourceDepartmentId, targetDepartmentId, employeeIds.length);
-    } catch (err) {
-      console.error("ChromaDepartmentRepository.transferEmployees():", err);
-      throw new RepositoryException(
-        `Failed to transfer employees, sourceDepartmentId[${sourceDepartmentId}] targetDepartmentId[${targetDepartmentId}]`,
-        { cause: err, operation: 'transferEmployees' }
-      );
-    }
   }
 }

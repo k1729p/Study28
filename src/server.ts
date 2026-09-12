@@ -18,6 +18,10 @@ import { EmployeeController } from './controllers/employee.controller.js';
 import { InitializationController } from './controllers/initialization.controller.js';
 import { TransferController } from './controllers/transfer.controller.js';
 import { RED_BRIGHT, RESET } from "./utils/colors.js";
+import { DepartmentService } from './services/department.service.js';
+import { EmployeeService } from './services/employee.service.js';
+import { InitializationService } from './services/initialization.service.js';
+import { TransferService } from './services/transfer.service.js';
 
 main();
 
@@ -51,24 +55,24 @@ function createRouting(): Router {
   router.get('/initialize/', new Aaa().initialize);
   router.get('/read/', new Aaa().read);
   // ####################################################################################################
-  const initializationController = new InitializationController();
+  const initializationController = new InitializationController(new InitializationService());
   router.post('/load/', initializationController.loadInitialData);
 
-  const departmentController = new DepartmentController();
+  const departmentController = new DepartmentController(new DepartmentService());
   router.post('/departments/', departmentController.createDepartment);
   router.get('/departments/', departmentController.getDepartments);
   router.get('/departments/:id', departmentController.getDepartmentById);
   router.patch('/departments/:id', departmentController.updateDepartment);
   router.delete('/departments/:id', departmentController.deleteDepartment);
 
-  const employeeController = new EmployeeController();
+  const employeeController = new EmployeeController(new EmployeeService());
   router.post('/employees/', employeeController.createEmployee);
   router.get('/employees/', employeeController.getEmployees);
   router.get('/employees/:id', employeeController.getEmployeeById);
   router.patch('/employees/:id', employeeController.updateEmployee);
   router.delete('/employees/:id', employeeController.deleteEmployee);
 
-  const transferController = new TransferController();
+  const transferController = new TransferController(new TransferService());
   router.post('/transfers/', transferController.transferEmployees);
   return router;
 }

@@ -35,6 +35,7 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
     }
     console.log("ElasticsearchDepartmentRepository.createDepartment(): department id[%d]", department.id);
   }
+  
   /**
    * Retrieves all departments.
    * 
@@ -74,6 +75,7 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
       );
     }
   }
+
   /**
    * Retrieves a department by its ID.
    * 
@@ -116,6 +118,7 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
       );
     }
   }
+
   /**
    * Updates an existing department.
    * This performs a partial update of the department's own fields only (name, dates, notes, keywords, and image).
@@ -147,6 +150,7 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
     }
     console.log("ElasticsearchDepartmentRepository.updateDepartment(): department id[%d]", department.id);
   }
+
   /**
    * Deletes a department by its ID.
    * 
@@ -173,52 +177,6 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
       throw new RepositoryException(
         `Failed to delete department, department id[${id}]`,
         { cause: err, operation: 'deleteDepartment' }
-      );
-    }
-  }
-  /**
-   * Transfers employees from a source department to a target department.
-   * The 'update_by_query' API accepts a query to select the matching documents and
-   * a Painless script to mutate each one in place. A single request therefore finds every employee
-   * that belongs to the source department AND is listed in 'employeeIds', and reassigns their 'departmentId'
-   * to the target department - without round-tripping documents through the client.
-   * The 'ctx' is the per-document update context that Elasticsearch exposes to the script.
-   * The 'ctx._source' is the document being updated. The 'params' are the values passed in from the request.
-   * 
-   * @param sourceDepartmentId - The ID of the source department.
-   * @param targetDepartmentId - The ID of the target department.
-   * @param employeeIds - An array of IDs representing the employees to be transferred.
-   * @returns A promise that resolves when the transfer is complete.
-   */
-  async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]): Promise<void> {
-    const client = await clientPromise;
-    try {
-      await client.updateByQuery({
-        index: constants.INDEX_EMPLOYEES,
-        refresh: true,
-        conflicts: 'proceed',
-        query: {
-          bool: {
-            must: [
-              { term: { ['departmentId']: sourceDepartmentId } },
-              { terms: { ['id']: employeeIds } }
-            ]
-          }
-        },
-        script: {
-          source: 'ctx._source.departmentId = params.targetDepartmentId',
-          lang: 'painless',
-          params: { targetDepartmentId }
-        }
-      });
-      console.log("ElasticsearchDepartmentRepository.transferEmployees(): " +
-        "source department id[%d], target department id[%d], employees count[%d]",
-        sourceDepartmentId, targetDepartmentId, employeeIds.length);
-    } catch (err) {
-      console.error("ElasticsearchDepartmentRepository.transferEmployees():", err);
-      throw new RepositoryException(
-        `Failed to transfer employees, sourceDepartmentId[${sourceDepartmentId}] targetDepartmentId[${targetDepartmentId}]`,
-        { cause: err, operation: 'transferEmployees' }
       );
     }
   }

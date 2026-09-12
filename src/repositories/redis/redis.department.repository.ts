@@ -3,7 +3,7 @@ import { Employee } from "../../models/employee.js";
 import { DepartmentRepository } from "../department.repository.js";
 import { RepositoryException } from "../repository-exception.js";
 import { clientPromise } from "./redis.pool.js";
-import { buildDepartmentKey, buildEmployeeKey, recordToDepartment } from "./redis.mappers.js";
+import { buildDepartmentKey, recordToDepartment } from "./redis.mappers.js";
 import * as constants from "./redis.constants.js";
 /**
  * Repository class providing methods to manage departments.
@@ -30,6 +30,7 @@ export class RedisDepartmentRepository implements DepartmentRepository {
       );
     }
   }
+
   /**
    * Retrieves all departments.
    * 
@@ -76,6 +77,7 @@ export class RedisDepartmentRepository implements DepartmentRepository {
       );
     }
   }
+
   /**
    * Retrieves a department by its ID, together with the employees currently assigned to it.
    * The matching employees are found by scanning the `employee:*` key space.
@@ -106,6 +108,7 @@ export class RedisDepartmentRepository implements DepartmentRepository {
       );
     }
   }
+
   /**
    * Updates an existing department, but only if it already exists.
    * Only the department's own fields are persisted.
@@ -136,6 +139,7 @@ export class RedisDepartmentRepository implements DepartmentRepository {
     }
     console.log("RedisDepartmentRepository.updateDepartment() department id[%d]", department.id);
   }
+
   /**
    * Deletes a department by its ID, together with every employee currently assigned to it.
    * The department key and its dependent employee keys are removed with a single `DEL` call.
@@ -158,33 +162,7 @@ export class RedisDepartmentRepository implements DepartmentRepository {
     }
     console.log("RedisDepartmentRepository.deleteDepartment(): department id[%d]", id);
   }
-  /**
-   * Transfers employees from a source department to a target department.
-   *
-   * @param sourceDepartmentId - The ID of the source department.
-   * @param targetDepartmentId - The ID of the target department.
-   * @param employeeIds - An array of IDs representing the employees to be transferred.
-   * @returns A promise that resolves when the transfer is complete.
-   */
-  async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]): Promise<void> {
-    const client = await clientPromise;
-    try {
-      const employeeKeys = employeeIds.map(buildEmployeeKey);
-      await client.eval(constants.TRANSFER_EMPLOYEES_LUA, {
-        keys: employeeKeys,
-        arguments: [String(sourceDepartmentId), String(targetDepartmentId)]
-      });
-      console.log("RedisDepartmentRepository.transferEmployees(): " +
-        "source department id[%d], target department id[%d], employees count[%d]",
-        sourceDepartmentId, targetDepartmentId, employeeIds.length);
-    } catch (err) {
-      console.error("RedisDepartmentRepository.transferEmployees():", err);
-      throw new RepositoryException(
-        `Failed to transfer employees, sourceDepartmentId[${sourceDepartmentId}] targetDepartmentId[${targetDepartmentId}]`,
-        { cause: err, operation: 'transferEmployees' }
-      );
-    }
-  }
+
   /**
    * Scans every `employee:*` record and returns the ones
    * that currently belong to the given department, paired with their Redis keys

@@ -51,6 +51,7 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
     }
     console.log("MySqlDepartmentRepository.createDepartment(): department id[%d]", department.id);
   }
+  
   /**
    * Retrieves all departments.
    * 
@@ -82,6 +83,7 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
       );
     }
   }
+
   /**
    * Retrieves a department by its ID.
    * 
@@ -112,6 +114,7 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
       );
     }
   }
+
   /**
    * Updates an existing department.
    * 
@@ -154,6 +157,7 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
     }
     console.log("MySqlDepartmentRepository.updateDepartment(): department id[%d]", department.id);
   }
+
   /**
    * Updates an employee in the department.
    * 
@@ -187,6 +191,7 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
       connection.release();
     }
   }
+
   /**
    * Deletes a department by its ID.
    * 
@@ -211,36 +216,5 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
       connection.release();
     }
     console.log("MySqlDepartmentRepository.deleteDepartment(): department id[%d]", id);
-  }
-  /**
-   * Transfers employees from a source department to a target department.
-   * 
-   * @param sourceDepartmentId - The ID of the source department.
-   * @param targetDepartmentId - The ID of the target department.
-   * @param employeeIds - An array of IDs representing the employees to be transferred.
-   * @returns A promise that resolves when the transfer is complete.
-   */
-  async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]): Promise<void> {
-    const pool = await poolPromise;
-    const connection = await pool.getConnection();
-    try {
-      await connection.beginTransaction();
-      await connection.query(constants.CALL_TRANSFER_EMPLOYEES_SQL,
-        [sourceDepartmentId, targetDepartmentId, employeeIds.join(',')]
-      );
-      await connection.commit();
-    } catch (err) {
-      await connection.rollback();
-      console.error("MySqlDepartmentRepository.transferEmployees():", err);
-      throw new RepositoryException(
-        `Failed to transfer employees, sourceDepartmentId[${sourceDepartmentId}] targetDepartmentId[${targetDepartmentId}]`,
-        { cause: err, operation: 'transferEmployees' }
-      );
-    } finally {
-      connection.release();
-    }
-    console.log("MySqlDepartmentRepository.transferEmployees(): " +
-      "source department id[%d], target department id[%d], employees count[%d]",
-      sourceDepartmentId, targetDepartmentId, employeeIds.length);
   }
 }

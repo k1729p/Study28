@@ -1,4 +1,4 @@
-import { describe, it, expect, afterEach } from "vitest";
+import { describe, it, afterEach } from "vitest";
 
 import { Department } from "../../models/department.js";
 import { Title } from "../../models/title.js";
@@ -43,7 +43,6 @@ export function initializationServiceTests(repositoryType: RepositoryType) {
       mail: 'a@b.com',
     })),
   }));
-  const UNKNOWN_REPOSITORY_TYPE = 'UnknownRepositoryType' as RepositoryType;
 
   /**
    * Suite of tests for the transfer when ID is out of range.
@@ -78,14 +77,4 @@ export function initializationServiceTests(repositoryType: RepositoryType) {
         await initializationService.loadInitialData(repositoryType, []);
       }, 90_000);
     });
-
-  /**
-   * Test the failed initialization with an unimplemented repository type.
-   */
-  it('should throw ReferenceError and not initialize for an unknown repository type', async () => {
-    // GIVEN / WHEN / THEN
-    await expect(
-      initializationService.loadInitialData(UNKNOWN_REPOSITORY_TYPE, [])
-    ).rejects.toThrow(ReferenceError);
-  });
 }

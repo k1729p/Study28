@@ -8,7 +8,11 @@ import * as colors from "./../utils/colors.js";
  * This controller class provides methods to manage employees.
  */
 export class EmployeeController {
-  employeeService = new EmployeeService();
+  /**
+   * Constructor.
+   * @param employeeService the employee service
+   */
+  constructor(private employeeService: EmployeeService) { }
   /**
    * Create a new employee.
    * @param req - The request object.
