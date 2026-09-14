@@ -1,3 +1,6 @@
+import { Request, Response, NextFunction } from 'express';
+import { StatusCodes } from 'http-status-codes';
+
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
 import { INITIAL_DATA } from '../../services/services.constants.js';
@@ -48,7 +51,7 @@ export function checkDepartment(expectedDepartment: Department, actualDepartment
     expect(actualDepartment?.image).toBe(expectedDepartment.image) :
     expect(actualDepartment?.image).toBeFalsy();
   const actualEmployees = [...(actualDepartment?.employees ?? [])].sort((a, b) => a.id - b.id);
-  const expectedEmployees = [...(expectedDepartment?.employees ?? [])].sort((a, b) => a.id - b.id);  
+  const expectedEmployees = [...(expectedDepartment?.employees ?? [])].sort((a, b) => a.id - b.id);
   expect(actualEmployees).toHaveLength(expectedEmployees.length);
   for (let i = 0; i < (expectedEmployees.length ?? 0); i++) {
     checkEmployee(expectedEmployees[i], actualEmployees[i]);
@@ -161,4 +164,16 @@ export function checkFailedTransfer(transferredEmployeeIds: number[],
     expect(actualTargetDepartment?.employees.find(emp => emp.id === employeeId)).toBeUndefined();
   });
 }
-
+/**
+ * A minimal replica of the application's global error-handling middleware (see server.ts).
+ * Registered, in controller tests, after the route(s) under test so that an error thrown by a
+ * mocked service - and forwarded via `next(error)` from within the controller - results in the
+ * same response the real Express application would produce.
+ * @param err the error object
+ * @param req the request object
+ * @param res the response object
+ * @param next the next middleware function
+ */
+export function testErrorHandler(err: Error, req: Request, res: Response, next: NextFunction) {
+  res.status(StatusCodes.INTERNAL_SERVER_ERROR).json('Internal Server Error');
+}

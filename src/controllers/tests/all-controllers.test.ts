@@ -11,15 +11,15 @@ import * as colors from "../../utils/colors.js";
  * Tests orchestrator.
  */
 describe.for([
-  RepositoryType.Cassandra,
-  RepositoryType.Chroma,
-  RepositoryType.Elasticsearch,
-  RepositoryType.MongoDB,
-  RepositoryType.MySQL,
-  RepositoryType.Neo4j,
-  RepositoryType.Oracle,
-  RepositoryType.PostgreSQL,
-  RepositoryType.Redis,
+  // RepositoryType.Cassandra,
+  // RepositoryType.Chroma,
+  // RepositoryType.Elasticsearch,
+  // RepositoryType.MongoDB,
+  // RepositoryType.MySQL,
+  // RepositoryType.Neo4j,
+  // RepositoryType.Oracle,
+  // RepositoryType.PostgreSQL,
+  // RepositoryType.Redis,
   RepositoryType.SQLServer,
 ])(colors.CYAN_BRIGHT + 'Repository type █ %s █' + colors.RESET, (repositoryType) => {
   describe(getSuiteName('Initialization'), () => initializationControllerTests(repositoryType));

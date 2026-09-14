@@ -1,6 +1,7 @@
-import { it, beforeAll, expect, vi } from "vitest";
+import { it, beforeAll, beforeEach, expect, vi } from "vitest";
 import request from 'supertest';
 import express from 'express';
+import { StatusCodes } from 'http-status-codes';
 
 import { Department } from "../../models/department.js";
 import { RepositoryType } from '../../repositories/repository-type.js';
@@ -8,7 +9,7 @@ import { DepartmentController } from '../department.controller.js';
 import { DepartmentService } from '../../services/department.service.js';
 
 import { INITIAL_DATA } from '../../services/services.constants.js';
-import { checkDepartment } from './checkers.js';
+import { checkDepartment, checkDepartments, testErrorHandler } from './checkers.js';
 
 /**
  * Unit tests for the {@link DepartmentController}.
@@ -18,6 +19,7 @@ import { checkDepartment } from './checkers.js';
 export function departmentControllerTests(repositoryType: RepositoryType) {
   const TEST_DEPARTMENTS = INITIAL_DATA;
   const TEST_DEPARTMENT = INITIAL_DATA[0];
+  const NOT_EXISTING_DEPARTMENT_ID = Math.max(...INITIAL_DATA.map(dept => dept.id)) + 1;
   const mockDepartmentService: DepartmentService = {
     createDepartment: vi.fn(),
     getDepartments: vi.fn().mockResolvedValue(TEST_DEPARTMENTS),
@@ -30,9 +32,11 @@ export function departmentControllerTests(repositoryType: RepositoryType) {
   const DEPARTMENT_BY_ID_URI = '/departments/:id';
 
   /**
-   * Sets up the testing module for the DepartmentController.
+   * Clears the call history of every mocked method before each test, while keeping
+   * the default resolved values (configured above) intact for the following test.
    */
-  beforeAll(async () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
   });
 
   /**
@@ -41,8 +45,17 @@ export function departmentControllerTests(repositoryType: RepositoryType) {
    */
   it('should get departments', async () => {
     // GIVEN
+    const application = express();
+    application.get(DEPARTMENTS_URI, departmentController.getDepartments);
     // WHEN
+    const response = await request(application)
+      .get(DEPARTMENTS_URI).query({ repositoryType: repositoryType });
     // THEN
+    expect(response.status).toBe(StatusCodes.OK);
+    const actualDepartments = response.body as Department[];
+    checkDepartments(TEST_DEPARTMENTS, actualDepartments);
+    expect(mockDepartmentService.getDepartments).toHaveBeenCalledOnce();
+    expect(mockDepartmentService.getDepartments).toHaveBeenCalledWith(repositoryType);
   });
 
   /**
@@ -57,7 +70,7 @@ export function departmentControllerTests(repositoryType: RepositoryType) {
     const response = await request(application)
       .get(DEPARTMENTS_URI + TEST_DEPARTMENT.id).query({ repositoryType: repositoryType });
     // THEN
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(StatusCodes.OK);
     const actualDepartment = response.body as Department;
     checkDepartment(TEST_DEPARTMENT, actualDepartment);
     expect(mockDepartmentService.getDepartment).toHaveBeenCalledOnce();
@@ -72,8 +85,18 @@ export function departmentControllerTests(repositoryType: RepositoryType) {
    */
   it('should create a department', async () => {
     // GIVEN
+    const application = express();
+    application.use(express.json());
+    application.post(DEPARTMENTS_URI, departmentController.createDepartment);
     // WHEN
+    const response = await request(application)
+      .post(DEPARTMENTS_URI).query({ repositoryType: repositoryType }).send(TEST_DEPARTMENT);
     // THEN
+    expect(response.status).toBe(StatusCodes.CREATED);
+    expect(mockDepartmentService.createDepartment).toHaveBeenCalledOnce();
+    const [actualRepositoryType, actualDepartment] = vi.mocked(mockDepartmentService.createDepartment).mock.calls[0];
+    expect(actualRepositoryType).toBe(repositoryType);
+    checkDepartment(TEST_DEPARTMENT, actualDepartment);
   });
 
   /**
@@ -83,8 +106,19 @@ export function departmentControllerTests(repositoryType: RepositoryType) {
    */
   it('should update an existing department', async () => {
     // GIVEN
+    const application = express();
+    application.use(express.json());
+    application.patch(DEPARTMENT_BY_ID_URI, departmentController.updateDepartment);
+    const expectedDepartment: Department = { ...TEST_DEPARTMENT, name: 'Updated Department Name' };
     // WHEN
+    const response = await request(application)
+      .patch(DEPARTMENTS_URI + TEST_DEPARTMENT.id).query({ repositoryType: repositoryType }).send(expectedDepartment);
     // THEN
+    expect(response.status).toBe(StatusCodes.NO_CONTENT);
+    expect(mockDepartmentService.updateDepartment).toHaveBeenCalledOnce();
+    const [actualRepositoryType, actualDepartment] = vi.mocked(mockDepartmentService.updateDepartment).mock.calls[0];
+    expect(actualRepositoryType).toBe(repositoryType);
+    checkDepartment(expectedDepartment, actualDepartment);
   });
 
   /**
@@ -95,8 +129,15 @@ export function departmentControllerTests(repositoryType: RepositoryType) {
    */
   it('should delete a department', async () => {
     // GIVEN
+    const application = express();
+    application.delete(DEPARTMENT_BY_ID_URI, departmentController.deleteDepartment);
     // WHEN
+    const response = await request(application)
+      .delete(DEPARTMENTS_URI + TEST_DEPARTMENT.id).query({ repositoryType: repositoryType });
     // THEN
+    expect(response.status).toBe(StatusCodes.NO_CONTENT);
+    expect(mockDepartmentService.deleteDepartment).toHaveBeenCalledOnce();
+    expect(mockDepartmentService.deleteDepartment).toHaveBeenCalledWith(repositoryType, TEST_DEPARTMENT.id);
   });
 
   /**
@@ -104,17 +145,32 @@ export function departmentControllerTests(repositoryType: RepositoryType) {
    */
   it('should not get a department that does not exist', async () => {
     // GIVEN
+    const application = express();
+    application.get(DEPARTMENT_BY_ID_URI, departmentController.getDepartmentById);
+    vi.mocked(mockDepartmentService.getDepartment).mockResolvedValueOnce(undefined);
     // WHEN
+    const response = await request(application)
+      .get(DEPARTMENTS_URI + NOT_EXISTING_DEPARTMENT_ID).query({ repositoryType: repositoryType });
     // THEN
+    expect(response.status).toBe(StatusCodes.NOT_FOUND);
+    expect(mockDepartmentService.getDepartment).toHaveBeenCalledWith(repositoryType, NOT_EXISTING_DEPARTMENT_ID);
   });
 
   /**
    * Tests the failed deletion of a department by its ID.
+   * The controller delegates the deletion to the service regardless of whether the department
+   * actually exists; it is the service's responsibility to no-op silently in that case.
    */
   it('should not delete a department that does not exist', async () => {
     // GIVEN
+    const application = express();
+    application.delete(DEPARTMENT_BY_ID_URI, departmentController.deleteDepartment);
     // WHEN
+    const response = await request(application)
+      .delete(DEPARTMENTS_URI + NOT_EXISTING_DEPARTMENT_ID).query({ repositoryType: repositoryType });
     // THEN
+    expect(response.status).toBe(StatusCodes.NO_CONTENT);
+    expect(mockDepartmentService.deleteDepartment).toHaveBeenCalledWith(repositoryType, NOT_EXISTING_DEPARTMENT_ID);
   });
 
   /**
@@ -127,8 +183,22 @@ export function departmentControllerTests(repositoryType: RepositoryType) {
       name: 'D',
       employees: [],
     };
+    const application = express();
+    application.use(express.json());
+    application.post(DEPARTMENTS_URI, departmentController.createDepartment);
+    application.get(DEPARTMENT_BY_ID_URI, departmentController.getDepartmentById);
+    vi.mocked(mockDepartmentService.getDepartment).mockResolvedValueOnce(expectedDepartment);
     // WHEN
+    const createResponse = await request(application)
+      .post(DEPARTMENTS_URI).query({ repositoryType: repositoryType }).send(expectedDepartment);
+    const getResponse = await request(application)
+      .get(DEPARTMENTS_URI + expectedDepartment.id).query({ repositoryType: repositoryType });
     // THEN
+    expect(createResponse.status).toBe(StatusCodes.CREATED);
+    const [, actualCreatedDepartment] = vi.mocked(mockDepartmentService.createDepartment).mock.calls[0];
+    checkDepartment(expectedDepartment, actualCreatedDepartment);
+    expect(getResponse.status).toBe(StatusCodes.OK);
+    checkDepartment(expectedDepartment, getResponse.body as Department);
   });
 
   /**
@@ -146,7 +216,38 @@ export function departmentControllerTests(repositoryType: RepositoryType) {
       endDate: new Date('2999-12-31T23:59:59.000Z'),
       image: 'images/' + 'x'.repeat(200) + '.jpg',
     };
+    const application = express();
+    application.use(express.json());
+    application.post(DEPARTMENTS_URI, departmentController.createDepartment);
+    application.get(DEPARTMENT_BY_ID_URI, departmentController.getDepartmentById);
+    vi.mocked(mockDepartmentService.getDepartment).mockResolvedValueOnce(expectedDepartment);
     // WHEN
+    const createResponse = await request(application)
+      .post(DEPARTMENTS_URI).query({ repositoryType: repositoryType }).send(expectedDepartment);
+    const getResponse = await request(application)
+      .get(DEPARTMENTS_URI + expectedDepartment.id).query({ repositoryType: repositoryType });
     // THEN
+    expect(createResponse.status).toBe(StatusCodes.CREATED);
+    const [, actualCreatedDepartment] = vi.mocked(mockDepartmentService.createDepartment).mock.calls[0];
+    checkDepartment(expectedDepartment, actualCreatedDepartment);
+    expect(getResponse.status).toBe(StatusCodes.OK);
+    checkDepartment(expectedDepartment, getResponse.body as Department);
+  });
+
+  /**
+   * Tests that an error thrown by the service is forwarded to the error handling middleware,
+   * i.e. that the controller's try/catch blocks call `next(error)` correctly.
+   */
+  it('should forward the error to the error handling middleware when the service call fails', async () => {
+    // GIVEN
+    const application = express();
+    application.get(DEPARTMENT_BY_ID_URI, departmentController.getDepartmentById);
+    application.use(testErrorHandler);
+    vi.mocked(mockDepartmentService.getDepartment).mockRejectedValueOnce(new Error('database is unavailable'));
+    // WHEN
+    const response = await request(application)
+      .get(DEPARTMENTS_URI + TEST_DEPARTMENT.id).query({ repositoryType: repositoryType });
+    // THEN
+    expect(response.status).toBe(StatusCodes.INTERNAL_SERVER_ERROR);
   });
 }
