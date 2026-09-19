@@ -5,6 +5,7 @@ import { Initialization } from "../initialization.js";
 import { clientPromise } from "./elasticsearch.pool.js";
 import { departmentToDocument, employeeToDocument } from "./elasticsearch.mappers.js";
 import { RepositoryException } from "../repository-exception.js";
+import { RepositoryLock } from "../repository-lock.js";
 import * as constants from "./elasticsearch.constants.js";
 /**
  * Repository class providing methods to initialize the database and load seed data.
@@ -17,6 +18,7 @@ export class ElasticsearchInitialization implements Initialization {
    * @returns A promise that resolves when data loading is complete.
    */
   async loadInitialData(departments: Department[]) {
+    const releaseRepositoryLock = await repositoryLock.acquireExclusive();
     const client: Client = await clientPromise;
     try {
       await client.indices.delete({
@@ -38,6 +40,8 @@ export class ElasticsearchInitialization implements Initialization {
         `Failed to load initial data, departments count[${departments.length}]`,
         { cause: err, operation: 'loadInitialData' }
       );
+    } finally {
+      releaseRepositoryLock();
     }
     console.log("ElasticsearchInitialization.loadInitialData(): data loaded successfully");
   }
@@ -85,3 +89,7 @@ export class ElasticsearchInitialization implements Initialization {
     console.log("ElasticsearchInitialization.insertEmployees(): employees count[%d]", employees.length);
   }
 }
+/**
+ * The database lock.
+ */
+export const repositoryLock = new RepositoryLock();

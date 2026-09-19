@@ -1,5 +1,6 @@
 import { Employee } from "../../models/employee.js";
 import { clientPromise } from "./cassandra.pool.js";
+import { repositoryLock } from "./cassandra.initialization.js";
 import { parametersForEmployee } from "./cassandra.mappers.js";
 import { EmployeeRepository } from "../employee.repository.js";
 import { RepositoryException } from "../repository-exception.js";
@@ -17,6 +18,7 @@ export class CassandraEmployeeRepository implements EmployeeRepository {
    * @returns A promise that resolves when the employee is created.
    */
   async createEmployee(employee: Employee): Promise<void> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     try {
       const client = await clientPromise;
       await client.execute(constants.INSERT_EMPLOYEE_CQL,
@@ -27,6 +29,8 @@ export class CassandraEmployeeRepository implements EmployeeRepository {
         `Failed to create employee, employee id[${employee.id}]`,
         { cause: err, operation: 'createEmployee' }
       );
+    } finally {
+      releaseRepositoryLock();
     }
     console.log("CassandraEmployeeRepository.createEmployee(): employee id[%d]", employee.id);
   }
@@ -36,6 +40,7 @@ export class CassandraEmployeeRepository implements EmployeeRepository {
    * @returns A promise that resolves to an array of Employee objects.
    */
   async getEmployees(): Promise<Employee[]> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     try {
       const client = await clientPromise;
       const resultSet = await client.execute(constants.SELECT_EMPLOYEES_CQL,
@@ -49,6 +54,8 @@ export class CassandraEmployeeRepository implements EmployeeRepository {
         `Failed to get employees`,
         { cause: err, operation: 'getEmployees' }
       );
+    } finally {
+      releaseRepositoryLock();
     }
   }
   /**
@@ -58,6 +65,7 @@ export class CassandraEmployeeRepository implements EmployeeRepository {
    * @returns A promise that resolves to the Employee object if found, otherwise undefined.
    */
   async getEmployee(id: number): Promise<Employee | undefined> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     try {
       const client = await clientPromise;
       const resultSet = await client.execute(constants.SELECT_EMPLOYEE_BY_ID_CQL,
@@ -74,6 +82,8 @@ export class CassandraEmployeeRepository implements EmployeeRepository {
         `Failed to get employee, employee id[${id}]`,
         { cause: err, operation: 'getEmployee' }
       );
+    } finally {
+      releaseRepositoryLock();
     }
   }
   /**
@@ -83,6 +93,7 @@ export class CassandraEmployeeRepository implements EmployeeRepository {
    * @returns A promise that resolves when the update is complete.
    */
   async updateEmployee(employee: Employee): Promise<void> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     try {
       const client = await clientPromise;
       // 'department_id' is part of the primary key (the partition key) of 'employees', and CQL does not allow
@@ -116,6 +127,8 @@ export class CassandraEmployeeRepository implements EmployeeRepository {
         `Failed to update employee, employee id[${employee.id}]`,
         { cause: err, operation: 'updateEmployee' }
       );
+    } finally {
+      releaseRepositoryLock();
     }
     console.log("CassandraEmployeeRepository.updateEmployee(): employee id[%d]", employee.id);
   }
@@ -126,6 +139,7 @@ export class CassandraEmployeeRepository implements EmployeeRepository {
    * @returns A promise that resolves when the employee is deleted.
    */
   async deleteEmployee(id: number): Promise<void> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     try {
       const client = await clientPromise;
       // 'department_id' (the partition key) is required to target the row for deletion, but the caller only supplies
@@ -145,6 +159,8 @@ export class CassandraEmployeeRepository implements EmployeeRepository {
         `Failed to delete employee, employee id[${id}]`,
         { cause: err, operation: 'deleteEmployee' }
       );
+    } finally {
+      releaseRepositoryLock();
     }
     console.log("CassandraEmployeeRepository.deleteEmployee(): employee id[%d]", id);
   }

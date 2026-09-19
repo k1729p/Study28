@@ -3,6 +3,7 @@ import { clientPromise } from "./cassandra.pool.js";
 import { parametersForDepartment, parametersForEmployee } from "./cassandra.mappers.js";
 import { Initialization } from "../initialization.js";
 import { RepositoryException } from "../repository-exception.js";
+import { RepositoryLock } from "../repository-lock.js";
 import * as constants from "./cassandra.constants.js";
 /**
  * Repository class providing methods to initialize the database and load seed data.
@@ -15,6 +16,7 @@ export class CassandraInitialization implements Initialization {
    * @returns A promise that resolves when data loading is complete.
    */
   async loadInitialData(departments: Department[]) {
+    const releaseRepositoryLock = await repositoryLock.acquireExclusive();
     try {
       const client = await clientPromise;
       await client.execute(constants.CREATE_KEYSPACE_CQL);
@@ -36,6 +38,8 @@ export class CassandraInitialization implements Initialization {
         `Failed to load initial data, departments count[${departments.length}]`,
         { cause: err, operation: 'loadInitialData' }
       );
+    } finally {
+      releaseRepositoryLock();
     }
     console.log("CassandraInitialization.loadInitialData(): data loaded successfully");
   }
@@ -73,3 +77,7 @@ export class CassandraInitialization implements Initialization {
     console.log("CassandraInitialization.insertEmployees(): inserted [%d] employees", employees.length);
   }
 }
+/**
+ * The database lock.
+ */
+export const repositoryLock = new RepositoryLock();

@@ -3,6 +3,7 @@ import { errors } from '@elastic/elasticsearch';
 import { Department } from "../../models/department.js";
 import { DepartmentRepository } from "../department.repository.js";
 import { clientPromise } from "./elasticsearch.pool.js";
+import { repositoryLock } from "./elasticsearch.initialization.js";
 import { departmentToDocument, sourceToDepartment, sourceToEmployee } from "./elasticsearch.mappers.js";
 import { RepositoryException } from "../repository-exception.js";
 import * as constants from "./elasticsearch.constants.js";
@@ -18,6 +19,7 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
    * @returns A promise that resolves when the department is created.
    */
   async createDepartment(department: Department): Promise<void> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     const client = await clientPromise;
     try {
       await client.index({
@@ -32,16 +34,19 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
         `Failed to create department, department id[${department.id}]`,
         { cause: err, operation: 'createDepartment' }
       );
+    } finally {
+      releaseRepositoryLock();
     }
     console.log("ElasticsearchDepartmentRepository.createDepartment(): department id[%d]", department.id);
   }
-  
+
   /**
    * Retrieves all departments.
    * 
    * @returns A promise that resolves to an array of Department objects.
    */
   async getDepartments(): Promise<Department[]> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     const client = await clientPromise;
     try {
       const departmentSearchResponse = await client.search({
@@ -73,6 +78,8 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
         `Failed to get departments`,
         { cause: err, operation: 'getDepartments' }
       );
+    } finally {
+      releaseRepositoryLock();
     }
   }
 
@@ -83,6 +90,7 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
    * @returns A promise that resolves to the Department object if found, otherwise undefined.
    */
   async getDepartment(id: number): Promise<Department | undefined> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     const client = await clientPromise;
     try {
       const departmentGetResponse = await client.get(
@@ -116,6 +124,8 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
         `Failed to get department, department id[${id}]`,
         { cause: err, operation: 'getDepartment' }
       );
+    } finally {
+      releaseRepositoryLock();
     }
   }
 
@@ -128,6 +138,7 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
    * @returns A promise that resolves when the update is complete.
    */
   async updateDepartment(department: Department): Promise<void> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     const client = await clientPromise;
     try {
       await client.update({
@@ -147,6 +158,8 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
         `Failed to update department, department id[${department.id}]`,
         { cause: err, operation: 'updateDepartment' }
       );
+    } finally {
+      releaseRepositoryLock();
     }
     console.log("ElasticsearchDepartmentRepository.updateDepartment(): department id[%d]", department.id);
   }
@@ -158,6 +171,7 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
    * @returns A promise that resolves when the department is deleted.
    */
   async deleteDepartment(id: number): Promise<void> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     const client = await clientPromise;
     try {
       await client.deleteByQuery({
@@ -178,6 +192,8 @@ export class ElasticsearchDepartmentRepository implements DepartmentRepository {
         `Failed to delete department, department id[${id}]`,
         { cause: err, operation: 'deleteDepartment' }
       );
+    } finally {
+      releaseRepositoryLock();
     }
   }
 }

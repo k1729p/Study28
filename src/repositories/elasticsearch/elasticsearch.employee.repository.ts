@@ -3,6 +3,7 @@ import { errors } from '@elastic/elasticsearch';
 import { Employee } from "../../models/employee.js";
 import { EmployeeRepository } from "../employee.repository.js";
 import { clientPromise } from "./elasticsearch.pool.js";
+import { repositoryLock } from "./elasticsearch.initialization.js";
 import { employeeToDocument, sourceToEmployee } from "./elasticsearch.mappers.js";
 import { RepositoryException } from "../repository-exception.js";
 import * as constants from "./elasticsearch.constants.js";
@@ -18,6 +19,7 @@ export class ElasticsearchEmployeeRepository implements EmployeeRepository {
    * @returns A promise that resolves when the employee is created.
    */
   async createEmployee(employee: Employee): Promise<void> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     const client = await clientPromise;
     try {
       await client.index({
@@ -32,6 +34,8 @@ export class ElasticsearchEmployeeRepository implements EmployeeRepository {
         `Failed to create employee, employee id[${employee.id}]`,
         { cause: err, operation: 'createEmployee' }
       );
+    } finally {
+      releaseRepositoryLock();
     }
     console.log("ElasticsearchEmployeeRepository.createEmployee(): employee id[%d]", employee.id);
   }
@@ -41,6 +45,7 @@ export class ElasticsearchEmployeeRepository implements EmployeeRepository {
    * @returns A promise that resolves to an array of Employee objects.
    */
   async getEmployees(): Promise<Employee[]> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     const client = await clientPromise;
     try {
       const searchResponse = await client.search({
@@ -59,6 +64,8 @@ export class ElasticsearchEmployeeRepository implements EmployeeRepository {
         `Failed to get employees`,
         { cause: err, operation: 'getEmployees' }
       );
+    } finally {
+      releaseRepositoryLock();
     }
   }
   /**
@@ -68,6 +75,7 @@ export class ElasticsearchEmployeeRepository implements EmployeeRepository {
    * @returns A promise that resolves to the Employee object if found, otherwise undefined.
    */
   async getEmployee(id: number): Promise<Employee | undefined> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     const client = await clientPromise;
     try {
       const employeeGetResponse = await client.get(
@@ -86,6 +94,8 @@ export class ElasticsearchEmployeeRepository implements EmployeeRepository {
         `Failed to get employee, employee id[${id}]`,
         { cause: err, operation: 'getEmployee' }
       );
+    } finally {
+      releaseRepositoryLock();
     }
   }
   /**
@@ -97,6 +107,7 @@ export class ElasticsearchEmployeeRepository implements EmployeeRepository {
    * @returns A promise that resolves when the update is complete.
    */
   async updateEmployee(employee: Employee): Promise<void> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     const client = await clientPromise;
     try {
       await client.update({
@@ -116,6 +127,8 @@ export class ElasticsearchEmployeeRepository implements EmployeeRepository {
         `Failed to update employee, employee id[${employee.id}]`,
         { cause: err, operation: 'updateEmployee' }
       );
+    } finally {
+      releaseRepositoryLock();
     }
     console.log("ElasticsearchEmployeeRepository.updateEmployee(): employee id[%d]", employee.id);
   }
@@ -126,6 +139,7 @@ export class ElasticsearchEmployeeRepository implements EmployeeRepository {
    * @returns A promise that resolves when the employee is deleted.
    */
   async deleteEmployee(id: number): Promise<void> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     const client = await clientPromise;
     try {
       await client.delete(
@@ -138,6 +152,8 @@ export class ElasticsearchEmployeeRepository implements EmployeeRepository {
         `Failed to delete employee, employee id[${id}]`,
         { cause: err, operation: 'deleteEmployee' }
       );
+    } finally {
+      releaseRepositoryLock();
     }
     console.log("ElasticsearchEmployeeRepository.deleteEmployee(): employee id[%d]", id);
   }

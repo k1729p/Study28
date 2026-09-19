@@ -1,5 +1,6 @@
 import { Department } from "../../models/department.js";
 import { clientPromise } from "./cassandra.pool.js";
+import { repositoryLock } from "./cassandra.initialization.js";
 import { parametersForDepartment } from "./cassandra.mappers.js";
 import { DepartmentRepository } from "../department.repository.js";
 import { RepositoryException } from "../repository-exception.js";
@@ -17,6 +18,7 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
    * @returns A promise that resolves when the department is created.
    */
   async createDepartment(department: Department): Promise<void> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     try {
       const client = await clientPromise;
       await client.execute(constants.INSERT_DEPARTMENT_CQL,
@@ -27,6 +29,8 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
         `Failed to create department, department id[${department.id}]`,
         { cause: err, operation: 'createDepartment' }
       );
+    } finally {
+      releaseRepositoryLock();
     }
     console.log("CassandraDepartmentRepository.createDepartment(): department id[%d]", department.id);
   }
@@ -37,6 +41,7 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
    * @returns A promise that resolves to an array of Department objects.
    */
   async getDepartments(): Promise<Department[]> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     try {
       const client = await clientPromise;
       const departmentResultSet = await client.execute(constants.SELECT_DEPARTMENTS_CQL,
@@ -61,6 +66,8 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
         `Failed to get departments`,
         { cause: err, operation: 'getDepartments' }
       );
+    } finally {
+      releaseRepositoryLock();
     }
   }
 
@@ -71,6 +78,7 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
    * @returns A promise that resolves to the Department object if found, otherwise undefined.
    */
   async getDepartment(id: number): Promise<Department | undefined> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     try {
       const client = await clientPromise;
       const departmentResultSet = await client.execute(constants.SELECT_DEPARTMENT_CQL,
@@ -91,6 +99,8 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
         `Failed to get department, department id[${id}]`,
         { cause: err, operation: 'getDepartment' }
       );
+    } finally {
+      releaseRepositoryLock();
     }
   }
 
@@ -101,6 +111,7 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
    * @returns A promise that resolves when the update is complete.
    */
   async updateDepartment(department: Department): Promise<void> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     try {
       const client = await clientPromise;
       const resultSet = await client.execute(constants.UPDATE_DEPARTMENT_CQL,
@@ -116,10 +127,12 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
         `Failed to update department, department id[${department.id}]`,
         { cause: err, operation: 'updateDepartment' }
       );
+    } finally {
+      releaseRepositoryLock();
     }
     console.log("CassandraDepartmentRepository.updateDepartment(): department id[%d]", department.id);
   }
-  
+
   /**
    * Deletes a department by its ID.
    * 
@@ -127,6 +140,7 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
    * @returns A promise that resolves when the department is deleted.
    */
   async deleteDepartment(id: number): Promise<void> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     // Cassandra has no foreign keys and performs no cascading deletes,
     // so the department's employees must be removed explicitly.
     // Deleting the whole 'employees' partition ('WHERE department_id = ?' with no clustering column)
@@ -146,6 +160,8 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
         `Failed to delete department, department id[${id}]`,
         { cause: err, operation: 'deleteDepartment' }
       );
+    } finally {
+      releaseRepositoryLock();
     }
     console.log("CassandraDepartmentRepository.deleteDepartment(): department id[%d]", id);
   }

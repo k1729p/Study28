@@ -1,6 +1,7 @@
 import { Transfer } from "../transfer.js";
 import { RepositoryException } from "../repository-exception.js";
 import { clientPromise } from "./cassandra.pool.js";
+import { repositoryLock } from "./cassandra.initialization.js";
 import * as constants from "./cassandra.constants.js";
 /**
  * Repository class providing methods to transfers employees.
@@ -15,6 +16,7 @@ export class CassandraTransfer implements Transfer {
    * @returns A promise that resolves when the transfer is complete.
    */
   async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]): Promise<void> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     try {
       const client = await clientPromise;
       // Step 1: read the full rows to move. 'department_id' (the partition key) is restricted
@@ -60,6 +62,8 @@ export class CassandraTransfer implements Transfer {
         `Failed to transfer employees, sourceDepartmentId[${sourceDepartmentId}] targetDepartmentId[${targetDepartmentId}]`,
         { cause: err, operation: 'transferEmployees' }
       );
+    } finally {
+      releaseRepositoryLock();
     }
     console.log("CassandraTransfer.transferEmployees(): " +
       "source department id[%d], target department id[%d], employees count[%d]",

@@ -1,6 +1,7 @@
 import { Transfer } from "../transfer.js";
 import { RepositoryException } from "../repository-exception.js";
 import { clientPromise } from "./elasticsearch.pool.js";
+import { repositoryLock } from "./elasticsearch.initialization.js";
 import * as constants from "./elasticsearch.constants.js";
 /**
  * Repository class providing methods to transfers employees.
@@ -21,6 +22,7 @@ export class ElasticsearchTransfer implements Transfer {
    * @returns A promise that resolves when the transfer is complete.
    */
   async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]): Promise<void> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     const client = await clientPromise;
     try {
       await client.updateByQuery({
@@ -50,6 +52,8 @@ export class ElasticsearchTransfer implements Transfer {
         `Failed to transfer employees, sourceDepartmentId[${sourceDepartmentId}] targetDepartmentId[${targetDepartmentId}]`,
         { cause: err, operation: 'transferEmployees' }
       );
+    } finally {
+      releaseRepositoryLock();
     }
   }
 }
