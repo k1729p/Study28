@@ -2,7 +2,7 @@ import { Employee } from "../../models/employee.js";
 import { EmployeeRepository } from "../employee.repository.js";
 import { RepositoryException } from "../repository-exception.js";
 import { poolPromise } from "./postgresql.pool.js";
-import * as mappers from "../mappers.js";
+import * as mappers from "../repository-mappers.js";
 import * as constants from "./postgresql.constants.js";
 /**
  * Repository interface providing methods to manage employees.
@@ -64,7 +64,7 @@ export class PostgreSqlEmployeeRepository implements EmployeeRepository {
     const client = await pool.connect();
     try {
       const queryResult = await client.query(constants.SELECT_EMPLOYEES_SQL);
-      const employees = queryResult.rows.map(row => mappers.mapDatabaseRowToEmployee(row, true));
+      const employees = queryResult.rows.map(row => mappers.mapRowToEmployee(row, true));
       console.log("PostgreSqlDepartmentRepository.getEmployees(): employees count[%d]", employees.length);
       return employees;
     } catch (err) {
@@ -93,7 +93,7 @@ export class PostgreSqlEmployeeRepository implements EmployeeRepository {
         return undefined;
       }
       console.log("PostgreSqlEmployeeRepository.getEmployee(): employee id[%d]", id);
-      return mappers.mapDatabaseRowToEmployee(queryResult.rows[0], true);
+      return mappers.mapRowToEmployee(queryResult.rows[0], true);
     } catch (err) {
       console.error("PostgreSqlEmployeeRepository.getEmployee():", err);
       throw new RepositoryException(

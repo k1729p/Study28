@@ -1,4 +1,4 @@
-import { it, beforeEach, expect, vi } from "vitest";
+import { describe, it, beforeEach, expect, vi } from "vitest";
 import request from 'supertest';
 import express from 'express';
 import { StatusCodes } from 'http-status-codes';
@@ -6,14 +6,20 @@ import { StatusCodes } from 'http-status-codes';
 import { Employee } from "../../models/employee.js";
 import { Title } from "../../models/title.js";
 import { RepositoryType } from '../../repositories/repository-type.js';
-import { EmployeeController } from '../employee.controller.js';
-import { EmployeeService } from '../../services/employee.service.js';
+import { EmployeeController } from '../../controllers/employee.controller.js';
 
-import { INITIAL_DATA } from '../../services/services.constants.js';
-import { checkEmployees, checkEmployee, testErrorHandler } from './checkers.js';
-
-const EMPLOYEES_URI = '/employees/';
-const EMPLOYEE_BY_ID_URI = '/employees/:id';
+import { checkEmployee, checkEmployees } from '../checkers.js';
+import { createMockEmployeeService, testErrorHandler } from '../tests.helpers.js';
+import {
+  EMPLOYEES_URI,
+  EMPLOYEE_BY_ID_URI,
+  TEST_1ST_EMPLOYEE,
+  TEST_EMPLOYEE_CREATED,
+  TEST_EMPLOYEE_UPDATED,
+  TEST_EMPLOYEE_MINIMAL,
+  TEST_EMPLOYEE_MAXIMAL,
+  TEST_EMPLOYEE_ID_NOT_EXISTING
+} from '../tests.constants.js';
 
 /**
  * Unit tests for the {@link EmployeeController}.
@@ -21,18 +27,7 @@ const EMPLOYEE_BY_ID_URI = '/employees/:id';
  * @param repositoryType the repository type
  */
 export function employeeControllerTests(repositoryType: RepositoryType) {
-  const TEST_EMPLOYEES = INITIAL_DATA.flatMap(dept => dept.employees);
-  const TEST_EMPLOYEE = INITIAL_DATA[0].employees[0];
-  const TEST_DEPARTMENT_ID = INITIAL_DATA[0].id;
-  const NOT_EXISTING_EMPLOYEE_ID = Math.max(...TEST_EMPLOYEES.map(emp => emp.id)) + 1;
-
-  const mockEmployeeService: EmployeeService = {
-    createEmployee: vi.fn(),
-    getEmployees: vi.fn().mockResolvedValue(TEST_EMPLOYEES),
-    getEmployee: vi.fn().mockResolvedValue(TEST_EMPLOYEE),
-    updateEmployee: vi.fn(),
-    deleteEmployee: vi.fn(),
-  } as any;
+  const mockEmployeeService = createMockEmployeeService();
   const employeeController = new EmployeeController(mockEmployeeService);
 
   /**
@@ -56,7 +51,8 @@ export function employeeControllerTests(repositoryType: RepositoryType) {
       .get(EMPLOYEES_URI).query({ repositoryType: repositoryType });
     // THEN
     expect(response.status).toBe(StatusCodes.OK);
-    checkEmployees(TEST_EMPLOYEE, response.body as Employee[]);
+    const actualEmployees = response.body as Employee[];
+    checkEmployees(TEST_1ST_EMPLOYEE, actualEmployees);
     expect(mockEmployeeService.getEmployees).toHaveBeenCalledOnce();
     expect(mockEmployeeService.getEmployees).toHaveBeenCalledWith(repositoryType);
   });
@@ -71,12 +67,13 @@ export function employeeControllerTests(repositoryType: RepositoryType) {
     application.get(EMPLOYEE_BY_ID_URI, employeeController.getEmployeeById);
     // WHEN
     const response = await request(application)
-      .get(EMPLOYEES_URI + TEST_EMPLOYEE.id).query({ repositoryType: repositoryType });
+      .get(EMPLOYEES_URI + TEST_1ST_EMPLOYEE.id).query({ repositoryType: repositoryType });
     // THEN
     expect(response.status).toBe(StatusCodes.OK);
-    checkEmployee(TEST_EMPLOYEE, response.body as Employee);
+    const actualEmployee = response.body as Employee;
+    checkEmployee(TEST_1ST_EMPLOYEE, actualEmployee);
     expect(mockEmployeeService.getEmployee).toHaveBeenCalledOnce();
-    expect(mockEmployeeService.getEmployee).toHaveBeenCalledWith(repositoryType, TEST_EMPLOYEE.id);
+    expect(mockEmployeeService.getEmployee).toHaveBeenCalledWith(repositoryType, TEST_1ST_EMPLOYEE.id);
   });
 
   /**
@@ -88,15 +85,16 @@ export function employeeControllerTests(repositoryType: RepositoryType) {
     const application = express();
     application.use(express.json());
     application.post(EMPLOYEES_URI, employeeController.createEmployee);
+    const expectedEmployee = TEST_EMPLOYEE_CREATED;
     // WHEN
     const response = await request(application)
-      .post(EMPLOYEES_URI).query({ repositoryType: repositoryType }).send(TEST_EMPLOYEE);
+      .post(EMPLOYEES_URI).query({ repositoryType: repositoryType }).send(expectedEmployee);
     // THEN
     expect(response.status).toBe(StatusCodes.CREATED);
     expect(mockEmployeeService.createEmployee).toHaveBeenCalledOnce();
     const [actualRepositoryType, actualEmployee] = vi.mocked(mockEmployeeService.createEmployee).mock.calls[0];
     expect(actualRepositoryType).toBe(repositoryType);
-    checkEmployee(TEST_EMPLOYEE, actualEmployee);
+    checkEmployee(expectedEmployee, actualEmployee);
   });
 
   /**
@@ -108,14 +106,10 @@ export function employeeControllerTests(repositoryType: RepositoryType) {
     const application = express();
     application.use(express.json());
     application.patch(EMPLOYEE_BY_ID_URI, employeeController.updateEmployee);
-    const expectedEmployee: Employee = {
-      ...TEST_EMPLOYEE,
-      firstName: 'Updated Employee First Name',
-      lastName: 'Updated Employee Last Name',
-    };
+    const expectedEmployee = TEST_EMPLOYEE_UPDATED;
     // WHEN
     const response = await request(application)
-      .patch(EMPLOYEES_URI + TEST_EMPLOYEE.id).query({ repositoryType: repositoryType }).send(expectedEmployee);
+      .patch(EMPLOYEES_URI + TEST_EMPLOYEE_UPDATED.id).query({ repositoryType: repositoryType }).send(expectedEmployee);
     // THEN
     expect(response.status).toBe(StatusCodes.NO_CONTENT);
     expect(mockEmployeeService.updateEmployee).toHaveBeenCalledOnce();
@@ -132,13 +126,14 @@ export function employeeControllerTests(repositoryType: RepositoryType) {
     // GIVEN
     const application = express();
     application.delete(EMPLOYEE_BY_ID_URI, employeeController.deleteEmployee);
+    const expectedEmployee = TEST_EMPLOYEE_CREATED;
     // WHEN
     const response = await request(application)
-      .delete(EMPLOYEES_URI + TEST_EMPLOYEE.id).query({ repositoryType: repositoryType });
+      .delete(EMPLOYEES_URI + expectedEmployee.id).query({ repositoryType: repositoryType });
     // THEN
     expect(response.status).toBe(StatusCodes.NO_CONTENT);
     expect(mockEmployeeService.deleteEmployee).toHaveBeenCalledOnce();
-    expect(mockEmployeeService.deleteEmployee).toHaveBeenCalledWith(repositoryType, TEST_EMPLOYEE.id);
+    expect(mockEmployeeService.deleteEmployee).toHaveBeenCalledWith(repositoryType, expectedEmployee.id);
   });
 
   /**
@@ -151,10 +146,10 @@ export function employeeControllerTests(repositoryType: RepositoryType) {
     vi.mocked(mockEmployeeService.getEmployee).mockResolvedValueOnce(undefined);
     // WHEN
     const response = await request(application)
-      .get(EMPLOYEES_URI + NOT_EXISTING_EMPLOYEE_ID).query({ repositoryType: repositoryType });
+      .get(EMPLOYEES_URI + TEST_EMPLOYEE_ID_NOT_EXISTING).query({ repositoryType: repositoryType });
     // THEN
     expect(response.status).toBe(StatusCodes.NOT_FOUND);
-    expect(mockEmployeeService.getEmployee).toHaveBeenCalledWith(repositoryType, NOT_EXISTING_EMPLOYEE_ID);
+    expect(mockEmployeeService.getEmployee).toHaveBeenCalledWith(repositoryType, TEST_EMPLOYEE_ID_NOT_EXISTING);
   });
 
   /**
@@ -168,80 +163,44 @@ export function employeeControllerTests(repositoryType: RepositoryType) {
     application.delete(EMPLOYEE_BY_ID_URI, employeeController.deleteEmployee);
     // WHEN
     const response = await request(application)
-      .delete(EMPLOYEES_URI + NOT_EXISTING_EMPLOYEE_ID).query({ repositoryType: repositoryType });
+      .delete(EMPLOYEES_URI + TEST_EMPLOYEE_ID_NOT_EXISTING).query({ repositoryType: repositoryType });
     // THEN
     expect(response.status).toBe(StatusCodes.NO_CONTENT);
-    expect(mockEmployeeService.deleteEmployee).toHaveBeenCalledWith(repositoryType, NOT_EXISTING_EMPLOYEE_ID);
+    expect(mockEmployeeService.deleteEmployee).toHaveBeenCalledWith(repositoryType, TEST_EMPLOYEE_ID_NOT_EXISTING);
   });
 
   /**
-   * Tests the creation of an employee with only mandatory fields.
+   * Suite of tests for the minimal and maximal employee data.
    */
-  it('should create and retrieve an employee with only mandatory fields', async () => {
-    // GIVEN
-    const expectedEmployee: Employee = {
-      id: 5432103,
-      departmentId: TEST_DEPARTMENT_ID,
-      firstName: 'FN',
-      lastName: 'LN',
-      title: Title.Analyst,
-      phone: '+1 000-000-0000',
-      mail: 'a@b.com',
-    };
-    const application = express();
-    application.use(express.json());
-    application.post(EMPLOYEES_URI, employeeController.createEmployee);
-    application.get(EMPLOYEE_BY_ID_URI, employeeController.getEmployeeById);
-    vi.mocked(mockEmployeeService.getEmployee).mockResolvedValueOnce(expectedEmployee);
-    // WHEN
-    const createResponse = await request(application)
-      .post(EMPLOYEES_URI).query({ repositoryType: repositoryType }).send(expectedEmployee);
-    const getResponse = await request(application)
-      .get(EMPLOYEES_URI + expectedEmployee.id).query({ repositoryType: repositoryType });
-    // THEN
-    expect(createResponse.status).toBe(StatusCodes.CREATED);
-    const [, actualCreatedEmployee] = vi.mocked(mockEmployeeService.createEmployee).mock.calls[0];
-    checkEmployee(expectedEmployee, actualCreatedEmployee);
-    expect(getResponse.status).toBe(StatusCodes.OK);
-    checkEmployee(expectedEmployee, getResponse.body as Employee);
-  });
+  describe.for([
+    ['only mandatory fields', TEST_EMPLOYEE_MINIMAL],
+    ['maximal values in fields', TEST_EMPLOYEE_MAXIMAL]
+  ])('tests for creation and retrieval with %s', ([info, testEmployee]) => {
+    /**
+     * Tests the creation and retrieval of an employee.
+     */
+    it('should create and retrieve an employee', async () => {
+      // GIVEN
+      const expectedEmployee = testEmployee as Employee;
+      const application = express();
+      application.use(express.json());
+      application.post(EMPLOYEES_URI, employeeController.createEmployee);
+      application.get(EMPLOYEE_BY_ID_URI, employeeController.getEmployeeById);
+      vi.mocked(mockEmployeeService.getEmployee).mockResolvedValueOnce(expectedEmployee);
+      // WHEN
+      const createResponse = await request(application)
+        .post(EMPLOYEES_URI).query({ repositoryType: repositoryType }).send(expectedEmployee);
+      const getResponse = await request(application)
+        .get(EMPLOYEES_URI + expectedEmployee.id).query({ repositoryType: repositoryType });
+      // THEN
+      expect(createResponse.status).toBe(StatusCodes.CREATED);
+      const [, actualCreatedEmployee] = vi.mocked(mockEmployeeService.createEmployee).mock.calls[0];
+      checkEmployee(expectedEmployee, actualCreatedEmployee);
 
-  /**
-   * Tests the creation of an employee with maximal / edge-case values in fields.
-   */
-  it('should create and retrieve an employee with maximal / edge-case field values', async () => {
-    // GIVEN
-    const expectedEmployee: Employee = {
-      id: 5432104,
-      departmentId: TEST_DEPARTMENT_ID,
-      firstName: 'FN-ab12-'.repeat(5),
-      lastName: 'LN-ab12-'.repeat(5),
-      title: Title.Developer,
-      phone: '+00 (000) 000-00-00 ext.99999',
-      mail: 'a'.repeat(35) + '@' + 'b'.repeat(40) + '.com',
-      streetName: 'ST-ab12-'.repeat(10),
-      houseNumber: '012345-ABC'.repeat(2),
-      postalCode: '0-123-456-'.repeat(2),
-      locality: 'City/With Special-Chars & Ünïcödé 12',
-      province: 'Province/With Spec-Chars & Ünïcödé 1',
-      country: 'Country/With Spec-Chars & Ünïcödé 12',
-    };
-    const application = express();
-    application.use(express.json());
-    application.post(EMPLOYEES_URI, employeeController.createEmployee);
-    application.get(EMPLOYEE_BY_ID_URI, employeeController.getEmployeeById);
-    vi.mocked(mockEmployeeService.getEmployee).mockResolvedValueOnce(expectedEmployee);
-    // WHEN
-    const createResponse = await request(application)
-      .post(EMPLOYEES_URI).query({ repositoryType: repositoryType }).send(expectedEmployee);
-    const getResponse = await request(application)
-      .get(EMPLOYEES_URI + expectedEmployee.id).query({ repositoryType: repositoryType });
-    // THEN
-    expect(createResponse.status).toBe(StatusCodes.CREATED);
-    const [, actualCreatedEmployee] = vi.mocked(mockEmployeeService.createEmployee).mock.calls[0];
-    checkEmployee(expectedEmployee, actualCreatedEmployee);
-    expect(getResponse.status).toBe(StatusCodes.OK);
-    checkEmployee(expectedEmployee, getResponse.body as Employee);
+      expect(getResponse.status).toBe(StatusCodes.OK);
+      const actualRetrievedEmployee = getResponse.body as Employee;
+      checkEmployee(expectedEmployee, actualRetrievedEmployee);
+    });
   });
 
   /**
@@ -251,13 +210,8 @@ export function employeeControllerTests(repositoryType: RepositoryType) {
   it.each(Object.values(Title))('should create and retrieve an employee with title[%s]', async (titleValue) => {
     // GIVEN
     const expectedEmployee: Employee = {
-      id: 5432100 + Object.values(Title).indexOf(titleValue),
-      departmentId: TEST_DEPARTMENT_ID,
-      firstName: 'FN',
-      lastName: 'LN',
-      title: titleValue,
-      phone: '+1 000-000-0000',
-      mail: 'a@b.com',
+      ...TEST_EMPLOYEE_CREATED,
+      title: titleValue
     };
     const application = express();
     application.use(express.json());
@@ -273,8 +227,10 @@ export function employeeControllerTests(repositoryType: RepositoryType) {
     expect(createResponse.status).toBe(StatusCodes.CREATED);
     const [, actualCreatedEmployee] = vi.mocked(mockEmployeeService.createEmployee).mock.calls[0];
     expect(actualCreatedEmployee.title).toBe(titleValue);
+
     expect(getResponse.status).toBe(StatusCodes.OK);
-    expect((getResponse.body as Employee).title).toBe(titleValue);
+    const actualRetrievedEmployee = getResponse.body as Employee;
+    expect(actualRetrievedEmployee.title).toBe(titleValue);
   });
 
   /**
@@ -289,7 +245,7 @@ export function employeeControllerTests(repositoryType: RepositoryType) {
     vi.mocked(mockEmployeeService.getEmployee).mockRejectedValueOnce(new Error('database is unavailable'));
     // WHEN
     const response = await request(application)
-      .get(EMPLOYEES_URI + TEST_EMPLOYEE.id).query({ repositoryType: repositoryType });
+      .get(EMPLOYEES_URI + TEST_1ST_EMPLOYEE.id).query({ repositoryType: repositoryType });
     // THEN
     expect(response.status).toBe(StatusCodes.INTERNAL_SERVER_ERROR);
   });

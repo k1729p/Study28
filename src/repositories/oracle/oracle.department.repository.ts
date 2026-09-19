@@ -3,8 +3,9 @@ import { Employee } from "../../models/employee.js";
 import { DepartmentRepository } from "../department.repository.js";
 import { RepositoryException } from "../repository-exception.js";
 import { poolPromise } from "./oracle.pool.js";
+import { repositoryLock } from "./oracle.initialization.js";
 import { parametersForDepartment } from "./oracle.mappers.js";
-import * as mappers from "../mappers.js";
+import * as mappers from "../repository-mappers.js";
 import * as constants from "./oracle.constants.js";
 /**
  * Repository class providing methods to manage departments.
@@ -18,6 +19,7 @@ export class OracleDepartmentRepository implements DepartmentRepository {
    * @returns A promise that resolves when the department is created.
    */
   async createDepartment(department: Department): Promise<void> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     const pool = await poolPromise;
     const connection = await pool.getConnection();
     try {
@@ -34,6 +36,7 @@ export class OracleDepartmentRepository implements DepartmentRepository {
       } catch (err) {
         console.error("OracleDepartmentRepository.createDepartment(): error closing connection", err);
       }
+      releaseRepositoryLock();
     }
     console.log("OracleDepartmentRepository.createDepartment(): department id[%s]", department.id);
   }
@@ -44,6 +47,7 @@ export class OracleDepartmentRepository implements DepartmentRepository {
    * @returns A promise that resolves to an array of Department objects.
    */
   async getDepartments(): Promise<Department[]> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     const pool = await poolPromise;
     const connection = await pool.getConnection();
     try {
@@ -53,11 +57,11 @@ export class OracleDepartmentRepository implements DepartmentRepository {
       for (const row of rows) {
         let department = departmentMap.get(row.id);
         if (!department) {
-          department = mappers.mapDatabaseRowToDepartment(row);
+          department = mappers.mapRowToDepartment(row);
           departmentMap.set(row.id, department);
         }
         if (row.employee_id) {
-          department.employees.push(mappers.mapDatabaseRowToEmployee(row, false));
+          department.employees.push(mappers.mapRowToEmployee(row, false));
         }
       }
       const departments = Array.from(departmentMap.values());
@@ -75,6 +79,7 @@ export class OracleDepartmentRepository implements DepartmentRepository {
       } catch (err) {
         console.error("OracleDepartmentRepository.getDepartments(): error closing connection", err);
       }
+      releaseRepositoryLock();
     }
   }
 
@@ -85,6 +90,7 @@ export class OracleDepartmentRepository implements DepartmentRepository {
    * @returns A promise that resolves to the Department object if found, otherwise undefined.
    */
   async getDepartment(id: number): Promise<Department | undefined> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     const pool = await poolPromise;
     const connection = await pool.getConnection();
     try {
@@ -94,10 +100,10 @@ export class OracleDepartmentRepository implements DepartmentRepository {
         console.log("OracleDepartmentRepository.getDepartment(): department not found, department id[%d]", id);
         return undefined;
       }
-      const department = mappers.mapDatabaseRowToDepartment(rows[0]);
+      const department = mappers.mapRowToDepartment(rows[0]);
       for (const row of rows) {
         if (row.employee_id) {
-          department.employees.push(mappers.mapDatabaseRowToEmployee(row, false));
+          department.employees.push(mappers.mapRowToEmployee(row, false));
         }
       }
       console.log("OracleDepartmentRepository.getDepartment(): department id[%d]", id);
@@ -114,6 +120,7 @@ export class OracleDepartmentRepository implements DepartmentRepository {
       } catch (err) {
         console.error("OracleDepartmentRepository.getDepartment(): error closing connection", err);
       }
+      releaseRepositoryLock();
     }
   }
 
@@ -124,6 +131,7 @@ export class OracleDepartmentRepository implements DepartmentRepository {
    * @returns A promise that resolves when the update is complete.
    */
   async updateDepartment(department: Department): Promise<void> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     const pool = await poolPromise;
     const connection = await pool.getConnection();
     try {
@@ -148,6 +156,7 @@ export class OracleDepartmentRepository implements DepartmentRepository {
       } catch (err) {
         console.error("OracleDepartmentRepository.updateDepartment(): error closing connection", err);
       }
+      releaseRepositoryLock();
     }
     for (const employee of department.employees) {
       await this.updateEmployeeInDepartment(employee);
@@ -162,6 +171,7 @@ export class OracleDepartmentRepository implements DepartmentRepository {
    * @returns void
    */
   private async updateEmployeeInDepartment(employee: Employee): Promise<void> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     const pool = await poolPromise;
     const connection = await pool.getConnection();
     try {
@@ -189,6 +199,7 @@ export class OracleDepartmentRepository implements DepartmentRepository {
       } catch (err) {
         console.error("OracleDepartmentRepository.updateEmployeeInDepartment(): error closing connection", err);
       }
+      releaseRepositoryLock();
     }
   }
 
@@ -202,6 +213,7 @@ export class OracleDepartmentRepository implements DepartmentRepository {
    * @returns A promise that resolves when the department is deleted.
    */
   async deleteDepartment(id: number): Promise<void> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     const pool = await poolPromise;
     const connection = await pool.getConnection();
     try {
@@ -219,6 +231,7 @@ export class OracleDepartmentRepository implements DepartmentRepository {
       } catch (err) {
         console.error("OracleDepartmentRepository.deleteDepartment(): error closing connection", err);
       }
+      releaseRepositoryLock();
     }
     console.log("OracleDepartmentRepository.deleteDepartment(): department id[%d]", id);
   }

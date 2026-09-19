@@ -1,6 +1,6 @@
-import { Department } from "../../models/department.js";
-import { Employee } from "../../models/employee.js";
-import { INITIAL_DATA } from '../services.constants.js';
+import { Department } from "../models/department.js";
+import { Employee } from "../models/employee.js";
+import { INITIAL_DATA } from '../services/services.constants.js';
 import { expect, assert } from "vitest";
 
 /**
@@ -57,7 +57,7 @@ export function checkDepartment(expectedDepartment: Department, actualDepartment
     expect(actualDepartment?.image).toBe(expectedDepartment.image) :
     expect(actualDepartment?.image).toBeFalsy();
   const actualEmployees = [...(actualDepartment?.employees ?? [])].sort((a, b) => a.id - b.id);
-  const expectedEmployees = [...(expectedDepartment?.employees ?? [])].sort((a, b) => a.id - b.id);  
+  const expectedEmployees = [...(expectedDepartment?.employees ?? [])].sort((a, b) => a.id - b.id);
   expect(actualEmployees).toHaveLength(expectedEmployees.length);
   for (let i = 0; i < (expectedEmployees.length ?? 0); i++) {
     checkEmployee(expectedEmployees[i], actualEmployees[i]);

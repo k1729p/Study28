@@ -3,7 +3,7 @@ import { clientPromise } from "./cassandra.pool.js";
 import { parametersForDepartment } from "./cassandra.mappers.js";
 import { DepartmentRepository } from "../department.repository.js";
 import { RepositoryException } from "../repository-exception.js";
-import * as mappers from "../mappers.js";
+import * as mappers from "../repository-mappers.js";
 import * as constants from "./cassandra.constants.js";
 /**
  * Repository class providing methods to manage departments.
@@ -43,14 +43,14 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
         [], { prepare: true });
       const departmentMap = new Map<number, Department>();
       for (const row of departmentResultSet.rows) {
-        departmentMap.set(row.id, mappers.mapDatabaseRowToDepartment(row));
+        departmentMap.set(row.id, mappers.mapRowToDepartment(row));
       }
       const employeeResultSet = await client.execute(constants.SELECT_EMPLOYEES_CQL,
         [], { prepare: true });
       for (const row of employeeResultSet.rows) {
         const department = departmentMap.get(row.department_id);
         if (department) {
-          department.employees.push(mappers.mapDatabaseRowToEmployee(row, true));
+          department.employees.push(mappers.mapRowToEmployee(row, true));
         }
       }
       console.log("CassandraDepartmentRepository.getDepartments(): departments count[%d]", departmentMap.size);
@@ -79,10 +79,10 @@ export class CassandraDepartmentRepository implements DepartmentRepository {
         console.log("CassandraDepartmentRepository.getDepartment(): department not found, department id[%d]", id);
         return undefined;
       }
-      const department = mappers.mapDatabaseRowToDepartment(departmentResultSet.rows[0]);
+      const department = mappers.mapRowToDepartment(departmentResultSet.rows[0]);
       const employeeResultSet = await client.execute(constants.SELECT_EMPLOYEES_BY_DEPARTMENT_CQL,
         { departmentId: id }, { prepare: true });
-      department.employees = employeeResultSet.rows.map(row => mappers.mapDatabaseRowToEmployee(row, true));
+      department.employees = employeeResultSet.rows.map(row => mappers.mapRowToEmployee(row, true));
       console.log("CassandraDepartmentRepository.getDepartment(): department id[%d]", id);
       return department;
     } catch (err) {

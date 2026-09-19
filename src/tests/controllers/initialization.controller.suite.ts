@@ -5,12 +5,13 @@ import { StatusCodes } from 'http-status-codes';
 
 import { Department } from "../../models/department.js";
 import { RepositoryType } from '../../repositories/repository-type.js';
-import { InitializationController } from '../initialization.controller.js';
-import { InitializationService } from '../../services/initialization.service.js';
-import { INITIAL_DATA } from '../../services/services.constants.js';
-import { testErrorHandler } from './checkers.js';
-
-const LOAD_URI = '/load/';
+import { InitializationController } from '../../controllers/initialization.controller.js';
+import { bodyToDepartments } from "../../controllers/mappers.js";
+import { createMockInitializationService, testErrorHandler } from '../tests.helpers.js';
+import {
+  LOAD_URI,
+  TEST_DEPARTMENTS
+} from '../tests.constants.js';
 
 /**
  * Unit tests for the {@link InitializationController}.
@@ -18,9 +19,7 @@ const LOAD_URI = '/load/';
  * @param repositoryType the repository type
  */
 export function initializationControllerTests(repositoryType: RepositoryType) {
-  const mockInitializationService: InitializationService = {
-    loadInitialData: vi.fn(),
-  } as any;
+  const mockInitializationService = createMockInitializationService();
   const initializationController = new InitializationController(mockInitializationService);
 
   /**
@@ -40,14 +39,14 @@ export function initializationControllerTests(repositoryType: RepositoryType) {
     const application = express();
     application.use(express.json());
     application.post(LOAD_URI, initializationController.loadInitialData);
-    const requestDepartments: Department[] = JSON.parse(JSON.stringify(INITIAL_DATA));
+    const expectedDepartments: Department[] = bodyToDepartments(TEST_DEPARTMENTS);
     // WHEN
     const response = await request(application)
-      .post(LOAD_URI).query({ repositoryType: repositoryType }).send({ departments: requestDepartments });
+      .post(LOAD_URI).query({ repositoryType: repositoryType }).send({ departments: expectedDepartments });
     // THEN
     expect(response.status).toBe(StatusCodes.NO_CONTENT);
     expect(mockInitializationService.loadInitialData).toHaveBeenCalledOnce();
-    expect(mockInitializationService.loadInitialData).toHaveBeenCalledWith(repositoryType, requestDepartments);
+    expect(mockInitializationService.loadInitialData).toHaveBeenCalledWith(repositoryType, expectedDepartments);
   });
 
   /**

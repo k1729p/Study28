@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 
 import { Department } from "../models/department.js";
 import { InitializationService } from "../services/initialization.service.js";
-import { toRepositoryType } from "./mappers.js";
+import { toRepositoryType, bodyToDepartments } from "./mappers.js";
 import * as colors from "./../utils/colors.js";
 /**
  * This controller class provides methods to initialize database and load data.
@@ -22,13 +22,13 @@ export class InitializationController {
    */
   loadInitialData = async (req: Request, res: Response, next: NextFunction) => {
     const repositoryType = toRepositoryType(req.query.repositoryType);
-    const departments: Department[] = req.body?.departments ?? [];
+    const departments: Department[] = bodyToDepartments(req.body?.departments ?? []);
     console.count(repositoryType);
     try {
       await this.initializationService.loadInitialData(repositoryType, departments);
     } catch (error) {
       next(error);
-      console.error("InitializationController.loadInitialData(): error[%s]", error);
+      console.error("InitializationController.loadInitialData(): error[%s]", (error as Error).message);
       return;
     }
     res.status(StatusCodes.NO_CONTENT).json();

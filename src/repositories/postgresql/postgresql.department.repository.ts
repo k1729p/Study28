@@ -3,7 +3,7 @@ import { Employee } from "../../models/employee.js";
 import { DepartmentRepository } from "../department.repository.js";
 import { RepositoryException } from "../repository-exception.js";
 import { poolPromise } from "./postgresql.pool.js";
-import * as mappers from "../mappers.js";
+import * as mappers from "../repository-mappers.js";
 import * as constants from "./postgresql.constants.js";
 /**
  * Repository class providing methods to manage departments.
@@ -65,11 +65,11 @@ export class PostgreSqlDepartmentRepository implements DepartmentRepository {
       for (const row of queryResult.rows) {
         let department = departmentMap.get(row.id);
         if (!department) {
-          department = mappers.mapDatabaseRowToDepartment(row);
+          department = mappers.mapRowToDepartment(row);
           departmentMap.set(row.id, department);
         }
         if (row.employee_id) {
-          department.employees.push(mappers.mapDatabaseRowToEmployee(row, false));
+          department.employees.push(mappers.mapRowToEmployee(row, false));
         }
       }
       const departments = Array.from(departmentMap.values());
@@ -102,10 +102,10 @@ export class PostgreSqlDepartmentRepository implements DepartmentRepository {
         return undefined;
       }
       const rows = result.rows;
-      const department = mappers.mapDatabaseRowToDepartment(rows[0]);
+      const department = mappers.mapRowToDepartment(rows[0]);
       for (const row of rows) {
         if (row.employee_id) {
-          department.employees.push(mappers.mapDatabaseRowToEmployee(row, false));
+          department.employees.push(mappers.mapRowToEmployee(row, false));
         }
       }
       console.log("PostgreSqlDepartmentRepository.getDepartment(): department id[%d]", id);

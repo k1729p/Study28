@@ -2,6 +2,7 @@ import { RepositoryType } from '../repositories/repository-type.js';
 import { Department } from '../models/department.js'
 import { Employee } from '../models/employee.js'
 import { Title } from '../models/title.js'
+
 /**
  * Maps the string to the RepositoryType enumeration member.
  * @param value the value
@@ -13,6 +14,16 @@ export const toRepositoryType = (value?: any): RepositoryType => {
   );
   return match || RepositoryType.PostgreSQL;
 };
+
+/**
+ * Maps an array from the response body to an array of Department.
+ * @param body the response body, expected to be an array of department-like objects
+ * @returns array of department
+ */
+export const bodyToDepartments = (body: any): Department[] => {
+  return Array.isArray(body) ? body.map(bodyToDepartment) : [];
+};
+
 /**
  * Maps the response body to the Department.
  * @param body the response body
@@ -32,10 +43,20 @@ export const bodyToDepartment = (body: any): Department => {
     notes: body.notes ? String(body.notes) : undefined,
     keywords: Array.isArray(body.keywords) ? body.keywords.map(String) : [],
     image: body.image ? String(body.image) : undefined,
-    employees: Array.isArray(body.employees) ? body.employees : []
+    employees: Array.isArray(body.employees) ? body.employees.map(bodyToEmployee) : []
   };
   return department;
 };
+
+/**
+ * Maps an array from the response body to an array of Employee.
+ * @param body the response body, expected to be an array of employee-like objects
+ * @returns array of employee
+ */
+export const bodyToEmployees = (body: any): Employee[] => {
+  return Array.isArray(body) ? body.map(bodyToEmployee) : [];
+};
+
 /**
  * Maps the response body to the Employee.
  * @param body the response body

@@ -23,10 +23,22 @@ export class TransferController {
   transferEmployees = async (req: Request, res: Response, next: NextFunction) => {
     const repositoryType = req.query.repositoryType as RepositoryType || RepositoryType.PostgreSQL;
     const { sourceDepartmentId, targetDepartmentId, employeeIds } = req.body;
-    if (!sourceDepartmentId || !targetDepartmentId ||
-      !Array.isArray(employeeIds) || employeeIds.length === 0) {
-      res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid transfer data' });
-      console.error("TransferController.transferEmployees(): invalid transfer data");
+    if (!sourceDepartmentId) {
+      res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid source department id' });
+      console.error("TransferController.transferEmployees(): " +
+        "bad request, client error, invalid source department id");
+      return;
+    }
+    if (!targetDepartmentId) {
+      res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid target department id' });
+      console.error("TransferController.transferEmployees(): " +
+        "bad request, client error, invalid target department id");
+      return;
+    }
+    if (!Array.isArray(employeeIds) || employeeIds.length === 0) {
+      res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid or empty employee ids array' });
+      console.error("TransferController.transferEmployees(): " +
+        "bad request, client error, invalid or empty employee ids array");
       return;
     }
     try {
@@ -34,7 +46,7 @@ export class TransferController {
         repositoryType, sourceDepartmentId, targetDepartmentId, employeeIds);
     } catch (error) {
       next(error);
-      console.error("TransferController.transferEmployees():", error);
+      console.error("TransferController.transferEmployees(): error[%s]", (error as Error).message);
       return;
     }
     res.status(StatusCodes.NO_CONTENT).json();

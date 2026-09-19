@@ -1,10 +1,12 @@
 import { PoolConnection } from "mysql2/promise";
 
 import { Department } from "../../models/department.js";
-import { poolPromise } from "./mysql.pool.js";
 import { Initialization } from "../initialization.js";
 import { RepositoryException } from "../repository-exception.js";
+import { RepositoryLock } from "../repository-lock.js";
+import { poolPromise } from "./mysql.pool.js";
 import * as constants from "./mysql.constants.js";
+
 /**
  * Repository class providing methods to initialize the database and load seed data.
  */
@@ -16,6 +18,7 @@ export class MySqlInitialization implements Initialization {
    * @returns A promise that resolves when data loading is complete.
    */
   async loadInitialData(departments: Department[]) {
+    const releaseRepositoryLock = await repositoryLock.acquireExclusive();
     const pool = await poolPromise;
     const connection: PoolConnection = await pool.getConnection();
     try {
@@ -45,6 +48,7 @@ export class MySqlInitialization implements Initialization {
       );
     } finally {
       connection.release();
+      releaseRepositoryLock();
     }
     console.log("MySqlInitialization.loadInitialData(): data loaded successfully");
   }
@@ -90,3 +94,7 @@ export class MySqlInitialization implements Initialization {
     console.log("MySqlInitialization.insertEmployees(): inserted [%d] employees", employees.length);
   }
 }
+/**
+ * The database lock.
+ */
+export const repositoryLock = new RepositoryLock();

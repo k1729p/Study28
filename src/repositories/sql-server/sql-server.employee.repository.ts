@@ -4,7 +4,7 @@ import { Employee } from "../../models/employee.js";
 import { EmployeeRepository } from "../employee.repository.js";
 import { RepositoryException } from "../repository-exception.js";
 import { poolPromise } from "./sql-server.pool.js";
-import * as mappers from "../mappers.js";
+import * as mappers from "../repository-mappers.js";
 import * as constants from "./sql-server.constants.js";
 /**
  * Repository interface providing methods to manage employees.
@@ -53,7 +53,7 @@ export class SqlServerEmployeeRepository implements EmployeeRepository {
     try {
       const pool = await poolPromise;
       const result = await pool.request().query(constants.SELECT_EMPLOYEES_SQL);
-      const employees = result.recordset.map((row: any) => mappers.mapDatabaseRowToEmployee(row, true));
+      const employees = result.recordset.map((row: any) => mappers.mapRowToEmployee(row, true));
       console.log("SqlServerEmployeeRepository.getEmployees(): employees count[%d]", employees.length);
       return employees;
     } catch (err) {
@@ -81,7 +81,7 @@ export class SqlServerEmployeeRepository implements EmployeeRepository {
         return undefined;
       }
       console.log("SqlServerEmployeeRepository.getEmployee(): employee id[%d]", id);
-      return mappers.mapDatabaseRowToEmployee(result.recordset[0], true);
+      return mappers.mapRowToEmployee(result.recordset[0], true);
     } catch (err) {
       console.error("SqlServerEmployeeRepository.getEmployee():", err);
       throw new RepositoryException(

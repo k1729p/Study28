@@ -2,10 +2,19 @@ import { describe, it, beforeAll, expect } from "vitest";
 
 import { Department } from "../../models/department.js";
 import { RepositoryType } from '../../repositories/repository-type.js';
-import { InitializationService } from '../initialization.service.js';
-import { DepartmentService } from '../department.service.js';
-import { INITIAL_DATA, MAX_INT_32 } from '../services.constants.js';
-import { checkDefaultDepartments, checkDepartment } from './checkers.js';
+import { InitializationService } from '../../services/initialization.service.js';
+import { DepartmentService } from '../../services/department.service.js';
+import { checkDefaultDepartments, checkDepartment } from '../checkers.js';
+import {
+  TEST_1ST_DEPARTMENT,
+  TEST_LAST_DEPARTMENT,
+  TEST_DEPARTMENT_CREATED,
+  TEST_DEPARTMENT_UPDATED,
+  TEST_DEPARTMENT_MINIMAL,
+  TEST_DEPARTMENT_MAXIMAL,
+  TEST_DEPARTMENT_ID_NOT_EXISTING,
+  IDS_OUT_OF_RANGE
+} from '../tests.constants.js';
 
 /**
  * Unit tests for the {@link DepartmentService}.
@@ -15,7 +24,6 @@ import { checkDefaultDepartments, checkDepartment } from './checkers.js';
 export function departmentServiceTests(repositoryType: RepositoryType) {
   const initializationService = new InitializationService();
   const departmentService = new DepartmentService();
-  const TEST_DEPARTMENT = INITIAL_DATA[0];
 
   /**
    * Sets up the testing module for the DepartmentService.
@@ -41,16 +49,16 @@ export function departmentServiceTests(repositoryType: RepositoryType) {
    * Tests the retrieval of the first and the last department in the initial dataset.
    */
   describe.for([
-    0,
-    INITIAL_DATA.length - 1
-  ])('tests use initial data array index[%d]', (index) => {
+    ['first department', TEST_1ST_DEPARTMENT],
+    ['last department', TEST_LAST_DEPARTMENT]
+  ])('tests for retrieval %s', ([info, testDepartment]) => {
     /**
      * Tests the retrieval of a department by its ID.
      * This test checks if the service can fetch a department by its ID.
      */
     it('should get a specific department by id', async () => {
       // GIVEN
-      const expectedDepartment = INITIAL_DATA[index];
+      const expectedDepartment = testDepartment as Department;
       // WHEN
       const actualDepartment = await departmentService.getDepartment(repositoryType, expectedDepartment.id);
       // THEN
@@ -59,10 +67,26 @@ export function departmentServiceTests(repositoryType: RepositoryType) {
   });
 
   /**
-   * Suite of tests for the recreation of a department.
-   * Department's actions sequence: Update -> Delete -> Create
+   * Suite of tests for the department's actions sequence: Create -> Update -> Delete
    */
-  describe('tests for recreating a department', () => {
+  describe('tests for creating, updating, and deleting a department', () => {
+    /**
+     * Tests the creation of a new department.
+     * This test checks if the service can create a new department,
+     * ensuring that the new department is added to the department array
+     * and has a valid ID.
+     */
+    it('should create a department', async () => {
+      // GIVEN
+      const expectedDepartment = TEST_DEPARTMENT_CREATED;
+      // WHEN
+      await departmentService.createDepartment(repositoryType, expectedDepartment);
+      // THEN
+      const actualDepartment = await departmentService.getDepartment(repositoryType, expectedDepartment.id);
+      checkDepartment(expectedDepartment, actualDepartment);
+      // Cleanup
+
+    });
     /**
      * Tests the update functionality of an existing department.
      * This test checks if the service can update an existing department's details,
@@ -70,10 +94,7 @@ export function departmentServiceTests(repositoryType: RepositoryType) {
      */
     it('should update an existing department', async () => {
       // GIVEN
-      const expectedDepartment = {
-        ...TEST_DEPARTMENT,
-        name: 'Updated Department Name'
-      };
+      const expectedDepartment = TEST_DEPARTMENT_UPDATED;
       // WHEN
       await departmentService.updateDepartment(repositoryType, expectedDepartment);
       // THEN
@@ -89,27 +110,12 @@ export function departmentServiceTests(repositoryType: RepositoryType) {
      */
     it('should delete a department', async () => {
       // GIVEN
+      const expectedDepartment = TEST_DEPARTMENT_CREATED;
       // WHEN
-      await departmentService.deleteDepartment(repositoryType, TEST_DEPARTMENT.id);
-      // THEN
-      const actualDepartment = await departmentService.getDepartment(repositoryType, TEST_DEPARTMENT.id);
-      expect(actualDepartment).toBeUndefined();
-    });
-
-    /**
-     * Tests the creation of a new department.
-     * This test checks if the service can create a new department,
-     * ensuring that the new department is added to the department array
-     * and has a valid ID.
-     */
-    it('should create a department', async () => {
-      // GIVEN
-      const expectedDepartment = { ...TEST_DEPARTMENT, employees: [] };
-      // WHEN
-      await departmentService.createDepartment(repositoryType, expectedDepartment);
+      await departmentService.deleteDepartment(repositoryType, expectedDepartment.id);
       // THEN
       const actualDepartment = await departmentService.getDepartment(repositoryType, expectedDepartment.id);
-      checkDepartment(expectedDepartment, actualDepartment);
+      expect(actualDepartment).toBeUndefined();
     });
   });
 
@@ -117,7 +123,7 @@ export function departmentServiceTests(repositoryType: RepositoryType) {
    * Suite of tests for the retrieval and deletion of a department that does not exist.
    */
   describe.for([
-    Math.max(...INITIAL_DATA.map(dept => dept.id)) + 1
+    TEST_DEPARTMENT_ID_NOT_EXISTING
   ])('tests use not existing department id[%d]', (id) => {
     /**
      * Tests the failed retrieval of a department by its ID.
@@ -151,11 +157,7 @@ export function departmentServiceTests(repositoryType: RepositoryType) {
      */
     it('should create and retrieve a department with only mandatory fields', async () => {
       // GIVEN
-      const expectedDepartment: Department = {
-        id: 5432101,
-        name: 'D',
-        employees: [],
-      };
+      const expectedDepartment = TEST_DEPARTMENT_MINIMAL;
       // WHEN
       await departmentService.createDepartment(repositoryType, expectedDepartment);
       const actualDepartment = await departmentService.getDepartment(repositoryType, expectedDepartment.id);
@@ -182,16 +184,7 @@ export function departmentServiceTests(repositoryType: RepositoryType) {
      */
     it('should create and retrieve a department with maximal values in fields', async () => {
       // GIVEN
-      const expectedDepartment: Department = {
-        id: 5432102,
-        name: 'Ünïcödé Départment 部門 abcd-1234',
-        employees: [],
-        notes: 'Note line.\n'.repeat(200),
-        keywords: Array.from({ length: 40 }, (_, i) => `keyword-${i}`),
-        startDate: new Date('1970-01-01T00:00:00.000Z'),
-        endDate: new Date('2999-12-31T23:59:59.000Z'),
-        image: 'images/' + 'x'.repeat(200) + '.jpg',
-      };
+      const expectedDepartment = TEST_DEPARTMENT_MAXIMAL;
       // WHEN
       await departmentService.createDepartment(repositoryType, expectedDepartment);
       const actualDepartment = await departmentService.getDepartment(repositoryType, expectedDepartment.id);
@@ -205,10 +198,7 @@ export function departmentServiceTests(repositoryType: RepositoryType) {
   /**
    * Suite of tests for the retrieval and deletion of a department when ID is out of range.
    */
-  describe.for([
-    0,
-    MAX_INT_32 + 1
-  ])('tests use out of range department id[%d]', (id) => {
+  describe.for(IDS_OUT_OF_RANGE)('tests use out of range department id[%d]', (id) => {
     /**
      * Tests the failed retrieval of a department when ID is out of range.
      */

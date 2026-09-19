@@ -44,7 +44,7 @@ export class EmployeeService {
   async createEmployee(repositoryType: RepositoryType, employee: Employee) {
     const strategy = this.strategies[repositoryType];
     if (strategy == undefined) {
-      console.warn("EmployeeService.createEmployee(): not implemented strategy for [%s]", repositoryType);
+      console.error("EmployeeService.createEmployee(): error, not implemented strategy for [%s]", repositoryType);
       throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
     }
     return await strategy.createEmployee(employee);
@@ -57,7 +57,7 @@ export class EmployeeService {
   async getEmployees(repositoryType: RepositoryType): Promise<Employee[]> {
     const strategy = this.strategies[repositoryType];
     if (strategy == undefined) {
-      console.warn("EmployeeService.getEmployees(): not implemented strategy for [%s]", repositoryType);
+      console.error("EmployeeService.getEmployees(): error, not implemented strategy for [%s]", repositoryType);
       throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
     }
     return strategy.getEmployees();
@@ -72,11 +72,11 @@ export class EmployeeService {
   async getEmployee(repositoryType: RepositoryType, id: number): Promise<Employee | undefined> {
     const strategy = this.strategies[repositoryType];
     if (strategy == undefined) {
-      console.warn("EmployeeService.getEmployee(): not implemented strategy for [%s]", repositoryType);
+      console.error("EmployeeService.getEmployee(): error, not implemented strategy for [%s]", repositoryType);
       throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
     }
     if (!Number.isInteger(id) || id < 1 || id > MAX_INT_32) {
-      console.warn("EmployeeService.getEmployee(): invalid id [%s]", id);
+      console.error("EmployeeService.getEmployee(): error, invalid id [%s]", id);
       throw new RangeError(`ID must be an integer between 1 and ${MAX_INT_32}, inclusive. Received ${id}`);
     }
     return strategy.getEmployee(id);
@@ -90,7 +90,7 @@ export class EmployeeService {
   async updateEmployee(repositoryType: RepositoryType, employee: Employee) {
     const strategy = this.strategies[repositoryType];
     if (strategy == undefined) {
-      console.warn("EmployeeService.updateEmployee(): not implemented strategy for [%s]", repositoryType);
+      console.error("EmployeeService.updateEmployee(): error, not implemented strategy for [%s]", repositoryType);
       throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
     }
     await strategy.updateEmployee(employee);
@@ -103,11 +103,11 @@ export class EmployeeService {
   async deleteEmployee(repositoryType: RepositoryType, id: number) {
     const strategy = this.strategies[repositoryType];
     if (strategy == undefined) {
-      console.warn("EmployeeService.deleteEmployee(): not implemented strategy for [%s]", repositoryType);
+      console.error("EmployeeService.deleteEmployee(): error, not implemented strategy for [%s]", repositoryType);
       throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
     }
     if (!Number.isInteger(id) || id < 1 || id > MAX_INT_32) {
-      console.warn("EmployeeService.deleteEmployee(): invalid id[%s]", id);
+      console.error("EmployeeService.deleteEmployee(): error, invalid id[%s]", id);
       throw new RangeError(`ID must be an integer between 1 and ${MAX_INT_32}, inclusive. Received ${id}`);
     }
     await strategy.deleteEmployee(id);

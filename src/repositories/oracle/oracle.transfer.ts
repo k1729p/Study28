@@ -1,6 +1,7 @@
 import { Transfer } from "../transfer.js";
 import { RepositoryException } from "../repository-exception.js";
 import { poolPromise } from "./oracle.pool.js";
+import { repositoryLock } from "./oracle.initialization.js";
 import * as constants from "./oracle.constants.js";
 /**
  * Repository class providing methods to transfers employees.
@@ -20,6 +21,7 @@ export class OracleTransfer implements Transfer {
    */
   async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]):
     Promise<void> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     const pool = await poolPromise;
     const connection = await pool.getConnection();
     try {
@@ -41,6 +43,7 @@ export class OracleTransfer implements Transfer {
       } catch (err) {
         console.error("OracleTransfer.transferEmployees(): error closing connection", err);
       }
+      releaseRepositoryLock();
     }
     console.log("OracleTransfer.transferEmployees(): " +
       "source department id[%d], target department id[%d], employees count[%d]",

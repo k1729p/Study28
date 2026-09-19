@@ -2,11 +2,21 @@ import { describe, it, beforeAll, afterEach, expect } from "vitest";
 
 import { Department } from "../../models/department.js";
 import { RepositoryType } from '../../repositories/repository-type.js';
-import { InitializationService } from '../initialization.service.js';
-import { DepartmentService } from '../department.service.js';
-import { TransferService } from '../transfer.service.js';
-import { INITIAL_DATA, MAX_INT_32, MAX_BATCH_EMPLOYEE_IDS } from '../services.constants.js';
-import { checkSuccessfulTransfer, checkFailedTransfer } from './checkers.js';
+import { InitializationService } from '../../services/initialization.service.js';
+import { DepartmentService } from '../../services/department.service.js';
+import { TransferService } from '../../services/transfer.service.js';
+import { checkSuccessfulTransfer, checkFailedTransfer } from '../checkers.js';
+import {
+  TEST_1ST_DEPARTMENT,
+  TEST_2ND_DEPARTMENT,
+  TEST_LAST_DEPARTMENT,
+  TEST_1ST_EMPLOYEE,
+  TEST_LAST_EMPLOYEE,
+  TEST_ALL_EMPLOYEE_IDS,
+  TEST_EMPLOYEE_IDS_NOT_EXISTING,
+  ID_BELOW_MINIMUM_LIMIT,
+  ID_ABOVE_MAXIMUM_LIMIT
+} from '../tests.constants.js';
 
 /**
  * Unit tests for the {@link TransferService}.
@@ -17,12 +27,6 @@ export function transferServiceTests(repositoryType: RepositoryType) {
   const initializationService = new InitializationService();
   const departmentService = new DepartmentService();
   const transferService = new TransferService();
-  const TEST_1ST_DEPARTMENT = INITIAL_DATA[0];
-  const TEST_2ND_DEPARTMENT = INITIAL_DATA[1];
-  const TEST_LAST_DEPARTMENT = INITIAL_DATA[INITIAL_DATA.length - 1];
-  const TEST_ALL_EMPLOYEE_IDS = TEST_1ST_DEPARTMENT.employees.map(emp => emp.id);
-  const TEST_1ST_EMPLOYEE_ID = TEST_1ST_DEPARTMENT.employees[0].id;
-  const TEST_LAST_EMPLOYEE_ID = TEST_LAST_DEPARTMENT.employees[TEST_LAST_DEPARTMENT.employees.length - 1].id;
 
   /**
    * Sets up the testing module for the TransferService.
@@ -35,14 +39,14 @@ export function transferServiceTests(repositoryType: RepositoryType) {
    * Suite of tests for the successful transfer of employees.
    */
   describe.for([
-    ["all employees from first department to second department",
+    ['all employees from first department to second department',
       TEST_1ST_DEPARTMENT, TEST_2ND_DEPARTMENT, TEST_ALL_EMPLOYEE_IDS],
-    ["all employees from first department to last department",
+    ['all employees from first department to last department',
       TEST_1ST_DEPARTMENT, TEST_LAST_DEPARTMENT, TEST_ALL_EMPLOYEE_IDS],
-    ["first employee from first department to last department",
-      TEST_1ST_DEPARTMENT, TEST_LAST_DEPARTMENT, [TEST_1ST_EMPLOYEE_ID]],
-    ["last employee from last department to first department",
-      TEST_LAST_DEPARTMENT, TEST_1ST_DEPARTMENT, [TEST_LAST_EMPLOYEE_ID]],
+    ['first employee from first department to last department',
+      TEST_1ST_DEPARTMENT, TEST_LAST_DEPARTMENT, [TEST_1ST_EMPLOYEE.id]],
+    ['last employee from last department to first department',
+      TEST_LAST_DEPARTMENT, TEST_1ST_DEPARTMENT, [TEST_LAST_EMPLOYEE.id]],
   ])('tests for transfer %s',
     ([info, testSourceDepartment, testTargetDepartment, testEmployeeIds]) => {
       /**
@@ -80,7 +84,7 @@ export function transferServiceTests(repositoryType: RepositoryType) {
     ["no employee IDs provided",
       TEST_1ST_DEPARTMENT, TEST_LAST_DEPARTMENT, []],
     ["not existing employee IDs provided",
-      TEST_1ST_DEPARTMENT, TEST_LAST_DEPARTMENT, [0, 12345, 67890]],
+      TEST_1ST_DEPARTMENT, TEST_LAST_DEPARTMENT, TEST_EMPLOYEE_IDS_NOT_EXISTING],
   ])('tests for valid employees - %s',
     ([info, testSourceDepartment, testTargetDepartment, testEmployeeIds]) => {
       /**
@@ -126,15 +130,15 @@ export function transferServiceTests(repositoryType: RepositoryType) {
    */
   describe.for([
     ["source department ID is below the minimum limit",
-      0, TEST_2ND_DEPARTMENT.id, TEST_ALL_EMPLOYEE_IDS],
+      ID_BELOW_MINIMUM_LIMIT, TEST_2ND_DEPARTMENT.id, TEST_ALL_EMPLOYEE_IDS],
     ["source department ID is above the maximum limit",
-      MAX_INT_32 + 1, TEST_2ND_DEPARTMENT.id, TEST_ALL_EMPLOYEE_IDS],
+      ID_ABOVE_MAXIMUM_LIMIT, TEST_2ND_DEPARTMENT.id, TEST_ALL_EMPLOYEE_IDS],
     ["target department ID is below the minimum limit",
-      TEST_1ST_DEPARTMENT.id, 0, TEST_ALL_EMPLOYEE_IDS],
+      TEST_1ST_DEPARTMENT.id, ID_BELOW_MINIMUM_LIMIT, TEST_ALL_EMPLOYEE_IDS],
     ["target department ID is above the maximum limit",
-      TEST_1ST_DEPARTMENT.id, MAX_INT_32 + 1, TEST_ALL_EMPLOYEE_IDS],
+      TEST_1ST_DEPARTMENT.id, ID_ABOVE_MAXIMUM_LIMIT, TEST_ALL_EMPLOYEE_IDS],
     ["employee IDs array size is above the maximum limit",
-      TEST_1ST_DEPARTMENT.id, TEST_2ND_DEPARTMENT.id, new Array(MAX_BATCH_EMPLOYEE_IDS + 1)],
+      TEST_1ST_DEPARTMENT.id, TEST_2ND_DEPARTMENT.id,],
   ])('tests for out of range error -  %s',
     ([info, testSourceDepartmentId, testTargetDepartmentId, testEmployeeIds]) => {
       /**

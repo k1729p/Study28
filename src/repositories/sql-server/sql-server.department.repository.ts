@@ -5,7 +5,7 @@ import { Employee } from "../../models/employee.js";
 import { DepartmentRepository } from "../department.repository.js";
 import { RepositoryException } from "../repository-exception.js";
 import { poolPromise } from "./sql-server.pool.js";
-import * as mappers from "../mappers.js";
+import * as mappers from "../repository-mappers.js";
 import * as constants from "./sql-server.constants.js";
 /**
  * Repository class providing methods to manage departments.
@@ -53,11 +53,11 @@ export class SqlServerDepartmentRepository implements DepartmentRepository {
       for (const row of result.recordset) {
         let department = departmentMap.get(row.id);
         if (!department) {
-          department = mappers.mapDatabaseRowToDepartment(row);
+          department = mappers.mapRowToDepartment(row);
           departmentMap.set(row.id, department);
         }
         if (row.employee_id) {
-          department.employees.push(mappers.mapDatabaseRowToEmployee(row, false));
+          department.employees.push(mappers.mapRowToEmployee(row, false));
         }
       }
       const departments = Array.from(departmentMap.values());
@@ -87,10 +87,10 @@ export class SqlServerDepartmentRepository implements DepartmentRepository {
         return undefined;
       }
       const rows = result.recordset;
-      const department = mappers.mapDatabaseRowToDepartment(rows[0]);
+      const department = mappers.mapRowToDepartment(rows[0]);
       for (const row of rows) {
         if (row.employee_id) {
-          department.employees.push(mappers.mapDatabaseRowToEmployee(row, false));
+          department.employees.push(mappers.mapRowToEmployee(row, false));
         }
       }
       console.log("SqlServerDepartmentRepository.getDepartment(): department id[%d]", id);

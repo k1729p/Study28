@@ -9,8 +9,9 @@
 Project sections:
 
 1. [Business Logic](#-business-logic)
-2. [Docker Build and Test](#-docker-build-and-test)
-3. [Local Build and Test](#-local-build-and-test)
+2. [Testing Architecture](#-testing-aArchitecture)
+3. [Docker Build and Curl Tests](#-docker-build-and-curl-tests)
+4. [Local Build and Curl Tests](#-local-build-and-curl-tests)
 
 ---
 
@@ -130,6 +131,8 @@ In this file are users and passwords for databases.
 <details>
 <summary>🔹 'Repositories' section:</summary>
 
+- directory [repositories](https://github.com/k1729p/Study28/blob/main/src/repositories)
+  - RepositoryLock .......................
 - directory [repositories/cassandra](https://github.com/k1729p/Study28/blob/main/src/repositories/cassandra)
   - CassandraDepartmentRepository
     [cassandra.department.repository.ts](https://github.com/k1729p/Study28/blob/main/src/repositories/cassandra/cassandra.department.repository.ts)
@@ -185,22 +188,57 @@ In this file are users and passwords for databases.
 
 🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹
 
+The lock **RepositoryLock** is an asynchronous read/write lock.
+
+- Entire schema recreation and initialization process uses **exclusive lock**.
+- Normal repository operations use **shared lock** ensuring zero performance degradation \
+   between parallel API calls under normal runtime conditions.
+
+- This lock is required for MySQL and Oracle databases.
+- This lock is not required for PostgreSQL and SQL Server databases.
+
+<details>
+<summary>Database Transaction Support for Data Definition Language in Relational Databases:</summary>
+
+| Database | Transactional DDL? | Implicit Commit Behavior |
+| --- | --- | --- |
+| **MySQL** | **No** | Executing DDL causes an **implicit commit** of any open transaction and cannot be rolled back. |
+| **Oracle** | **No** | Automatically issues an implicit `COMMIT` right before and right after any DDL statement. |
+| **PostgreSQL** | **Yes** | DDL stays inside standard `BEGIN ... COMMIT` blocks. If anything fails, everything rolls back seamlessly. |
+| **SQL Server** | **Yes** | Standard `BEGIN TRANSACTION` covers `CREATE TABLE`, `DROP TABLE`, etc. |
+
+</details>
+
+
+
 [Back to the top of the page](#study28-readme-contents)
 
 ---
 
-## ❷ Docker Build and Test
+## ❷ Testing Architecture
+
+- Controller/Route Layer: Component/Integration tested using **Supertest** and **Vitest** Mocks.
+- Service Layer: Unit tested using **Vitest** (business logic, validation, DB calls).
+
+**FIX IT** "01 Vitest tests.bat"
+
+---
+
+## ❸ Docker Build and Curl Tests
+
+**FIX IT** "02 Databases on Docker build and run.bat"
+**FIX IT** "04 Docker reports menu.bat"
 
 Action: \
  ![orangeHR](images/orangeHR-500.png) \
  ![orangeSqr](images/orangeSquare.png) 1. Use
-  ["01 Express on Docker build and run.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/01%20Express%20on%20Docker%20build%20and%20run.bat)
+  ["03 Express on Docker build and run.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/01%20Express%20on%20Docker%20build%20and%20run.bat)
   to build the images and start the containers. \
- ![orangeSqr](images/orangeSquare.png) 2. Use
-  ["02 CURL on Docker init DB.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/02%20CURL%20on%20Docker%20init%20DB.bat)
+ ![orangeSqr](images/orangeSquare.png) 2. **FIX IT** Use
+  ["05 CURL on Docker.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/02%20CURL%20on%20Docker%20init%20DB.bat)
   to initialize database. \
- ![orangeSqr](images/orangeSquare.png) 3. Use
-  ["03 CURL on Docker CRUD.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/03%20CURL%20on%20Docker%20CRUD.bat)
+ ![orangeSqr](images/orangeSquare.png) 3. **FIX IT** Use
+  ["05 CURL on Docker.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/03%20CURL%20on%20Docker%20CRUD.bat)
   to create, read, update, and delete departments and employees. \
  ![orangeHR](images/orangeHR-500.png)
 
@@ -232,22 +270,24 @@ of the console log from the run of the batch file "**03 CURL on Docker CRUD.bat*
 
 ---
 
-## ❸ Local Build and Test
+## ❹ Local Build and Curl Tests
 
 Action: \
  ![orangeHR](images/orangeHR-500.png) \
  ![orangeSqr](images/orangeSquare.png) 1. Use
-  ["04 Express on local build and run.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/04%20Express%20on%20local%20build%20and%20run.bat)
+  ["06 Express on local build and run.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/04%20Express%20on%20local%20build%20and%20run.bat)
   to build and start the local application. \
- ![orangeSqr](images/orangeSquare.png) 2. Use
-  ["05 CURL on local init DB.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/05%20CURL%20on%20local%20init%20DB.bat)
+ ![orangeSqr](images/orangeSquare.png) 2. Use **FIX IT**
+  ["07 CURL on local.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/05%20CURL%20on%20local%20init%20DB.bat)
   to initialize database. \
- ![orangeSqr](images/orangeSquare.png) 3. Use
-  ["06 CURL on local CRUD.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/06%20CURL%20on%20local%20CRUD.bat)
+ ![orangeSqr](images/orangeSquare.png) 3. Use **FIX IT**
+  ["07 CURL on local.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/06%20CURL%20on%20local%20CRUD.bat)
   to create, read, update, and delete departments and employees. \
  ![orangeHR](images/orangeHR-500.png)
 
-![greenCircle](images/greenCircle.png) 3.1. See the screenshots showing the results of the cURL tests.
+**FIX IT** Use Links.html to ...
+
+![greenCircle](images/greenCircle.png) 3.1. See the screenshots showing the results of the **curl** tests.
 
 [Back to the top of the page](#study28-readme-contents)
 

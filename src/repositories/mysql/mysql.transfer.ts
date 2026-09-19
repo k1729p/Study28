@@ -1,6 +1,7 @@
 import { Transfer } from "../transfer.js";
 import { RepositoryException } from "../repository-exception.js";
 import { poolPromise } from "./mysql.pool.js";
+import { repositoryLock } from "./mysql.initialization.js";
 import * as constants from "./mysql.constants.js";
 /**
  * Repository class providing methods to transfers employees.
@@ -15,6 +16,7 @@ export class MySqlTransfer implements Transfer {
    * @returns A promise that resolves when the transfer is complete.
    */
   async transferEmployees(sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]): Promise<void> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     const pool = await poolPromise;
     const connection = await pool.getConnection();
     try {
@@ -32,6 +34,7 @@ export class MySqlTransfer implements Transfer {
       );
     } finally {
       connection.release();
+      releaseRepositoryLock();
     }
     console.log("MySqlTransfer.transferEmployees(): " +
       "source department id[%d], target department id[%d], employees count[%d]",

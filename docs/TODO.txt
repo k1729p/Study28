@@ -1,6 +1,9 @@
 ################################################################################# TESTING
-!!! USE MOCK FOR CONTROLLER TESTS src\aaa\Samples_From_Node_Test.ts !!!!
+HTTP-level tests is a type of integration testing where you test the behavior of your application
+by making HTTP requests to your API endpoints and verifying the responses.
+Supertest — a library for testing HTTP servers, enabling to make requests in tests.
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 NOT IMPLEMENTED AI PROPOSITION FOR REPOSITORY TESTS
 it('wraps and rethrows on query failure', async () => {
   await expect(

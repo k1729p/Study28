@@ -7,7 +7,7 @@ import { Employee } from "../models/employee.js";
  * @param row the raw database row
  * @returns the mapped Department object
  */
-export const mapDatabaseRowToDepartment = (row: any): Department => {
+export const mapRowToDepartment = (row: any): Department => {
   const department: Department = {
     id: row.id,
     name: row.name,
@@ -28,7 +28,7 @@ export const mapDatabaseRowToDepartment = (row: any): Department => {
  * @param flag the flag for a field name of the employee id
  * @returns the mapped Employee object
  */
-export const mapDatabaseRowToEmployee = (row: any, flag: boolean): Employee => {
+export const mapRowToEmployee = (row: any, flag: boolean): Employee => {
   return {
     id: flag ? row.id : row.employee_id,
     departmentId: row.department_id,

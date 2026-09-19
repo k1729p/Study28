@@ -24,7 +24,8 @@ export class DepartmentController {
     const department = bodyToDepartment(req.body);
     if (!department || !department.id) {
       res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid department id' });
-      console.error("DepartmentController.createDepartment(): invalid department id");
+      console.error("DepartmentController.createDepartment(): " +
+        "bad request, client error, invalid department id");
       return;
     }
     try {
@@ -32,7 +33,7 @@ export class DepartmentController {
       res.status(StatusCodes.CREATED).json();
     } catch (error) {
       next(error);
-      console.error("DepartmentController.createDepartment():", error);
+      console.error("DepartmentController.createDepartment(): error[%s]", (error as Error).message);
       return;
     }
     console.log("%sDepartmentController.createDepartment():%s repositoryType[%s], id[%s]",
@@ -52,7 +53,7 @@ export class DepartmentController {
       res.status(StatusCodes.OK).json(departments);
     } catch (error) {
       next(error);
-      console.error("DepartmentController.getDepartments():", error);
+      console.error("DepartmentController.getDepartments(): error[%s]", (error as Error).message);
       return;
     }
     console.log("%sDepartmentController.getDepartments():%s repositoryType[%s]",
@@ -70,20 +71,21 @@ export class DepartmentController {
     const id = parseInt(req.params.id as string);
     if (isNaN(id)) {
       res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid department id' });
-      console.error("DepartmentController.getDepartmentById(): invalid department id");
+      console.error("DepartmentController.getDepartmentById(): " +
+        "bad request, client error, invalid department id");
       return;
     }
     try {
       const department = await this.departmentService.getDepartment(repositoryType, id);
       if (!department) {
         res.status(StatusCodes.NOT_FOUND).json({ message: 'Department not found' });
-        console.log("DepartmentController.getDepartmentById(): department not found, id[%s]", id);
+        console.warn("DepartmentController.getDepartmentById(): warning, department not found, id[%s]", id);
         return;
       }
       res.status(StatusCodes.OK).json(department);
     } catch (error) {
       next(error);
-      console.error("DepartmentController.getDepartmentById():", error);
+      console.error("DepartmentController.getDepartmentById(): error[%s]", (error as Error).message);
       return;
     }
     console.log("DepartmentController.getDepartmentById(): repositoryType[%s], id[%s]", repositoryType, id);
@@ -100,7 +102,8 @@ export class DepartmentController {
     const department = bodyToDepartment(req.body);
     if (!department || !department.id) {
       res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid department id' });
-      console.error("DepartmentController.updateDepartment(): invalid department id");
+      console.error("DepartmentController.updateDepartment(): " +
+        "bad request, client error, invalid department id");
       return;
     }
     try {
@@ -108,7 +111,7 @@ export class DepartmentController {
       res.status(StatusCodes.NO_CONTENT).json();
     } catch (error) {
       next(error);
-      console.error("DepartmentController.updateDepartment():", error);
+      console.error("DepartmentController.updateDepartment(): error[%s]", (error as Error).message);
       return;
     }
     console.log("%sDepartmentController.updateDepartment():%s repositoryType[%s], id[%s]",
@@ -126,7 +129,8 @@ export class DepartmentController {
     const id = parseInt(req.params.id as string);
     if (isNaN(id)) {
       res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid department id' });
-      console.error("DepartmentController.deleteDepartment(): invalid department id");
+      console.error("DepartmentController.deleteDepartment(): " +
+        "bad request, client error, invalid department id");
       return;
     }
     try {
@@ -134,7 +138,7 @@ export class DepartmentController {
       res.status(StatusCodes.NO_CONTENT).json();
     } catch (error) {
       next(error);
-      console.error("DepartmentController.deleteDepartment():", error);
+      console.error("DepartmentController.deleteDepartment(): error[%s]", (error as Error).message);
     }
     console.log("%sDepartmentController.deleteDepartment():%s repositoryType[%s], id[%s]",
       colors.CYAN_BRIGHT, colors.RESET, repositoryType, id);

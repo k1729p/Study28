@@ -44,27 +44,29 @@ export class TransferService {
     sourceDepartmentId: number, targetDepartmentId: number, employeeIds: number[]) {
     const strategy = this.strategies[repositoryType];
     if (strategy == undefined) {
-      console.warn("TransferService.transferEmployees(): not implemented strategy for [%s]", repositoryType);
+      console.error("TransferService.transferEmployees(): error, not implemented strategy for [%s]", repositoryType);
       throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
     }
     if (!Number.isInteger(sourceDepartmentId) || sourceDepartmentId < 1 || sourceDepartmentId > MAX_INT_32) {
-      console.warn("TransferService.transferEmployees(): invalid sourceDepartmentId[%s]", sourceDepartmentId);
+      console.error("TransferService.transferEmployees(): error, invalid sourceDepartmentId[%s]", sourceDepartmentId);
       throw new RangeError(`ID must be an integer between 1 and ${MAX_INT_32}, inclusive.`);
     }
     if (!Number.isInteger(targetDepartmentId) || targetDepartmentId < 1 || targetDepartmentId > MAX_INT_32) {
-      console.warn("TransferService.transferEmployees(): invalid targetDepartmentId[%s]", targetDepartmentId);
+      console.error("TransferService.transferEmployees(): error, invalid targetDepartmentId[%s]", targetDepartmentId);
       throw new RangeError(`ID must be an integer between 1 and ${MAX_INT_32}, inclusive.`);
     }
     if (!Array.isArray(employeeIds) || employeeIds.length > MAX_BATCH_EMPLOYEE_IDS) {
-      console.warn(`TransferService.transferEmployees(): invalid employee IDs array size.`);
+      console.error(`TransferService.transferEmployees(): error, invalid employee IDs array size.`);
       throw new RangeError(`Employee IDs count must not exceed ${MAX_BATCH_EMPLOYEE_IDS}.`);
     }
     if (employeeIds.length === 0) {
-      console.warn("TransferService.transferEmployees(): No employee IDs provided. Nothing to transfer.");
+      console.warn("TransferService.transferEmployees(): " +
+        "warning, no employee IDs provided. Nothing to transfer.");
       return;
     }
     if (sourceDepartmentId === targetDepartmentId) {
-      console.warn("TransferService.transferEmployees(): source and target departments are the same. Nothing to transfer.");
+      console.warn("TransferService.transferEmployees():" +
+        " warning, source and target departments are the same. Nothing to transfer.");
       return;
     }
     return await strategy.transferEmployees(

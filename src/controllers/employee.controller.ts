@@ -24,7 +24,8 @@ export class EmployeeController {
     const employee = bodyToEmployee(req.body);
     if (!employee || !employee.id) {
       res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid employee id' });
-      console.error("EmployeeController.createEmployee(): invalid employee id");
+      console.error("EmployeeController.createEmployee(): " +
+        "bad request, client error, invalid employee id");
       return;
     }
     try {
@@ -32,7 +33,7 @@ export class EmployeeController {
       res.status(StatusCodes.CREATED).json();
     } catch (error) {
       next(error);
-      console.error("EmployeeController.createEmployee():", error);
+      console.error("EmployeeController.createEmployee(): error[%s]", (error as Error).message);
       return;
     }
     console.log("%sEmployeeController.createEmployee():%s repositoryType[%s], id[%s]",
@@ -51,7 +52,7 @@ export class EmployeeController {
       res.status(StatusCodes.OK).json(employees);
     } catch (error) {
       next(error);
-      console.error("EmployeeController.getEmployees():", error);
+      console.error("EmployeeController.getEmployees(): error[%s]", (error as Error).message);
       return;
     }
     console.log("EmployeeController.getEmployees(): repositoryType[%s]", repositoryType);
@@ -68,20 +69,21 @@ export class EmployeeController {
     const id = parseInt(req.params.id as string);
     if (isNaN(id)) {
       res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid employee id' });
-      console.error("EmployeeController.getEmployeeById(): invalid employee id");
+      console.error("EmployeeController.getEmployeeById(): " +
+        "bad request, client error, invalid employee id");
       return;
     }
     try {
       const employee = await this.employeeService.getEmployee(repositoryType, id);
       if (!employee) {
         res.status(StatusCodes.NOT_FOUND).json({ message: 'Employee not found' });
-        console.log("EmployeeController.getEmployeeById(): employee not found, id[%s]", id);
+        console.warn("EmployeeController.getEmployeeById(): warning, employee not found, id[%s]", id);
         return;
       }
       res.status(StatusCodes.OK).json(employee);
     } catch (error) {
       next(error);
-      console.error("EmployeeController.getEmployeeById():", error);
+      console.error("EmployeeController.getEmployeeById(): error[%s]", (error as Error).message);
       return;
     }
     console.log("EmployeeController.getEmployeeById(): repositoryType[%s], id[%s]", repositoryType, id);
@@ -98,7 +100,8 @@ export class EmployeeController {
     const employee = bodyToEmployee(req.body);
     if (!employee || !employee.id) {
       res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid employee id' });
-      console.error("EmployeeController.updateEmployee(): invalid employee id");
+      console.error("EmployeeController.updateEmployee(): " +
+        "bad request, client error, invalid employee id");
       return;
     }
     try {
@@ -106,7 +109,7 @@ export class EmployeeController {
       res.status(StatusCodes.NO_CONTENT).json();
     } catch (error) {
       next(error);
-      console.error("EmployeeController.updateEmployee():", error);
+      console.error("EmployeeController.updateEmployee(): error[%s]", (error as Error).message);
       return;
     }
     console.log("%sEmployeeController.updateEmployee():%s repositoryType[%s], id[%s]",
@@ -124,7 +127,8 @@ export class EmployeeController {
     const id = parseInt(req.params.id as string);
     if (isNaN(id)) {
       res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid employee id' });
-      console.error("EmployeeController.deleteEmployee(): invalid employee id");
+      console.error("EmployeeController.deleteEmployee(): " +
+        "bad request, client error, invalid employee id");
       return;
     }
     try {
@@ -132,7 +136,7 @@ export class EmployeeController {
       res.status(StatusCodes.NO_CONTENT).json();
     } catch (error) {
       next(error);
-      console.error("EmployeeController.deleteEmployee():", error);
+      console.error("EmployeeController.deleteEmployee(): error[%s]", (error as Error).message);
     }
     console.log("%sEmployeeController.deleteEmployee():%s repositoryType[%s], id[%s]",
       colors.CYAN_BRIGHT, colors.RESET, repositoryType, id);

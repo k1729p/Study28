@@ -44,7 +44,7 @@ export class DepartmentService {
   async createDepartment(repositoryType: RepositoryType, department: Department): Promise<void> {
     const strategy = this.strategies[repositoryType];
     if (strategy == undefined) {
-      console.warn("DepartmentService.createDepartment(): not implemented strategy for [%s]", repositoryType);
+      console.error("DepartmentService.createDepartment(): error, not implemented strategy for [%s]", repositoryType);
       throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
     }
     return await strategy.createDepartment(department);
@@ -57,7 +57,7 @@ export class DepartmentService {
   async getDepartments(repositoryType: RepositoryType): Promise<Department[]> {
     const strategy = this.strategies[repositoryType];
     if (strategy == undefined) {
-      console.warn("DepartmentService.getDepartments(): not implemented strategy for [%s]", repositoryType);
+      console.error("DepartmentService.getDepartments(): error, not implemented strategy for [%s]", repositoryType);
       throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
     }
     return strategy.getDepartments();
@@ -71,11 +71,11 @@ export class DepartmentService {
   async getDepartment(repositoryType: RepositoryType, id: number): Promise<Department | undefined> {
     const strategy = this.strategies[repositoryType];
     if (strategy == undefined) {
-      console.warn("DepartmentService.getDepartment(): not implemented strategy for [%s]", repositoryType);
+      console.error("DepartmentService.getDepartment(): error, not implemented strategy for [%s]", repositoryType);
       throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
     }
     if (!Number.isInteger(id) || id < 1 || id > MAX_INT_32) {
-      console.warn("DepartmentService.getDepartment(): invalid id[%s]", id);
+      console.error("DepartmentService.getDepartment(): error, invalid id[%s]", id);
       throw new RangeError(`ID must be an integer between 1 and ${MAX_INT_32}, inclusive. Received ${id}`);
     }
     return strategy.getDepartment(id);
@@ -89,7 +89,7 @@ export class DepartmentService {
   async updateDepartment(repositoryType: RepositoryType, department: Department) {
     const strategy = this.strategies[repositoryType];
     if (strategy == undefined) {
-      console.warn("DepartmentService.updateDepartment(): not implemented strategy for [%s]", repositoryType);
+      console.error("DepartmentService.updateDepartment(): error, not implemented strategy for [%s]", repositoryType);
       throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
     }
     await strategy.updateDepartment(department);
@@ -104,11 +104,11 @@ export class DepartmentService {
   async deleteDepartment(repositoryType: RepositoryType, id: number) {
     const strategy = this.strategies[repositoryType];
     if (strategy == undefined) {
-      console.warn("DepartmentService.deleteDepartment(): not implemented strategy for [%s]", repositoryType);
+      console.error("DepartmentService.deleteDepartment(): error, not implemented strategy for [%s]", repositoryType);
       throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
     }
     if (!Number.isInteger(id) || id < 1 || id > MAX_INT_32) {
-      console.warn("DepartmentService.deleteDepartment(): invalid id[%s]", id);
+      console.error("DepartmentService.deleteDepartment(): error, invalid id[%s]", id);
       throw new RangeError(`ID must be an integer between 1 and ${MAX_INT_32}, inclusive. Received ${id}`);
     }
     await strategy.deleteDepartment(id);

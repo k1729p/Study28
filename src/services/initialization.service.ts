@@ -45,7 +45,7 @@ export class InitializationService {
   async loadInitialData(repositoryType: RepositoryType, departmentArray: Department[]): Promise<void> {
     const strategy = this.strategies[repositoryType];
     if (strategy == undefined) {
-      console.warn("InitializationService.loadInitialData(): not implemented strategy for [%s]", repositoryType);
+      console.warn("InitializationService.loadInitialData(): error, not implemented strategy for [%s]", repositoryType);
       throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
     }
     const dataToLoad = departmentArray?.length ? departmentArray : INITIAL_DATA;

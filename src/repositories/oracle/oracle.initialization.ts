@@ -3,6 +3,7 @@ import oracledb from 'oracledb';
 import { Department } from "../../models/department.js";
 import { Initialization } from "../initialization.js";
 import { RepositoryException } from "../repository-exception.js";
+import { RepositoryLock } from "../repository-lock.js";
 import { poolPromise } from "./oracle.pool.js";
 import { parametersForDepartment, parametersForEmployee } from "./oracle.mappers.js";
 import * as constants from "./oracle.constants.js";
@@ -17,6 +18,7 @@ export class OracleInitialization implements Initialization {
    * @returns A promise that resolves when data loading is complete.
    */
   async loadInitialData(departments: Department[]) {
+    const releaseRepositoryLock = await repositoryLock.acquireExclusive();
     const pool = await poolPromise;
     const connection = await pool.getConnection();
     try {
@@ -49,6 +51,7 @@ export class OracleInitialization implements Initialization {
       } catch (err) {
         console.error("OracleInitialization.loadInitialData(): error closing connection", err);
       }
+      releaseRepositoryLock();
     }
     console.log("OracleInitialization.loadInitialData(): data loaded successfully");
   }
@@ -82,3 +85,7 @@ export class OracleInitialization implements Initialization {
     console.log("OracleInitialization.insertEmployees(): inserted [%d] employees", employees.length);
   }
 }
+/**
+ * The database lock.
+ */
+export const repositoryLock = new RepositoryLock();

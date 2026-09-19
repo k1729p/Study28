@@ -3,7 +3,7 @@ import { clientPromise } from "./cassandra.pool.js";
 import { parametersForEmployee } from "./cassandra.mappers.js";
 import { EmployeeRepository } from "../employee.repository.js";
 import { RepositoryException } from "../repository-exception.js";
-import * as mappers from "../mappers.js";
+import * as mappers from "../repository-mappers.js";
 import * as constants from "./cassandra.constants.js";
 /**
  * Repository interface providing methods to manage employees.
@@ -40,7 +40,7 @@ export class CassandraEmployeeRepository implements EmployeeRepository {
       const client = await clientPromise;
       const resultSet = await client.execute(constants.SELECT_EMPLOYEES_CQL,
         [], { prepare: true });
-      const employees = resultSet.rows.map(row => mappers.mapDatabaseRowToEmployee(row, true));
+      const employees = resultSet.rows.map(row => mappers.mapRowToEmployee(row, true));
       console.log("CassandraEmployeeRepository.getEmployees(): employees count[%d]", employees.length);
       return employees;
     } catch (err) {
@@ -67,7 +67,7 @@ export class CassandraEmployeeRepository implements EmployeeRepository {
         return undefined;
       }
       console.log("CassandraEmployeeRepository.getEmployee(): employee id[%d]", id);
-      return mappers.mapDatabaseRowToEmployee(resultSet.rows[0], true);
+      return mappers.mapRowToEmployee(resultSet.rows[0], true);
     } catch (err) {
       console.error("CassandraEmployeeRepository.getEmployee():", err);
       throw new RepositoryException(

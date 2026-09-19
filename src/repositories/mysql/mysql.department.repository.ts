@@ -2,10 +2,11 @@ import { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 
 import { Department } from "../../models/department.js";
 import { Employee } from "../../models/employee.js";
-import { poolPromise } from "./mysql.pool.js";
 import { DepartmentRepository } from "../department.repository.js";
 import { RepositoryException } from "../repository-exception.js";
-import * as mappers from "../mappers.js";
+import { poolPromise } from "./mysql.pool.js";
+import { repositoryLock } from "./mysql.initialization.js";
+import * as mappers from "../repository-mappers.js";
 import * as constants from "./mysql.constants.js";
 /**
  * Repository class providing methods to manage departments.
@@ -19,6 +20,7 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
    * @returns A promise that resolves when the department is created.
    */
   async createDepartment(department: Department): Promise<void> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     const pool = await poolPromise;
     const connection = await pool.getConnection();
     try {
@@ -48,16 +50,18 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
       );
     } finally {
       connection.release();
+      releaseRepositoryLock();
     }
     console.log("MySqlDepartmentRepository.createDepartment(): department id[%d]", department.id);
   }
-  
+
   /**
    * Retrieves all departments.
    * 
    * @returns A promise that resolves to an array of Department objects.
    */
   async getDepartments(): Promise<Department[]> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     const pool = await poolPromise;
     try {
       const [rows] = await pool.query<RowDataPacket[]>(constants.SELECT_DEPARTMENTS_SQL);
@@ -65,11 +69,11 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
       for (const row of rows) {
         let department = departmentMap.get(row.id);
         if (!department) {
-          department = mappers.mapDatabaseRowToDepartment(row);
+          department = mappers.mapRowToDepartment(row);
           departmentMap.set(row.id, department);
         }
         if (row.employee_id) {
-          department.employees.push(mappers.mapDatabaseRowToEmployee(row, false));
+          department.employees.push(mappers.mapRowToEmployee(row, false));
         }
       }
       const departments = Array.from(departmentMap.values());
@@ -81,6 +85,8 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
         `Failed to get departments`,
         { cause: err, operation: 'getDepartments' }
       );
+    } finally {
+      releaseRepositoryLock();
     }
   }
 
@@ -91,6 +97,7 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
    * @returns A promise that resolves to the Department object if found, otherwise undefined.
    */
   async getDepartment(id: number): Promise<Department | undefined> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     const pool = await poolPromise;
     try {
       const [rows] = await pool.query<RowDataPacket[]>(constants.SELECT_DEPARTMENT_SQL, [id]);
@@ -98,10 +105,10 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
         console.log("MySqlDepartmentRepository.getDepartment(): department not found, department id[%d]", id);
         return undefined;
       }
-      const department = mappers.mapDatabaseRowToDepartment(rows[0]);
+      const department = mappers.mapRowToDepartment(rows[0]);
       for (const row of rows) {
         if (row.employee_id) {
-          department.employees.push(mappers.mapDatabaseRowToEmployee(row, false));
+          department.employees.push(mappers.mapRowToEmployee(row, false));
         }
       }
       console.log("MySqlDepartmentRepository.getDepartment(): id[%d]", id);
@@ -112,6 +119,8 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
         `Failed to get department, department id[${id}]`,
         { cause: err, operation: 'getDepartment' }
       );
+    } finally {
+      releaseRepositoryLock();
     }
   }
 
@@ -122,6 +131,7 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
    * @returns A promise that resolves when the update is complete.
    */
   async updateDepartment(department: Department): Promise<void> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     const pool = await poolPromise;
     const connection = await pool.getConnection();
     try {
@@ -151,6 +161,7 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
       );
     } finally {
       connection.release();
+      releaseRepositoryLock();
     }
     for (const employee of department.employees) {
       await this.updateEmployeeInDepartment(employee);
@@ -165,6 +176,7 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
    * @returns void
    */
   private async updateEmployeeInDepartment(employee: Employee): Promise<void> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     const pool = await poolPromise;
     const connection = await pool.getConnection();
     try {
@@ -189,6 +201,7 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
       );
     } finally {
       connection.release();
+      releaseRepositoryLock();
     }
   }
 
@@ -199,6 +212,7 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
    * @returns A promise that resolves when the department is deleted.
    */
   async deleteDepartment(id: number): Promise<void> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
     const pool = await poolPromise;
     const connection = await pool.getConnection();
     try {
@@ -214,6 +228,7 @@ export class MySqlDepartmentRepository implements DepartmentRepository {
       );
     } finally {
       connection.release();
+      releaseRepositoryLock();
     }
     console.log("MySqlDepartmentRepository.deleteDepartment(): department id[%d]", id);
   }
