@@ -86,6 +86,7 @@ In this file are users and passwords for databases.
 ![greenCircle](images/greenCircle.png) 1.4. The TypeScript sources are located in the directory [src](https://github.com/k1729p/Study28/blob/main/src).
 
 ![blueHR](images/blueHR-500.png)
+
 🔹 [server.ts](https://github.com/k1729p/Study28/blob/main/src/server.ts)
 
 <details>
