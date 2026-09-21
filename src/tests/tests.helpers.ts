@@ -96,4 +96,3 @@ export const createMockTransferService = (): TransferService => {
   } as any;
   return mockTransferService;
 }
-

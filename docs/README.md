@@ -55,18 +55,18 @@ Project sections:
 
 ![greenCircle](images/greenCircle.png) 1.2. The data stores.
 
-| Name | Type | Storage Abstraction | Query Language | Implementation |
-| :--- | :--- | :--- | :--- | :--- |
-| [Cassandra][ds01] | Wide-Column Store | Table | CQL (Cassandra Query Language) | ✔️ |
-| [Chroma][ds02] | Vector Database | Collection | Chroma API (Python/JS Client) | ✔️ |
-| [Elasticsearch][ds03] | Search Engine / Document Store | Index / Document | Query DSL (JSON, built on Lucene) | 🛠️ |
-| [MongoDB][ds04] | Document Store | Collection | MQL (MongoDB Query Language) | ✔️ |
-| [MySQL][ds05] | Relational | Table | SQL | ✔️ |
-| [Neo4j][ds06] | Graph Database | Node / Relationship | Cypher | 🛠️ |
-| [Oracle][ds07] | Relational | Table | SQL / PL/SQL | ✔️ |
-| [PostgreSQL][ds08] | Relational | Table | SQL | ✔️ |
-| [Redis][ds09] | Key-Value / Cache | Hash / String | Redis Commands | 🛠️ |
-| [SQL Server][ds10] | Relational | Table | T-SQL | ✔️ |
+| Name | Type | Storage Abstraction | Query Language |
+| :--- | :--- | :--- | :--- |
+| [Cassandra][ds01] | Wide-Column Store | Table | CQL (Cassandra Query Language) |
+| [Chroma][ds02] | Vector Database | Collection | Chroma API (Python/JS Client) |
+| [Elasticsearch][ds03] | Search Engine / Document Store | Index / Document | Query DSL (JSON, built on Lucene) |
+| [MongoDB][ds04] | Document Store | Collection | MQL (MongoDB Query Language) |
+| [MySQL][ds05] | Relational | Table | SQL |
+| [Neo4j][ds06] | Graph Database | Node / Relationship | Cypher |
+| [Oracle][ds07] | Relational | Table | SQL / PL/SQL |
+| [PostgreSQL][ds08] | Relational | Table | SQL |
+| [Redis][ds09] | Key-Value / Cache | Hash / String | Redis Commands |
+| [SQL Server][ds10] | Relational | Table | T-SQL |
 
 [ds01]: <https://cassandra.apache.org/_/index.html> "Apache Cassandra"
 [ds02]: <https://www.trychroma.com/> "Chroma"
@@ -132,7 +132,8 @@ In this file are users and passwords for databases.
 <summary>🔹 'Repositories' section:</summary>
 
 - directory [repositories](https://github.com/k1729p/Study28/blob/main/src/repositories)
-  - RepositoryLock .......................
+  - RepositoryLock
+    [repository-lock.ts](https://github.com/k1729p/Study28/blob/main/src/repositories/repository-lock.ts)
 - directory [repositories/cassandra](https://github.com/k1729p/Study28/blob/main/src/repositories/cassandra)
   - CassandraDepartmentRepository
     [cassandra.department.repository.ts](https://github.com/k1729p/Study28/blob/main/src/repositories/cassandra/cassandra.department.repository.ts)
@@ -188,14 +189,14 @@ In this file are users and passwords for databases.
 
 🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹
 
-The lock **RepositoryLock** is an asynchronous read/write lock.
+The **RepositoryLock** is an asynchronous read/write lock.
 
 - Entire schema recreation and initialization process uses **exclusive lock**.
 - Normal repository operations use **shared lock** ensuring zero performance degradation \
    between parallel API calls under normal runtime conditions.
 
-- This lock is required for MySQL and Oracle databases.
-- This lock is not required for PostgreSQL and SQL Server databases.
+- This lock is implemented for Cassandra, Elasticsearch, MySql, and Oracle databases.
+- This lock is not implemented for PostgreSQL and SQL Server databases because it is not required.
 
 <details>
 <summary>Database Transaction Support for Data Definition Language in Relational Databases:</summary>
@@ -208,8 +209,6 @@ The lock **RepositoryLock** is an asynchronous read/write lock.
 | **SQL Server** | **Yes** | Standard `BEGIN TRANSACTION` covers `CREATE TABLE`, `DROP TABLE`, etc. |
 
 </details>
-
-
 
 [Back to the top of the page](#study28-readme-contents)
 
