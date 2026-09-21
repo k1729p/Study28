@@ -245,7 +245,7 @@ Action: \
   ["04 Docker reports menu.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/04%20Docker%20reports%20menu.bat)
   to read Docker reports. \
  ![orangeSqr](images/orangeSquare.png) 4. Use
-  ["05 CURL on Docker.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/02%20CURL%20on%20Docker.bat)
+  ["05 CURL on Docker.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/05%20CURL%20on%20Docker.bat)
   to run curl tests. \
  ![orangeHR](images/orangeHR-500.png)
 
@@ -268,10 +268,10 @@ Action: \
 </details>
 
 ![greenCircle](images/greenCircle.png) 3.2. The [screenshot](images/ScreenshotCurlOnDockerInitDB.png)
-of the console log from the run of the batch file "**02 CURL on Docker init DB.bat**" with **PostgreSQL** selected.
+of the console log from the run of the batch script "**CURL_init_DB.bat**" with **PostgreSQL** selected.
 
 ![greenCircle](images/greenCircle.png) 3.3. The [screenshot](images/ScreenshotCurlOnDockerCRUD.png)
-of the console log from the run of the batch file "**03 CURL on Docker CRUD.bat**" with **PostgreSQL** selected.
+of the console log from the run of the batch script "**CURL_CRUD.bat**" with **PostgreSQL** selected.
 
 [Back to the top of the page](#study28-readme-contents)
 
