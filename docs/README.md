@@ -9,7 +9,7 @@
 Project sections:
 
 1. [Business Logic](#-business-logic)
-2. [Testing Architecture](#-testing-aArchitecture)
+2. [Application Tests](#-application-tests)
 3. [Docker Build and Curl Tests](#-docker-build-and-curl-tests)
 4. [Local Build and Curl Tests](#-local-build-and-curl-tests)
 
@@ -195,7 +195,7 @@ The **RepositoryLock** is an asynchronous read/write lock.
 - Normal repository operations use **shared lock**.
 
 This lock is implemented for Cassandra, Elasticsearch, MySql, and Oracle databases. \
-This lock is not implemented for PostgreSQL and SQL Server databases because it is not required.
+This lock is not implemented for PostgreSQL and SQL Server databases, because it is not required.
 
 <details>
 <summary>Database Transaction Support for Data Definition Language in Relational Databases:</summary>
@@ -213,34 +213,43 @@ This lock is not implemented for PostgreSQL and SQL Server databases because it 
 
 ---
 
-## ❷ Testing Architecture
+## ❷ Application Tests
+
+Action: \
+ ![orangeHR](images/orangeHR-500.png) \
+ ![orangeSqr](images/orangeSquare.png) 1. Use
+  ["01 Vitest tests.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/01%20Vitest%20tests.bat)
+  to start application tests. \
+ ![orangeHR](images/orangeHR-500.png)
+
+![greenCircle](images/greenCircle.png) 2.1. Testing Architecture
 
 - Controller/Route Layer: Component/Integration tested using **Supertest** and **Vitest** Mocks.
-- Service Layer: Unit tested using **Vitest** (business logic, validation, DB calls).
+- Service Layer: Unit tested using **Vitest** (business logic, validation, database calls).
 
-**FIX IT** "01 Vitest tests.bat"
+[Back to the top of the page](#study28-readme-contents)
 
 ---
 
 ## ❸ Docker Build and Curl Tests
 
-**FIX IT** "02 Databases on Docker build and run.bat"
-**FIX IT** "04 Docker reports menu.bat"
-
 Action: \
  ![orangeHR](images/orangeHR-500.png) \
  ![orangeSqr](images/orangeSquare.png) 1. Use
-  ["03 Express on Docker build and run.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/01%20Express%20on%20Docker%20build%20and%20run.bat)
+  ["02 Databases on Docker build and run.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/02%20Databases%20on%20Docker%20build%20and%20run.bat)
+  to build and start ten database containers. \
+ ![orangeSqr](images/orangeSquare.png) 2. Use
+  ["03 Express on Docker build and run.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/03%20Express%20on%20Docker%20build%20and%20run.bat)
   to build the images and start the containers. \
- ![orangeSqr](images/orangeSquare.png) 2. **FIX IT** Use
-  ["05 CURL on Docker.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/02%20CURL%20on%20Docker%20init%20DB.bat)
-  to initialize database. \
- ![orangeSqr](images/orangeSquare.png) 3. **FIX IT** Use
-  ["05 CURL on Docker.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/03%20CURL%20on%20Docker%20CRUD.bat)
-  to create, read, update, and delete departments and employees. \
+ ![orangeSqr](images/orangeSquare.png) 3. Use
+  ["04 Docker reports menu.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/04%20Docker%20reports%20menu.bat)
+  to build the images and start the containers. \
+ ![orangeSqr](images/orangeSquare.png) 4. Use
+  ["05 CURL on Docker.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/02%20CURL%20on%20Docker.bat)
+  to run curl tests. \
  ![orangeHR](images/orangeHR-500.png)
 
-![greenCircle](images/greenCircle.png) 2.1. **Docker** images are built using the following files.
+![greenCircle](images/greenCircle.png) 3.1. **Docker** images are built using the following files.
 
 <details>
 <summary>Docker scripts:</summary>
@@ -258,10 +267,10 @@ Action: \
 
 </details>
 
-![greenCircle](images/greenCircle.png) 2.2. The [screenshot](images/ScreenshotCurlOnDockerInitDB.png)
+![greenCircle](images/greenCircle.png) 3.2. The [screenshot](images/ScreenshotCurlOnDockerInitDB.png)
 of the console log from the run of the batch file "**02 CURL on Docker init DB.bat**" with **PostgreSQL** selected.
 
-![greenCircle](images/greenCircle.png) 2.3. The [screenshot](images/ScreenshotCurlOnDockerCRUD.png)
+![greenCircle](images/greenCircle.png) 3.3. The [screenshot](images/ScreenshotCurlOnDockerCRUD.png)
 of the console log from the run of the batch file "**03 CURL on Docker CRUD.bat**" with **PostgreSQL** selected.
 
 [Back to the top of the page](#study28-readme-contents)
@@ -273,19 +282,18 @@ of the console log from the run of the batch file "**03 CURL on Docker CRUD.bat*
 Action: \
  ![orangeHR](images/orangeHR-500.png) \
  ![orangeSqr](images/orangeSquare.png) 1. Use
-  ["06 Express on local build and run.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/04%20Express%20on%20local%20build%20and%20run.bat)
+  ["06 Express on local build and run.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/06%20Express%20on%20local%20build%20and%20run.bat)
   to build and start the local application. \
- ![orangeSqr](images/orangeSquare.png) 2. Use **FIX IT**
-  ["07 CURL on local.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/05%20CURL%20on%20local%20init%20DB.bat)
+ ![orangeSqr](images/orangeSquare.png) 2. Use
+  ["07 CURL on local.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/07%20CURL%20on%20local.bat)
   to initialize database. \
- ![orangeSqr](images/orangeSquare.png) 3. Use **FIX IT**
-  ["07 CURL on local.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/06%20CURL%20on%20local%20CRUD.bat)
-  to create, read, update, and delete departments and employees. \
+ ![orangeHR](images/orangeHR-500.png)
+ ![orangeSqr](images/orangeSquare.png) 3. Use
+  [Links.html](https://github.com/k1729p/Study28/blob/main/0_batch/Links.html)
+  to call with the selected database the endpoint on Docker or on local. \
  ![orangeHR](images/orangeHR-500.png)
 
-**FIX IT** Use Links.html to ...
-
-![greenCircle](images/greenCircle.png) 3.1. See the screenshots showing the results of the **curl** tests.
+![greenCircle](images/greenCircle.png) 4.1. See the screenshots showing the results of the **curl** tests.
 
 [Back to the top of the page](#study28-readme-contents)
 
