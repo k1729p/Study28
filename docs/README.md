@@ -195,13 +195,13 @@ The **RepositoryLock** is an asynchronous read/write lock.
 - Normal repository operations use **shared lock** ensuring zero performance degradation \
    between parallel API calls under normal runtime conditions.
 
-- This lock is implemented for Cassandra, Elasticsearch, MySql, and Oracle databases.
-- This lock is not implemented for PostgreSQL and SQL Server databases because it is not required.
+This lock is implemented for Cassandra, Elasticsearch, MySql, and Oracle databases.
+This lock is not implemented for PostgreSQL and SQL Server databases because it is not required.
 
 <details>
 <summary>Database Transaction Support for Data Definition Language in Relational Databases:</summary>
 
-| Database | Transactional DDL? | Implicit Commit Behavior |
+| Database | Transactional DDL Support | Implicit Commit Behavior |
 | --- | --- | --- |
 | **MySQL** | **No** | Executing DDL causes an **implicit commit** of any open transaction and cannot be rolled back. |
 | **Oracle** | **No** | Automatically issues an implicit `COMMIT` right before and right after any DDL statement. |
