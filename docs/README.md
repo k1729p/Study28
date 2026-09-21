@@ -240,10 +240,10 @@ Action: \
   to build and start ten database containers. \
  ![orangeSqr](images/orangeSquare.png) 2. Use
   ["03 Express on Docker build and run.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/03%20Express%20on%20Docker%20build%20and%20run.bat)
-  to build the images and start the containers. \
+  to build the image and start the container. \
  ![orangeSqr](images/orangeSquare.png) 3. Use
   ["04 Docker reports menu.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/04%20Docker%20reports%20menu.bat)
-  to build the images and start the containers. \
+  to read Docker reports. \
  ![orangeSqr](images/orangeSquare.png) 4. Use
   ["05 CURL on Docker.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/02%20CURL%20on%20Docker.bat)
   to run curl tests. \
