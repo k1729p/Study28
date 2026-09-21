@@ -83,7 +83,7 @@ Project sections:
 ![greenCircle](images/greenCircle.png) 1.3. The environment variables file '[.env](https://github.com/k1729p/Study28/blob/main/.env)'.
 In this file are users and passwords for databases.
 
-![greenCircle](images/greenCircle.png) 1.4. The TypeScript sources are located in the directory [src](https://github.com/k1729p/Study28/blob/main/src).
+![greenCircle](images/greenCircle.png) 1.4. The **TypeScript sources** are located in the directory [src](https://github.com/k1729p/Study28/blob/main/src).
 
 ![blueHR](images/blueHR-500.png)
 
@@ -190,7 +190,7 @@ In this file are users and passwords for databases.
 
 ![blueHR](images/blueHR-500.png)
 
-The **RepositoryLock** is an asynchronous read/write lock.
+![greenCircle](images/greenCircle.png) 1.5. The **RepositoryLock** is an asynchronous read/write lock.
 
 - Entire schema recreation and initialization process uses **exclusive lock**.
 - Normal repository operations use **shared lock**.
