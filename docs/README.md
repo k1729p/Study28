@@ -12,6 +12,7 @@ Project sections:
 2. [Application Tests](#-application-tests)
 3. [Docker Build and Curl Tests](#-docker-build-and-curl-tests)
 4. [Local Build and Curl Tests](#-local-build-and-curl-tests)
+5. [Web Browser Client](#-web-browser-client)
 
 ---
 
@@ -257,9 +258,11 @@ Action: \
 - [Dockerfile](https://github.com/k1729p/Study28/blob/main/docker-config/Dockerfile)
 - [compose.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/compose.yaml)
   - [cassandra.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/cassandra.yaml)
+  - [chroma.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/chroma.yaml)
   - [elasticsearch.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/elasticsearch.yaml)
   - [mongodb.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/mongodb.yaml)
   - [mysql.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/mysql.yaml)
+  - [neo4j.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/neo4j.yaml)
   - [oracle.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/oracle.yaml)
   - [postgresql.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/postgresql.yaml)
   - [redis.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/redis.yaml)
@@ -288,12 +291,24 @@ Action: \
   ["07 CURL on local.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/07%20CURL%20on%20local.bat)
   to initialize database. \
  ![orangeHR](images/orangeHR-500.png)
- ![orangeSqr](images/orangeSquare.png) 3. Use
-  [Links.html](https://github.com/k1729p/Study28/blob/main/0_batch/Links.html)
-  to call with the selected database the endpoint on Docker or on local. \
- ![orangeHR](images/orangeHR-500.png)
 
 ![greenCircle](images/greenCircle.png) 4.1. See the screenshots showing the results of the **curl** tests.
+
+[Back to the top of the page](#study28-readme-contents)
+
+---
+
+## ❺ Web Browser Client
+
+Action: \
+ ![orangeHR](images/orangeHR-500.png) \
+ ![orangeSqr](images/orangeSquare.png) Open the file
+  [Links.html](https://github.com/k1729p/Study28/blob/main/0_batch/Links.html)
+  in a web browser. \
+ ![orangeHR](images/orangeHR-500.png)
+
+![greenCircle](images/greenCircle.png) 5.1. The GitHub preview in a browser of the page
+    [Links](https://htmlpreview.github.io/?https://github.com/k1729p/Study28/blob/main/0_batch/Links.html)
 
 [Back to the top of the page](#study28-readme-contents)
 
