@@ -192,10 +192,9 @@ In this file are users and passwords for databases.
 The **RepositoryLock** is an asynchronous read/write lock.
 
 - Entire schema recreation and initialization process uses **exclusive lock**.
-- Normal repository operations use **shared lock** ensuring zero performance degradation \
-   between parallel API calls under normal runtime conditions.
+- Normal repository operations use **shared lock**.
 
-This lock is implemented for Cassandra, Elasticsearch, MySql, and Oracle databases.
+This lock is implemented for Cassandra, Elasticsearch, MySql, and Oracle databases. \
 This lock is not implemented for PostgreSQL and SQL Server databases because it is not required.
 
 <details>
