@@ -7,6 +7,15 @@
         body {
           background-color: lightyellow
         }
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          border: 1px solid black;
+        }
+        table td {
+          padding: 3px;
+          border: 2px solid black;
+        }
         td.black {
           padding: 10px;
           border: 3px solid black;
@@ -35,12 +44,15 @@
           font-weight: bold;
         }
     </style>
+</style>	    
 </head>
 <body>
 <h1>Study 28</h1>
-<hr>
+<table>
+<tr><td>
+<h2>Express on <mark>Docker</mark></h2>
 <form>
-  <label class="combo" for="repositoryType">Express on <mark>Docker</mark>. Choose a database:</label>
+  <label class="combo" for="repositoryType">Choose a database:</label>
   <select class="combo" id="repositoryType" name="repositoryType">
     <option value="cassandra">Cassandra</option>
     <option value="chroma">Chroma</option>
@@ -76,9 +88,10 @@
     </td></tr>
   </table>
 </form>
-<hr>
+</td><td>
 <form>
-  <label class="combo" for="repositoryType">Express on <mark>local</mark>. Choose a database:</label>
+  <h2>Express on <mark>local</mark>. </h2>
+  <label class="combo" for="repositoryType">Choose a database:</label>
   <select class="combo" id="repositoryType" name="repositoryType">
     <option value="cassandra">Cassandra</option>
     <option value="chroma">Chroma</option>
@@ -114,8 +127,10 @@
     </td></tr>
   </table>
 </form>
-<hr>
-<h3>Neo4j browser: <a href="http://localhost:7474">http://localhost:7474</a></h3>
+</td></tr>
+</table>
+
+<h3>Neo4j (on Docker) browser: <a href="http://localhost:7474">http://localhost:7474</a></h3>
 Database user: neo4j<br>
 Password: mikimiki<br>
 <hr/>
