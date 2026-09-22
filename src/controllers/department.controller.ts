@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
 import { DepartmentService } from "../services/department.service.js";
-import { toRepositoryType, bodyToDepartment } from "./mappers.js";
+import { toRepositoryType, bodyToDepartment } from "./controller-mappers.js";
 import * as colors from "./../utils/colors.js";
 /**
  * This controller class provides methods to manage departments.

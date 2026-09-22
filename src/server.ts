@@ -1,9 +1,16 @@
-import { Aaa } from './aaa/aaa.js';
-// ####################################################################################################
 import express, { Request, Response, NextFunction, Router } from 'express';
 import { Server } from 'http';
 import cors from 'cors';
+
 import { config } from "./configuration/configuration.js";
+import { DepartmentController } from './controllers/department.controller.js';
+import { EmployeeController } from './controllers/employee.controller.js';
+import { InitializationController } from './controllers/initialization.controller.js';
+import { TransferController } from './controllers/transfer.controller.js';
+import { DepartmentService } from './services/department.service.js';
+import { EmployeeService } from './services/employee.service.js';
+import { InitializationService } from './services/initialization.service.js';
+import { TransferService } from './services/transfer.service.js';
 import { clientPromise as cassandraClientPromise } from "./repositories/cassandra/cassandra.pool.js";
 import { clientPromise as elasticsearchClientPromise } from "./repositories/elasticsearch/elasticsearch.pool.js";
 import { poolPromise as mongoDbPoolPromise } from "./repositories/mongodb/mongodb.pool.js";
@@ -13,15 +20,7 @@ import { poolPromise as oraclePoolPromise } from "./repositories/oracle/oracle.p
 import { poolPromise as postgreSqlPoolPromise } from "./repositories/postgresql/postgresql.pool.js";
 import { poolPromise as sqlServerPoolPromise } from "./repositories/sql-server/sql-server.pool.js";
 import { clientPromise as redisClientPromise } from "./repositories/redis/redis.pool.js";
-import { DepartmentController } from './controllers/department.controller.js';
-import { EmployeeController } from './controllers/employee.controller.js';
-import { InitializationController } from './controllers/initialization.controller.js';
-import { TransferController } from './controllers/transfer.controller.js';
 import { RED_BRIGHT, RESET } from "./utils/colors.js";
-import { DepartmentService } from './services/department.service.js';
-import { EmployeeService } from './services/employee.service.js';
-import { InitializationService } from './services/initialization.service.js';
-import { TransferService } from './services/transfer.service.js';
 
 main();
 
@@ -45,16 +44,13 @@ function main() {
   process.on('SIGINT', async () => shutdownServer(server));
   process.on('SIGTERM', async () => shutdownServer(server));
 }
+
 /**
  * This function creates a new Router instance and sets up a basic route.
- * @returns Router
+ * @returns the router
  */
 function createRouting(): Router {
   const router = Router();
-  // #################################################################################################### AAA
-  router.get('/initialize/', new Aaa().initialize);
-  router.get('/read/', new Aaa().read);
-  // ####################################################################################################
   const initializationController = new InitializationController(new InitializationService());
   router.post('/load/', initializationController.loadInitialData);
 
@@ -76,6 +72,7 @@ function createRouting(): Router {
   router.post('/transfers/', transferController.transferEmployees);
   return router;
 }
+
 /**
  * Error handling middleware.
  * @param err - The error object.
@@ -88,6 +85,7 @@ function errorHandler(err: Error, req: Request, res: Response, next: NextFunctio
   next(err);
   console.error("errorHandler():", err);
 }
+
 /**
  * Initialize and verify all database pools are ready
  */
@@ -112,6 +110,7 @@ async function initializeDatabasePools() {
     new Date().toUTCString().slice(17, 25), new Date().toTimeString().slice(0, 8), BANNER
   );
 }
+
 /**
  * Shutdowns the Express server.
  * @param server the server

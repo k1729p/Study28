@@ -19,4 +19,4 @@ call tsc -p tsconfig.json
 node dist/server.js
 pause
 
-::start "Study 28" /MAX node dist/server.js
+@REM start "Study 28" /MAX node dist/server.js

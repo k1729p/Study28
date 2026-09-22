@@ -10,7 +10,7 @@ import { InitializationController } from '../../controllers/initialization.contr
 import { DepartmentController } from '../../controllers/department.controller.js';
 import { EmployeeController } from '../../controllers/employee.controller.js';
 import { TransferController } from '../../controllers/transfer.controller.js';
-import { bodyToDepartments } from "../../controllers/mappers.js";
+import { bodyToDepartments } from "../../controllers/controller-mappers.js";
 import {
   checkDepartment, checkDepartments,
   checkEmployee, checkEmployees

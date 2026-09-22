@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 
 import { Department } from "../models/department.js";
 import { InitializationService } from "../services/initialization.service.js";
-import { toRepositoryType, bodyToDepartments } from "./mappers.js";
+import { toRepositoryType, bodyToDepartments } from "./controller-mappers.js";
 import * as colors from "./../utils/colors.js";
 /**
  * This controller class provides methods to initialize database and load data.

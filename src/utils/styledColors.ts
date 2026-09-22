@@ -1,6 +1,5 @@
 import { styleText } from "node:util";
 
-import { RepositoryType } from '../repositories/repository-type.js';
 /**
  * Utility functions for styled console output.
  * Optimized for readability on dark/standard Windows consoles.
@@ -24,21 +23,6 @@ export const blackOnCyan = (text: string) => styleText(['black', 'bgCyanBright']
 export const blackOnMagenta = (text: string) => styleText(['black', 'bgMagentaBright'], text);
 export const blackOnYellow = (text: string) => styleText(['black', 'bgYellowBright'], text);
 /**
- * Logging with repository type.
- */
-export const repo: Record<RepositoryType, (text: string) => string> = {
-  [RepositoryType.Cassandra]: (text) => styleText(['black', 'bgRedBright'], text),
-  [RepositoryType.Chroma]: (text) => styleText(['black', 'bgGreenBright'], text),
-  [RepositoryType.Elasticsearch]: (text) => styleText(['black', 'bgCyanBright'], text),
-  [RepositoryType.MongoDB]: (text) => styleText(['black', 'bgMagentaBright'], text),
-  [RepositoryType.MySQL]: (text) => styleText(['black', 'bgYellowBright'], text),
-  [RepositoryType.Neo4j]: (text) => styleText('redBright', text),
-  [RepositoryType.Oracle]: (text) => styleText('greenBright', text),
-  [RepositoryType.PostgreSQL]: (text) => styleText('cyanBright', text),
-  [RepositoryType.Redis]: (text) => styleText('magentaBright', text),
-  [RepositoryType.SQLServer]: (text) => styleText('yellowBright', text),
-};
-/**
  * Presents example messages.
  */
 export function printColorfulMessages() {
@@ -60,5 +44,4 @@ export function printColorfulMessages() {
   console.log(blackOnMagenta('Console Log Message Black On Magenta'));
   console.log(blackOnYellow('Console Log Message Black On Yellow'));
   console.log(blackOnWhite('Console Log Message Black On White'));
-
 }

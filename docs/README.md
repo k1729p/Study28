@@ -1,7 +1,5 @@
 # Study28 README Contents
 
-![wip](images/WORK-IN-PROGRESS.png)
-
 [![Color scheme for Study28 project](images/ColorScheme.png)](https://github.com/k1729p/Study28/tree/main/docs "View Study28 docs on GitHub")
 
 ## Research on Express web framework and databases
@@ -53,21 +51,20 @@ Project sections:
   - Delete employee by id
   - Transfer employees
 
-
 ![greenCircle](images/greenCircle.png) 1.2. The data stores.
 
 | Name | Type | Storage Abstraction | Query Language |
 | :--- | :--- | :--- | :--- |
-| [Cassandra][ds01] | Wide-Column Store | Table | CQL (Cassandra Query Language) |
-| [Chroma][ds02] | Vector Database | Collection | Chroma API (Python/JS Client) |
-| [Elasticsearch][ds03] | Search Engine / Document Store | Index / Document | Query DSL (JSON, built on Lucene) |
-| [MongoDB][ds04] | Document Store | Collection | MQL (MongoDB Query Language) |
-| [MySQL][ds05] | Relational | Table | SQL |
-| [Neo4j][ds06] | Graph Database | Node / Relationship | Cypher |
-| [Oracle][ds07] | Relational | Table | SQL / PL/SQL |
-| [PostgreSQL][ds08] | Relational | Table | SQL |
-| [Redis][ds09] | Key-Value / Cache | Hash / String | Redis Commands |
-| [SQL Server][ds10] | Relational | Table | T-SQL |
+| [Cassandra][ds01] | [Wide-Column Store][ds11] | Table | CQL (Cassandra Query Language) |
+| [Chroma][ds02] | [Vector Database][ds12] | Collection | Chroma API (Python/JS Client) |
+| [Elasticsearch][ds03] | Search Engine / [Document Store][ds13] | Index / Document | Query DSL (JSON, built on Lucene) |
+| [MongoDB][ds04] | [Document Store][ds13] | Collection | MQL (MongoDB Query Language) |
+| [MySQL][ds05] | [Relational][ds15] | Table | SQL |
+| [Neo4j][ds06] | [Graph Database][ds16] | Node / Relationship | Cypher |
+| [Oracle][ds07] | [Relational][ds15] | Table | SQL / PL/SQL |
+| [PostgreSQL][ds08] | [Relational][ds15] | Table | SQL |
+| [Redis][ds09] | [Key-Value][ds19] / Cache | Hash / String | Redis Commands |
+| [SQL Server][ds10] | [Relational][ds15] | Table | T-SQL |
 
 [ds01]: <https://cassandra.apache.org/_/index.html> "Apache Cassandra"
 [ds02]: <https://www.trychroma.com/> "Chroma"
@@ -79,11 +76,17 @@ Project sections:
 [ds08]: <https://www.postgresql.org/> "PostgreSQL"
 [ds09]: <https://redis.io/> "Redis"
 [ds10]: <https://www.microsoft.com/en-us/sql-server> "Microsoft SQL Server"
+[ds11]: <https://en.wikipedia.org/wiki/Wide-column_store> "Wide-Column Store"
+[ds12]: <https://en.wikipedia.org/wiki/Vector_database> "Vector Database"
+[ds13]: <https://en.wikipedia.org/wiki/Document-oriented_database> "Document-oriented database"
+[ds15]: <https://en.wikipedia.org/wiki/Relational_database> "Relational database"
+[ds16]: <https://en.wikipedia.org/wiki/Graph_database> "Graph database"
+[ds19]: <https://en.wikipedia.org/wiki/Key%E2%80%93value_database> "Key–value database"
 
 ![greenCircle](images/greenCircle.png) 1.3. The environment variables file '[.env](https://github.com/k1729p/Study28/blob/main/.env)'.
 In this file are users and passwords for databases.
 
-![greenCircle](images/greenCircle.png) 1.4. The **TypeScript sources** are located in the directory [src](https://github.com/k1729p/Study28/blob/main/src).
+![greenCircle](images/greenCircle.png) 1.4. The **TypeScript** sources are located in the directory [src](https://github.com/k1729p/Study28/blob/main/src).
 
 ![blueHR](images/blueHR-500.png)
 
@@ -198,18 +201,6 @@ In this file are users and passwords for databases.
 This lock is implemented for Cassandra, Elasticsearch, MySql, and Oracle databases. \
 This lock is not implemented for PostgreSQL and SQL Server databases, because it is not required.
 
-<details>
-<summary>Database Transaction Support for Data Definition Language in Relational Databases:</summary>
-
-| Database | Transactional DDL Support | Implicit Commit Behavior |
-| --- | --- | --- |
-| **MySQL** | **No** | Executing DDL causes an **implicit commit** of any open transaction and cannot be rolled back. |
-| **Oracle** | **No** | Automatically issues an implicit `COMMIT` right before and right after any DDL statement. |
-| **PostgreSQL** | **Yes** | DDL stays inside standard `BEGIN ... COMMIT` blocks. If anything fails, everything rolls back seamlessly. |
-| **SQL Server** | **Yes** | Standard `BEGIN TRANSACTION` covers `CREATE TABLE`, `DROP TABLE`, etc. |
-
-</details>
-
 [Back to the top of the page](#study28-readme-contents)
 
 ---
@@ -223,7 +214,7 @@ Action: \
   to start application tests. \
  ![orangeHR](images/orangeHR-500.png)
 
-![greenCircle](images/greenCircle.png) 2.1. Testing Architecture
+![greenCircle](images/greenCircle.png) 2.1. The testing architecture.
 
 - Controller/Route Layer: Component/Integration tested using **Supertest** and **Vitest** Mocks.
 - Service Layer: Unit tested using **Vitest** (business logic, validation, database calls).
@@ -271,10 +262,10 @@ Action: \
 </details>
 
 ![greenCircle](images/greenCircle.png) 3.2. The [screenshot](images/ScreenshotCurlOnDockerInitDB.png)
-of the console log from the run of the batch script "**CURL_init_DB.bat**" with **PostgreSQL** selected.
+of the console log from the run of the batch script "CURL_init_DB.bat" with **PostgreSQL** selected.
 
 ![greenCircle](images/greenCircle.png) 3.3. The [screenshot](images/ScreenshotCurlOnDockerCRUD.png)
-of the console log from the run of the batch script "**CURL_CRUD.bat**" with **PostgreSQL** selected.
+of the console log from the run of the batch script "CURL_CRUD.bat" with **PostgreSQL** selected.
 
 [Back to the top of the page](#study28-readme-contents)
 
@@ -289,10 +280,8 @@ Action: \
   to build and start the local application. \
  ![orangeSqr](images/orangeSquare.png) 2. Use
   ["07 CURL on local.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/07%20CURL%20on%20local.bat)
-  to initialize database. \
+  to run curl tests. \
  ![orangeHR](images/orangeHR-500.png)
-
-![greenCircle](images/greenCircle.png) 4.1. See the screenshots showing the results of the **curl** tests.
 
 [Back to the top of the page](#study28-readme-contents)
 
@@ -308,7 +297,7 @@ Action: \
  ![orangeHR](images/orangeHR-500.png)
 
 ![greenCircle](images/greenCircle.png) 5.1. The GitHub preview in a browser of the page
-    [Links](https://htmlpreview.github.io/?https://github.com/k1729p/Study28/blob/main/0_batch/Links.html)
+    [Links](https://htmlpreview.github.io/?https://github.com/k1729p/Study28/blob/main/0_batch/Links.html).
 
 [Back to the top of the page](#study28-readme-contents)
 
@@ -320,6 +309,7 @@ Action: \
 | :--- | :--- |
 | [Node.js](https://nodejs.org/en/) | JavaScript runtime environment |
 | [Express](https://expressjs.com/) | Web framework for Node.js |
+| [Vitest](https://vitest.dev/) | Testing framework |
 | [Cassandra glossary](https://cassandra.apache.org/_/glossary.html) | |
 | [Chroma Data Model](https://docs.trychroma.com/reference/architecture/overview#chroma-data-model) | |
 | [Elastic glossary](https://www.elastic.co/docs/reference/glossary) | |
@@ -343,7 +333,16 @@ The Table-Valued Parameter design pattern and programming feature allows you to 
 
 ## Info
 
-Comparison of "Startup Health Checks"
+Database Transaction Support for Data Definition Language in Relational Databases:
+
+| Database | Transactional DDL Support | Implicit Commit Behavior |
+| --- | --- | --- |
+| **MySQL** | **No** | Executing DDL causes an **implicit commit** of any open transaction and cannot be rolled back. |
+| **Oracle** | **No** | Automatically issues an implicit `COMMIT` right before and right after any DDL statement. |
+| **PostgreSQL** | **Yes** | DDL stays inside standard `BEGIN ... COMMIT` blocks. If anything fails, everything rolls back seamlessly. |
+| **SQL Server** | **Yes** | Standard `BEGIN TRANSACTION` covers `CREATE TABLE`, `DROP TABLE`, etc. |
+
+Comparison of "Startup Health Checks":
 
 | **Database** | **Driver** | **Behavior of createPool / connect** | **Recommended Health Check Logic** |
 | :--- | :--- | :--- | :--- |

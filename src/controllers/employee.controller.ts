@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
 import { EmployeeService } from "../services/employee.service.js";
-import { toRepositoryType, bodyToEmployee } from "./mappers.js";
+import { toRepositoryType, bodyToEmployee } from "./controller-mappers.js";
 import * as colors from "./../utils/colors.js";
 /**
  * This controller class provides methods to manage employees.

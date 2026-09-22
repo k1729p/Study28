@@ -8,142 +8,88 @@ cd ..
 :menu
 set KEY=
 set LABEL=
+echo --- Docker Reports ---
 echo - - - - - - - - - - - - - - -
-echo [A] container ps
-echo [B] compose ps study28
-echo [C] compose ps databases
+echo [A] Database Containers Health
+echo [B] Statistics
+echo [C] Containers
 echo - - - - - - - - - - - - - - -
-echo [D] volume
-echo [E] image
-echo [F] compose images
-echo - - - - - - - - - - - - - - -
-echo [G] compose ls
-echo [H] network ?????????????????????????????????????????
-echo [I] Express statistics
-echo - - - - - - - - - - - - - - -
-echo [J] databases statistics
-echo [K] Express logs
+echo [D] Images and Volumes
+echo [E] Network Inspect
+echo [F] Express Server Logs
 echo - - - - - - - - - - - - - - -
 echo Press any other key to quit
 set /P KEY="Select an option: "
 if /i "%KEY:~0,1%"=="A" (
-  set LABEL=[A] container ps
-  call :ContainerPs
+  set LABEL=[A] container health
+  call :container_health
 ) else if /i "%KEY:~0,1%"=="B" (
-  set LABEL=[B] compose ps study28
-  call :composePsStudy28
+  set LABEL=[B] statistics
+  call :statistics
 ) else if /i "%KEY:~0,1%"=="C" (
-  set LABEL=[C] compose ps databases
-  call :composePsDatabases
+  set LABEL=[C] containers
+  call :containers
 ) else if /i "%KEY:~0,1%"=="D" (
-  set LABEL=[D] volume
-  call :Volume
+  set LABEL=[D] images and volumes
+  call :images_and_volumes
 ) else if /i "%KEY:~0,1%"=="E" (
-  set LABEL=[E] image
-  call :Image
+  set LABEL=[E] network inspect
+  call :network_inspect
 ) else if /i "%KEY:~0,1%"=="F" (
-  set LABEL=[F] compose images
-  call :composeImages
-) else if /i "%KEY:~0,1%"=="G" (
-  set LABEL=[G] compose ls
-  call :composeLs
-) else if /i "%KEY:~0,1%"=="H" (
-  set LABEL=[H] inspect network
-  call :InspectNetwork
-) else if /i "%KEY:~0,1%"=="I" (
-  set LABEL=[I] Express statistics
-  call :ExpressStatistics
-) else if /i "%KEY:~0,1%"=="J" (
-  set LABEL=[J] databases statistics
-  call :DatabasesStatistics
-) else if /i "%KEY:~0,1%"=="K" (
-  set LABEL=[K] Express logs
-  call :ExpressLogs
+  set LABEL=[F] Express server logs
+  call :express_logs
 ) else (
   goto :eof
 )
 goto menu
-:: =================================================================================================================================================
-:ContainerPs
-cls
+@REM #################################################################################################################################################
+:container_health
 start "Container Health" /MAX 0_batch\scripts\showContainerHealth.bat
-call :RedLabelAndPause
 cls
 goto :eof
-:: =================================================================================================================================================
-:composePsStudy28
-cls
-docker compose -f %COMPOSE_FILE% -p %PROJECT% ps
-call :RedLabelAndPause
+@REM #################################################################################################################################################
+:statistics
+start "Express statistics" /MAX docker compose -f %COMPOSE_FILE% -p %PROJECT% stats
+start "Databases statistics" /MAX docker compose -f %COMPOSE_DATABASES_FILE% -p %PROJECT_DATABASES% stats
 cls
 goto :eof
-:: =================================================================================================================================================
-:composePsDatabases
+@REM #################################################################################################################################################
+:containers
 cls
 docker compose -f %COMPOSE_DATABASES_FILE% -p %PROJECT_DATABASES% ps
+echo ------------------------------------------------------------------------------------------
+docker compose -f %COMPOSE_FILE% -p %PROJECT% ps
+echo ------------------------------------------------------------------------------------------
+echo --- List Running Compose Projects ---
+docker compose ls
 call :RedLabelAndPause
-cls
 goto :eof
-:: =================================================================================================================================================
-:Volume
-cls
-docker volume ls
-call :RedLabelAndPause
-cls
-goto :eof
-:: =================================================================================================================================================
-:Image
-cls
-docker image ls
-call :RedLabelAndPause
-cls
-goto :eof
-:: =================================================================================================================================================
-:composeImages
+@REM #################################################################################################################################################
+:images_and_volumes
 cls
 docker compose -f %COMPOSE_FILE% -p %PROJECT% images
 echo ------------------------------------------------------------------------------------------
 docker compose -f %COMPOSE_DATABASES_FILE% -p %PROJECT_DATABASES% images
+echo ------------------------------------------------------------------------------------------
+echo --- Volumes ---
+docker volume ls
 call :RedLabelAndPause
-cls
 goto :eof
-:: =================================================================================================================================================
-:composeLs
-cls
-docker compose ls
-call :RedLabelAndPause
-cls
-goto :eof
-:: =================================================================================================================================================
-:InspectNetwork
+@REM #################################################################################################################################################
+:network_inspect
 cls
 docker network inspect net
 call :RedLabelAndPause
-cls
 goto :eof
-:: =================================================================================================================================================
-:ExpressStatistics
-start "Express statistics" /MAX docker compose -f %COMPOSE_FILE% -p %PROJECT% stats
-cls
-goto :eof
-:: =================================================================================================================================================
-:DatabasesStatistics
-cls
-start "Databases statistics" /MAX docker compose -f %COMPOSE_DATABASES_FILE% -p %PROJECT_DATABASES% stats
-cls
-goto :eof
-:: =================================================================================================================================================
-:ExpressLogs
+@REM #################################################################################################################################################
+:express_logs
 cls
 docker compose -f %COMPOSE_FILE% -p %PROJECT% logs
 call :RedLabelAndPause
-cls
 goto :eof
-:: =================================================================================================================================================
+@REM #################################################################################################################################################
 :RedLabelAndPause
 powershell -Command Write-Host "FINISH %LABEL%" -foreground "Red"
 pause
+cls
 goto :eof
-:: =================================================================================================================================================
-:quit
-echo.&pause

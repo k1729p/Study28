@@ -18,7 +18,7 @@ if "%SHOW_LOGS%"=="Y" (
 ) else (
   set CLI_ARGS=%CLI_ARGS% --silent=true
 )
-::set CLI_ARGS=%CLI_ARGS% --no-color
+@REM set CLI_ARGS=%CLI_ARGS% --no-color
 cd ..
 
 powershell $(Get-Date)

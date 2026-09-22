@@ -6,7 +6,7 @@ import { StatusCodes } from 'http-status-codes';
 import { Department } from "../../models/department.js";
 import { RepositoryType } from '../../repositories/repository-type.js';
 import { InitializationController } from '../../controllers/initialization.controller.js';
-import { bodyToDepartments } from "../../controllers/mappers.js";
+import { bodyToDepartments } from "../../controllers/controller-mappers.js";
 import { createMockInitializationService, testErrorHandler } from '../tests.helpers.js';
 import {
   LOAD_URI,
