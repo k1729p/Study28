@@ -2,7 +2,7 @@
 
 [![Color scheme for Study28 project](images/ColorScheme.png)](https://github.com/k1729p/Study28/tree/main/docs "View Study28 docs on GitHub")
 
-## Research on Express web framework and databases
+## Research on Express web framework and ten databases
 
 Project sections:
 
@@ -297,7 +297,7 @@ Action: \
  ![orangeHR](images/orangeHR-500.png)
 
 ![greenCircle](images/greenCircle.png) 5.1. The GitHub preview in a browser of the page
-    [Links](https://htmlpreview.github.io/?https://github.com/k1729p/Study28/blob/main/0_batch/Links.html).
+  [Links](https://htmlpreview.github.io/?https://github.com/k1729p/Study28/blob/main/0_batch/Links.html).
 
 [Back to the top of the page](#study28-readme-contents)
 
@@ -313,27 +313,14 @@ Action: \
 | [Cassandra glossary](https://cassandra.apache.org/_/glossary.html) | |
 | [Chroma Data Model](https://docs.trychroma.com/reference/architecture/overview#chroma-data-model) | |
 | [Elastic glossary](https://www.elastic.co/docs/reference/glossary) | |
-| [Neo4j browser](http://localhost:7474/browser/) | |
 | [Neo4j Cypher cheat sheet](https://neo4j.com/docs/cypher-cheat-sheet/) | Cypher is Neo4j’s graph query language |
 | [Neo4j Cypher manual](https://neo4j.com/docs/cypher-manual/) | |
 
 ---
 
-## Acronyms
-
-| Acronym | Meaning |
-| :--- | :--- |
-| TVP | Table-Valued Parameter |
-
-The Table-Valued Parameter design pattern and programming feature allows you to pass entire tables of data as a single parameter into stored procedures or functions, rather than sending rows one by one or parsing XML/JSON strings.
-
-[Back to the top of the page](#study28-readme-contents)
-
----
-
 ## Info
 
-Database Transaction Support for Data Definition Language in Relational Databases:
+**A**. Database Transaction Support for Data Definition Language in Relational Databases.
 
 | Database | Transactional DDL Support | Implicit Commit Behavior |
 | --- | --- | --- |
@@ -342,7 +329,7 @@ Database Transaction Support for Data Definition Language in Relational Database
 | **PostgreSQL** | **Yes** | DDL stays inside standard `BEGIN ... COMMIT` blocks. If anything fails, everything rolls back seamlessly. |
 | **SQL Server** | **Yes** | Standard `BEGIN TRANSACTION` covers `CREATE TABLE`, `DROP TABLE`, etc. |
 
-Comparison of "Startup Health Checks":
+**B**. Comparison of "Startup Health Checks".
 
 | **Database** | **Driver** | **Behavior of createPool / connect** | **Recommended Health Check Logic** |
 | :--- | :--- | :--- | :--- |
@@ -350,3 +337,6 @@ Comparison of "Startup Health Checks":
 | PostgreSQL | pg | Lazy: Pool object is created synchronously. | Required: Call pool.connect() then release(). |
 | Oracle | oracledb | Eager: Fails if it can't open initial connections. | Optional: Call pool.getConnection() then close(). |
 | SQL Server | mssql | Eager: .connect() fails if server is unreachable. | Already Done: The .connect() call is the check. |
+
+**C**. TVP design pattern.
+The Table-Valued Parameter design pattern and programming feature allows you to pass entire tables of data as a single parameter into stored procedures or functions, rather than sending rows one by one or parsing XML/JSON strings.
