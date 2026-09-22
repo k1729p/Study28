@@ -324,14 +324,14 @@ Action: \
 
 | Database | Transactional DDL Support | Implicit Commit Behavior |
 | --- | --- | --- |
-| **MySQL** | **No** | Executing DDL causes an **implicit commit** of any open transaction and cannot be rolled back. |
-| **Oracle** | **No** | Automatically issues an implicit `COMMIT` right before and right after any DDL statement. |
-| **PostgreSQL** | **Yes** | DDL stays inside standard `BEGIN ... COMMIT` blocks. If anything fails, everything rolls back seamlessly. |
-| **SQL Server** | **Yes** | Standard `BEGIN TRANSACTION` covers `CREATE TABLE`, `DROP TABLE`, etc. |
+| MySQL | No | Executing DDL causes an implicit commit of any open transaction and cannot be rolled back. |
+| Oracle | No | Automatically issues an implicit `COMMIT` right before and right after any DDL statement. |
+| PostgreSQL | Yes | DDL stays inside standard `BEGIN ... COMMIT` blocks. If anything fails, everything rolls back seamlessly. |
+| SQL Server | Yes | Standard `BEGIN TRANSACTION` covers `CREATE TABLE`, `DROP TABLE`, etc. |
 
 **B**. Comparison of "Startup Health Checks".
 
-| **Database** | **Driver** | **Behavior of createPool / connect** | **Recommended Health Check Logic** |
+| Database | Driver | Behavior of createPool / connect | Recommended Health Check Logic |
 | :--- | :--- | :--- | :--- |
 | MySQL | mysql2 | Lazy: Doesn't check connection until first query. | Required: Call pool.getConnection() then release(). |
 | PostgreSQL | pg | Lazy: Pool object is created synchronously. | Required: Call pool.connect() then release(). |
