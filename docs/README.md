@@ -40,16 +40,16 @@ Project sections:
   - [SQL Server](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipSQL-Server.md)
   - [Redis](https://github.com/k1729p/Study28/blob/main/docs/mermaid/flowchartRedis.md)
 - 🔸 Sequence diagrams
-  - Load initial data
-  - [Create department](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagram.md)
-  - Read department by id
-  - Update department by id
-  - Delete department by id
-  - Create employee
-  - Read employee by id
-  - Update employee by id
-  - Delete employee by id
-  - Transfer employees
+  - [Load initial data](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramLoadInitialData.md)
+  - [Create department](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramCreateDepartment.md)
+  - [Read department by id](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramReadDepartment.md)
+  - [Update department by id](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramUpdateDepartment.md)
+  - [Delete department by id](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramDeleteDepartment.md)
+  - [Create employee](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramCreateEmployee.md)
+  - [Read employee by id](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramReadEmployee.md)
+  - [Update employee by id](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramUpdateEmployee.md)
+  - [Delete employee by id](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramDeleteEmployee.md)
+  - [Transfer employees](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramTransferEmployees.md)
 
 ![greenCircle](images/greenCircle.png) 1.2. The data stores.
 
@@ -338,6 +338,15 @@ Action: \
 | Oracle | oracledb | Eager: Fails if it can't open initial connections. | Optional: Call pool.getConnection() then close(). |
 | SQL Server | mssql | Eager: .connect() fails if server is unreachable. | Already Done: The .connect() call is the check. |
 
-**C**. TVP design pattern.
+**C**. The sequence diagrams use **Boundary–Control–Entity (BCE)** pattern.
 
-The Table-Valued Parameter design pattern and programming feature allows you to pass entire tables of data as a single parameter into stored procedures or functions, rather than sending rows one by one or parsing XML/JSON strings.
+| Stereotype | Represents |
+|---|---|
+| **Actor** | An external party outside the system (a human user, an external client/system) |
+| **Boundary** | The system's own interface layer — the first thing an external actor touches (a UI screen, an API endpoint/controller) |
+| **Control** | The orchestration/business-logic layer that coordinates the use case |
+| **Entity** | Persistent domain data (a model, or the data store itself) |
+
+**D**. TVP design pattern.
+
+The **Table-Valued Parameter*** design pattern and programming feature allows you to pass entire tables of data as a single parameter into stored procedures or functions, rather than sending rows one by one or parsing XML/JSON strings.

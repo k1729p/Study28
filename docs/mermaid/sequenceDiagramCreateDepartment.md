@@ -2,22 +2,21 @@
 
 ```mermaid
 sequenceDiagram
-
 box aliceblue Client Layer
-    participant API_CLI as API Client
+  participant API_CLI@{ "type": "actor" } as API Client
 end
 box honeydew Controller Layer
-    participant CTRL as DepartmentController
+  participant CTRL@{ "type": "boundary" } as DepartmentController
 end
 box cornsilk Service Layer
-    participant SERV as DepartmentService
+  participant SERV@{ "type": "control" } as DepartmentService
 end
 box bisque Repository Layer
-    participant REPO as PostgreSQLDepartmentRepository
-    participant POOL as Pool<br>(postgresql.pool.js)
+  participant REPO as PostgreSQLDepartmentRepository
+  participant POOL as Pool<br>(postgresql.pool.js)
 end
-box mistyrose Databas Layer
-    participant PSQL as PostgreSQL
+box mistyrose Database Layer
+  participant PSQL@{ "type" : "database" } as PostgreSQL
 end
 
 autonumber 1
@@ -39,10 +38,10 @@ CTRL -->>- API_CLI: 201 Created (JSON Response)
 
 ## Process Logic
 
-1. **API Client**: For example **curl**. Sends the Request
+1. **API Client**: Sends the Request (for example **curl**).
 1. **Controller**: Receives the Request and extracts the _repositoryType_ from the query string and the department from the body.
 1. **Service**: Acts as an orchestrator, specifically calling _postgreSQLDepartmentRepository.createDepartment_ based on the passed type.
-1. **PostgreSQL Repository**: Uses the PostgreSQL Pool to acquire a client and executes the parameterized SQL query.
-1. **PostgreSQL Database**: Returns the execution result to the repository.
+1. **Repository**: Uses the PostgreSQL Pool to acquire a client and executes the parameterized SQL query.
+1. **Database**: Returns the execution result from PostgreSQL database to the repository.
 
 ---
