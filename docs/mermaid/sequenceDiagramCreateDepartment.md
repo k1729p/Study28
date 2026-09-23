@@ -38,7 +38,7 @@ CTRL -->>- API_CLI: 201 Created (JSON Response)
 
 ## Process Logic
 
-1. **API Client**: Sends the Request (for example **curl**).
+1. **API Client**: Sends the Request.
 1. **Controller**: Receives the Request and extracts the _repositoryType_ from the query string and the department from the body.
 1. **Service**: Acts as an orchestrator, specifically calling _postgreSQLDepartmentRepository.createDepartment_ based on the passed type.
 1. **Repository**: Uses the PostgreSQL Pool to acquire a client and executes the parameterized SQL query.
