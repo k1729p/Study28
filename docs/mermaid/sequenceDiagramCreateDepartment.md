@@ -49,7 +49,7 @@ deactivate CTRL
 
 ## Process Logic
 
-1. **API Client**: Sends the Request (for example **curl**) with a JSON body containing the new department's fields, including its _id_.
+1. **API Client**: Sends the Request with a JSON body containing the new department's fields, including its _id_.
 1. **Controller**: Receives the Request, extracts the _repositoryType_ from the query string, and maps the request body to a Department via _bodyToDepartment_, validating that it contains an _id_ (otherwise **400 Bad Request** is returned).
 1. **Service**: Acts as an orchestrator, delegating to _postgreSQLDepartmentRepository.createDepartment_ based on the passed type. No numeric range validation of the _id_ is performed here, since the _id_ originates from the validated request body.
 1. **Repository**: Uses the PostgreSQL Pool to acquire a client and, within a transaction, executes the parameterized `INSERT_DEPARTMENT_SQL` statement.
