@@ -289,12 +289,11 @@ Action: \
 
 </details>
 
-![greenCircle](images/greenCircle.png) 3.2. The [screenshot](images/ScreenshotCurlOnDockerInitDB.png)
-of the console log from the run of the batch script
-["CURL_init_DB.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/scripts/CURL_init_DB.bat) with **PostgreSQL** selected.
+![greenCircle](images/greenCircle.png) 3.2. Curl tests results in console log.
 
-![greenCircle](images/greenCircle.png) 3.3. The [screenshot](images/ScreenshotCurlOnDockerCRUD.png)
-of the console log from the run of the batch script 
+- The [screenshot](images/ScreenshotCurlOnDockerInitDB.png) from the run of the script
+["CURL_init_DB.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/scripts/CURL_init_DB.bat) with **PostgreSQL** selected.
+- The [screenshot](images/ScreenshotCurlOnDockerCRUD.png) from the run of the script
 ["CURL_CRUD.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/scripts/CURL_CRUD.bat) with **PostgreSQL** selected.
 
 [Back to the top of the page](#study28-readme-contents)
