@@ -31,9 +31,10 @@ Project sections:
 
 - 🔸 Class diagrams
 
-| | | | |
-| :--- | :--- | :--- | :--- | :--- |
-| [Models] | [Controllers] | [Services] | [Repositories] |
+| | | |
+| :--- | :--- | :--- |
+| [Models] | | |
+| [Controllers] | [Services] | [Repositories] |
 
 [Models]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramModels.md>
 [Controllers]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramControllers.md>
