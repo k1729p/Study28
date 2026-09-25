@@ -31,7 +31,7 @@ Project sections:
 
 - 🔸 Class diagrams
 
-| | | | | |
+| | | | |
 | :--- | :--- | :--- | :--- | :--- |
 | [Models] | [Controllers] | [Services] | [Repositories] |
 
