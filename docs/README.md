@@ -18,9 +18,7 @@ Project sections:
 
 ![flowchart](images/ScreenshotFlowchartBusinessLogic.jpg)
 
-![greenCircle](images/greenCircle.png) 1.1. The diagrams.
-
-- 🔸 Layered architecture diagrams
+![greenCircle](images/greenCircle.png) 1.1. The layered architecture diagrams
 
 | | |
 | :--- | :--- |
@@ -29,7 +27,7 @@ Project sections:
 [Layer dependencies]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/layerDependenciesDiagram.md>
 [Layer data flow]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/layerDataFlowDiagram.md>
 
-- 🔸 Class diagrams
+![greenCircle](images/greenCircle.png) 1.2. The class diagrams
 
 | | | |
 | :--- | :--- | :--- |
@@ -41,7 +39,7 @@ Project sections:
 [Services]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramServices.md>
 [Repositories]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramRepositories.md>
 
-- 🔸 Entity relationship diagrams
+![greenCircle](images/greenCircle.png) 1.3. The entity relationship diagrams
 
 | | | | | |
 | :--- | :--- | :--- | :--- | :--- |
@@ -59,7 +57,7 @@ Project sections:
 [SQL Server]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipSQL-Server.md>
 [Redis]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/flowchartRedis.md>
 
-- 🔸 Sequence diagrams with process logic description
+![greenCircle](images/greenCircle.png) 1.4. The sequence diagrams with process logic description
 
 | | | | |
 | :--- | :--- | :--- | :--- |
@@ -79,7 +77,7 @@ Project sections:
 [Delete employee by id]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramDeleteEmployee.md>
 [Transfer employees]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramTransferEmployees.md>
 
-![greenCircle](images/greenCircle.png) 1.2. The data stores.
+![greenCircle](images/greenCircle.png) 1.5. The data stores summary.
 
 | Name | Type | Storage Abstraction | Query Language |
 | :--- | :--- | :--- | :--- |
@@ -111,10 +109,10 @@ Project sections:
 [ds16]: <https://en.wikipedia.org/wiki/Graph_database> "Graph database"
 [ds19]: <https://en.wikipedia.org/wiki/Key%E2%80%93value_database> "Key–value database"
 
-![greenCircle](images/greenCircle.png) 1.3. The environment variables file '[.env](https://github.com/k1729p/Study28/blob/main/.env)'.
+![greenCircle](images/greenCircle.png) 1.6. The environment variables file '[.env](https://github.com/k1729p/Study28/blob/main/.env)'.
 In this file are users and passwords for databases.
 
-![greenCircle](images/greenCircle.png) 1.4. The **TypeScript** sources are located in the directory [src](https://github.com/k1729p/Study28/blob/main/src).
+![greenCircle](images/greenCircle.png) 1.7. The **TypeScript** sources are located in the directory [src](https://github.com/k1729p/Study28/blob/main/src).
 
 ![blueHR](images/blueHR-500.png)
 
@@ -221,7 +219,7 @@ In this file are users and passwords for databases.
 
 ![blueHR](images/blueHR-500.png)
 
-![greenCircle](images/greenCircle.png) 1.5. The **RepositoryLock** is an asynchronous read/write lock.
+![greenCircle](images/greenCircle.png) 1.9. The **RepositoryLock** is an asynchronous read/write lock.
 
 - Entire schema recreation and initialization process uses **exclusive lock**.
 - Normal repository operations use **shared lock**.
