@@ -269,22 +269,22 @@ Action: \
 
 ![greenCircle](images/greenCircle.png) 3.1. **Docker** scripts:
 
-[Dockerfile](https://github.com/k1729p/Study28/blob/main/docker-config/Dockerfile)
-
-[compose.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/compose.yaml)
+- [Dockerfile](https://github.com/k1729p/Study28/blob/main/docker-config/Dockerfile)
+- [docker-compose.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/docker-compose.yaml)
+- [docker-compose-databases.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/docker-compose-databases.yaml)
 
 <details>
-<summary>includes</summary>
-  - [cassandra.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/cassandra.yaml)
-  - [chroma.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/chroma.yaml)
-  - [elasticsearch.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/elasticsearch.yaml)
-  - [mongodb.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/mongodb.yaml)
-  - [mysql.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/mysql.yaml)
-  - [neo4j.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/neo4j.yaml)
-  - [oracle.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/oracle.yaml)
-  - [postgresql.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/postgresql.yaml)
-  - [redis.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/redis.yaml)
-  - [sql-server.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/sql-server.yaml)
+<summary>included database scripts</summary>
+- [cassandra.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/cassandra.yaml)
+- [chroma.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/chroma.yaml)
+- [elasticsearch.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/elasticsearch.yaml)
+- [mongodb.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/mongodb.yaml)
+- [mysql.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/mysql.yaml)
+- [neo4j.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/neo4j.yaml)
+- [oracle.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/oracle.yaml)
+- [postgresql.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/postgresql.yaml)
+- [redis.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/redis.yaml)
+- [sql-server.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/sql-server.yaml)
 </details>
 
 ![greenCircle](images/greenCircle.png) 3.2. The [screenshot](images/ScreenshotCurlOnDockerInitDB.png)
