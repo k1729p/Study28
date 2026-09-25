@@ -269,10 +269,11 @@ Action: \
 
 ![greenCircle](images/greenCircle.png) 3.1. **Docker** scripts:
 
-- [Dockerfile](https://github.com/k1729p/Study28/blob/main/docker-config/Dockerfile)
-- [compose.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/compose.yaml)
+[Dockerfile](https://github.com/k1729p/Study28/blob/main/docker-config/Dockerfile)
 
-- <details>
+[compose.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/compose.yaml)
+
+<details>
 <summary>includes</summary>
   - [cassandra.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/cassandra.yaml)
   - [chroma.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/chroma.yaml)
