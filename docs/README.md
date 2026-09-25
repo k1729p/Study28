@@ -289,7 +289,7 @@ Action: \
 
 </details>
 
-![greenCircle](images/greenCircle.png) 3.2. Curl test results.
+![greenCircle](images/greenCircle.png) 3.2. **Curl** test results.
 
 - The [screenshot](images/ScreenshotCurlOnDockerInitDB.png) from the run of the script
 ["CURL_init_DB.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/scripts/CURL_init_DB.bat) with **PostgreSQL** selected.

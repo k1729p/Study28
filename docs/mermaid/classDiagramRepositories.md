@@ -8,31 +8,33 @@
 ---
 classDiagram
   direction LR
-%% Initialization Repositories
-  class InitializationRepository:::mistyrose {
+%% Initialization
+  class Initialization:::mistyrose {
     <<interface>>
     +loadInitialData(departmentArray: Department[]) Promise~void~
   }
 
-  class CassandraInitializationRepository:::gold { }
-  class ElasticsearchInitializationRepository:::salmon { }
-  class MongoDbInitializationRepository:::red { }
-  class MySqlInitializationRepository:::magenta { }
-  class Neo4jInitializationRepository:::blue { }
-  class OracleInitializationRepository:::cyan { }
-  class PostgreSQLInitializationRepository:::lime { }
-  class RedisInitializationRepository:::green { }
-  class SQLServerInitializationRepository:::brown { }
+  class CassandraInitialization:::yellow { }
+  class ChromaInitialization:::gold { }
+  class ElasticsearchInitialization:::salmon { }
+  class MongoDbInitialization:::red { }
+  class MySqlInitialization:::magenta { }
+  class Neo4jInitialization:::blue { }
+  class OracleInitialization:::cyan { }
+  class PostgreSQLInitialization:::lime { }
+  class RedisInitialization:::green { }
+  class SQLServerInitialization:::brown { }
 
-  InitializationRepository <|.. CassandraInitializationRepository
-  InitializationRepository <|.. ElasticsearchInitializationRepository
-  InitializationRepository <|.. MongoDbInitializationRepository
-  InitializationRepository <|.. MySqlInitializationRepository
-  InitializationRepository <|.. Neo4jInitializationRepository
-  InitializationRepository <|.. OracleInitializationRepository
-  InitializationRepository <|.. PostgreSQLInitializationRepository
-  InitializationRepository <|.. RedisInitializationRepository
-  InitializationRepository <|.. SQLServerInitializationRepository
+  Initialization <|.. CassandraInitialization
+  Initialization <|.. ChromaInitialization
+  Initialization <|.. ElasticsearchInitialization
+  Initialization <|.. MongoDbInitialization
+  Initialization <|.. MySqlInitialization
+  Initialization <|.. Neo4jInitialization
+  Initialization <|.. OracleInitialization
+  Initialization <|.. PostgreSQLInitialization
+  Initialization <|.. RedisInitialization
+  Initialization <|.. SQLServerInitialization
 %% Department Repositories
   class DepartmentRepository:::light_c_y_a_n {
     <<interface>>
@@ -41,10 +43,10 @@ classDiagram
     +getDepartment(id: number) Promise~Department | undefined~
     +updateDepartment(department: Department) Promise~void~
     +deleteDepartment(id: number) Promise~void~
-    +transferEmployees(sourceId: number, targetId: number, employeeIds: number[]) Promise~void~
   }
 
-  class CassandraDepartmentRepository:::gold { }
+  class CassandraDepartmentRepository:::yellow { }
+  class ChromaDepartmentRepository:::gold { }
   class ElasticsearchDepartmentRepository:::salmon { }
   class MongoDbDepartmentRepository:::red { }
   class MySqlDepartmentRepository:::magenta { }
@@ -55,6 +57,7 @@ classDiagram
   class SQLServerDepartmentRepository:::brown { }
 
   DepartmentRepository <|.. CassandraDepartmentRepository
+  DepartmentRepository <|.. ChromaDepartmentRepository
   DepartmentRepository <|.. ElasticsearchDepartmentRepository
   DepartmentRepository <|.. MongoDbDepartmentRepository
   DepartmentRepository <|.. MySqlDepartmentRepository
@@ -73,7 +76,8 @@ classDiagram
     +deleteEmployee(id: number) Promise~void~
   }
 
-  class CassandraEmployeeRepository:::gold { }
+  class CassandraEmployeeRepository:::yellow { }
+  class ChromaEmployeeRepository:::gold { }
   class ElasticsearchEmployeeRepository:::salmon { }
   class MongoDbEmployeeRepository:::red { }
   class MySqlEmployeeRepository:::magenta { }
@@ -84,6 +88,7 @@ classDiagram
   class SQLServerEmployeeRepository:::brown { }
 
   EmployeeRepository <|.. CassandraEmployeeRepository
+  EmployeeRepository <|.. ChromaEmployeeRepository
   EmployeeRepository <|.. ElasticsearchEmployeeRepository
   EmployeeRepository <|.. MongoDbEmployeeRepository
   EmployeeRepository <|.. MySqlEmployeeRepository
@@ -92,7 +97,33 @@ classDiagram
   EmployeeRepository <|.. PostgreSQLEmployeeRepository
   EmployeeRepository <|.. RedisEmployeeRepository
   EmployeeRepository <|.. SQLServerEmployeeRepository
-%% Styles
+%% Transfer
+  class Transfer:::mistyrose {
+    <<interface>>
+    +transferEmployees(sourceId: number, targetId: number, employeeIds: number[]) Promise~void~
+  }
+
+  class CassandraTransfer:::yellow { }
+  class ChromaTransfer:::gold { }
+  class ElasticsearchTransfer:::salmon { }
+  class MongoDbTransfer:::red { }
+  class MySqlTransfer:::magenta { }
+  class Neo4jTransfer:::blue { }
+  class OracleTransfer:::cyan { }
+  class PostgreSQLTransfer:::lime { }
+  class RedisTransfer:::green { }
+  class SQLServerTransfer:::brown { }
+
+  Transfer <|.. CassandraTransfer
+  Transfer <|.. ChromaTransfer
+  Transfer <|.. ElasticsearchTransfer
+  Transfer <|.. MongoDbTransfer
+  Transfer <|.. MySqlTransfer
+  Transfer <|.. Neo4jTransfer
+  Transfer <|.. OracleTransfer
+  Transfer <|.. PostgreSQLTransfer
+  Transfer <|.. RedisTransfer
+  Transfer <|.. SQLServerTransfer
 %% Styles
   classDef honeydew fill:honeydew,stroke:black,stroke-width:1px
   classDef light_c_y_a_n fill:lightcyan,stroke:black,stroke-width:1px
