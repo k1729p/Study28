@@ -274,7 +274,7 @@ Action: \
 [docker-compose-databases.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/docker-compose-databases.yaml)
 
 <details>
-<summary>included scripts for database</summary>
+<summary>Scripts included in "docker-compose-databases.yaml"</summary>
 
 - [cassandra.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/cassandra.yaml)
 - [chroma.yaml](https://github.com/k1729p/Study28/blob/main/docker-config/includes/chroma.yaml)
@@ -289,7 +289,7 @@ Action: \
 
 </details>
 
-![greenCircle](images/greenCircle.png) 3.2. Curl tests results in console log.
+![greenCircle](images/greenCircle.png) 3.2. Curl test results.
 
 - The [screenshot](images/ScreenshotCurlOnDockerInitDB.png) from the run of the script
 ["CURL_init_DB.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/scripts/CURL_init_DB.bat) with **PostgreSQL** selected.
