@@ -219,7 +219,7 @@ In this file are users and passwords for databases.
 
 ![blueHR](images/blueHR-500.png)
 
-![greenCircle](images/greenCircle.png) 1.9. The **RepositoryLock** is an asynchronous read/write lock.
+![greenCircle](images/greenCircle.png) 1.8. The **RepositoryLock** is an asynchronous read/write lock.
 
 - Entire schema recreation and initialization process uses **exclusive lock**.
 - Normal repository operations use **shared lock**.
@@ -288,10 +288,11 @@ Action: \
 </details>
 
 ![greenCircle](images/greenCircle.png) 3.2. The [screenshot](images/ScreenshotCurlOnDockerInitDB.png)
-of the console log from the run of the batch script "CURL_init_DB.bat" with **PostgreSQL** selected.
-
+of the console log from the run of the batch script
+["CURL_init_DB.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/scripts/CURL_init_DB.bat) with **PostgreSQL** selected.
 ![greenCircle](images/greenCircle.png) 3.3. The [screenshot](images/ScreenshotCurlOnDockerCRUD.png)
-of the console log from the run of the batch script "CURL_CRUD.bat" with **PostgreSQL** selected.
+of the console log from the run of the batch script 
+["CURL_CRUD.bat"](https://github.com/k1729p/Study28/blob/main/0_batch/scripts/CURL_CRUD.bat) with **PostgreSQL** selected.
 
 [Back to the top of the page](#study28-readme-contents)
 
