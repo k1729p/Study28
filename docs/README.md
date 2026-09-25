@@ -39,17 +39,19 @@ Project sections:
   - [PostgreSQL](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipPostgreSQL.md)
   - [SQL Server](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipSQL-Server.md)
   - [Redis](https://github.com/k1729p/Study28/blob/main/docs/mermaid/flowchartRedis.md)
-- 🔸 Sequence diagrams
-  - [Load initial data](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramLoadInitialData.md)
-  - [Create department](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramCreateDepartment.md)
-  - [Read department by id](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramReadDepartment.md)
-  - [Update department by id](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramUpdateDepartment.md)
-  - [Delete department by id](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramDeleteDepartment.md)
-  - [Create employee](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramCreateEmployee.md)
-  - [Read employee by id](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramReadEmployee.md)
-  - [Update employee by id](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramUpdateEmployee.md)
-  - [Delete employee by id](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramDeleteEmployee.md)
-  - [Transfer employees](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramTransferEmployees.md)
+- 🔸 Sequence diagrams with process logic description
+| a | b | c | d |
+| :--- | :--- | :--- | :--- |
+| [Load initial data](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramLoadInitialData.md) | | | |
+| | [Create department](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramCreateDepartment.md) | | |
+| | [Read department by id](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramReadDepartment.md) | | |
+| | [Update department by id](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramUpdateDepartment.md) | | |
+| | [Delete department by id](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramDeleteDepartment.md) | | |
+| | | [Create employee](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramCreateEmployee.md) | |
+| | | [Read employee by id](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramReadEmployee.md) | |
+| | | [Update employee by id](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramUpdateEmployee.md) | |
+| | | [Delete employee by id](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramDeleteEmployee.md) | |
+| | | | [Transfer employees](https://github.com/k1729p/Study28/blob/main/docs/mermaid/sequenceDiagramTransferEmployees.md) |
 
 ![greenCircle](images/greenCircle.png) 1.2. The data stores.
 

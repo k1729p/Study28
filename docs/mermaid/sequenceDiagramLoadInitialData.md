@@ -62,7 +62,7 @@ alt departments.length > 0
     PSQL -->>- REPO: result
     REPO -->>- REPO: void
 else departments.length = 0
-    Note right of REPO: No departments to insert (warning logged);<br>insertEmployees() is not called either
+    Note right of REPO: No departments to insert (warning logged)<br>insertEmployees() is not called either
 end
 
 REPO ->>+ PSQL: client.query(COMMIT)
