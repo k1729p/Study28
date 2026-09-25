@@ -29,16 +29,23 @@ Project sections:
   - [Services](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramServices.md)
   - [Repositories](https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramRepositories.md)
 - 🔸 Entity relationship diagrams
-  - [Cassandra](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipCassandra.md)
-  - [Chroma](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipChroma.md)
-  - [Elasticsearch](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipElasticsearch.md)
-  - [MongoDB](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipMongoDB.md)
-  - [MySQL](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipMySQL.md)
-  - [Neo4j](https://github.com/k1729p/Study28/blob/main/docs/mermaid/flowchartNeo4jGraph.md)
-  - [Oracle](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipOracle.md)
-  - [PostgreSQL](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipPostgreSQL.md)
-  - [SQL Server](https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipSQL-Server.md)
-  - [Redis](https://github.com/k1729p/Study28/blob/main/docs/mermaid/flowchartRedis.md)
+
+| | | | | |
+| :--- | :--- | :--- | :--- | :--- |
+| [Cassandra] | [Chroma] | [Elasticsearch] | [MongoDB] | [MySQL] |
+| [Neo4j] | [Oracle] | [PostgreSQL] | [SQL Server] | [Redis] |
+
+  [Cassandra]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipCassandra.md>
+  [Chroma]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipChroma.md>
+  [Elasticsearch]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipElasticsearch.md>
+  [MongoDB]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipMongoDB.md>
+  [MySQL]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipMySQL.md>
+  [Neo4j]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/flowchartNeo4jGraph.md>
+  [Oracle]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipOracle.md>
+  [PostgreSQL]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipPostgreSQL.md>
+  [SQL Server]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipSQL-Server.md>
+  [Redis]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/flowchartRedis.md>
+
 - 🔸 Sequence diagrams with process logic description
 
 | | | | |
