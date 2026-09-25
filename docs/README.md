@@ -21,6 +21,7 @@ Project sections:
 ![greenCircle](images/greenCircle.png) 1.1. The diagrams.
 
 - 🔸 Layered architecture diagrams
+
 | | |
 | :--- | :--- |
 | [Layer dependencies] | [Layer data flow] |
@@ -29,6 +30,7 @@ Project sections:
 [Layer data flow]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/layerDataFlowDiagram.md>
 
 - 🔸 Class diagrams
+
 | | | | | |
 | :--- | :--- | :--- | :--- | :--- |
 | [Models] | [Controllers] | [Services] | [Repositories] |
@@ -39,6 +41,7 @@ Project sections:
 [Repositories]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/classDiagramRepositories.md>
 
 - 🔸 Entity relationship diagrams
+
 | | | | | |
 | :--- | :--- | :--- | :--- | :--- |
 | [Cassandra] | [Chroma] | [Elasticsearch] | [MongoDB] | [MySQL] |
@@ -56,6 +59,7 @@ Project sections:
 [Redis]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/flowchartRedis.md>
 
 - 🔸 Sequence diagrams with process logic description
+
 | | | | |
 | :--- | :--- | :--- | :--- |
 | [Load initial data] | | | |
