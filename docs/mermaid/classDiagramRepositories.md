@@ -9,7 +9,7 @@
 classDiagram
   direction LR
 %% Initialization
-  class Initialization:::mistyrose {
+  class Initialization:::bisque {
     <<interface>>
     +loadInitialData(departmentArray: Department[]) Promise~void~
   }
@@ -128,6 +128,7 @@ classDiagram
   classDef honeydew fill:honeydew,stroke:black,stroke-width:1px
   classDef light_c_y_a_n fill:lightcyan,stroke:black,stroke-width:1px
   classDef mistyrose fill:mistyrose,stroke:black,stroke-width:1px
+  classDef bisque fill:bisque,stroke:black,stroke-width:1px
 
   classDef brown stroke:saddlebrown,stroke-width:3px
   classDef blue stroke:blue,stroke-width:3px
