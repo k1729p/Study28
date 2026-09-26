@@ -9,7 +9,6 @@
 | **[Neo4j]** | **[Oracle]** | **[PostgreSQL]** | **[Redis]** | **[SQL Server]** |
 | ![-](images/spacer-130.png) | ![-](images/spacer-130.png) | ![-](images/spacer-130.png) | ![-](images/spacer-130.png) | ![-](images/spacer-130.png) |
 
-[sp](images/spacer-130.png)
 [Cassandra]: <https://cassandra.apache.org/_/index.html> "Apache Cassandra"
 [Chroma]: <https://www.trychroma.com/> "Chroma"
 [Elasticsearch]: <https://www.elastic.co/elasticsearch> "Elasticsearch"
