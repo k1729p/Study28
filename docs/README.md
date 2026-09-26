@@ -97,23 +97,27 @@ Project sections:
 
 | Name | Type | Storage Abstraction | Query Language |
 | :--- | :--- | :--- | :--- |
-| [Cassandra] | [Wide-Column Store][ds11] | Table | CQL (Cassandra Query Language) |
-| [Chroma] | [Vector Database][ds12] | Collection | Chroma API (Python/JS Client) |
-| [Elasticsearch] | Search Engine / [Document Store][ds13] | Index / Document | Query DSL (JSON, built on Lucene) |
-| [MongoDB] | [Document Store][ds13] | Collection | MQL (MongoDB Query Language) |
-| [MySQL] | [Relational][ds15] | Table | SQL |
-| [Neo4j] | [Graph Database][ds16] | Node / Relationship | Cypher |
-| [Oracle] | [Relational][ds15] | Table | SQL / PL/SQL |
-| [PostgreSQL] | [Relational][ds15] | Table | SQL |
-| [Redis] | [Key-Value][ds19] / Cache | Hash / String | Redis Commands |
-| [SQL Server] | [Relational][ds15] | Table | T-SQL |
+| [Cassandra] | [Wide-Column Store] | Table | CQL[^1] |
+| [Chroma] | [Vector Database] | Collection | Chroma API[^2] |
+| [Elasticsearch] | Search Engine / [Document Store] | Index / Document | Query DSL[^3] |
+| [MongoDB] | [Document Store] | Collection | MQL[^4] |
+| [MySQL] | [Relational] | Table | SQL |
+| [Neo4j] | [Graph Database] | Node / Relationship | Cypher |
+| [Oracle] | [Relational] | Table | SQL / PL/SQL |
+| [PostgreSQL] | [Relational] | Table | SQL |
+| [Redis] | [Key-Value] / Cache | Hash / String | Redis Commands |
+| [SQL Server] | [Relational] | Table | T-SQL |
 
-[ds11]: <https://en.wikipedia.org/wiki/Wide-column_store> "Wide-Column Store"
-[ds12]: <https://en.wikipedia.org/wiki/Vector_database> "Vector Database"
-[ds13]: <https://en.wikipedia.org/wiki/Document-oriented_database> "Document-oriented database"
-[ds15]: <https://en.wikipedia.org/wiki/Relational_database> "Relational database"
-[ds16]: <https://en.wikipedia.org/wiki/Graph_database> "Graph database"
-[ds19]: <https://en.wikipedia.org/wiki/Key%E2%80%93value_database> "Key–value database"
+[Wide-Column Store]: <https://en.wikipedia.org/wiki/Wide-column_store>
+[Vector Database]: <https://en.wikipedia.org/wiki/Vector_database>
+[Document Store]: <https://en.wikipedia.org/wiki/Document-oriented_database> "Document-oriented database"
+[Relational]: <https://en.wikipedia.org/wiki/Relational_database> "Relational database"
+[Graph Database]: <https://en.wikipedia.org/wiki/Graph_database>
+[Key-Value]: <https://en.wikipedia.org/wiki/Key%E2%80%93value_database> "Key–value database"
+[^1]: Cassandra Query Language
+[^2]: Python/JS Client
+[^3]: JSON, built on Lucene
+[^4]: MongoDB Query Language
 
 ![greenCircle](images/greenCircle.png) 1.6. The environment variables file '[.env](https://github.com/k1729p/Study28/blob/main/.env)'.
 In this file are users and passwords for databases.
