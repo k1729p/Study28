@@ -2,7 +2,22 @@
 
 [![Color scheme for Study28 project](images/ColorScheme.png)](https://github.com/k1729p/Study28/tree/main/docs "View Study28 docs on GitHub")
 
-## Research on Express web framework and ten databases
+## Research on Express web framework and databases
+
+| [Cassandra] | [Chroma] | [Elasticsearch] | [MongoDB] | [MySQL] |
+| :--- | :--- | :--- | :--- | :--- |
+| **[Neo4j]** | **[Oracle]** | **[PostgreSQL]** | **[Redis]** | **[SQL Server]** |
+
+[Cassandra]: <https://cassandra.apache.org/_/index.html> "Apache Cassandra"
+[Chroma]: <https://www.trychroma.com/> "Chroma"
+[Elasticsearch]: <https://www.elastic.co/elasticsearch> "Elasticsearch"
+[MongoDB]: <https://www.mongodb.com/products/platform/atlas-database> "MongoDB Atlas"
+[MySQL]: <https://www.mysql.com/> "MySQL"
+[Neo4j]: <https://neo4j.com/product/neo4j-graph-database/> "Neo4j"
+[Oracle]: <https://www.oracle.com/database/free/> "Oracle AI Database 26ai"
+[PostgreSQL]: <https://www.postgresql.org/> "PostgreSQL"
+[Redis]: <https://redis.io/> "Redis"
+[SQL Server]: <https://www.microsoft.com/en-us/sql-server> "Microsoft SQL Server"
 
 Project sections:
 
@@ -43,19 +58,19 @@ Project sections:
 
 | | | | | |
 | :--- | :--- | :--- | :--- | :--- |
-| [Cassandra] | [Chroma] | [Elasticsearch] | [MongoDB] | [MySQL] |
-| [Neo4j] | [Oracle] | [PostgreSQL] | [SQL Server] | [Redis] |
+| [Cassandra][er01] | [Chroma][er02] | [Elasticsearch][er03] | [MongoDB][er04] | [MySQL][er05] |
+| [Neo4j][er06] | [Oracle][er07] | [PostgreSQL][er08] | [SQL Server][er09] | [Redis][er10] |
 
-[Cassandra]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipCassandra.md>
-[Chroma]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipChroma.md>
-[Elasticsearch]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipElasticsearch.md>
-[MongoDB]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipMongoDB.md>
-[MySQL]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipMySQL.md>
-[Neo4j]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/flowchartNeo4jGraph.md>
-[Oracle]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipOracle.md>
-[PostgreSQL]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipPostgreSQL.md>
-[SQL Server]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipSQL-Server.md>
-[Redis]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/flowchartRedis.md>
+[er01]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipCassandra.md>
+[er02]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipChroma.md>
+[er03]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipElasticsearch.md>
+[er04]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipMongoDB.md>
+[er05]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipMySQL.md>
+[er06]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/flowchartNeo4jGraph.md>
+[er07]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipOracle.md>
+[er08]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipPostgreSQL.md>
+[er09]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/entityRelationshipSQL-Server.md>
+[er10]: <https://github.com/k1729p/Study28/blob/main/docs/mermaid/flowchartRedis.md>
 
 ![greenCircle](images/greenCircle.png) 1.4. The sequence diagrams with process logic description
 
@@ -81,27 +96,17 @@ Project sections:
 
 | Name | Type | Storage Abstraction | Query Language |
 | :--- | :--- | :--- | :--- |
-| [Cassandra][ds01] | [Wide-Column Store][ds11] | Table | CQL (Cassandra Query Language) |
-| [Chroma][ds02] | [Vector Database][ds12] | Collection | Chroma API (Python/JS Client) |
-| [Elasticsearch][ds03] | Search Engine / [Document Store][ds13] | Index / Document | Query DSL (JSON, built on Lucene) |
-| [MongoDB][ds04] | [Document Store][ds13] | Collection | MQL (MongoDB Query Language) |
-| [MySQL][ds05] | [Relational][ds15] | Table | SQL |
-| [Neo4j][ds06] | [Graph Database][ds16] | Node / Relationship | Cypher |
-| [Oracle][ds07] | [Relational][ds15] | Table | SQL / PL/SQL |
-| [PostgreSQL][ds08] | [Relational][ds15] | Table | SQL |
-| [Redis][ds09] | [Key-Value][ds19] / Cache | Hash / String | Redis Commands |
-| [SQL Server][ds10] | [Relational][ds15] | Table | T-SQL |
+| [Cassandra] | [Wide-Column Store][ds11] | Table | CQL (Cassandra Query Language) |
+| [Chroma] | [Vector Database][ds12] | Collection | Chroma API (Python/JS Client) |
+| [Elasticsearch] | Search Engine / [Document Store][ds13] | Index / Document | Query DSL (JSON, built on Lucene) |
+| [MongoDB] | [Document Store][ds13] | Collection | MQL (MongoDB Query Language) |
+| [MySQL] | [Relational][ds15] | Table | SQL |
+| [Neo4j] | [Graph Database][ds16] | Node / Relationship | Cypher |
+| [Oracle] | [Relational][ds15] | Table | SQL / PL/SQL |
+| [PostgreSQL] | [Relational][ds15] | Table | SQL |
+| [Redis] | [Key-Value][ds19] / Cache | Hash / String | Redis Commands |
+| [SQL Server] | [Relational][ds15] | Table | T-SQL |
 
-[ds01]: <https://cassandra.apache.org/_/index.html> "Apache Cassandra"
-[ds02]: <https://www.trychroma.com/> "Chroma"
-[ds03]: <https://www.elastic.co/elasticsearch> "Elasticsearch"
-[ds04]: <https://www.mongodb.com/products/platform/atlas-database> "MongoDB Atlas"
-[ds05]: <https://www.mysql.com/> "MySQL"
-[ds06]: <https://neo4j.com/product/neo4j-graph-database/> "Neo4j"
-[ds07]: <https://www.oracle.com/database/free/> "Oracle AI Database 26ai"
-[ds08]: <https://www.postgresql.org/> "PostgreSQL"
-[ds09]: <https://redis.io/> "Redis"
-[ds10]: <https://www.microsoft.com/en-us/sql-server> "Microsoft SQL Server"
 [ds11]: <https://en.wikipedia.org/wiki/Wide-column_store> "Wide-Column Store"
 [ds12]: <https://en.wikipedia.org/wiki/Vector_database> "Vector Database"
 [ds13]: <https://en.wikipedia.org/wiki/Document-oriented_database> "Document-oriented database"
