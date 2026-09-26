@@ -4,10 +4,12 @@
 
 ## Research on Express web framework and databases
 
-| &nbsp;[Cassandra]&nbsp; | &nbsp;[Chroma]&nbsp; | &nbsp;[Elasticsearch]&nbsp; | &nbsp;[MongoDB]&nbsp; | &nbsp;[MySQL]&nbsp; |
+| [Cassandra] | [Chroma] | [Elasticsearch] | [MongoDB] | [MySQL] |
 | :--- | :--- | :--- | :--- | :--- |
-| &nbsp;**[Neo4j]**&nbsp; | &nbsp;**[Oracle]**&nbsp; | &nbsp;**[PostgreSQL]**&nbsp; | &nbsp;**[Redis]**&nbsp; | &nbsp;**[SQL Server]**&nbsp; |
+| **[Neo4j]** | **[Oracle]** | **[PostgreSQL]** | **[Redis]** | **[SQL Server]** |
+| ![sp] | ![-](images/spacer-130.png) | ![-](images/spacer-130.png) | ![-](images/spacer-130.png) | ![-](images/spacer-130.png) |
 
+[sp]: <https://github.com/k1729p/Study28/tree/main/docs/images/spacer-130.png>
 [Cassandra]: <https://cassandra.apache.org/_/index.html> "Apache Cassandra"
 [Chroma]: <https://www.trychroma.com/> "Chroma"
 [Elasticsearch]: <https://www.elastic.co/elasticsearch> "Elasticsearch"
