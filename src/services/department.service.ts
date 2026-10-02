@@ -1,0 +1,116 @@
+import { Department } from "../models/department.js";
+import { RepositoryType } from "../repositories/repository-type.js";
+import { DepartmentRepository } from "../repositories/department.repository.js";
+import { CassandraDepartmentRepository } from "../repositories/cassandra/cassandra.department.repository.js";
+import { ChromaDepartmentRepository } from "../repositories/chroma/chroma.department.repository.js";
+import { ElasticsearchDepartmentRepository } from "../repositories/elasticsearch/elasticsearch.department.repository.js";
+import { MongoDbDepartmentRepository } from "../repositories/mongodb/mongodb.department.repository.js";
+import { MySqlDepartmentRepository } from "../repositories/mysql/mysql.department.repository.js";
+import { Neo4jDepartmentRepository } from "../repositories/neo4j/neo4j.department.repository.js";
+import { OracleDepartmentRepository } from "../repositories/oracle/oracle.department.repository.js";
+import { PostgreSqlDepartmentRepository } from "../repositories/postgresql/postgresql.department.repository.js";
+import { RedisDepartmentRepository } from "../repositories/redis/redis.department.repository.js";
+import { SqlServerDepartmentRepository } from "../repositories/sql-server/sql-server.department.repository.js";
+import { MAX_INT_32 } from './services.constants.js';
+/**
+ * This service class provides methods to manage departments.
+ * It includes methods to get, set, create, update, and delete departments.
+ */
+export class DepartmentService {
+  private readonly strategies: Partial<Record<RepositoryType, DepartmentRepository>>;
+  /**
+   * Initializes the service with available repository strategies.
+   */
+  constructor() {
+    this.strategies = {
+      [RepositoryType.Cassandra]: new CassandraDepartmentRepository(),
+      [RepositoryType.Chroma]: new ChromaDepartmentRepository(),
+      [RepositoryType.Elasticsearch]: new ElasticsearchDepartmentRepository(),
+      [RepositoryType.MongoDB]: new MongoDbDepartmentRepository(),
+      [RepositoryType.MySQL]: new MySqlDepartmentRepository(),
+      [RepositoryType.Neo4j]: new Neo4jDepartmentRepository(),
+      [RepositoryType.Oracle]: new OracleDepartmentRepository(),
+      [RepositoryType.PostgreSQL]: new PostgreSqlDepartmentRepository(),
+      [RepositoryType.Redis]: new RedisDepartmentRepository(),
+      [RepositoryType.SQLServer]: new SqlServerDepartmentRepository(),
+    };
+  }
+  /**
+   * Creates a new department.
+   * @param repositoryType the type of repository to use
+   * @param department the department to be created
+   * @return void
+   */
+  async createDepartment(repositoryType: RepositoryType, department: Department): Promise<void> {
+    const strategy = this.strategies[repositoryType];
+    if (strategy == undefined) {
+      console.error("DepartmentService.createDepartment(): error, not implemented strategy for [%s]", repositoryType);
+      throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
+    }
+    return await strategy.createDepartment(department);
+  }
+  /**
+   * Gets the departments.
+   * @param repositoryType the type of repository to use
+   * @returns an array of Department objects
+   */
+  async getDepartments(repositoryType: RepositoryType): Promise<Department[]> {
+    const strategy = this.strategies[repositoryType];
+    if (strategy == undefined) {
+      console.error("DepartmentService.getDepartments(): error, not implemented strategy for [%s]", repositoryType);
+      throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
+    }
+    return strategy.getDepartments();
+  }
+  /**
+   * Gets the department by id.
+   * @param repositoryType the type of repository to use
+   * @param id the id of the department to retrieve
+   * @returns the Department object if found, otherwise undefined
+   */
+  async getDepartment(repositoryType: RepositoryType, id: number): Promise<Department | undefined> {
+    const strategy = this.strategies[repositoryType];
+    if (strategy == undefined) {
+      console.error("DepartmentService.getDepartment(): error, not implemented strategy for [%s]", repositoryType);
+      throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
+    }
+    if (!Number.isInteger(id) || id < 1 || id > MAX_INT_32) {
+      console.error("DepartmentService.getDepartment(): error, invalid id[%s]", id);
+      throw new RangeError(`ID must be an integer between 1 and ${MAX_INT_32}, inclusive. Received ${id}`);
+    }
+    return strategy.getDepartment(id);
+  }
+  /**
+   * Updates an existing department.
+   * @param repositoryType the type of repository to use
+   * @param department the department to be updated
+   * @returns void
+   */
+  async updateDepartment(repositoryType: RepositoryType, department: Department) {
+    const strategy = this.strategies[repositoryType];
+    if (strategy == undefined) {
+      console.error("DepartmentService.updateDepartment(): error, not implemented strategy for [%s]", repositoryType);
+      throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
+    }
+    await strategy.updateDepartment(department);
+  }
+  /**
+   * Deletes a department by its id.
+   *
+   * @param repositoryType the type of repository to use
+   * @param id the id of the department to be deleted
+   * @returns void
+   */
+  async deleteDepartment(repositoryType: RepositoryType, id: number) {
+    const strategy = this.strategies[repositoryType];
+    if (strategy == undefined) {
+      console.error("DepartmentService.deleteDepartment(): error, not implemented strategy for [%s]", repositoryType);
+      throw new ReferenceError(`Not implemented strategy for [${repositoryType}]`);
+    }
+    if (!Number.isInteger(id) || id < 1 || id > MAX_INT_32) {
+      console.error("DepartmentService.deleteDepartment(): error, invalid id[%s]", id);
+      throw new RangeError(`ID must be an integer between 1 and ${MAX_INT_32}, inclusive. Received ${id}`);
+    }
+    await strategy.deleteDepartment(id);
+  }
+}

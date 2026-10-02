@@ -1,0 +1,105 @@
+import { it, beforeEach, expect, vi } from "vitest";
+import request from 'supertest';
+import express from 'express';
+import { StatusCodes } from 'http-status-codes';
+
+import { Department } from "../../models/department.js";
+import { RepositoryType } from '../../repositories/repository-type.js';
+import { InitializationController } from '../../controllers/initialization.controller.js';
+import { bodyToDepartments } from "../../controllers/controller-mappers.js";
+import { createMockInitializationService, testErrorHandler } from '../tests.helpers.js';
+import {
+  LOAD_URI,
+  TEST_DEPARTMENTS
+} from '../tests.constants.js';
+
+/**
+ * Unit tests for the {@link InitializationController}.
+ * This test suite verifies that the {@link InitializationController} functions correctly.
+ * @param repositoryType the repository type
+ */
+export function initializationControllerTests(repositoryType: RepositoryType) {
+  const mockInitializationService = createMockInitializationService();
+  const initializationController = new InitializationController(mockInitializationService);
+
+  /**
+   * Clears the call history of every mocked method before each test.
+   */
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  /**
+   * Tests the initialization with departments explicitly provided in the request body.
+   * The controller passes the request body through to the service unmodified (there is
+   * no mapper involved), so the departments are compared after a JSON round-trip.
+   */
+  it('should load the initial data with the departments provided in the request body', async () => {
+    // GIVEN
+    const application = express();
+    application.use(express.json());
+    application.post(LOAD_URI, initializationController.loadInitialData);
+    const expectedDepartments: Department[] = bodyToDepartments(TEST_DEPARTMENTS);
+    // WHEN
+    const response = await request(application)
+      .post(LOAD_URI).query({ repositoryType: repositoryType }).send({ departments: expectedDepartments });
+    // THEN
+    expect(response.status).toBe(StatusCodes.NO_CONTENT);
+    expect(mockInitializationService.loadInitialData).toHaveBeenCalledOnce();
+    expect(mockInitializationService.loadInitialData).toHaveBeenCalledWith(repositoryType, expectedDepartments);
+  });
+
+  /**
+   * Tests the initialization when no departments are provided in the request body.
+   * The controller must fall back to an empty array (the service, not the controller,
+   * is responsible for substituting its own default dataset).
+   */
+  it('should load an empty department array when none is provided in the request body', async () => {
+    // GIVEN
+    const application = express();
+    application.use(express.json());
+    application.post(LOAD_URI, initializationController.loadInitialData);
+    // WHEN
+    const response = await request(application)
+      .post(LOAD_URI).query({ repositoryType: repositoryType }).send({});
+    // THEN
+    expect(response.status).toBe(StatusCodes.NO_CONTENT);
+    expect(mockInitializationService.loadInitialData).toHaveBeenCalledOnce();
+    expect(mockInitializationService.loadInitialData).toHaveBeenCalledWith(repositoryType, []);
+  });
+
+  /**
+   * Tests the initialization when the request body itself is missing entirely.
+   */
+  it('should load an empty department array when the request body is missing', async () => {
+    // GIVEN
+    const application = express();
+    application.use(express.json());
+    application.post(LOAD_URI, initializationController.loadInitialData);
+    // WHEN
+    const response = await request(application)
+      .post(LOAD_URI).query({ repositoryType: repositoryType });
+    // THEN
+    expect(response.status).toBe(StatusCodes.NO_CONTENT);
+    expect(mockInitializationService.loadInitialData).toHaveBeenCalledOnce();
+    expect(mockInitializationService.loadInitialData).toHaveBeenCalledWith(repositoryType, []);
+  });
+
+  /**
+   * Tests that an error thrown by the service is forwarded to the error handling middleware,
+   * i.e. that the controller's try/catch block calls `next(error)` correctly.
+   */
+  it('should forward the error to the error handling middleware when the service call fails', async () => {
+    // GIVEN
+    const application = express();
+    application.use(express.json());
+    application.post(LOAD_URI, initializationController.loadInitialData);
+    application.use(testErrorHandler);
+    vi.mocked(mockInitializationService.loadInitialData).mockRejectedValueOnce(new Error('database is unavailable'));
+    // WHEN
+    const response = await request(application)
+      .post(LOAD_URI).query({ repositoryType: repositoryType }).send({ departments: [] });
+    // THEN
+    expect(response.status).toBe(StatusCodes.INTERNAL_SERVER_ERROR);
+  });
+}

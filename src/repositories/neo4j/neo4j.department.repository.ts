@@ -1,0 +1,145 @@
+import { Department } from "../../models/department.js";
+import { DepartmentRepository } from "../department.repository.js";
+import { driverPromise } from "./neo4j.pool.js";
+import { parametersForDepartment, recordToDepartment } from "./neo4j.mappers.js";
+import { RepositoryException } from "../repository-exception.js";
+import * as constants from "./neo4j.constants.js";
+/**
+ * Repository class providing methods to manage departments.
+ * Includes CRUD operations to create, read, update, and delete departments.
+ */
+export class Neo4jDepartmentRepository implements DepartmentRepository {
+  /**
+   * Creates a new department.
+   * 
+   * @param department - The department to be created.
+   * @returns A promise that resolves when the department is created.
+   */
+  async createDepartment(department: Department): Promise<void> {
+    const driver = await driverPromise;
+    const session = driver.session();
+    try {
+      await session.executeWrite(transaction => transaction.run(
+        constants.CREATE_DEPARTMENT_QUERY, parametersForDepartment(department)));
+    } catch (err) {
+      console.error("Neo4jDepartmentRepository.createDepartment():", err);
+      throw new RepositoryException(
+        `Failed to create department, department id[${department.id}]`,
+        { cause: err, operation: 'createDepartment' }
+      );
+    } finally {
+      await session.close();
+    }
+    console.log("Neo4jDepartmentRepository.createDepartment(): department id[%d]", department.id);
+  }
+  
+  /**
+   * Retrieves all departments.
+   * 
+   * @returns A promise that resolves to an array of Department objects.
+   */
+  async getDepartments(): Promise<Department[]> {
+    const driver = await driverPromise;
+    const session = driver.session();
+    try {
+      const result = await session.executeRead(transaction => transaction.run(constants.READ_DEPARTMENTS_QUERY));
+      const departments = result.records.map(record => recordToDepartment(record));
+      console.log("Neo4jDepartmentRepository.getDepartments(): departments count[%d]", departments.length);
+      return departments;
+    } catch (err) {
+      console.error("Neo4jDepartmentRepository.getDepartments():", err);
+      throw new RepositoryException(
+        `Failed to get departments`,
+        { cause: err, operation: 'getDepartments' }
+      );
+    } finally {
+      await session.close();
+    }
+  }
+
+  /**
+   * Retrieves a department by its ID.
+   * 
+   * @param id - The ID of the department to retrieve.
+   * @returns A promise that resolves to the Department object if found, otherwise undefined.
+   */
+  async getDepartment(id: number): Promise<Department | undefined> {
+    const driver = await driverPromise;
+    const session = driver.session();
+    try {
+      const result = await session.executeRead(transaction => transaction.run(constants.READ_DEPARTMENT_QUERY, { id }));
+      if (result.records.length === 0) {
+        console.log("Neo4jDepartmentRepository.getDepartment(): department not found, department id[%d]", id);
+        return undefined;
+      }
+      const department = recordToDepartment(result.records[0]);
+      console.log("Neo4jDepartmentRepository.getDepartment(): department id[%d]", id);
+      return department;
+    } catch (err) {
+      console.error("Neo4jDepartmentRepository.getDepartment():", err);
+      throw new RepositoryException(
+        `Failed to get department, department id[${id}]`,
+        { cause: err, operation: 'getDepartment' }
+      );
+    } finally {
+      await session.close();
+    }
+  }
+
+  /**
+   * Updates an existing department.
+   * Only the Department node's own properties (name, dates, notes, keywords, image) are updated.
+   * 
+   * @param department - The department object containing updated values.
+   * @returns A promise that resolves when the update is complete.
+   */
+  async updateDepartment(department: Department): Promise<void> {
+    const driver = await driverPromise;
+    const session = driver.session();
+    try {
+      const result = await session.executeWrite(transaction => transaction.run(
+        constants.UPDATE_DEPARTMENT_QUERY, parametersForDepartment(department)));
+      if (result.records.length === 0) {
+        console.log("Neo4jDepartmentRepository.updateDepartment(): " +
+          "department not updated, department id[%d]", department.id);
+        return;
+      }
+    } catch (err) {
+      console.error("Neo4jDepartmentRepository.updateDepartment():", err);
+      throw new RepositoryException(
+        `Failed to update department, department id[${department.id}]`,
+        { cause: err, operation: 'updateDepartment' }
+      );
+    } finally {
+      await session.close();
+    }
+    console.log("Neo4jDepartmentRepository.updateDepartment() department id[%d]", department.id);
+  }
+
+  /**
+   * Deletes a department by its ID, together with every employee that works in it (cascading delete).
+   * 
+   * @param id - The ID of the department to be deleted.
+   * @returns A promise that resolves when the department is deleted.
+   */
+  async deleteDepartment(id: number): Promise<void> {
+    const driver = await driverPromise;
+    const session = driver.session();
+    try {
+      const result = await session.executeWrite(transaction => transaction.run(constants.DELETE_DEPARTMENT_QUERY, { id }));
+      if (result.summary.counters.updates().nodesDeleted === 0) {
+        console.log("Neo4jDepartmentRepository.deleteDepartment(): department not found, department id[%d]", id);
+        return;
+      }
+    } catch (err) {
+      console.error("Neo4jDepartmentRepository.deleteDepartment():", err);
+      throw new RepositoryException(
+        `Failed to delete department, department id[${id}]`,
+        { cause: err, operation: 'deleteDepartment' }
+      );
+    } finally {
+      await session.close();
+    }
+    console.log("Neo4jDepartmentRepository.deleteDepartment(): department id[%d]", id);
+  }
+}

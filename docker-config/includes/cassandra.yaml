@@ -1,0 +1,30 @@
+services:
+  cassandra:
+    container_name: cassandra
+    image: cassandra:latest
+    ports:
+      - "7000:7000"
+      - "9042:9042"
+    networks:
+      - net
+    environment:
+      - CASSANDRA_START_RPC=true
+      - CASSANDRA_RPC_ADDRESS=0.0.0.0
+      - CASSANDRA_LISTEN_ADDRESS=auto
+      - CASSANDRA_CLUSTER_NAME=kp-cluster
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+      - CASSANDRA_DC=kp-datacenter
+      - MAX_HEAP_SIZE=512M
+      - HEAP_NEWSIZE=128M
+      - CASSANDRA_NUM_TOKENS=16
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "nodetool status"]
+      start_period: 60s
+      interval: 30s
+      timeout: 10s
+      retries: 10
+    volumes:
+      - cassandra-data:/var/lib/cassandra:rw
+volumes:
+  cassandra-data:

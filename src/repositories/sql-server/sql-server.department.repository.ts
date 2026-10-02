@@ -1,0 +1,189 @@
+import sql from 'mssql';
+
+import { Department } from "../../models/department.js";
+import { Employee } from "../../models/employee.js";
+import { DepartmentRepository } from "../department.repository.js";
+import { RepositoryException } from "../repository-exception.js";
+import { poolPromise } from "./sql-server.pool.js";
+import * as mappers from "../repository-mappers.js";
+import * as constants from "./sql-server.constants.js";
+/**
+ * Repository class providing methods to manage departments.
+ * Includes CRUD operations to create, read, update, and delete departments.
+ */
+export class SqlServerDepartmentRepository implements DepartmentRepository {
+  /**
+   * Creates a new department.
+   * 
+   * @param department - The department to be created.
+   * @returns A promise that resolves when the department is created.
+   */
+  async createDepartment(department: Department): Promise<void> {
+    try {
+      const pool = await poolPromise;
+      await pool.request()
+        .input('id', sql.Int, department.id)
+        .input('name', sql.NVarChar, department.name)
+        .input('startDate', sql.DateTimeOffset, department.startDate)
+        .input('endDate', sql.DateTimeOffset, department.endDate)
+        .input('notes', sql.NVarChar, department.notes)
+        .input('keywords', sql.NVarChar, department.keywords?.join(','))
+        .input('image', sql.NVarChar, department.image)
+        .query(constants.INSERT_DEPARTMENT_SQL);
+    } catch (err) {
+      console.error("SqlServerDepartmentRepository.createDepartment():", err);
+      throw new RepositoryException(
+        `Failed to create department, department id[${department.id}]`,
+        { cause: err, operation: 'createDepartment' }
+      );
+    }
+    console.log("SqlServerDepartmentRepository.createDepartment(): department id[%s]", department.id);
+  }
+
+  /**
+   * Retrieves all departments.
+   * 
+   * @returns A promise that resolves to an array of Department objects.
+   */
+  async getDepartments(): Promise<Department[]> {
+    try {
+      const pool = await poolPromise;
+      const result = await pool.request().query(constants.SELECT_DEPARTMENTS_SQL);
+      const departmentMap = new Map<number, Department>();
+      for (const row of result.recordset) {
+        let department = departmentMap.get(row.id);
+        if (!department) {
+          department = mappers.mapRowToDepartment(row);
+          departmentMap.set(row.id, department);
+        }
+        if (row.employee_id) {
+          department.employees.push(mappers.mapRowToEmployee(row, false));
+        }
+      }
+      const departments = Array.from(departmentMap.values());
+      console.log("SqlServerDepartmentRepository.getDepartments(): departments count[%d]", departments.length);
+      return departments;
+    } catch (err) {
+      console.error("SqlServerDepartmentRepository.getDepartments():", err);
+      throw new RepositoryException(
+        `Failed to get departments`,
+        { cause: err, operation: 'getDepartments' }
+      );
+    }
+  }
+
+  /**
+   * Retrieves a department by its ID.
+   * 
+   * @param id - The ID of the department to retrieve.
+   * @returns A promise that resolves to the Department object if found, otherwise undefined.
+   */
+  async getDepartment(id: number): Promise<Department | undefined> {
+    try {
+      const pool = await poolPromise;
+      const result = await pool.request().input('id', sql.Int, id).query(constants.SELECT_DEPARTMENT_SQL);
+      if (!result.recordset.length) {
+        console.log("SqlServerDepartmentRepository.getDepartment(): department not found, department id[%d]", id);
+        return undefined;
+      }
+      const rows = result.recordset;
+      const department = mappers.mapRowToDepartment(rows[0]);
+      for (const row of rows) {
+        if (row.employee_id) {
+          department.employees.push(mappers.mapRowToEmployee(row, false));
+        }
+      }
+      console.log("SqlServerDepartmentRepository.getDepartment(): department id[%d]", id);
+      return department;
+    } catch (err) {
+      console.error("SqlServerDepartmentRepository.getDepartment():", err);
+      throw new RepositoryException(
+        `Failed to get department, department id[${id}]`,
+        { cause: err, operation: 'getDepartment' }
+      );
+    }
+  }
+
+  /**
+   * Updates an existing department.
+   * 
+   * @param department - The department object containing updated values.
+   * @returns A promise that resolves when the update is complete.
+   */
+  async updateDepartment(department: Department): Promise<void> {
+    try {
+      const pool = await poolPromise;
+      const result = await pool.request()
+        .input('id', sql.Int, department.id)
+        .input('name', sql.NVarChar, department.name)
+        .input('startDate', sql.DateTimeOffset, department.startDate)
+        .input('endDate', sql.DateTimeOffset, department.endDate)
+        .input('notes', sql.NVarChar, department.notes)
+        .input('keywords', sql.NVarChar, department.keywords?.join(','))
+        .input('image', sql.NVarChar, department.image)
+        .query(constants.UPDATE_DEPARTMENT_SQL);
+      if (!result.rowsAffected[0]) {
+        console.log("SqlServerDepartmentRepository.updateDepartment(): " +
+          "department not updated, department id[%d]", department.id);
+        return;
+      }
+    } catch (err) {
+      console.error("SqlServerDepartmentRepository.updateDepartment():", err);
+      throw new RepositoryException(
+        `Failed to update department, department id[${department.id}]`,
+        { cause: err, operation: 'updateDepartment' }
+      );
+    }
+    department.employees.forEach(employee => this.updateEmployeeInDepartment(employee));
+    console.log("SqlServerDepartmentRepository.updateDepartment(): department id[%d]", department.id);
+  }
+
+  /**
+   * Updates an employee in the department.
+   * 
+   * @param employee the employee
+   * @returns void
+   */
+  private async updateEmployeeInDepartment(employee: Employee) {
+    try {
+      const pool = await poolPromise;
+      const result = await pool.request()
+        .input('departmentId', sql.Int, employee.departmentId)
+        .input('id', sql.Int, employee.id)
+        .query(constants.UPDATE_EMPLOYEE_DEPARTMENT_SQL);
+      if (!result.rowsAffected[0]) {
+        console.log("SqlServerDepartmentRepository.updateEmployeeInDepartment(): " +
+          "employee not updated, employee id[%d], departmentId[%d]", employee.id, employee.departmentId);
+        return;
+      }
+    } catch (err) {
+      console.error("SqlServerDepartmentRepository.updateEmployeeInDepartment():", err);
+      throw new RepositoryException(
+        `Failed to update employee in department, employee id[${employee.id}] departmentId[${employee.departmentId}]`,
+        { cause: err, operation: 'updateEmployeeInDepartment' }
+      );
+    }
+  }
+
+  /**
+   * Deletes a department by its ID.
+   * 
+   * @param id - The ID of the department to be deleted.
+   * @returns A promise that resolves when the department is deleted.
+   */
+  async deleteDepartment(id: number): Promise<void> {
+    try {
+      const pool = await poolPromise;
+      await pool.request()
+        .input('department_id', sql.Int, id)
+        .execute(constants.EXECUTE_DELETE_DEPARTMENT_AND_EMPLOYEES_PROCEDURE);
+    } catch (err) {
+      console.error("SqlServerDepartmentRepository.deleteDepartment():", err);
+      throw new RepositoryException(
+        `Failed to delete department, department id[${id}]`,
+        { cause: err, operation: 'deleteDepartment' }
+      );
+    }
+    console.log("SqlServerDepartmentRepository.deleteDepartment(): department id[%d]", id);
+  }
+}

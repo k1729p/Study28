@@ -1,0 +1,21 @@
+services:
+  chroma:
+    container_name: chroma
+    image: chromadb/chroma:latest
+    ports:
+      - "8000:8000"
+    networks:
+      - net
+    restart: always
+    mem_limit: 512m
+    mem_reservation: 256m
+    healthcheck:
+      test: ["CMD", "/bin/bash", "-c", "3<>/dev/tcp/localhost/8000"]
+      start_period: 60s
+      interval: 30s
+      timeout: 10s
+      retries: 10
+    volumes:
+      - chroma-data:/data
+volumes:
+  chroma-data:

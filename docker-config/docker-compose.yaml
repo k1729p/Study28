@@ -1,0 +1,13 @@
+services:
+  study28:
+    container_name: study28
+    image: eeengcs/study28:1.0.0-SNAPSHOT
+    ports:
+      - "8028:8028"
+    networks:
+      - net
+    restart: always
+networks:
+  net:
+    driver: bridge
+    external: true

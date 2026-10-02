@@ -1,0 +1,26 @@
+services:
+  sql-server:
+    container_name: sql-server
+    image: mcr.microsoft.com/mssql/server
+    ports:
+      - "1433:1433"
+    networks:
+      - net
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=01+AZ+az
+    restart: always
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 01+AZ+az -C -Q 'SELECT 1' || exit 1",
+        ]
+      start_period: 60s
+      interval: 30s
+      timeout: 10s
+      retries: 10
+    volumes:
+      - sql-server-data:/var/opt/mssql
+volumes:
+  sql-server-data:

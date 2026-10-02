@@ -1,0 +1,176 @@
+import { Employee } from "../../models/employee.js";
+import { EmployeeRepository } from "../employee.repository.js";
+import { RepositoryException } from "../repository-exception.js";
+import { poolPromise } from "./oracle.pool.js";
+import { repositoryLock } from "./oracle.initialization.js";
+import { parametersForEmployee } from "./oracle.mappers.js";
+import * as mappers from "../repository-mappers.js";
+import * as constants from "./oracle.constants.js";
+/**
+ * Repository interface providing methods to manage employees.
+ * Includes CRUD operations to create, read, update, and delete employees.
+ */
+export class OracleEmployeeRepository implements EmployeeRepository {
+  /**
+   * Creates a new employee.
+   * 
+   * @param employee - The employee to be created.
+   * @returns A promise that resolves when the employee is created.
+   */
+  async createEmployee(employee: Employee): Promise<void> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
+    const pool = await poolPromise;
+    const connection = await pool.getConnection();
+    try {
+      const result = await connection.execute(constants.INSERT_EMPLOYEE_SQL, parametersForEmployee(employee), { autoCommit: true });
+      if (!result.rowsAffected) {
+        console.log("OracleEmployeeRepository.createEmployee(): no employee created, employee id[%d]",
+          employee.id);
+        return;
+      }
+    } catch (err) {
+      console.error("OracleEmployeeRepository.createEmployee():", err);
+      throw new RepositoryException(
+        `Failed to create employee, employee id[${employee.id}]`,
+        { cause: err, operation: 'createEmployee' }
+      );
+    } finally {
+      try {
+        await connection.close();
+      } catch (err) {
+        console.error("OracleEmployeeRepository.createEmployee(): error closing connection", err);
+      }
+      releaseRepositoryLock();
+    }
+    console.log("OracleEmployeeRepository.createEmployee(): employee id[%d]", employee.id);
+  }
+  /**
+   * Retrieves all employees.
+   * 
+   * @returns A promise that resolves to an array of Employee objects.
+   */
+  async getEmployees(): Promise<Employee[]> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
+    const pool = await poolPromise;
+    const connection = await pool.getConnection();
+    try {
+      const result = await connection.execute(constants.SELECT_EMPLOYEES_SQL);
+      const rows = result.rows as any[] || [];
+      console.log("OracleEmployeeRepository.():");
+      const employees = rows.map(row => mappers.mapRowToEmployee(row, true));
+      console.log("OracleDepartmentRepository.getEmployees(): employees count[%d]", employees.length);
+      return employees;
+    } catch (err) {
+      console.error("OracleEmployeeRepository.getEmployees():", err);
+      throw new RepositoryException(
+        `Failed to get employees`,
+        { cause: err, operation: 'getEmployees' }
+      );
+    } finally {
+      try {
+        await connection.close();
+      } catch (err) {
+        console.error("OracleEmployeeRepository.getEmployees(): error closing connection", err);
+      }
+      releaseRepositoryLock();
+    }
+  }
+  /**
+   * Retrieves an employee by their ID.
+   * 
+   * @param id - The ID of the employee to retrieve.
+   * @returns A promise that resolves to the Employee object if found, otherwise undefined.
+   */
+  async getEmployee(id: number): Promise<Employee | undefined> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
+    const pool = await poolPromise;
+    const connection = await pool.getConnection();
+    try {
+      const result = await connection.execute(constants.SELECT_EMPLOYEE_SQL, { id });
+      const rows = result.rows as any[] || [];
+      if (!rows.length) {
+        console.log("OracleEmployeeRepository.getEmployee(): employee not found, employee id[%d]", id);
+        return undefined;
+      }
+      console.log("OracleEmployeeRepository.getEmployee(): employee id[%d]", id);
+      return mappers.mapRowToEmployee(rows[0], true);
+    } catch (err) {
+      console.error("OracleEmployeeRepository.getEmployee():", err);
+      throw new RepositoryException(
+        `Failed to get employee, employee id[${id}]`,
+        { cause: err, operation: 'getEmployee' }
+      );
+    } finally {
+      try {
+        await connection.close();
+      } catch (err) {
+        console.error("OracleEmployeeRepository.getEmployee(): error closing connection", err);
+      }
+      releaseRepositoryLock();
+    }
+  }
+  /**
+   * Updates an existing employee.
+   * 
+   * @param employee - The employee object containing updated values.
+   * @returns A promise that resolves when the update is complete.
+   */
+  async updateEmployee(employee: Employee): Promise<void> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
+    const pool = await poolPromise;
+    const connection = await pool.getConnection();
+    try {
+      const result = await connection.execute(constants.UPDATE_EMPLOYEE_SQL, parametersForEmployee(employee));
+      if (!result.rowsAffected) {
+        await connection.rollback();
+        console.log("OracleEmployeeRepository.updateEmployee(): employee not updated, employee id[%d]",
+          employee.id);
+        return;
+      }
+      await connection.commit();
+    } catch (err) {
+      await connection.rollback();
+      console.error("OracleEmployeeRepository.updateEmployee():", err);
+      throw new RepositoryException(
+        `Failed to update employee, employee id[${employee.id}]`,
+        { cause: err, operation: 'updateEmployee' }
+      );
+    } finally {
+      try {
+        await connection.close();
+      } catch (err) {
+        console.error("OracleEmployeeRepository.updateEmployee(): error closing connection", err);
+      }
+      releaseRepositoryLock();
+    }
+    console.log("OracleEmployeeRepository.updateEmployee(): employee id[%d]", employee.id);
+  }
+  /**
+   * Deletes an employee by their ID.
+   * 
+   * @param id - The ID of the employee to be deleted.
+   * @returns A promise that resolves when the employee is deleted.
+   */
+  async deleteEmployee(id: number): Promise<void> {
+    const releaseRepositoryLock = await repositoryLock.acquireShared();
+    const pool = await poolPromise;
+    const connection = await pool.getConnection();
+    try {
+      await connection.execute(constants.DELETE_EMPLOYEE_SQL, { id }, { autoCommit: true });
+    } catch (err) {
+      console.error("OracleEmployeeRepository.deleteEmployee():", err);
+      throw new RepositoryException(
+        `Failed to delete employee, employee id[${id}]`,
+        { cause: err, operation: 'deleteEmployee' }
+      );
+    } finally {
+      try {
+        await connection.close();
+      } catch (err) {
+        console.error("OracleEmployeeRepository.deleteEmployee(): error closing connection", err);
+      }
+      releaseRepositoryLock();
+    }
+    console.log("OracleEmployeeRepository.deleteEmployee(): employee id[%d]", id);
+  }
+}
